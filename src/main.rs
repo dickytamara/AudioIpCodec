@@ -10,17 +10,10 @@ mod pjmedia;
 mod pjsua;
 
 use pjsua_sys::*;
-//use std::mem;
 use pjdefault::AutoCreate;
 
 
-/// create new pjsua_logging_config
-
-/// create new pjsua_media_config
-// pub fn new_media_config() -> pjsua_media_config {
-// }
-
-// public struct untuk pjsua
+// public  untuk pjsua
 pub struct Pjsua {
     pub config: Option<pjsua_config>,
     pub logging: Option<pjsua_logging_config>,
@@ -42,7 +35,6 @@ impl Pjsua {
         Pjsua { config: None, logging: None, media: None, status: ret }
     }
 
-    // pub fn init() {}
 }
 
 
