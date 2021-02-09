@@ -1,5 +1,5 @@
 [package]
-name = "OpenAudioIpCodecs"
+name = "open_audio_ip_codec"
 version = "0.1.0"
 authors = ["tamara"]
 edition = "2018"

@@ -14,23 +14,7 @@ use pjsua_sys::*;
 use pjdefault::AutoCreate;
 
 
-
-
-
 /// create new pjsua_logging_config
-// pub fn new_logging_config() -> pjsua_logging_config {
-//     let  sample: *mut pjsua_logging_config;
-
-//     pjsua_logging_config {
-//         msg_logging: pj_bool_t,
-//         level: c_uint,
-//         console_level: c_uint,
-//         decor: c_uint,
-//         log_filename: pj_str_t,
-//         log_file_flags: c_uint,
-//         cb: Option<unsafe extern "C" fn(level: c_int, data: *const c_char, len: c_int)>
-//     }
-// }
 
 /// create new pjsua_media_config
 // pub fn new_media_config() -> pjsua_media_config {
@@ -45,9 +29,7 @@ pub struct Pjsua {
 }
 
 
-pub trait PjsuaCallback {
-
-}
+pub trait PjsuaCallback { }
 
 
 impl Pjsua {
@@ -68,9 +50,13 @@ impl Pjsua {
 fn main() {
     let pjsua = Pjsua::new();
     let mut config: pjsua_config = pjsua_config::new();
+    let mut log_config: pjsua_logging_config = pjsua_logging_config::new();
+    let mut media_config: pjsua_media_config = pjsua_media_config::new();
     unsafe {
         // let mut config: pjsua_config = pjsua_config::new();
         pjsua_config_default(&mut config as *mut _);
+        pjsua_logging_config_default(&mut log_config as *mut _);
+        pjsua_media_config_default(&mut media_config as *mut _);
     }
     // println!("app_config: {}", config.);
     assert_eq!(0, pjsua.status);

@@ -144,14 +144,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 
 [[package]]
-name = "ipcodec"
-version = "0.1.0"
-dependencies = [
- "pj-sys",
- "pjsua-sys",
-]
-
-[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -209,6 +201,14 @@ name = "once_cell"
 version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13bd41f508810a131401606d54ac32a467c97172d74ba7662562ebba5ad07fa0"
+
+[[package]]
+name = "open_audio_ip_codec"
+version = "0.1.0"
+dependencies = [
+ "pj-sys",
+ "pjsua-sys",
+]
 
 [[package]]
 name = "peeking_take_while"

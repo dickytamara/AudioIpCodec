@@ -142,3 +142,50 @@ impl AutoCreate<pjsua_config> for pjsua_config {
         }
     }
 }
+
+
+impl AutoCreate<pjsua_media_config> for pjsua_media_config {
+    fn new() -> pjsua_media_config {
+
+        pjsua_media_config {
+            clock_rate: 0,
+            snd_clock_rate: 0,
+            channel_count: 0,
+            audio_frame_ptime: 0,
+            max_media_ports: 0,
+            has_ioqueue: pj_constants__PJ_FALSE as pj_bool_t,
+            thread_cnt: 0,
+            quality: 0,
+            ptime: 0,
+            no_vad: pj_constants__PJ_FALSE as pj_bool_t,
+            ilbc_mode: 0,
+            tx_drop_pct: 0,
+            rx_drop_pct: 0,
+            ec_options: 0,
+            ec_tail_len: 0,
+            snd_rec_latency: 0,
+            snd_play_latency: 0,
+            jb_init: 0,
+            jb_min_pre: 0,
+            jb_max_pre: 0,
+            jb_max: 0,
+            jb_discard_algo: 0,
+            enable_ice: pj_constants__PJ_FALSE as pj_bool_t,
+            ice_max_host_cands: 0,
+            ice_opt: pj_ice_sess_options::new(),
+            ice_no_rtcp: pj_constants__PJ_FALSE as pj_bool_t,
+            ice_always_update: pj_constants__PJ_FALSE as pj_bool_t,
+            enable_turn: pj_constants__PJ_FALSE as pj_bool_t,
+            turn_server: pj_str_t::new(),
+            turn_conn_type: 0 as pj_turn_tp_type,
+            turn_auth_cred: pj_stun_auth_cred::new(),
+            turn_tls_setting: pj_turn_sock_tls_cfg::new(),
+            snd_auto_close_time: 0,
+            vid_preview_enable_native: pj_constants__PJ_FALSE as pj_bool_t,
+            no_smart_media_update: pj_constants__PJ_FALSE as pj_bool_t,
+            no_rtcp_sdes_bye: pj_constants__PJ_FALSE as pj_bool_t,
+            on_aud_prev_play_frame: None,
+            on_aud_prev_rec_frame: None,
+        }
+    }
+}
