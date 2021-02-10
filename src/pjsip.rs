@@ -21,12 +21,10 @@ impl AutoCreate<pjsip_cred_info> for pjsip_cred_info {
 
 impl AutoCreate<pjsip_hdr_vptr> for pjsip_hdr_vptr {
     fn new () -> pjsip_hdr_vptr {
-        unsafe {
-            pjsip_hdr_vptr {
-                clone: None,
-                shallow_clone: None,
-                print_on: None
-            }
+        pjsip_hdr_vptr {
+            clone: None,
+            shallow_clone: None,
+            print_on: None
         }
     }
 }

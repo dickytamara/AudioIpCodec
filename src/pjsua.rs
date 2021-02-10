@@ -93,7 +93,7 @@ impl AutoCreate<pjsua_callback> for pjsua_callback {
 
 impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
     fn new() -> pjsua_logging_config {
-        pjsua_logging_config {
+        let mut config = pjsua_logging_config {
             msg_logging: pj_constants__PJ_FALSE as pj_bool_t,
             level: 0,
             console_level: 0,
@@ -101,7 +101,13 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
             log_filename: pj_str_t::new(),
             log_file_flags: 0,
             cb: None
+        };
+
+        unsafe {
+            pjsua_logging_config_default(&mut config as *mut _);
         }
+
+        config
     }
 }
 
@@ -109,7 +115,7 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
 impl AutoCreate<pjsua_config> for pjsua_config {
     //
     fn new () -> pjsua_config {
-        pjsua_config {
+        let mut config = pjsua_config {
             max_calls: 0,
             thread_cnt: 0,
             nameserver_count: 0,
@@ -141,15 +147,22 @@ impl AutoCreate<pjsua_config> for pjsua_config {
             srtp_optional_dup_offer: pj_constants__PJ_FALSE as pj_bool_t,
             srtp_opt: pjsua_srtp_opt::new(),
             hangup_forked_call: pj_constants__PJ_FALSE as pj_bool_t
+        };
+
+        // set with pjsua default
+        unsafe {
+            pjsua_config_default(&mut config as *mut _);
+
         }
+
+        config
     }
 }
 
 
 impl AutoCreate<pjsua_media_config> for pjsua_media_config {
     fn new() -> pjsua_media_config {
-
-        pjsua_media_config {
+        let mut config = pjsua_media_config {
             clock_rate: 0,
             snd_clock_rate: 0,
             channel_count: 0,
@@ -188,27 +201,29 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
             no_rtcp_sdes_bye: pj_constants__PJ_FALSE as pj_bool_t,
             on_aud_prev_play_frame: None,
             on_aud_prev_rec_frame: None,
+        };
+
+        unsafe {
+            pjsua_media_config_default(&mut config as *mut _);
         }
+
+        config
     }
 }
 
 impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
     fn new() -> pjsip_publishc_opt {
-        unsafe {
-            pjsip_publishc_opt {
-                queue_request: pj_constants__PJ_FALSE as pj_bool_t
-            }
+        pjsip_publishc_opt {
+            queue_request: pj_constants__PJ_FALSE as pj_bool_t
         }
     }
 }
 
 impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {
     fn new() -> pjsip_auth_clt_pref {
-        unsafe {
-            pjsip_auth_clt_pref {
-                initial_auth: pj_constants__PJ_FALSE as pj_bool_t,
-                algorithm: pj_str_t::new()
-            }
+        pjsip_auth_clt_pref {
+            initial_auth: pj_constants__PJ_FALSE as pj_bool_t,
+            algorithm: pj_str_t::new()
         }
     }
 }
@@ -226,7 +241,7 @@ impl AutoCreate<pjsip_timer_setting> for pjsip_timer_setting {
 
 impl AutoCreate<pjsua_transport_config> for pjsua_transport_config {
     fn new () -> pjsua_transport_config {
-        pjsua_transport_config {
+        let mut config = pjsua_transport_config {
             port: 0,
             port_range: 0,
             public_addr: pj_str_t::new(),
@@ -235,7 +250,13 @@ impl AutoCreate<pjsua_transport_config> for pjsua_transport_config {
             qos_type: 0,
             qos_params: pj_qos_params::new(),
             sockopt_params: pj_sockopt_params::new()
+        };
+
+        unsafe {
+            pjsua_transport_config_default(&mut config as *mut _);
         }
+
+        config
     }
 }
 
@@ -281,7 +302,7 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
     fn new () -> pjsua_acc_config {
         unsafe {
             let mut void_z: c_void = mem::zeroed();
-            pjsua_acc_config {
+            let mut config = pjsua_acc_config {
                 user_data: &mut void_z as *mut _,
                 priority: 0,
                 id: pj_str_t::new(),
@@ -355,22 +376,26 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
                 ip_change_cfg: pjsua_ip_change_acc_cfg::new(),
                 enable_rtcp_mux: pj_constants__PJ_FALSE as pj_bool_t,
                 rtcp_fb_cfg: pjmedia_rtcp_fb_setting::new(),
-            }
+            };
+
+            pjsua_acc_config_default(&mut config as *mut _);
+            config
         }
     }
 }
-
-
 
 impl AutoCreate<pjsua_buddy_config> for pjsua_buddy_config {
     fn new () -> pjsua_buddy_config {
         unsafe {
             let mut void_z: c_void = mem::zeroed();
-            pjsua_buddy_config {
+            let mut config = pjsua_buddy_config {
                 uri: pj_str_t::new(),
                 subscribe: pj_constants__PJ_FALSE as pj_bool_t,
                 user_data: &mut void_z as *mut _,
-            }
+            };
+
+            pjsua_buddy_config_default(&mut config as *mut _);
+            config
         }
     }
 }

@@ -8,6 +8,7 @@ mod pjlib;
 mod pjsip;
 mod pjmedia;
 mod pjsua;
+mod sipua;
 
 use pjsua_sys::*;
 use pjdefault::AutoCreate;
@@ -22,11 +23,8 @@ pub struct Pjsua {
 }
 
 
-pub trait PjsuaCallback { }
-
-
 impl Pjsua {
-    /// create new pjsua_config
+    // create new pjsua_config
 
     // create new pjsua
     pub fn new() -> Pjsua {
