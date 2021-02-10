@@ -85,3 +85,28 @@ impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
         }
     }
 }
+
+
+impl AutoCreate<pjsip_module> for pjsip_module {
+    fn new () -> pjsip_module {
+        unsafe {
+            let mut endpt: pjsip_module = mem::zeroed();
+            pjsip_module {
+                prev: &mut endpt as *mut _,
+                next: &mut endpt as *mut _,
+                name: pj_str_t::new(),
+                id: 0,
+                priority: 0,
+                load: None,
+                start: None,
+                stop: None,
+                unload: None,
+                on_rx_request: None,
+                on_rx_response: None,
+                on_tx_request: None,
+                on_tx_response: None,
+                on_tsx_state: None,
+            }
+        }
+    }
+}

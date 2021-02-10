@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 pj-sys = { path = "./pj-sys" }
+pjmedia-sys = { path = "./pjmedia-sys" }
 pjsua-sys = { path = "./pjsua-sys" }
 
 [build-dependencies]

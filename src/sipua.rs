@@ -4,6 +4,7 @@
 use super::pjsua_sys::*;
 use super::pjdefault::AutoCreate;
 use std::ops::Drop;
+use std::ffi::CString;
 
 pub type SIPAccount = pjsua_acc_config;
 pub type SIPBuddy = pjsua_buddy_config;
@@ -216,6 +217,7 @@ trait Dump {}
 // pjsua_handle_ip_change
 pub struct SIPUserAgent {
     /// hold internal pjsua data
+    pool: *mut pj_pool_t,
     app_config: pjsua_config,
     log_config: pjsua_logging_config,
     media_config: pjsua_media_config,
@@ -248,14 +250,23 @@ impl SIPUserAgent {
 
     /// create sip user sip user agent with default value
     ///
-    fn new() -> SIPUserAgent {
+    pub fn new() -> SIPUserAgent {
         // create default data
+        let ctx: *mut pj_pool_t;
+        unsafe {
+            pjsua_create();
+            let pool_name = CString::new("ipcodec").expect("pool_name fail.");
+            ctx = pjsua_pool_create(pool_name.as_ptr(), 1000, 1000);
+        }
+
         let mut udp = pjsua_transport_config::new();
         let mut rtp = pjsua_transport_config::new();
         udp.port = 5060;
         rtp.port = 4000;
 
+
         SIPUserAgent{
+            pool: ctx,
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
             media_config: pjsua_media_config::new(),
@@ -278,11 +289,24 @@ impl SIPUserAgent {
             ring_slot: PJSUA_INVALID_ID,
         }
     }
+
+    /// start application
+    pub fn start(&mut self) {
+        unsafe {
+            pjsua_init(&mut self.app_config as *mut _, &mut self.log_config as *mut _,
+                       &mut self.media_config as *mut _);
+            // pjsip_endpt_register_module(pjsua_get_pjsip_endpt())
+
+        }
+    }
 }
 
 //binding clike code patern with destructor
 impl Drop for SIPUserAgent {
     fn drop(&mut self) {
-        pjsua_destroy();
+        unsafe {
+            pj_pool_safe_release(&mut self.pool as *mut _);
+            pjsua_destroy();
+        }
     }
 }
