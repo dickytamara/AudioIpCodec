@@ -2,6 +2,8 @@
 use super::pjsua_sys::*;
 use super::pjdefault::AutoCreate;
 
+use std::os::raw::c_void;
+use std::mem;
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
@@ -186,6 +188,189 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
             no_rtcp_sdes_bye: pj_constants__PJ_FALSE as pj_bool_t,
             on_aud_prev_play_frame: None,
             on_aud_prev_rec_frame: None,
+        }
+    }
+}
+
+impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
+    fn new() -> pjsip_publishc_opt {
+        unsafe {
+            pjsip_publishc_opt {
+                queue_request: pj_constants__PJ_FALSE as pj_bool_t
+            }
+        }
+    }
+}
+
+impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {
+    fn new() -> pjsip_auth_clt_pref {
+        unsafe {
+            pjsip_auth_clt_pref {
+                initial_auth: pj_constants__PJ_FALSE as pj_bool_t,
+                algorithm: pj_str_t::new()
+            }
+        }
+    }
+}
+
+
+impl AutoCreate<pjsip_timer_setting> for pjsip_timer_setting {
+    fn new () -> pjsip_timer_setting {
+        pjsip_timer_setting {
+            min_se: 0,
+            sess_expires: 0
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_transport_config> for pjsua_transport_config {
+    fn new () -> pjsua_transport_config {
+        pjsua_transport_config {
+            port: 0,
+            port_range: 0,
+            public_addr: pj_str_t::new(),
+            bound_addr: pj_str_t::new(),
+            tls_setting: pjsip_tls_setting::new(),
+            qos_type: 0,
+            qos_params: pj_qos_params::new(),
+            sockopt_params: pj_sockopt_params::new()
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_ice_config> for pjsua_ice_config {
+    fn new () -> pjsua_ice_config {
+        pjsua_ice_config {
+            enable_ice: pj_constants__PJ_FALSE as pj_bool_t,
+            ice_max_host_cands: 0,
+            ice_opt: pj_ice_sess_options::new(),
+            ice_no_rtcp: pj_constants__PJ_FALSE as pj_bool_t,
+            ice_always_update: pj_constants__PJ_FALSE as pj_bool_t
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_turn_config> for pjsua_turn_config {
+    fn new() -> pjsua_turn_config {
+        pjsua_turn_config {
+            enable_turn: pj_constants__PJ_FALSE as pj_bool_t,
+            turn_server: pj_str_t::new(),
+            turn_conn_type: 0,
+            turn_auth_cred: pj_stun_auth_cred::new(),
+            turn_tls_setting: pj_turn_sock_tls_cfg::new(),
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_ip_change_acc_cfg> for pjsua_ip_change_acc_cfg {
+    fn new () -> pjsua_ip_change_acc_cfg {
+        pjsua_ip_change_acc_cfg {
+            shutdown_tp: pj_constants__PJ_FALSE as pj_bool_t,
+            hangup_calls: pj_constants__PJ_FALSE as pj_bool_t,
+            reinvite_flags: 0
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
+    fn new () -> pjsua_acc_config {
+        unsafe {
+            let mut void_z: c_void = mem::zeroed();
+            pjsua_acc_config {
+                user_data: &mut void_z as *mut _,
+                priority: 0,
+                id: pj_str_t::new(),
+                reg_uri: pj_str_t::new(),
+                reg_hdr_list: pjsip_hdr::new(),
+                reg_contact_params: pj_str_t::new(),
+                sub_hdr_list: pjsip_hdr::new(),
+                mwi_enabled: pj_constants__PJ_FALSE as pj_bool_t,
+                mwi_expires: 0,
+                publish_enabled: pj_constants__PJ_FALSE as pj_bool_t,
+                publish_opt: pjsip_publishc_opt::new(),
+                unpublish_max_wait_time_msec: 0,
+                auth_pref: pjsip_auth_clt_pref::new(),
+                pidf_tuple_id: pj_str_t::new(),
+                force_contact: pj_str_t::new(),
+                contact_params: pj_str_t::new(),
+                contact_uri_params: pj_str_t::new(),
+                require_100rel: 0,
+                use_timer: 0,
+                timer_setting: pjsip_timer_setting::new(),
+                proxy_cnt: 0,
+                proxy: [pj_str_t::new(), pj_str_t::new(), pj_str_t::new(), pj_str_t::new(),
+                        pj_str_t::new(), pj_str_t::new(), pj_str_t::new(), pj_str_t::new()],
+                lock_codec: 0,
+                reg_timeout: 0,
+                reg_delay_before_refresh: 0,
+                unreg_timeout: 0,
+                cred_count: 0,
+                cred_info: [pjsip_cred_info::new(), pjsip_cred_info::new(), pjsip_cred_info::new(), pjsip_cred_info::new(),
+                            pjsip_cred_info::new(), pjsip_cred_info::new(), pjsip_cred_info::new(), pjsip_cred_info::new()],
+                transport_id: 0,
+                allow_contact_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
+                contact_rewrite_method: 0,
+                contact_use_src_port: pj_constants__PJ_FALSE as pj_bool_t,
+                allow_via_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
+                allow_sdp_nat_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
+                use_rfc5626: 0,
+                rfc5626_instance_id: pj_str_t::new(),
+                rfc5626_reg_id: pj_str_t::new(),
+                ka_interval: 0,
+                ka_data: pj_str_t::new(),
+                vid_in_auto_show: pj_constants__PJ_FALSE as pj_bool_t,
+                vid_out_auto_transmit: pj_constants__PJ_FALSE as pj_bool_t,
+                vid_wnd_flags: 0,
+                vid_cap_dev: 0,
+                vid_rend_dev: 0,
+                vid_stream_rc_cfg: pjmedia_vid_stream_rc_config::new(),
+                vid_stream_sk_cfg: pjmedia_vid_stream_sk_config::new(),
+                rtp_cfg: pjsua_transport_config::new(),
+                nat64_opt: 0,
+                ipv6_media_use: 0,
+                sip_stun_use: 0,
+                media_stun_use: 0,
+                use_loop_med_tp: pj_constants__PJ_FALSE as pj_bool_t,
+                enable_loopback: pj_constants__PJ_FALSE as pj_bool_t,
+                ice_cfg_use: 0,
+                ice_cfg: pjsua_ice_config::new(),
+                turn_cfg_use: 0,
+                turn_cfg: pjsua_turn_config::new(),
+                use_srtp: 0,
+                srtp_secure_signaling: 0,
+                srtp_optional_dup_offer: pj_constants__PJ_FALSE as pj_bool_t,
+                srtp_opt: pjsua_srtp_opt::new(),
+                reg_retry_interval: 0,
+                reg_first_retry_interval: 0,
+                reg_retry_random_interval: 0,
+                drop_calls_on_reg_fail: pj_constants__PJ_FALSE as pj_bool_t,
+                reg_use_proxy: 0,
+                call_hold_type: 0,
+                register_on_acc_add: pj_constants__PJ_FALSE as pj_bool_t,
+                ip_change_cfg: pjsua_ip_change_acc_cfg::new(),
+                enable_rtcp_mux: pj_constants__PJ_FALSE as pj_bool_t,
+                rtcp_fb_cfg: pjmedia_rtcp_fb_setting::new(),
+            }
+        }
+    }
+}
+
+
+
+impl AutoCreate<pjsua_buddy_config> for pjsua_buddy_config {
+    fn new () -> pjsua_buddy_config {
+        unsafe {
+            let mut void_z: c_void = mem::zeroed();
+            pjsua_buddy_config {
+                uri: pj_str_t::new(),
+                subscribe: pj_constants__PJ_FALSE as pj_bool_t,
+                user_data: &mut void_z as *mut _,
+            }
         }
     }
 }
