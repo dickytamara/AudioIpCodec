@@ -158,3 +158,42 @@ impl AutoCreate<pjmedia_port> for pjmedia_port {
         }
     }
 }
+
+
+impl AutoCreate<pjmedia_transport_op> for pjmedia_transport_op {
+    fn new () -> pjmedia_transport_op {
+        pjmedia_transport_op {
+            get_info: None,
+            attach: None,
+            detach: None,
+            send_rtp: None,
+            send_rtcp: None,
+            send_rtcp2: None,
+            media_create: None,
+            encode_sdp: None,
+            media_start: None,
+            media_stop: None,
+            simulate_lost: None,
+            destroy: None,
+            attach2: None
+        }
+    }
+}
+
+
+impl AutoCreate<pjmedia_transport> for pjmedia_transport {
+    fn new () -> pjmedia_transport {
+        unsafe {
+            let mut void: c_void = mem::zeroed();
+            pjmedia_transport {
+                name: [0,0,0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,0,0,
+                       0,0],
+                type_: 0,
+                op: &mut pjmedia_transport_op::new() as *mut _,
+                user_data: &mut void as *mut _
+            }
+        }
+    }
+}

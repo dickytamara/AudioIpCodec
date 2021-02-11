@@ -1,10 +1,14 @@
-#![allow(dead_code)]
+#![allow(dead_code, unused_variables)]
 
 // default
-use super::pjsua_sys::*;
 use super::pjdefault::AutoCreate;
-use std::ops::Drop;
+use super::pjsip::PjsipModuleCallback;
+use super::pjsua::PjsuaCallback;
+use super::pjsua_sys::*;
 use std::ffi::CString;
+use std::ops::Drop;
+use std::os::raw::{c_void, c_int, c_uint};
+
 
 pub type SIPAccount = pjsua_acc_config;
 pub type SIPBuddy = pjsua_buddy_config;
@@ -14,8 +18,6 @@ pub struct SIPIMessages {}
 pub struct SIPMedia {}
 pub struct SIPPressence {}
 pub struct SIPCall {}
-
-
 
 // pjsua_acc_get_count
 // pjsua_acc_is_valid
@@ -108,7 +110,6 @@ trait IMessages {}
 // pjsua_codec_set_param
 trait Media {}
 
-
 // pjsua_get_buddy_count
 // pjsua_buddy_find
 // pjsua_buddy_is_valid
@@ -122,7 +123,6 @@ trait Media {}
 // pjsua_pres_dump
 // pjsua_pres_notify
 trait Pressence {}
-
 
 // pjsua_call_get_max_count
 // pjsua_call_get_count
@@ -159,7 +159,6 @@ trait Call {}
 
 // pjsua_call_dump
 trait Dump {}
-
 
 // pjsua_get_var
 // pjsua_perror
@@ -225,6 +224,7 @@ pub struct SIPUserAgent {
     rtp_config: pjsua_transport_config,
     account: SIPAccount, // for now just set to 1 account
     buddy_list: Vec<SIPBuddy>,
+    default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
     wav_id: pjsua_player_id,
     rec_id: pjsua_recorder_id,
@@ -244,10 +244,7 @@ pub struct SIPUserAgent {
 
 pub const PJSUA_INVALID_ID: i32 = -1;
 
-
-
 impl SIPUserAgent {
-
     /// create sip user sip user agent with default value
     ///
     pub fn new() -> SIPUserAgent {
@@ -264,8 +261,7 @@ impl SIPUserAgent {
         udp.port = 5060;
         rtp.port = 4000;
 
-
-        SIPUserAgent{
+        SIPUserAgent {
             pool: ctx,
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
@@ -274,6 +270,7 @@ impl SIPUserAgent {
             rtp_config: rtp,
             account: SIPAccount::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
+            default_handler: pjsip_module::new(),
             redir_op: pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE,
             wav_id: PJSUA_INVALID_ID,
             rec_id: PJSUA_INVALID_ID,
@@ -293,10 +290,41 @@ impl SIPUserAgent {
     /// start application
     pub fn start(&mut self) {
         unsafe {
-            pjsua_init(&mut self.app_config as *mut _, &mut self.log_config as *mut _,
-                       &mut self.media_config as *mut _);
-            // pjsip_endpt_register_module(pjsua_get_pjsip_endpt())
+            self.app_config.cb.on_call_state = Some(SIPUserAgent::on_call_state);
+            self.app_config.cb.on_stream_destroyed = Some(SIPUserAgent::on_stream_destroyed);
+            self.app_config.cb.on_call_media_state = Some(SIPUserAgent::on_call_media_state);
+            self.app_config.cb.on_incoming_call = Some(SIPUserAgent::on_incoming_call);
+            self.app_config.cb.on_dtmf_digit2 = Some(SIPUserAgent::on_dtmf_digit2);
+            self.app_config.cb.on_call_redirected = Some(SIPUserAgent::on_call_redirected);
+            self.app_config.cb.on_reg_state = Some(SIPUserAgent::on_reg_state);
+            self.app_config.cb.on_incoming_subscribe = Some(SIPUserAgent::on_incoming_subscribe);
+            self.app_config.cb.on_buddy_state = Some(SIPUserAgent::on_buddy_state);
+            self.app_config.cb.on_buddy_evsub_state = Some(SIPUserAgent::on_buddy_evsub_state);
+            self.app_config.cb.on_pager = Some(SIPUserAgent::on_pager);
+            self.app_config.cb.on_typing = Some(SIPUserAgent::on_typing);
+            self.app_config.cb.on_call_transfer_status =
+                Some(SIPUserAgent::on_call_transfer_status);
+            self.app_config.cb.on_call_replaced = Some(SIPUserAgent::on_call_replaced);
+            self.app_config.cb.on_nat_detect = Some(SIPUserAgent::on_nat_detect);
+            self.app_config.cb.on_mwi_info = Some(SIPUserAgent::on_mwi_info);
+            self.app_config.cb.on_transport_state = Some(SIPUserAgent::on_transport_state);
+            self.app_config.cb.on_ice_transport_error = Some(SIPUserAgent::on_ice_transport_error);
+            self.app_config.cb.on_snd_dev_operation = Some(SIPUserAgent::on_snd_dev_operation);
+            self.app_config.cb.on_call_media_event = Some(SIPUserAgent::on_call_media_event);
+            self.app_config.cb.on_ip_change_progress = Some(SIPUserAgent::on_ip_change_progress);
 
+            // init pjsua
+            pjsua_init(
+                &mut self.app_config as *mut _,
+                &mut self.log_config as *mut _,
+                &mut self.media_config as *mut _,
+            );
+            // pjsip endpoint for unhadled error
+            self.default_handler.on_rx_request = Some(SIPUserAgent::on_rx_request);
+            pjsip_endpt_register_module(
+                pjsua_get_pjsip_endpt(),
+                &mut self.default_handler as *mut _,
+            );
         }
     }
 }
@@ -308,5 +336,177 @@ impl Drop for SIPUserAgent {
             pj_pool_safe_release(&mut self.pool as *mut _);
             pjsua_destroy();
         }
+    }
+}
+
+// handle for callback PjsipModule
+impl PjsipModuleCallback for SIPUserAgent {
+    unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
+        0
+    }
+}
+
+impl PjsuaCallback for SIPUserAgent {
+    // Call status event
+    unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {}
+
+    // Stream Destroyed;
+    unsafe extern "C" fn on_stream_destroyed(
+        call_id: pjsua_call_id,
+        strm: *mut pjmedia_stream,
+        stream_idx: c_uint,
+    ) {
+        // todo here
+    }
+
+    // Call media satate
+    unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {}
+
+    // Incoming Call
+    unsafe extern "C" fn on_incoming_call(
+        acc_id: pjsua_acc_id,
+        call_id: pjsua_call_id,
+        rdata: *mut pjsip_rx_data,
+    ) {
+        // todo here
+    }
+
+    // DTMF Digit2
+    unsafe extern "C" fn on_dtmf_digit2(call_id: pjsua_call_id, info: *const pjsua_dtmf_info) {
+        // todo here
+    }
+
+    // Call Redirected
+    unsafe extern "C" fn on_call_redirected(
+        call_id: pjsua_call_id,
+        target: *const pjsip_uri,
+        e: *const pjsip_event,
+    ) -> pjsip_redirect_op {
+        // todo here
+        0x0
+    }
+
+    // REG state
+    unsafe extern "C" fn on_reg_state(acc_id: pjsua_acc_id) {
+        // todo here
+    }
+
+    // Incomming Subscribe
+    unsafe extern "C" fn on_incoming_subscribe(
+        acc_id: pjsua_acc_id,
+        srv_pres: *mut pjsua_srv_pres,
+        buddy_id: pjsua_buddy_id,
+        from: *const pj_str_t,
+        rdata: *mut pjsip_rx_data,
+        code: *mut pjsip_status_code,
+        reason: *mut pj_str_t,
+        msg_data: *mut pjsua_msg_data,
+    ) {
+        // todo here
+    }
+
+    // Buddy State
+    unsafe extern "C" fn on_buddy_state(buddy_id: pjsua_buddy_id) {}
+
+    // Buddy evsub state
+    unsafe extern "C" fn on_buddy_evsub_state(
+        buddy_id: pjsua_buddy_id,
+        sub: *mut pjsip_evsub,
+        event: *mut pjsip_event,
+    ) {
+        // todo here
+    }
+
+    // Pager
+    unsafe extern "C" fn on_pager(
+        call_id: pjsua_call_id,
+        from: *const pj_str_t,
+        to: *const pj_str_t,
+        contact: *const pj_str_t,
+        mime_type: *const pj_str_t,
+        body: *const pj_str_t,
+    ) {
+        // todo here
+    }
+
+    // Typing event
+    unsafe extern "C" fn on_typing(
+        call_id: pjsua_call_id,
+        from: *const pj_str_t,
+        to: *const pj_str_t,
+        contact: *const pj_str_t,
+        is_typing: pj_bool_t,
+    ) {
+        // todo here
+    }
+
+    // Call transfer status
+    unsafe extern "C" fn on_call_transfer_status(
+        call_id: pjsua_call_id,
+        st_code: c_int,
+        st_text: *const pj_str_t,
+        final_: pj_bool_t,
+        p_cont: *mut pj_bool_t,
+    ) {
+        // todo here
+    }
+
+    // Call replaced
+    unsafe extern "C" fn on_call_replaced(old_call_id: pjsua_call_id, new_call_id: pjsua_call_id) {
+        // todo here
+    }
+
+    // NAT detect
+    unsafe extern "C" fn on_nat_detect(res: *const pj_stun_nat_detect_result) {
+        // todo here
+    }
+
+    // MWI info
+    unsafe extern "C" fn on_mwi_info(acc_id: pjsua_acc_id, mwi_info: *mut pjsua_mwi_info) {
+        // todo here
+    }
+
+    // Transport state
+    unsafe extern "C" fn on_transport_state(
+        tp: *mut pjsip_transport,
+        state: pjsip_transport_state,
+        info: *const pjsip_transport_state_info,
+    ) {
+        // todo here
+    }
+
+    // ICE transport error
+    unsafe extern "C" fn on_ice_transport_error(
+        index: c_int,
+        op: pj_ice_strans_op,
+        status: pj_status_t,
+        param: *mut c_void,
+    ) {
+        // todo here
+    }
+
+    // Sound device operation
+    unsafe extern "C" fn on_snd_dev_operation(operation: c_int) -> pj_status_t {
+
+        // todo here
+        0
+    }
+
+    // Call media event
+    unsafe extern "C" fn on_call_media_event(
+        call_id: pjsua_call_id,
+        med_idx: c_uint,
+        event: *mut pjmedia_event,
+    ) {
+        // todo here
+    }
+
+    // IP change progress
+    unsafe extern "C" fn on_ip_change_progress(
+        op: pjsua_ip_change_op,
+        status: pj_status_t,
+        info: *const pjsua_ip_change_op_info,
+    ) {
+        // todo here
     }
 }

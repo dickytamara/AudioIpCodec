@@ -1,0 +1,62 @@
+todo: main application here.
+13:14:21.975         os_core_unix.c !pjlib 2.10-dev for POSIX initialized
+13:14:21.975         sip_endpoint.c  .Creating endpoint instance...
+13:14:21.975                  pjlib  .select() I/O Queue created (0x558865c3d750)
+13:14:21.975         sip_endpoint.c  .Module "mod-msg-print" registered
+13:14:21.976        sip_transport.c  .Transport manager created.
+13:14:21.976           pjsua_core.c  .PJSUA state changed: NULL --> CREATED
+13:14:21.976         sip_endpoint.c  .Module "mod-pjsua-log" registered
+13:14:21.976         sip_endpoint.c  .Module "mod-tsx-layer" registered
+13:14:21.976         sip_endpoint.c  .Module "mod-stateful-util" registered
+13:14:21.976         sip_endpoint.c  .Module "mod-ua" registered
+13:14:21.976         sip_endpoint.c  .Module "mod-100rel" registered
+13:14:21.976         sip_endpoint.c  .Module "mod-pjsua" registered
+13:14:21.976         sip_endpoint.c  .Module "mod-invite" registered
+13:14:22.062             alsa_dev.c  ..ALSA driver found 32 devices
+13:14:22.062             alsa_dev.c  ..ALSA initialized
+13:14:22.062                  pjlib  ..select() I/O Queue created (0x558865ccda38)
+13:14:22.066         sip_endpoint.c  .Module "mod-evsub" registered
+13:14:22.066         sip_endpoint.c  .Module "mod-presence" registered
+13:14:22.066         sip_endpoint.c  .Module "mod-mwi" registered
+13:14:22.066         sip_endpoint.c  .Module "mod-refer" registered
+13:14:22.066         sip_endpoint.c  .Module "mod-pjsua-pres" registered
+13:14:22.066         sip_endpoint.c  .Module "mod-pjsua-im" registered
+13:14:22.066         sip_endpoint.c  .Module "mod-pjsua-options" registered
+13:14:22.066           pjsua_core.c  .1 SIP worker threads created
+13:14:22.066           pjsua_core.c  .pjsua version 2.10-dev for Linux-5.9/x86_64/glibc-2.31 initialized
+13:14:22.066           pjsua_core.c  .PJSUA state changed: CREATED --> INIT
+13:14:22.066         sip_endpoint.c  Module "" registered
+13:14:22.066           pjsua_core.c  Shutting down, flags=0...
+13:14:22.066           pjsua_core.c  PJSUA state changed: INIT --> CLOSING
+13:14:22.076           pjsua_call.c  .Hangup all calls..
+13:14:22.076          pjsua_media.c  .Call 0: deinitializing media..
+13:14:22.076          pjsua_media.c  .Call 1: deinitializing media..
+13:14:22.076          pjsua_media.c  .Call 2: deinitializing media..
+13:14:22.076          pjsua_media.c  .Call 3: deinitializing media..
+13:14:22.076           pjsua_pres.c  .Shutting down presence..
+13:14:23.077           pjsua_core.c  .Destroying...
+13:14:23.077          pjsua_media.c  .Shutting down media..
+13:14:23.564      sip_transaction.c  .Stopping transaction layer module
+13:14:23.564      sip_transaction.c  .Stopped transaction layer module
+13:14:23.564         sip_endpoint.c  .Module "mod-pjsua-options" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-pjsua-im" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-pjsua-pres" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-pjsua" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-stateful-util" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-refer" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-mwi" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-presence" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-evsub" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-invite" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-100rel" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-ua" unregistered
+13:14:23.564      sip_transaction.c  .Transaction layer module destroyed
+13:14:23.564         sip_endpoint.c  .Module "mod-tsx-layer" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-msg-print" unregistered
+13:14:23.564         sip_endpoint.c  .Module "mod-pjsua-log" unregistered
+13:14:23.564         sip_endpoint.c  .Module "" unregistered
+13:14:23.564                timer.c  .Dumping timer heap:
+13:14:23.564                timer.c  .  Cur size: 0 entries, max: 3070
+13:14:23.564         sip_endpoint.c  .Endpoint 0x558865c329b8 destroyed
+13:14:23.564           pjsua_core.c  .PJSUA state changed: CLOSING --> NULL
+13:14:23.564           pjsua_core.c  .PJSUA destroyed...

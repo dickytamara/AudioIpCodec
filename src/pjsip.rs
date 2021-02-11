@@ -1,4 +1,4 @@
-
+#![allow(non_camel_case_types, unused_variables)]
 
 use super::pjsua_sys::*;
 use super::pjdefault::AutoCreate;
@@ -84,6 +84,18 @@ impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
             }
         }
     }
+}
+
+
+pub trait PjsipModuleCallback {
+    unsafe extern "C" fn start () -> pj_status_t { 0 }
+    unsafe extern "C" fn stop () -> pj_status_t { 0 }
+    unsafe extern "C" fn unload () -> pj_status_t { 0 }
+    unsafe extern "C" fn on_rx_request (rdata: *mut pjsip_rx_data) -> pj_bool_t { 0 }
+    unsafe extern "C" fn on_rx_response (rdata: *mut pjsip_rx_data) -> pj_bool_t { 0 }
+    unsafe extern "C" fn on_tx_request (tdata: *mut pjsip_tx_data) -> pj_status_t { 0 }
+    unsafe extern "C" fn on_tx_response (tdata: *mut pjsip_tx_data) -> pj_status_t { 0 }
+    unsafe extern "C" fn on_tsx_state (tsx: *mut pjsip_transaction, event: *mut pjsip_event) {  }
 }
 
 
