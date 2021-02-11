@@ -342,6 +342,10 @@ impl Drop for SIPUserAgent {
 // handle for callback PjsipModule
 impl PjsipModuleCallback for SIPUserAgent {
     unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
+        let tx_data: *mut pjsip_tx_data;
+        let status_code: pjsip_status_code;
+        let status: pj_status_t;
+
         0
     }
 }

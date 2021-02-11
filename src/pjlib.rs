@@ -193,3 +193,44 @@ impl AutoCreate<pj_stun_auth_cred> for pj_stun_auth_cred {
         }
     }
 }
+
+
+impl AutoCreate<pj_ioqueue_op_key_t> for pj_ioqueue_op_key_t {
+    fn new () -> pj_ioqueue_op_key_t {
+        unsafe {
+            let mut c: c_void = mem::zeroed();
+            pj_ioqueue_op_key_t {
+                internal__: [
+                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
+                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
+                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
+                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
+                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
+                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
+                         &mut c as *mut _, &mut c as *mut _
+                ],
+                activesock_data: &mut c as *mut _,
+                user_data: &mut c as *mut _,
+            }
+        }
+    }
+}
+
+impl AutoCreate<pj_sockaddr_in> for pj_sockaddr_in {
+    fn new () -> pj_sockaddr_in {
+        pj_sockaddr_in {
+            sin_family: 0,
+            sin_port: 0,
+            sin_addr: in_addr{ s_addr: 0 } as  pj_in_addr,
+            sin_zero_pad: [0,0,0,0,0,0,0,0]
+        }
+    }
+}
+
+impl AutoCreate<pj_sockaddr> for pj_sockaddr {
+    fn new () -> pj_sockaddr {
+        pj_sockaddr {
+            ipv4: pj_sockaddr_in::new()
+        }
+    }
+}
