@@ -33,7 +33,6 @@ fn main () {
         .clang_arg("-I/usr/lib/llvm-11/lib/clang/11.0.1/include")
         .clang_arg("-I/usr/include/x86_64-linux-gnu")
         .clang_arg("-I/usr/include")
-        .clang_arg("-lstdc++")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .whitelisted_type("PJ.*")
         .whitelisted_type("pj.*")
@@ -41,6 +40,7 @@ fn main () {
         .whitelisted_function("pj.*")
         .whitelisted_var("PJ.*")
         .whitelisted_var("pj.*")
+        .layout_tests(false)
         .generate()
         // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");

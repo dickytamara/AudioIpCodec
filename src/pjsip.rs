@@ -4,6 +4,7 @@ use super::pjsua_sys::*;
 use super::pjdefault::AutoCreate;
 use std::os::raw::{c_char, c_void};
 use std::mem;
+use std::ptr;
 
 
 impl AutoCreate<pjsip_cred_info> for pjsip_cred_info {
@@ -300,3 +301,24 @@ impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
         }
     }
 }
+
+
+impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {
+    fn new () -> pjsip_generic_string_hdr {
+        unsafe {
+            let generic_string_hdr: *mut pjsip_generic_string_hdr = mem::zeroed();
+            let hdr: *const  pjsip_hdr = ptr::null();
+            pjsip_generic_string_hdr {
+              prev: generic_string_hdr,
+              next: generic_string_hdr,
+              type_: 0,
+              name: pj_str_t::new(),
+              sname: pj_str_t::new(),
+              vptr: hdr as *mut _,
+              hvalue: pj_str_t::new()
+            }
+        }
+    }
+}
+
+
