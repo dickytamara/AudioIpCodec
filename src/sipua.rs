@@ -1,4 +1,4 @@
-#![allow(dead_code, unused_variables)]
+#![allow(dead_code, unused_variables, unused_imports)]
 
 // default
 use super::pjdefault::AutoCreate;
@@ -342,7 +342,45 @@ impl Drop for SIPUserAgent {
 
 fn simple_registrar(rdata: *mut pjsip_rx_data) {
   
+  unsafe {
+      let tdata: *const pjsip_tx_data = ptr::null();
+      let str_null: *const pj_str_t = ptr::null(); 
+      let status: pj_status_t;
+    
+      status = pjsip_endpt_create_response(pjsua_get_pjsip_endpt(), rdata as *const _, 200, str_null as *const _, tdata as *mut _);
+      if status != pj_constants__PJ_SUCCESS as i32 {
+          return;
+      }
+      #[allow(unused_assignments)]
+      let void: *const c_void = ptr::null();
+    
+      let exp: *const pjsip_expires_hdr = pjsip_msg_find_hdr((*rdata).msg_info.msg,
+                  pjsip_hdr_e_PJSIP_H_EXPIRES, void) as *const _;
 
+      let llist: pjsip_hdr = (*(*rdata).msg_info.msg).hdr; 
+      let h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
+
+    while h != llist.next {
+        if (*h as pjsip_hdr).type_ == (pjsip_hdr_e_PJSIP_H_CONTACT as pjsip_hdr_e) {
+            let c: *const pjsip_contact_hdr = h as *const pjsip_contact_hdr;  
+            let mut e: c_uint = (*c).expires;
+
+            if e != 0xffffffff {
+                if !exp.is_null() {
+                    e = (*exp).ivalue;    
+                } else {
+                    e = 3600;
+                }
+            }
+
+            if e > 0 {
+                let nc: *const pjsip_contact_hdr = pjsip_hdr_clone((*tdata).pool, 
+                                        h as *const _) as *const pjsip_contact_hdr;
+
+            }
+        }
+    }
+    }
 }
 
 
