@@ -8,6 +8,7 @@ use super::pjsua_sys::*;
 use std::ffi::CString;
 use std::ops::Drop;
 use std::os::raw::{c_void, c_int, c_uint};
+use std::ptr;
 
 
 pub type SIPAccount = pjsua_acc_config;
@@ -339,12 +340,66 @@ impl Drop for SIPUserAgent {
     }
 }
 
+fn simple_registrar(rdata: *mut pjsip_rx_data) {
+  
+
+}
+
+
 // handle for callback PjsipModule
 impl PjsipModuleCallback for SIPUserAgent {
     unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
-        let tx_data: *mut pjsip_tx_data;
+        // base rx request handle undefined state. 
+        let tdata: *const pjsip_tx_data = ptr::null();
         let status_code: pjsip_status_code;
         let status: pj_status_t;
+
+
+        let mut rdata = *rdata;
+        let msg = *rdata.msg_info.msg;
+        let mut method = msg.line.req.method;
+        // let msg_info = method.msg_info;
+        if pjsip_method_cmp(&mut method as *const _, &pjsip_ack_method as *const _) == 0{
+            return pj_constants__PJ_TRUE as pj_status_t;
+        }
+        
+        if pjsip_method_cmp(&mut method as *const _, &pjsip_register_method as *const _) == 0 {
+          // call simple registrar pjsip_tx_data
+          simple_registrar(&mut rdata as *mut _); 
+          return pj_constants__PJ_TRUE as pj_status_t; 
+        }     
+
+        if pjsip_method_cmp(&mut method as *const _, &pjsip_notify_method as *const _) == 0 {
+          status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST as pjsip_status_code; 
+        } else {
+          status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
+        }
+
+        let null_ptr: *const pj_str_t = ptr::null();
+        status = pjsip_endpt_create_response(pjsua_get_pjsip_endpt(),
+                  &mut rdata as *const _, 
+                  status_code as c_int, 
+                  null_ptr,
+                  tdata as *mut *mut  _);
+
+        if status != (pj_constants__PJ_SUCCESS as pj_status_t) {
+          return pj_constants__PJ_TRUE as pj_status_t; 
+        }
+
+/*         if (status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED) { */
+        //   let mut cap_hdr: *const pjsip_hdr = ptr::null();
+        //
+        //   cap_hdr = pjsip_endpt_get_capability(pjsua_get_pjsip_endpt(),
+        //                   pjsip_hdr_e_PJSIP_H_ALLOW, null_ptr);
+        //
+        //   if cap_hdr > 0 {
+        //     pjsip_msg_add_hdr(msg, pjsip_hdr_clone(tdata.pool, cap_hdr));
+        //   }
+        // }
+/*  */
+
+        // add user-agent header
+
 
         0
     }

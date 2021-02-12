@@ -60,6 +60,7 @@ pub trait PjsuaCallback {
         param: *mut pjsua_on_stream_precreate_param,
     ) {
     }
+    
     unsafe extern "C" fn on_stream_created(
         call_id: pjsua_call_id,
         strm: *mut pjmedia_stream,

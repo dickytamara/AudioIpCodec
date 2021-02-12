@@ -3,6 +3,7 @@
 extern crate pjsua_sys;
 extern crate pjmedia_sys;
 extern crate pjsip_sys;
+extern crate pjsip_simple_sys;
 extern crate pj_sys;
 
 mod pjdefault;
