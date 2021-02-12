@@ -346,6 +346,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
       let tdata: *const pjsip_tx_data = ptr::null();
       let str_null: *const pj_str_t = ptr::null(); 
       let status: pj_status_t;
+      let mut cnt: c_uint = 0;
     
       status = pjsip_endpt_create_response(pjsua_get_pjsip_endpt(), rdata as *const _, 200, str_null as *const _, tdata as *mut _);
       if status != pj_constants__PJ_SUCCESS as i32 {
@@ -358,28 +359,46 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
                   pjsip_hdr_e_PJSIP_H_EXPIRES, void) as *const _;
 
       let llist: pjsip_hdr = (*(*rdata).msg_info.msg).hdr; 
-      let h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
+      let mut h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
 
-    while h != llist.next {
-        if (*h as pjsip_hdr).type_ == (pjsip_hdr_e_PJSIP_H_CONTACT as pjsip_hdr_e) {
-            let c: *const pjsip_contact_hdr = h as *const pjsip_contact_hdr;  
-            let mut e: c_uint = (*c).expires;
+      while h != llist.next {
+          if (*h as pjsip_hdr).type_ == (pjsip_hdr_e_PJSIP_H_CONTACT as pjsip_hdr_e) {
+              
+              let c: *const pjsip_contact_hdr = h as *const pjsip_contact_hdr;  
+              let mut e: c_uint = (*c).expires;
 
-            if e != 0xffffffff {
-                if !exp.is_null() {
-                    e = (*exp).ivalue;    
-                } else {
-                    e = 3600;
+              if e != 0xffffffff {
+                    if !exp.is_null() {
+                        e = (*exp).ivalue;    
+                    } else {
+                        e = 3600;
+                    }
+              }
+
+                if e > 0 {
+                    let nc: *mut pjsip_contact_hdr = pjsip_hdr_clone((*tdata).pool, 
+                                        h as *const _) as *mut pjsip_contact_hdr;
+
+                    (*nc).expires = e;
+                    pj_list_insert_before((*tdata).msg as *mut _, nc as *mut _);
+                    cnt = cnt +1;
                 }
-            }
-
-            if e > 0 {
-                let nc: *const pjsip_contact_hdr = pjsip_hdr_clone((*tdata).pool, 
-                                        h as *const _) as *const pjsip_contact_hdr;
-
+                h = (*h).next;
             }
         }
-    }
+        
+        // todo review c code for this. it's c clasic problem
+        let srv: *mut pjsip_generic_string_hdr = pjsip_generic_string_hdr_create (
+                      (*tdata).pool, str_null, str_null);
+        // create server name
+        let tmp: CString = CString::new("Server").expect("cant create Server string");
+        (*srv).name = pj_str(tmp.as_ptr()  as *mut c_char);
+        // create add description 
+        let tmp: CString = CString::new("IpCodec simple registrar").expect("cant create simple registrar");
+        (*srv).hvalue = pj_str(tmp.as_ptr() as *mut c_char);
+
+        pj_list_insert_before((*tdata).msg as *mut _, srv as *mut _);
+        pjsip_endpt_send_response2(pjsua_get_pjsip_endpt(), rdata, tdata as *mut _, void as *mut _, None);
     }
 }
 
