@@ -398,6 +398,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
         (*srv).hvalue = pj_str(tmp.as_ptr() as *mut c_char);
 
         pj_list_insert_before((*tdata).msg as *mut _, srv as *mut _);
+        let cb: pjsip_send_callback = None;
         pjsip_endpt_send_response2(pjsua_get_pjsip_endpt(), rdata, tdata as *mut _, void as *mut _, None);
     }
 }
@@ -638,5 +639,8 @@ impl PjsuaCallback for SIPUserAgent {
         info: *const pjsua_ip_change_op_info,
     ) {
         // todo here
+        let info_str: [c_char; 128];
+        let acc_info: pjsua_acc_info = pjsua_acc_info::new();
+        let tp_info: pjsua_transport_info = pjsua_transport_info::new(); 
     }
 }

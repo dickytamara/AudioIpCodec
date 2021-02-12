@@ -3,7 +3,7 @@ use super::pjdefault::AutoCreate;
 use super::pjsua_sys::*;
 
 use std::mem;
-use std::os::raw::{c_void, c_int, c_uint};
+use std::os::raw::{c_void, c_int, c_uint, c_char};
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
@@ -724,3 +724,44 @@ impl AutoCreate<pjsua_buddy_config> for pjsua_buddy_config {
         }
     }
 }
+
+impl AutoCreate<pjsua_transport_info> for pjsua_transport_info {
+  fn new () -> pjsua_transport_info {
+      pjsua_transport_info {
+        id: -1,
+        type_: 0,
+        type_name: pj_str_t::new(),
+        info: pj_str_t::new(),
+        flag: 0,
+        addr_len: 0,
+        local_addr: pj_sockaddr::new(),
+        local_name: pjsip_host_port::new(),
+        usage_count: 0, 
+      }
+  }
+
+
+}
+
+
+impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
+    fn new() -> pjsua_acc_info {
+        pjsua_acc_info {
+          id: -1,
+          is_default: pj_constants__PJ_FALSE as pj_bool_t,
+          acc_uri: pj_str_t::new(),
+          has_registration: pj_constants__PJ_FALSE as pj_bool_t,
+          expires: 0,
+          status: 0,
+          reg_last_err: pj_constants__PJ_FALSE as pj_status_t,
+          status_text: pj_str_t::new(),
+          online_status: pj_constants__PJ_FALSE as pj_bool_t,
+          online_status_text: pj_str_t::new(),
+          rpid: pjrpid_element::new(),
+          buf_: [c_char; 80],
+        }  
+    }
+}
+
+
+

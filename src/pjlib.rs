@@ -234,3 +234,16 @@ impl AutoCreate<pj_sockaddr> for pj_sockaddr {
         }
     }
 }
+
+impl AutoCreate<pjrpid_element> for pjrpid_element {
+    fn new () -> pjrpid_element {
+        pjrpid_element{
+            type_: 0,
+            id: pj_str_t::new(),
+            activity: 0,
+            note: pj_str_t::new(),
+        }
+    }
+}
+
+
