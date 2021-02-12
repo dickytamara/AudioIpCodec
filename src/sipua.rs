@@ -7,7 +7,7 @@ use super::pjsua::PjsuaCallback;
 use super::pjsua_sys::*;
 use std::ffi::CString;
 use std::ops::Drop;
-use std::os::raw::{c_void, c_int, c_uint};
+use std::os::raw::{c_void, c_int, c_uint, c_char};
 use std::ptr;
 
 
@@ -386,22 +386,36 @@ impl PjsipModuleCallback for SIPUserAgent {
           return pj_constants__PJ_TRUE as pj_status_t; 
         }
 
-/*         if (status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED) { */
-        //   let mut cap_hdr: *const pjsip_hdr = ptr::null();
-        //
-        //   cap_hdr = pjsip_endpt_get_capability(pjsua_get_pjsip_endpt(),
-        //                   pjsip_hdr_e_PJSIP_H_ALLOW, null_ptr);
-        //
-        //   if cap_hdr > 0 {
-        //     pjsip_msg_add_hdr(msg, pjsip_hdr_clone(tdata.pool, cap_hdr));
-        //   }
-        // }
-/*  */
+        if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
+          #[allow(unused_assignments)]
+          let mut cap_hdr: *const pjsip_hdr = ptr::null();
+
+          cap_hdr = pjsip_endpt_get_capability(pjsua_get_pjsip_endpt(),
+                          pjsip_hdr_e_PJSIP_H_ALLOW as i32, null_ptr);
+
+          if !cap_hdr.is_null() {
+              //pjsip_msg_add_hdr(msg, pjsip_hdr_clone(tdata.pool, cap_hdr));
+              pj_list_insert_before((*tdata).msg as *mut _, 
+                          pjsip_hdr_clone((*tdata).pool as *mut _, cap_hdr as *const _));
+          }
+        }
+
 
         // add user-agent header
+        #[allow(unused_assignments)]
+        let mut h: *const pjsip_hdr = ptr::null(); 
+        
+        let ua_str = CString::new("User-Agent").expect("cant create str User-Agent.");
+        let mut ua: pj_str_t = pj_str_t {ptr: ua_str.as_ptr() as *mut _, slen: 10};
+        let agent_str = CString::new("AudioIP 0.1").expect("cant create str AudioIP 0.1"); 
+        let mut agent = pj_str_t{ptr: agent_str.as_ptr() as *mut _, slen: 11};
 
-
-        0
+        h = pjsip_generic_string_hdr_create(
+          (*tdata).pool as *mut _, &mut ua as _, &mut agent as *mut _) as *mut _;
+        
+        pj_list_insert_before((*tdata).msg as *mut _, h as *mut _);
+         
+        pj_constants__PJ_TRUE as pj_status_t
     }
 }
 
