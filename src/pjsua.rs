@@ -3,7 +3,7 @@ use super::pjdefault::AutoCreate;
 use super::pjsua_sys::*;
 
 use std::mem;
-use std::os::raw::{c_void, c_int, c_uint, c_char};
+use std::os::raw::{c_void, c_int, c_uint};
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
@@ -739,8 +739,6 @@ impl AutoCreate<pjsua_transport_info> for pjsua_transport_info {
         usage_count: 0, 
       }
   }
-
-
 }
 
 
@@ -758,7 +756,12 @@ impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
           online_status: pj_constants__PJ_FALSE as pj_bool_t,
           online_status_text: pj_str_t::new(),
           rpid: pjrpid_element::new(),
-          buf_: [c_char; 80],
+          buf_: [ 
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+          ]
         }  
     }
 }
