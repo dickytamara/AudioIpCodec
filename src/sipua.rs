@@ -1,4 +1,4 @@
-#![allow(dead_code, unused_variables, unused_imports)]
+#![allow(dead_code, unused_variables, unused_imports, non_upper_case_globals)]
 
 // default
 use super::pjdefault::AutoCreate;
@@ -639,8 +639,45 @@ impl PjsuaCallback for SIPUserAgent {
         info: *const pjsua_ip_change_op_info,
     ) {
         // todo here
-        let info_str: [c_char; 128];
-        let acc_info: pjsua_acc_info = pjsua_acc_info::new();
-        let tp_info: pjsua_transport_info = pjsua_transport_info::new(); 
+        // let info_str: [c_char; 128];
+        let mut acc_info: pjsua_acc_info = pjsua_acc_info::new();
+        let mut tp_info: pjsua_transport_info = pjsua_transport_info::new();
+
+        if status == pj_constants__PJ_SUCCESS as pj_status_t {
+            match op {
+              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_RESTART_LIS => {
+                  pjsua_transport_get_info((*info).lis_restart.transport_id,
+                    &mut tp_info as *mut _);
+                  println!("restart transport.");
+              },
+              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => {
+                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
+                    &mut acc_info as *mut _);
+                  println!("transport shutdown for account.");
+              },
+              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => {
+                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
+                    &mut acc_info as *mut _);
+                  println!("update contact for account.");
+              },
+              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => {
+                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
+                    &mut acc_info as *mut _);
+                  println!("hangup call for account.");
+              },
+              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => {
+                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
+                    &mut acc_info as *mut _);
+                  println!("reinvite call for account.");
+              },
+              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_COMPLETED => {
+                  println!("done");
+              },
+
+                _ => println!("warn validate c code.") 
+            }
+        } else {
+            println!("IP change progress fail.");
+        }
     }
 }

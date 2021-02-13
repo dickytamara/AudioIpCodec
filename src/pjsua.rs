@@ -737,7 +737,7 @@ impl AutoCreate<pjsua_transport_info> for pjsua_transport_info {
         local_addr: pj_sockaddr::new(),
         local_name: pjsip_host_port::new(),
         usage_count: 0, 
-      }
+       }
   }
 }
 
