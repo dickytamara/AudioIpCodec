@@ -68,10 +68,8 @@ impl AutoCreate<pj_sockopt_params> for pj_sockopt_params {
     fn new () -> pj_sockopt_params {
         pj_sockopt_params {
             cnt: 0,
-            options: [pj_sockopt_params__bindgen_ty_1::new(),
-                      pj_sockopt_params__bindgen_ty_1::new(),
-                      pj_sockopt_params__bindgen_ty_1::new(),
-                      pj_sockopt_params__bindgen_ty_1::new()]
+            options: [pj_sockopt_params__bindgen_ty_1::new(); 4]
+                     
         }
     }
 }
@@ -200,15 +198,7 @@ impl AutoCreate<pj_ioqueue_op_key_t> for pj_ioqueue_op_key_t {
         unsafe {
             let mut c: c_void = mem::zeroed();
             pj_ioqueue_op_key_t {
-                internal__: [
-                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
-                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
-                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
-                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
-                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
-                         &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _, &mut c as *mut _,
-                         &mut c as *mut _, &mut c as *mut _
-                ],
+                internal__: [ &mut c as *mut _; 32],
                 activesock_data: &mut c as *mut _,
                 user_data: &mut c as *mut _,
             }
@@ -222,7 +212,7 @@ impl AutoCreate<pj_sockaddr_in> for pj_sockaddr_in {
             sin_family: 0,
             sin_port: 0,
             sin_addr: in_addr{ s_addr: 0 } as  pj_in_addr,
-            sin_zero_pad: [0,0,0,0,0,0,0,0]
+            sin_zero_pad: [0; 8]
         }
     }
 }

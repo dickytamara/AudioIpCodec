@@ -479,7 +479,11 @@ impl PjsipModuleCallback for SIPUserAgent {
 
 impl PjsuaCallback for SIPUserAgent {
     // Call status event
-    unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {}
+    unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
+      // call info data  
+      let mut call_info: pjsua_call_info = pjsua_call_info::new();
+    
+    }
 
     // Stream Destroyed;
     unsafe extern "C" fn on_stream_destroyed(

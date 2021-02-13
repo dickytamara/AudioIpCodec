@@ -50,11 +50,7 @@ impl AutoCreate<pjmedia_rtcp_fb_setting> for pjmedia_rtcp_fb_setting {
         pjmedia_rtcp_fb_setting {
             dont_use_avpf: pj_constants__PJ_FALSE as pj_bool_t,
             cap_count: 0,
-            caps: [ pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
-                    pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
-                    pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
-                    pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new()
-            ]
+            caps: [ pjmedia_rtcp_fb_cap::new(); 16]
         }
     }
 }
@@ -105,8 +101,6 @@ impl AutoCreate<pjmedia_format__bindgen_ty_1> for pjmedia_format__bindgen_ty_1 {
     fn new () -> pjmedia_format__bindgen_ty_1 {
         pjmedia_format__bindgen_ty_1 {
             aud: pjmedia_audio_format_detail::new(),
-            //vid: pjmedia_video_format_detail::new(),
-            //user: [0x0]
         }
     }
 }
@@ -186,10 +180,7 @@ impl AutoCreate<pjmedia_transport> for pjmedia_transport {
         unsafe {
             let mut void: c_void = mem::zeroed();
             pjmedia_transport {
-                name: [0,0,0,0,0,0,0,0,0,0,
-                       0,0,0,0,0,0,0,0,0,0,
-                       0,0,0,0,0,0,0,0,0,0,
-                       0,0],
+                name: [0; 32],
                 type_: 0,
                 op: &mut pjmedia_transport_op::new() as *mut _,
                 user_data: &mut void as *mut _

@@ -172,16 +172,7 @@ impl AutoCreate<pjsip_server_addresses> for pjsip_server_addresses {
     fn new () -> pjsip_server_addresses {
         pjsip_server_addresses {
             count: 0,
-            entry: [
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-                    pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            ],
+            entry: [ pjsip_server_addresses__bindgen_ty_1::new(); 16],
         }
     }
 }
@@ -205,12 +196,7 @@ impl AutoCreate<pjsip_tx_data__bindgen_ty_2> for pjsip_tx_data__bindgen_ty_2 {
                 transport: &mut transport as *mut _,
                 dst_addr: pj_sockaddr::new(),
                 dst_addr_len: 0,
-                dst_name: [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                           0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                           0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                           0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-                           0x0, 0x0, 0x0, 0x0, 0x0, 0x0
-                ],
+                dst_name: [0x0; 46],
                 dst_port: 0
 
             }
@@ -268,10 +254,7 @@ impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
                 prev: &mut tx_data as *mut _,
                 next: &mut tx_data as *mut _,
                 pool: &mut pool as *mut _,
-                obj_name: [ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00,0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00,0x00,
-                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00,0x00,
-                            0x00, 0x00 ],
+                obj_name: [ 0x00; 32],
                 info: &mut c as * mut _,
                 rx_timestamp: pj_time_val::new(),
                 mgr: &mut tpmgr as *mut _,
@@ -288,13 +271,7 @@ impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
                 tp_info: pjsip_tx_data__bindgen_ty_2::new(),
                 tp_sel: pjsip_tpselector::new(),
                 auth_retry: pj_constants__PJ_FALSE as pj_bool_t,
-                mod_data: [&mut v as *mut _, &mut v as *mut _,&mut v as *mut _,&mut v as *mut _,&mut v as *mut _,
-                           &mut v as *mut _, &mut v as *mut _,&mut v as *mut _,&mut v as *mut _,&mut v as *mut _,
-                           &mut v as *mut _, &mut v as *mut _,&mut v as *mut _,&mut v as *mut _,&mut v as *mut _,
-                           &mut v as *mut _, &mut v as *mut _,&mut v as *mut _,&mut v as *mut _,&mut v as *mut _,
-                           &mut v as *mut _, &mut v as *mut _,&mut v as *mut _,&mut v as *mut _,&mut v as *mut _,
-                           &mut v as *mut _, &mut v as *mut _,&mut v as *mut _,&mut v as *mut _,&mut v as *mut _,
-                           &mut v as *mut _, &mut v as *mut _],
+                mod_data: [&mut v as *mut _; 32],
                 via_addr: pjsip_host_port::new(),
                 via_tp: &mut v as *mut _
             }

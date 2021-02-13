@@ -10,23 +10,7 @@ impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
         pjsua_srtp_opt {
             crypto_count: 0,
             crypto: [
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-                pjmedia_srtp_crypto::new(),
-            ],
+                pjmedia_srtp_crypto::new(); 16],
             keying_count: 0,
             keying: [0, 0],
         }
@@ -408,33 +392,14 @@ impl AutoCreate<pjsua_config> for pjsua_config {
             max_calls: 0,
             thread_cnt: 0,
             nameserver_count: 0,
-            nameserver: [
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-            ],
+            nameserver: [pj_str_t::new(); 4],
             force_lr: 0,
             outbound_proxy_cnt: 0,
-            outbound_proxy: [
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-            ],
+            outbound_proxy: [pj_str_t::new(); 4],
             stun_domain: pj_str_t::new(),
             stun_host: pj_str_t::new(),
             stun_srv_cnt: 0,
-            stun_srv: [
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-                pj_str_t::new(),
-            ],
+            stun_srv: [pj_str_t::new(); 8],
             stun_try_ipv6: pj_constants__PJ_FALSE as pj_bool_t,
             stun_ignore_failure: pj_constants__PJ_FALSE as pj_bool_t,
             stun_map_use_stun2: pj_constants__PJ_FALSE as pj_bool_t,
@@ -447,16 +412,7 @@ impl AutoCreate<pjsua_config> for pjsua_config {
                 sess_expires: 0,
             },
             cred_count: 0,
-            cred_info: [
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-                pjsip_cred_info::new(),
-            ],
+            cred_info: [pjsip_cred_info::new(); 8],
             cb: pjsua_callback::new(),
             user_agent: pj_str_t::new(),
             use_srtp: 0,
@@ -633,31 +589,13 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
                 use_timer: 0,
                 timer_setting: pjsip_timer_setting::new(),
                 proxy_cnt: 0,
-                proxy: [
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                    pj_str_t::new(),
-                ],
+                proxy: [ pj_str_t::new(); 8],
                 lock_codec: 0,
                 reg_timeout: 0,
                 reg_delay_before_refresh: 0,
                 unreg_timeout: 0,
                 cred_count: 0,
-                cred_info: [
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                    pjsip_cred_info::new(),
-                ],
+                cred_info: [ pjsip_cred_info::new(); 8],
                 transport_id: 0,
                 allow_contact_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
                 contact_rewrite_method: 0,
@@ -756,15 +694,98 @@ impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
           online_status: pj_constants__PJ_FALSE as pj_bool_t,
           online_status_text: pj_str_t::new(),
           rpid: pjrpid_element::new(),
-          buf_: [ 
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-          ]
+          buf_: [0; 80]
         }  
     }
 }
 
 
+
+impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
+    fn new () -> pjsua_call_setting {
+        pjsua_call_setting { 
+          flag: 0,
+          req_keyframe_method: 0,
+          aud_cnt: 0,
+          vid_cnt: 0
+        }
+    }
+}
+
+impl AutoCreate<pjsua_call_info__bindgen_ty_1> for pjsua_call_info__bindgen_ty_1 {
+    fn new () -> pjsua_call_info__bindgen_ty_1 {
+        pjsua_call_info__bindgen_ty_1 {
+            local_info: [0; 256],
+            local_contact: [0; 256],
+            remote_info: [0; 256],
+            remote_contact: [0; 256],
+            call_id: [0; 128],
+            last_status_text: [0; 128],
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
+    fn new () -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
+      pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
+            conf_slot: 0
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_call_media_info__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1 {
+    fn new () -> pjsua_call_media_info__bindgen_ty_1 {
+        pjsua_call_media_info__bindgen_ty_1 {
+            aud: pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new()
+        }
+    }
+}
+
+
+impl AutoCreate<pjsua_call_media_info> for pjsua_call_media_info {
+    fn new () -> pjsua_call_media_info {
+        pjsua_call_media_info {
+            index: 0,
+            type_: 0,
+            dir: 0,
+            status: 0,
+            stream: pjsua_call_media_info__bindgen_ty_1::new()
+        }
+    }
+}
+
+impl AutoCreate<pjsua_call_info> for pjsua_call_info {
+    fn new () -> pjsua_call_info {
+        pjsua_call_info {
+             id: -1,
+             role: 0,
+             acc_id: -1,
+             local_info: pj_str_t::new(),
+             local_contact: pj_str_t::new(),
+             remote_info: pj_str_t::new(),
+             remote_contact: pj_str_t::new(),
+             call_id: pj_str_t::new(),
+             setting: pjsua_call_setting::new(),
+             state: 0,
+             state_text: pj_str_t::new(),
+             last_status: 0,
+             last_status_text: pj_str_t::new(),
+             media_status: 0,
+             media_dir: 0,
+             conf_slot: -1,
+             media_cnt: 0,
+             media: [pjsua_call_media_info::new(); 16],
+             prov_media_cnt: 0,
+             prov_media: [pjsua_call_media_info::new(); 16],
+             connect_duration: pj_time_val::new(),
+             total_duration: pj_time_val::new(),
+             rem_offerer: pj_constants__PJ_FALSE as pj_bool_t,
+             rem_aud_cnt: 0,
+             rem_vid_cnt: 0,
+             buf_: pjsua_call_info__bindgen_ty_1::new()
+        }
+    }
+}
 
