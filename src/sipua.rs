@@ -9,6 +9,7 @@ use super::pjsua_sys::*;
 use std::ffi::CString;
 use std::ops::Drop;
 use std::os::raw::{c_void, c_int, c_uint, c_char};
+use std::mem;
 use std::ptr;
 use mut_static::MutStatic;
 
@@ -21,10 +22,22 @@ pub struct SIPMedia {}
 pub struct SIPPressence {}
 
 
+
+#[derive(Copy, Clone)]
 pub struct SIPCall {
   timer: pj_timer_entry,
   ringback_on: bool,
   ring_on: bool,
+}
+
+impl SIPCall {
+    pub fn new() -> SIPCall {
+        SIPCall {
+          timer: pj_timer_entry::new(),
+          ringback_on: false,
+          ring_on: false
+        }
+    }
 }
 
 
@@ -51,6 +64,7 @@ trait Dump {}
 
 
 static mut SIP_CORE: Option<SIPCore> = None;
+static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 
 
 pub struct SIPCore {
@@ -62,7 +76,7 @@ pub struct SIPCore {
     rtp_config: pjsua_transport_config,
     account: SIPAccount, // for now just set to 1 account
     buddy_list: Vec<SIPBuddy>,
-    call_data: Vec<SIPCall>,
+    call_data: [SIPCall; 32],
     default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
     wav_id: pjsua_player_id,
@@ -78,6 +92,7 @@ pub struct SIPCore {
     ringback_slot: i32,
     ring_slot: i32,
     auto_play_hangup: bool,
+    duration: u32
 }
 
 impl SIPCore {
@@ -104,7 +119,7 @@ impl SIPCore {
             rtp_config: rtp,
             account: SIPAccount::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
-            call_data: Vec::<SIPCall>::new(),
+            call_data: [SIPCall::new(); 32],
             default_handler: pjsip_module::new(),
             redir_op: pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE,
             wav_id: PJSUA_INVALID_ID,
@@ -119,7 +134,8 @@ impl SIPCore {
             output_latency: 140,
             ringback_slot: PJSUA_INVALID_ID,
             ring_slot: PJSUA_INVALID_ID,
-            auto_play_hangup: false
+            auto_play_hangup: false,
+            duration: 0
         }
     }
 
@@ -178,7 +194,10 @@ impl SIPCore {
 
     }
 
+    pub fn find_next_call(&self) {
 
+
+    }
 
 }
 
@@ -204,6 +223,7 @@ impl SIPUserAgent {
     pub fn new() -> SIPUserAgent {
         unsafe { 
             SIP_CORE = Some(SIPCore::new());
+            CURRENT_CALL = Some(PJSUA_INVALID_ID);
         }
         
         SIPUserAgent {
@@ -387,10 +407,55 @@ impl PjsuaCallback for SIPCore {
         pjsua_call_get_info(call_id, &mut call_info as *mut _);
         if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED {
             // todo
-           sipcore.ring_stop(call_id); 
+           sipcore.ring_stop(call_id);
+           let cd: *mut SIPCall = &mut sipcore.call_data[call_id as usize] as *mut _;
+           let endpt = pjsua_get_pjsip_endpt();
 
+           (*cd).timer.id = PJSUA_INVALID_ID;
+           pjsip_endpt_cancel_timer(endpt, &mut (*cd).timer as *mut _);
+           
+           if sipcore.auto_play_hangup {
+              pjsua_player_set_pos(sipcore.wav_id, 0);
+           }
+
+           match CURRENT_CALL {
+              Some(current_call) => {
+                  if call_id == current_call {
+                      sipcore.find_next_call();
+                  }
+              },
+              _ => panic!("panic OnCallState")
+           }
+            
+
+           println!("Call disconnected.");
+           
         } else {
+            if sipcore.duration == 0x7FFFFFFF && 
+                call_info.state == pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED {
+                let cd: *mut SIPCall = &mut sipcore.call_data[call_id as usize] as *mut _;
+                let endpt = pjsua_get_pjsip_endpt();
+                let mut delay: pj_time_val = pj_time_val::new();
 
+                (*cd).timer.id = call_id;
+                delay.sec = sipcore.duration as i64;
+                delay.msec = 0;
+                pjsip_endpt_schedule_timer_dbg(endpt, &mut (*cd).timer as *mut _, 
+                  &delay as *const _, &mut mem::zeroed() as *mut _, 0); 
+            }
+
+            if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_EARLY {
+                println!("Call state changed.");
+            }
+
+            match CURRENT_CALL {
+              Some(mut current_call) => {
+                  if current_call==PJSUA_INVALID_ID {
+                      current_call = call_id;
+                  }
+              },
+              _ => panic!("panic OnCallState")
+            }
         }
 
     }
