@@ -1,5 +1,5 @@
 
-
+extern crate mut_static;
 extern crate pjsua_sys;
 extern crate pjmedia_sys;
 extern crate pjsip_sys;
@@ -17,7 +17,7 @@ use sipua::*;
 //use pjdefault::AutoCreate;
 
 fn main() {
-    let mut sip = SIPUserAgent::new();
+    let sip = SIPUserAgent::new();
     // let mut ln = String::new();
     sip.start();
     println!("todo: main application here.");

@@ -1,5 +1,6 @@
 #![allow(dead_code, unused_variables, unused_imports, non_upper_case_globals)]
 
+
 // default
 use super::pjdefault::AutoCreate;
 use super::pjsip::PjsipModuleCallback;
@@ -9,7 +10,7 @@ use std::ffi::CString;
 use std::ops::Drop;
 use std::os::raw::{c_void, c_int, c_uint, c_char};
 use std::ptr;
-
+use mut_static::MutStatic;
 
 pub type SIPAccount = pjsua_acc_config;
 pub type SIPBuddy = pjsua_buddy_config;
@@ -18,205 +19,41 @@ pub struct SIPAudio {}
 pub struct SIPIMessages {}
 pub struct SIPMedia {}
 pub struct SIPPressence {}
-pub struct SIPCall {}
 
-// pjsua_acc_get_count
-// pjsua_acc_is_valid
-// pjsua_acc_set_default
-// pjsua_acc_get_default
-// pjsua_acc_config_dup
-// pjsua_acc_add
-// pjsua_acc_add_local
-// pjsua_acc_set_user_data
-// pjsua_acc_get_user_data
-// pjsua_acc_del
-// pjsua_acc_get_config
-// pjsua_acc_modify
-// pjsua_acc_set_online_status
-// pjsua_acc_set_online_status2
-// pjsua_acc_set_registration
-// pjsua_acc_get_info
-// pjsua_enum_accs
-// pjsua_acc_enum_info
-// pjsua_acc_find_for_outgoing
-// pjsua_acc_find_for_incoming
-// pjsua_acc_create_request
-// pjsua_acc_create_uac_contact
-// pjsua_acc_create_uas_contact
-// pjsua_acc_set_transport
-//
-trait Account {
-    fn get_count() -> u32;
+
+pub struct SIPCall {
+  timer: pj_timer_entry,
+  ringback_on: bool,
+  ring_on: bool,
 }
 
-// pjsua_call_has_media
-// pjsua_call_get_conf_port
-// pjsua_call_get_stream_info
-// pjsua_call_get_stream_stat
-// pjsua_call_dial_dtmf
-//
-// pjsua_snd_dev_param_default
-// pjsua_conf_connect_param_default
-// pjsua_conf_get_max_port
-// pjsua_conf_get_active_ports
-// pjsua_enum_conf_ports
-// pjsua_conf_get_port_info
-// pjsua_conf_add_port
-// pjsua_conf_remove_port
-// pjsua_conf_connect
-// pjsua_conf_connectpjsua_acc_info
-// pjsua_conf_disconnect
-// pjsua_conf_adjust_tx_level
-// pjsua_conf_adjust_rx_level
-// pjsua_conf_get_signal_level
-// pjsua_player_create
-// pjsua_playlist_create
-// pjsua_player_get_conf_port
-// pjsua_player_get_info
-// pjsua_player_get_pos
-// pjsua_player_set_pos
-// pjsua_player_destroy
-// pjsua_recorder_create
-// pjsua_recorder_get_conf_port
-// pjsua_recorder_get_port
-// pjsua_recorder_destroy
-//
-// sound devices
-// pjsua_enum_aud_devs
-// pjsua_enum_snd_devs
-// pjsua_set_snd_dev
-// pjsua_set_snd_dev2
-// pjsua_get_snd_dev
-// pjsua_set_null_snd_dev
-// pjsua_set_no_snd_dev
-// pjsua_set_ec
-// pjsua_set_ec_tail
-// pjsua_get_ec_stat
-// pjsua_snd_is_active
-// pjsua_snd_get_setting
-// pjsua_ext_snd_dev_create
-// pjsua_ext_snd_dev_destroy
-// pjsua_ext_snd_dev_get_snd_port
-// pjsua_ext_snd_dev_get_conf_port
-//
+
+
+trait Account {}
+
 trait Audio {}
 
-// pjsua_im_send
-// pjsua_im_typing
 trait IMessages {}
 
-// pjsua_enum_codecs
-// pjsua_codec_set_priority
-// pjsua_codec_get_param
-// pjsua_codec_set_param
 trait Media {}
 
-// pjsua_get_buddy_count
-// pjsua_buddy_find
-// pjsua_buddy_is_valid
-// pjsua_enum_buddies
-// pjsua_buddy_get_info
-// pjsua_buddy_set_user_data
-// pjsua_buddy_get_user_data
-// pjsua_buddy_add
-// pjsua_buddy_del
-// pjsua_buddy_subscribe_pres
-// pjsua_pres_dump
-// pjsua_pres_notify
+
 trait Pressence {}
 
-// pjsua_call_get_max_count
-// pjsua_call_get_count
-// pjsua_enum_calls
-// pjsua_call_setting_default
-// pjsua_call_send_dtmf_param_default
-// pjsua_call_make_call
-// pjsua_call_is_active
-// pjsua_call_get_info
-// pjsua_call_remote_has_cap
-// pjsua_call_set_user_data
-// pjsua_call_get_user_data
-// pjsua_call_get_rem_nat_type
-// pjsua_call_get_med_transport_info
-// pjsua_call_answer
-// pjsua_call_answer2
-// pjsua_call_answer_with_sdp
-// pjsua_call_hangup
-// pjsua_call_process_redirect
-// pjsua_call_set_hold
-// pjsua_call_set_hold2
-// pjsua_call_reinvite
-// pjsua_call_reinvite2
-// pjsua_call_update
-// pjsua_call_update2
-// pjsua_call_xfer
-// pjsua_call_xfer_replaces
-// pjsua_call_send_dtmf
-// pjsua_call_send_im
-// pjsua_call_send_typing_ind
-// pjsua_call_send_request
-// pjsua_call_hangup_all
-trait Call {}
+
+trait Call {
+
+
+}
 
 // pjsua_call_dump
 trait Dump {}
 
-// pjsua_get_var
-// pjsua_perror
-// pjsua_logging_config_default
-// pjsua_logging_config_dup
-// pjsua_config_default
-// pjsua_config_dup
-// pjsua_msg_data_init
-// pjsua_msg_data_clone
-// pjsua_transport_config_default
-// pjsua_transport_config_dup
-// pjsua_ice_config_from_media_config
-// pjsua_ice_config_dup
-// pjsua_turn_config_from_media_config
-// pjsua_turn_config_dup
-// pjsua_srtp_opt_default
-// pjsua_srtp_opt_dup
-// pjsua_acc_config_default
-// pjsua_buddy_config_default
-// pjsua_media_config_default
-// pjsua_reconfigure_logging
-// pjsua_stop_worker_threads
-// pjsua_create
-// pjsua_init
-// pjsua_update_stun_servers
-// pjsua_resolve_stun_servers
-// pjsua_cancel_stun_resolution
-// pjsua_destroy2
-// pjsua_destroy
-// pjsua_start
-// pjsua_handle_events
-// pjsua_pool_create
-// pjsua_get_pjsip_endpt
-// pjsua_get_pjmedia_endpt
-// pjsua_get_pool_factory
-// pjsua_transport_create
-// pjsua_transport_register
-// pjsua_tpfactory_register
-// pjsua_enum_transports
-// pjsua_transport_get_info
-// pjsua_transport_set_enable
-// pjsua_transport_close
-// pjsua_transport_lis_start
-// pjsua_ip_change_param_default
-// pjsua_detect_nat_type
-// pjsua_get_nat_type
-// pjsua_verify_url
-// pjsua_verify_sip_url
-// pjsua_schedule_timer_dbg
-// pjsua_schedule_timer
-// pjsua_schedule_timer2_dbg
-// pjsua_schedule_timer2
-// pjsua_cancel_timer
-// pjsua_dump
-// pjsua_handle_ip_change
-pub struct SIPUserAgent {
-    /// hold internal pjsua data
+
+static mut SIP_CORE: Option<SIPCore> = None;
+
+
+pub struct SIPCore {
     pool: *mut pj_pool_t,
     app_config: pjsua_config,
     log_config: pjsua_logging_config,
@@ -225,6 +62,7 @@ pub struct SIPUserAgent {
     rtp_config: pjsua_transport_config,
     account: SIPAccount, // for now just set to 1 account
     buddy_list: Vec<SIPBuddy>,
+    call_data: Vec<SIPCall>,
     default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
     wav_id: pjsua_player_id,
@@ -239,16 +77,11 @@ pub struct SIPUserAgent {
     output_latency: u32,
     ringback_slot: i32,
     ring_slot: i32,
+    auto_play_hangup: bool,
 }
 
-//type SIPConfig = pjsua_config;
-
-pub const PJSUA_INVALID_ID: i32 = -1;
-
-impl SIPUserAgent {
-    /// create sip user sip user agent with default value
-    ///
-    pub fn new() -> SIPUserAgent {
+impl SIPCore {
+        pub fn new() -> SIPCore {
         // create default data
         let ctx: *mut pj_pool_t;
         unsafe {
@@ -262,7 +95,7 @@ impl SIPUserAgent {
         udp.port = 5060;
         rtp.port = 4000;
 
-        SIPUserAgent {
+        SIPCore {
             pool: ctx,
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
@@ -271,6 +104,7 @@ impl SIPUserAgent {
             rtp_config: rtp,
             account: SIPAccount::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
+            call_data: Vec::<SIPCall>::new(),
             default_handler: pjsip_module::new(),
             redir_op: pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE,
             wav_id: PJSUA_INVALID_ID,
@@ -285,34 +119,34 @@ impl SIPUserAgent {
             output_latency: 140,
             ringback_slot: PJSUA_INVALID_ID,
             ring_slot: PJSUA_INVALID_ID,
+            auto_play_hangup: false
         }
     }
 
-    /// start application
+
     pub fn start(&mut self) {
         unsafe {
-            self.app_config.cb.on_call_state = Some(SIPUserAgent::on_call_state);
-            self.app_config.cb.on_stream_destroyed = Some(SIPUserAgent::on_stream_destroyed);
-            self.app_config.cb.on_call_media_state = Some(SIPUserAgent::on_call_media_state);
-            self.app_config.cb.on_incoming_call = Some(SIPUserAgent::on_incoming_call);
-            self.app_config.cb.on_dtmf_digit2 = Some(SIPUserAgent::on_dtmf_digit2);
-            self.app_config.cb.on_call_redirected = Some(SIPUserAgent::on_call_redirected);
-            self.app_config.cb.on_reg_state = Some(SIPUserAgent::on_reg_state);
-            self.app_config.cb.on_incoming_subscribe = Some(SIPUserAgent::on_incoming_subscribe);
-            self.app_config.cb.on_buddy_state = Some(SIPUserAgent::on_buddy_state);
-            self.app_config.cb.on_buddy_evsub_state = Some(SIPUserAgent::on_buddy_evsub_state);
-            self.app_config.cb.on_pager = Some(SIPUserAgent::on_pager);
-            self.app_config.cb.on_typing = Some(SIPUserAgent::on_typing);
-            self.app_config.cb.on_call_transfer_status =
-                Some(SIPUserAgent::on_call_transfer_status);
-            self.app_config.cb.on_call_replaced = Some(SIPUserAgent::on_call_replaced);
-            self.app_config.cb.on_nat_detect = Some(SIPUserAgent::on_nat_detect);
-            self.app_config.cb.on_mwi_info = Some(SIPUserAgent::on_mwi_info);
-            self.app_config.cb.on_transport_state = Some(SIPUserAgent::on_transport_state);
-            self.app_config.cb.on_ice_transport_error = Some(SIPUserAgent::on_ice_transport_error);
-            self.app_config.cb.on_snd_dev_operation = Some(SIPUserAgent::on_snd_dev_operation);
-            self.app_config.cb.on_call_media_event = Some(SIPUserAgent::on_call_media_event);
-            self.app_config.cb.on_ip_change_progress = Some(SIPUserAgent::on_ip_change_progress);
+            self.app_config.cb.on_call_state = Some(SIPCore::on_call_state);
+            self.app_config.cb.on_stream_destroyed = Some(SIPCore::on_stream_destroyed);
+            self.app_config.cb.on_call_media_state = Some(SIPCore::on_call_media_state);
+            self.app_config.cb.on_incoming_call = Some(SIPCore::on_incoming_call);
+            self.app_config.cb.on_dtmf_digit2 = Some(SIPCore::on_dtmf_digit2);
+            self.app_config.cb.on_call_redirected = Some(SIPCore::on_call_redirected);
+            self.app_config.cb.on_reg_state = Some(SIPCore::on_reg_state);
+            self.app_config.cb.on_incoming_subscribe = Some(SIPCore::on_incoming_subscribe);
+            self.app_config.cb.on_buddy_state = Some(SIPCore::on_buddy_state);
+            self.app_config.cb.on_buddy_evsub_state = Some(SIPCore::on_buddy_evsub_state);
+            self.app_config.cb.on_pager = Some(SIPCore::on_pager);
+            self.app_config.cb.on_typing = Some(SIPCore::on_typing);
+            self.app_config.cb.on_call_transfer_status = Some(SIPCore::on_call_transfer_status);
+            self.app_config.cb.on_call_replaced = Some(SIPCore::on_call_replaced);
+            self.app_config.cb.on_nat_detect = Some(SIPCore::on_nat_detect);
+            self.app_config.cb.on_mwi_info = Some(SIPCore::on_mwi_info);
+            self.app_config.cb.on_transport_state = Some(SIPCore::on_transport_state);
+            self.app_config.cb.on_ice_transport_error = Some(SIPCore::on_ice_transport_error);
+            self.app_config.cb.on_snd_dev_operation = Some(SIPCore::on_snd_dev_operation);
+            self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
+            self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
 
             // init pjsua
             pjsua_init(
@@ -321,17 +155,76 @@ impl SIPUserAgent {
                 &mut self.media_config as *mut _,
             );
             // pjsip endpoint for unhadled error
-            self.default_handler.on_rx_request = Some(SIPUserAgent::on_rx_request);
+            self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
             pjsip_endpt_register_module(
                 pjsua_get_pjsip_endpt(),
                 &mut self.default_handler as *mut _,
             );
         }
     }
+
+    pub fn ringback_start(&self, call_id: pjsua_call_id) {
+
+
+    }
+
+    // ring stop procedure
+    pub fn ring_stop(&self, call_id: pjsua_call_id) {
+
+    }
+
+    pub fn ring_start() {
+
+
+    }
+
+
+
 }
 
+// SIPUserAgent
+pub struct SIPUserAgent {
+    /// hold internal pjsua data
+    x: i32, // test only
+} 
+
+//type SIPConfig = pjsua_config;
+
+pub const PJSUA_INVALID_ID: i32 = -1;
+
+trait SIPUserAgentInternal {
+  fn get_config(&mut self) -> &mut pjsua_config;
+  fn get_log_config(&mut self) -> &mut pjsua_logging_config;
+  fn get_media_config(&mut self) -> &mut pjsua_media_config;
+}
+
+
+impl SIPUserAgent {
+    // create sip user sip user agent with default ivalue
+    pub fn new() -> SIPUserAgent {
+        unsafe { 
+            SIP_CORE = Some(SIPCore::new());
+        }
+        
+        SIPUserAgent {
+            x: 0
+        }
+    }
+
+    pub fn start(self) {
+        unsafe { match SIP_CORE { 
+               Some(ref mut sipcore) => {
+                  sipcore.start()
+               },
+               _ => panic!("")
+            }
+        }
+    }
+}
+
+
 //binding clike code patern with destructor
-impl Drop for SIPUserAgent {
+impl Drop for SIPCore {
     fn drop(&mut self) {
         unsafe {
             pj_pool_safe_release(&mut self.pool as *mut _);
@@ -405,7 +298,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
 
 
 // handle for callback PjsipModule
-impl PjsipModuleCallback for SIPUserAgent {
+impl PjsipModuleCallback for SIPCore {
     unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
         // base rx request handle undefined state. 
         let tdata: *const pjsip_tx_data = ptr::null();
@@ -477,12 +370,29 @@ impl PjsipModuleCallback for SIPUserAgent {
     }
 }
 
-impl PjsuaCallback for SIPUserAgent {
+impl PjsuaCallback for SIPCore {
     // Call status event
     unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
       // call info data  
-      let mut call_info: pjsua_call_info = pjsua_call_info::new();
-    
+        let mut call_info: pjsua_call_info = pjsua_call_info::new();
+        let ref mut sipcore: SIPCore;
+       
+        pjsua_call_get_info(call_id, &mut call_info as *mut _);
+
+        match SIP_CORE {
+              Some(ref mut sip) => sipcore = sip,
+              _ => panic!("panic OnCallState"),
+        }
+
+        pjsua_call_get_info(call_id, &mut call_info as *mut _);
+        if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED {
+            // todo
+           sipcore.ring_stop(call_id); 
+
+        } else {
+
+        }
+
     }
 
     // Stream Destroyed;

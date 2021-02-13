@@ -236,4 +236,18 @@ impl AutoCreate<pjrpid_element> for pjrpid_element {
     }
 }
 
+impl AutoCreate<pj_timer_entry> for pj_timer_entry {
+    fn new() -> pj_timer_entry {
+        unsafe {
+            pj_timer_entry {
+                user_data: &mut mem::zeroed() as *mut _,
+                id: -1,
+                cb: None,
+                _timer_id: -1
+            }
+        }
+    }
+}
+
+
 
