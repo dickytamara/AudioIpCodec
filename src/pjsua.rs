@@ -3,14 +3,13 @@ use super::pjdefault::AutoCreate;
 use super::pjsua_sys::*;
 
 use std::mem;
-use std::os::raw::{c_void, c_int, c_uint};
+use std::os::raw::{c_int, c_uint, c_void};
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
         pjsua_srtp_opt {
             crypto_count: 0,
-            crypto: [
-                pjmedia_srtp_crypto::new(); 16],
+            crypto: [pjmedia_srtp_crypto::new(); 16],
             keying_count: 0,
             keying: [0, 0],
         }
@@ -44,7 +43,7 @@ pub trait PjsuaCallback {
         param: *mut pjsua_on_stream_precreate_param,
     ) {
     }
-    
+
     unsafe extern "C" fn on_stream_created(
         call_id: pjsua_call_id,
         strm: *mut pjmedia_stream,
@@ -246,7 +245,6 @@ pub trait PjsuaCallback {
         info: *const pjsip_transport_state_info,
     ) {
     }
-
 
     unsafe extern "C" fn on_call_media_transport_state(
         call_id: pjsua_call_id,
@@ -589,13 +587,13 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
                 use_timer: 0,
                 timer_setting: pjsip_timer_setting::new(),
                 proxy_cnt: 0,
-                proxy: [ pj_str_t::new(); 8],
+                proxy: [pj_str_t::new(); 8],
                 lock_codec: 0,
                 reg_timeout: 0,
                 reg_delay_before_refresh: 0,
                 unreg_timeout: 0,
                 cred_count: 0,
-                cred_info: [ pjsip_cred_info::new(); 8],
+                cred_info: [pjsip_cred_info::new(); 8],
                 transport_id: 0,
                 allow_contact_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
                 contact_rewrite_method: 0,
@@ -664,56 +662,53 @@ impl AutoCreate<pjsua_buddy_config> for pjsua_buddy_config {
 }
 
 impl AutoCreate<pjsua_transport_info> for pjsua_transport_info {
-  fn new () -> pjsua_transport_info {
-      pjsua_transport_info {
-        id: -1,
-        type_: 0,
-        type_name: pj_str_t::new(),
-        info: pj_str_t::new(),
-        flag: 0,
-        addr_len: 0,
-        local_addr: pj_sockaddr::new(),
-        local_name: pjsip_host_port::new(),
-        usage_count: 0, 
-       }
-  }
+    fn new() -> pjsua_transport_info {
+        pjsua_transport_info {
+            id: -1,
+            type_: 0,
+            type_name: pj_str_t::new(),
+            info: pj_str_t::new(),
+            flag: 0,
+            addr_len: 0,
+            local_addr: pj_sockaddr::new(),
+            local_name: pjsip_host_port::new(),
+            usage_count: 0,
+        }
+    }
 }
-
 
 impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
     fn new() -> pjsua_acc_info {
         pjsua_acc_info {
-          id: -1,
-          is_default: pj_constants__PJ_FALSE as pj_bool_t,
-          acc_uri: pj_str_t::new(),
-          has_registration: pj_constants__PJ_FALSE as pj_bool_t,
-          expires: 0,
-          status: 0,
-          reg_last_err: pj_constants__PJ_FALSE as pj_status_t,
-          status_text: pj_str_t::new(),
-          online_status: pj_constants__PJ_FALSE as pj_bool_t,
-          online_status_text: pj_str_t::new(),
-          rpid: pjrpid_element::new(),
-          buf_: [0; 80]
-        }  
+            id: -1,
+            is_default: pj_constants__PJ_FALSE as pj_bool_t,
+            acc_uri: pj_str_t::new(),
+            has_registration: pj_constants__PJ_FALSE as pj_bool_t,
+            expires: 0,
+            status: 0,
+            reg_last_err: pj_constants__PJ_FALSE as pj_status_t,
+            status_text: pj_str_t::new(),
+            online_status: pj_constants__PJ_FALSE as pj_bool_t,
+            online_status_text: pj_str_t::new(),
+            rpid: pjrpid_element::new(),
+            buf_: [0; 80],
+        }
     }
 }
 
-
-
 impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
-    fn new () -> pjsua_call_setting {
-        pjsua_call_setting { 
-          flag: 0,
-          req_keyframe_method: 0,
-          aud_cnt: 0,
-          vid_cnt: 0
+    fn new() -> pjsua_call_setting {
+        pjsua_call_setting {
+            flag: 0,
+            req_keyframe_method: 0,
+            aud_cnt: 0,
+            vid_cnt: 0,
         }
     }
 }
 
 impl AutoCreate<pjsua_call_info__bindgen_ty_1> for pjsua_call_info__bindgen_ty_1 {
-    fn new () -> pjsua_call_info__bindgen_ty_1 {
+    fn new() -> pjsua_call_info__bindgen_ty_1 {
         pjsua_call_info__bindgen_ty_1 {
             local_info: [0; 256],
             local_contact: [0; 256],
@@ -725,67 +720,63 @@ impl AutoCreate<pjsua_call_info__bindgen_ty_1> for pjsua_call_info__bindgen_ty_1
     }
 }
 
-
-impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-    fn new () -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-      pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-            conf_slot: 0
-        }
+impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>
+    for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1
+{
+    fn new() -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
+        pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 { conf_slot: 0 }
     }
 }
-
 
 impl AutoCreate<pjsua_call_media_info__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1 {
-    fn new () -> pjsua_call_media_info__bindgen_ty_1 {
+    fn new() -> pjsua_call_media_info__bindgen_ty_1 {
         pjsua_call_media_info__bindgen_ty_1 {
-            aud: pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new()
+            aud: pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new(),
         }
     }
 }
 
-
 impl AutoCreate<pjsua_call_media_info> for pjsua_call_media_info {
-    fn new () -> pjsua_call_media_info {
+    fn new() -> pjsua_call_media_info {
         pjsua_call_media_info {
             index: 0,
             type_: 0,
             dir: 0,
             status: 0,
-            stream: pjsua_call_media_info__bindgen_ty_1::new()
+            stream: pjsua_call_media_info__bindgen_ty_1::new(),
         }
     }
 }
 
 impl AutoCreate<pjsua_call_info> for pjsua_call_info {
-    fn new () -> pjsua_call_info {
+    fn new() -> pjsua_call_info {
         pjsua_call_info {
-             id: -1,
-             role: 0,
-             acc_id: -1,
-             local_info: pj_str_t::new(),
-             local_contact: pj_str_t::new(),
-             remote_info: pj_str_t::new(),
-             remote_contact: pj_str_t::new(),
-             call_id: pj_str_t::new(),
-             setting: pjsua_call_setting::new(),
-             state: 0,
-             state_text: pj_str_t::new(),
-             last_status: 0,
-             last_status_text: pj_str_t::new(),
-             media_status: 0,
-             media_dir: 0,
-             conf_slot: -1,
-             media_cnt: 0,
-             media: [pjsua_call_media_info::new(); 16],
-             prov_media_cnt: 0,
-             prov_media: [pjsua_call_media_info::new(); 16],
-             connect_duration: pj_time_val::new(),
-             total_duration: pj_time_val::new(),
-             rem_offerer: pj_constants__PJ_FALSE as pj_bool_t,
-             rem_aud_cnt: 0,
-             rem_vid_cnt: 0,
-             buf_: pjsua_call_info__bindgen_ty_1::new()
+            id: -1,
+            role: 0,
+            acc_id: -1,
+            local_info: pj_str_t::new(),
+            local_contact: pj_str_t::new(),
+            remote_info: pj_str_t::new(),
+            remote_contact: pj_str_t::new(),
+            call_id: pj_str_t::new(),
+            setting: pjsua_call_setting::new(),
+            state: 0,
+            state_text: pj_str_t::new(),
+            last_status: 0,
+            last_status_text: pj_str_t::new(),
+            media_status: 0,
+            media_dir: 0,
+            conf_slot: -1,
+            media_cnt: 0,
+            media: [pjsua_call_media_info::new(); 16],
+            prov_media_cnt: 0,
+            prov_media: [pjsua_call_media_info::new(); 16],
+            connect_duration: pj_time_val::new(),
+            total_duration: pj_time_val::new(),
+            rem_offerer: pj_constants__PJ_FALSE as pj_bool_t,
+            rem_aud_cnt: 0,
+            rem_vid_cnt: 0,
+            buf_: pjsua_call_info__bindgen_ty_1::new(),
         }
     }
 }
-

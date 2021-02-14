@@ -92,7 +92,8 @@ pub struct SIPCore {
     ringback_slot: i32,
     ring_slot: i32,
     auto_play_hangup: bool,
-    duration: u32
+    duration: u32,
+    current_call: i32
 }
 
 impl SIPCore {
@@ -135,7 +136,8 @@ impl SIPCore {
             ringback_slot: PJSUA_INVALID_ID,
             ring_slot: PJSUA_INVALID_ID,
             auto_play_hangup: false,
-            duration: 0
+            duration: 0,
+            current_call: -1
         }
     }
 
@@ -185,11 +187,11 @@ impl SIPCore {
     }
 
     // ring stop procedure
-    pub fn ring_stop(&self, call_id: pjsua_call_id) {
+    pub fn ring_stop(&self, call_id: &pjsua_call_id) {
 
     }
 
-    pub fn ring_start() {
+    pub fn ring_start(&self, call_id: pjsua_call_id) {
 
 
     }
@@ -198,6 +200,123 @@ impl SIPCore {
 
 
     }
+
+    pub fn on_call_generic_media_state(&self) {
+
+    }
+
+    pub fn on_call_audio_state(&self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
+
+       self.ring_stop(&ci.id); 
+
+    }
+
+
+    pub fn callback_on_call_state(&mut self, call_id: pjsua_call_id, e: *mut pjsip_event) {
+        unsafe {
+        let mut call_info: pjsua_call_info = pjsua_call_info::new();
+       
+        pjsua_call_get_info(call_id, &mut call_info as *mut _);
+
+        if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED {
+            // todo
+           self.ring_stop(&call_id);
+           let cd: *mut SIPCall = &mut self.call_data[call_id as usize] as *mut _;
+           let endpt = pjsua_get_pjsip_endpt();
+
+           (*cd).timer.id = PJSUA_INVALID_ID;
+           pjsip_endpt_cancel_timer(endpt, &mut (*cd).timer as *mut _);
+           
+           if self.auto_play_hangup {
+              pjsua_player_set_pos(self.wav_id, 0);
+           }
+
+           match CURRENT_CALL {
+              Some(current_call) => {
+                  if call_id == current_call {
+                      self.find_next_call();
+                  }
+              },
+              _ => panic!("panic OnCallState")
+           }
+            
+
+           println!("Call disconnected.");
+           
+        } else {
+            if self.duration == 0x7FFFFFFF && 
+                call_info.state == pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED {
+                let cd: *mut SIPCall = &mut self.call_data[call_id as usize] as *mut _;
+                let endpt = pjsua_get_pjsip_endpt();
+                let mut delay: pj_time_val = pj_time_val::new();
+
+                (*cd).timer.id = call_id;
+                delay.sec = self.duration as i64;
+                delay.msec = 0;
+                pjsip_endpt_schedule_timer_dbg(endpt, &mut (*cd).timer as *mut _, 
+                  &delay as *const _, &mut mem::zeroed() as *mut _, 0); 
+            }
+
+            if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_EARLY {
+                println!("Call state changed.");
+            }
+
+            if self.current_call==PJSUA_INVALID_ID {
+                      self.current_call = call_id;
+            }
+        }
+        }
+    }
+
+    pub fn callback_on_call_media_state(&self, call_id: pjsua_call_id) {    
+        unsafe {
+            let mut call_info: pjsua_call_info = pjsua_call_info::new();
+        //let mi: u32 = 0;
+        let mut has_error = false;
+
+        pjsua_call_get_info(call_id, &mut call_info as *mut _);
+
+        for mi in 0..call_info.media_cnt {
+            self.on_call_generic_media_state();
+            match call_info.media[mi as usize].type_ {
+              pjmedia_type_PJMEDIA_TYPE_AUDIO => {
+                self.on_call_audio_state(&call_info,
+                  mi, &mut has_error);
+
+                },
+                _ => println!("unsuported pjmedia type")
+            }
+        }
+
+        if has_error {
+            let reason = CString::new("Media Failed").expect("cant create str");
+            pjsua_call_hangup(call_id, 500, 
+              &pj_str(reason.as_ptr() as *mut _) as *const _, ptr::null());
+        }
+      }
+    }
+
+
+    pub fn callback_on_incomming_call(&mut self,
+        acc_id: pjsua_acc_id,
+        call_id: pjsua_call_id,
+        rdata: *mut pjsip_rx_data,
+     ){
+        unsafe {
+            let mut call_info: pjsua_call_info = pjsua_call_info::new();
+        
+            pjsua_call_get_info(call_id, &mut call_info as *mut _);
+
+            self.current_call = call_id; 
+       
+            self.ring_start(call_id);
+
+            let mut opt: pjsua_call_setting = pjsua_call_setting::new();
+            pjsua_call_setting_default(&mut opt as *mut _);
+        }
+    }
+
+
 
 }
 
@@ -394,69 +513,12 @@ impl PjsuaCallback for SIPCore {
     // Call status event
     unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
       // call info data  
-        let mut call_info: pjsua_call_info = pjsua_call_info::new();
-        let ref mut sipcore: SIPCore;
-       
-        pjsua_call_get_info(call_id, &mut call_info as *mut _);
-
-        match SIP_CORE {
-              Some(ref mut sip) => sipcore = sip,
-              _ => panic!("panic OnCallState"),
-        }
-
-        pjsua_call_get_info(call_id, &mut call_info as *mut _);
-        if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED {
-            // todo
-           sipcore.ring_stop(call_id);
-           let cd: *mut SIPCall = &mut sipcore.call_data[call_id as usize] as *mut _;
-           let endpt = pjsua_get_pjsip_endpt();
-
-           (*cd).timer.id = PJSUA_INVALID_ID;
-           pjsip_endpt_cancel_timer(endpt, &mut (*cd).timer as *mut _);
-           
-           if sipcore.auto_play_hangup {
-              pjsua_player_set_pos(sipcore.wav_id, 0);
-           }
-
-           match CURRENT_CALL {
-              Some(current_call) => {
-                  if call_id == current_call {
-                      sipcore.find_next_call();
-                  }
-              },
-              _ => panic!("panic OnCallState")
-           }
-            
-
-           println!("Call disconnected.");
-           
-        } else {
-            if sipcore.duration == 0x7FFFFFFF && 
-                call_info.state == pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED {
-                let cd: *mut SIPCall = &mut sipcore.call_data[call_id as usize] as *mut _;
-                let endpt = pjsua_get_pjsip_endpt();
-                let mut delay: pj_time_val = pj_time_val::new();
-
-                (*cd).timer.id = call_id;
-                delay.sec = sipcore.duration as i64;
-                delay.msec = 0;
-                pjsip_endpt_schedule_timer_dbg(endpt, &mut (*cd).timer as *mut _, 
-                  &delay as *const _, &mut mem::zeroed() as *mut _, 0); 
-            }
-
-            if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_EARLY {
-                println!("Call state changed.");
-            }
-
-            match CURRENT_CALL {
-              Some(mut current_call) => {
-                  if current_call==PJSUA_INVALID_ID {
-                      current_call = call_id;
-                  }
-              },
-              _ => panic!("panic OnCallState")
-            }
-        }
+      match SIP_CORE {
+          Some(ref mut sipcore) => {
+              sipcore.callback_on_call_state(call_id, e);
+          },
+          _ => panic!("Panic OnCallState")
+      } 
 
     }
 
@@ -466,19 +528,16 @@ impl PjsuaCallback for SIPCore {
         strm: *mut pjmedia_stream,
         stream_idx: c_uint,
     ) {
-        // todo here
+        println!("Call stream destroyed");
     }
 
     // Call media satate
-    unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {}
-
-    // Incoming Call
-    unsafe extern "C" fn on_incoming_call(
-        acc_id: pjsua_acc_id,
-        call_id: pjsua_call_id,
-        rdata: *mut pjsip_rx_data,
-    ) {
-        // todo here
+    unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {
+      match SIP_CORE {
+          Some(ref mut sipcore) => {
+              sipcore.callback_on_call_media_state(call_id);
+          },
+          _ => panic!("Panic OnCallMediaState")}
     }
 
     // DTMF Digit2

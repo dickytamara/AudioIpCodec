@@ -1,5 +1,4 @@
 
-extern crate mut_static;
 extern crate pjsua_sys;
 extern crate pjmedia_sys;
 extern crate pjsip_sys;
