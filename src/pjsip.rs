@@ -299,3 +299,31 @@ impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {
 }
 
 
+impl AutoCreate<pjsip_pres_status__bindgen_ty_1> for pjsip_pres_status__bindgen_ty_1 {
+    fn new () -> pjsip_pres_status__bindgen_ty_1 {
+        unsafe { 
+            pjsip_pres_status__bindgen_ty_1 {
+                basic_open: pj_constants__PJ_FALSE as pj_bool_t,
+                rpid: pjrpid_element::new(),
+                id: pj_str_t::new(),
+                contact: pj_str_t::new(),
+                tuple_node: &mut mem::zeroed() as *mut _
+            }
+        }
+    }
+}
+
+
+impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
+    fn new () -> pjsip_pres_status {
+        pjsip_pres_status {
+            info_cnt: 0,
+            info: [pjsip_pres_status__bindgen_ty_1::new(); 8],
+            _is_valid: pj_constants__PJ_FALSE as pj_bool_t
+        }
+    }
+}
+
+
+
+

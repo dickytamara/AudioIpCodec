@@ -328,12 +328,60 @@ impl SIPCore {
                    pjsua_dtmf_method_PJSUA_DTMF_METHOD_SIP_INFO => {
                       dtmf = "SIP INFO";  
                    },
-                   _ => println!("Unkown dtmf method")
+                   _ => println!("Unknown dtmf method")
               }
 
               println!("Incomming DTMF on call using method {}", dtmf);
         }
     } 
+
+
+    pub fn callback_on_call_redirected( 
+        &self, 
+        call_id: pjsua_call_id,
+        target: *const pjsip_uri,
+        e: *const pjsip_event,
+    ) -> pjsip_redirect_op {
+        println!("Call {} is being redirected", call_id);
+        self.redir_op
+    }
+ 
+    pub fn callback_on_reg_state(&self, acc_id: pjsua_acc_id) {
+        println!("reg_state {}", acc_id);
+    }
+
+
+    pub fn callback_on_incoming_subscribe( &self,
+        acc_id: pjsua_acc_id,
+        srv_pres: *mut pjsua_srv_pres,
+        buddy_id: pjsua_buddy_id,
+        from: *const pj_str_t,
+        rdata: *mut pjsip_rx_data,
+        code: *mut pjsip_status_code,
+        reason: *mut pj_str_t,
+        msg_data: *mut pjsua_msg_data,
+    ) {
+        // Todo
+    }
+
+    pub fn callback_on_buddy_state(&self, buddy_id: pjsua_buddy_id) {
+        unsafe { 
+            let mut info: pjsua_buddy_info = pjsua_buddy_info::new();
+            pjsua_buddy_get_info(buddy_id, &mut info as *mut _);
+        }
+    } 
+
+    pub fn callback_on_call_transfer_status(
+        call_id: pjsua_call_id,
+        st_code: c_int,
+        st_text: *const pj_str_t,
+        final_: pj_bool_t,
+        p_cont: *mut pj_bool_t,
+    ) {
+        unsafe {
+
+        } 
+    }
 
     pub fn callback_on_ip_change_progress(
         &self,
@@ -640,13 +688,23 @@ impl PjsuaCallback for SIPCore {
         target: *const pjsip_uri,
         e: *const pjsip_event,
     ) -> pjsip_redirect_op {
-        // todo here
-        0x0
+        let result: pjsip_redirect_op;
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_call_redirected(call_id, target, e)
+            },
+            _ => panic!("Panic OnCallRedirected")
+        }
     }
 
     // REG state
     unsafe extern "C" fn on_reg_state(acc_id: pjsua_acc_id) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_reg_state(acc_id);
+            },
+            _ => panic!("Panic OnRegState")
+        }
     }
 
     // Incomming Subscribe
@@ -660,11 +718,24 @@ impl PjsuaCallback for SIPCore {
         reason: *mut pj_str_t,
         msg_data: *mut pjsua_msg_data,
     ) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_incoming_subscribe(acc_id, srv_pres,
+                  buddy_id, from, rdata, code, reason, msg_data);
+            },
+            _ => panic!("Panic OnIncomingSubscribe")
+        }
     }
 
     // Buddy State
-    unsafe extern "C" fn on_buddy_state(buddy_id: pjsua_buddy_id) {}
+    unsafe extern "C" fn on_buddy_state(buddy_id: pjsua_buddy_id) {
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_buddy_state(buddy_id);
+            },
+            _ => panic!("Panic OnBuddyState")
+        }
+    }
 
     // Buddy evsub state
     unsafe extern "C" fn on_buddy_evsub_state(

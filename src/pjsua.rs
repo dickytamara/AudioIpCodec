@@ -780,3 +780,25 @@ impl AutoCreate<pjsua_call_info> for pjsua_call_info {
         }
     }
 }
+
+impl AutoCreate<pjsua_buddy_info> for pjsua_buddy_info {
+    fn new () -> pjsua_buddy_info {
+        unsafe {
+            pjsua_buddy_info{ 
+                id: -1,
+                uri: pj_str_t::new(),
+                contact: pj_str_t::new(),
+                status: 0,
+                status_text: pj_str_t::new(),
+                monitor_pres: pj_constants__PJ_FALSE as pj_bool_t,
+                sub_state: 0,
+                sub_state_name: &mut mem::zeroed() as *mut _,
+                sub_term_code: 0,
+                sub_term_reason: pj_str_t::new(),
+                rpid: pjrpid_element::new(),
+                pres_status: pjsip_pres_status::new(),
+                buf_: [0; 512]
+            }
+        }
+    }
+}
