@@ -1,17 +1,16 @@
 #![allow(dead_code, unused_variables, unused_imports, non_upper_case_globals)]
 
-
 // default
 use super::pjdefault::AutoCreate;
 use super::pjsip::PjsipModuleCallback;
 use super::pjsua::PjsuaCallback;
 use super::pjsua_sys::*;
-use std::ffi::CString;
-use std::ops::Drop;
-use std::os::raw::{c_void, c_int, c_uint, c_char};
-use std::mem;
-use std::ptr;
 use mut_static::MutStatic;
+use std::ffi::CString;
+use std::mem;
+use std::ops::Drop;
+use std::os::raw::{c_char, c_int, c_uint, c_void};
+use std::ptr;
 
 pub type SIPAccount = pjsua_acc_config;
 pub type SIPBuddy = pjsua_buddy_config;
@@ -21,26 +20,22 @@ pub struct SIPIMessages {}
 pub struct SIPMedia {}
 pub struct SIPPressence {}
 
-
-
 #[derive(Copy, Clone)]
 pub struct SIPCall {
-  timer: pj_timer_entry,
-  ringback_on: bool,
-  ring_on: bool,
+    timer: pj_timer_entry,
+    ringback_on: bool,
+    ring_on: bool,
 }
 
 impl SIPCall {
     pub fn new() -> SIPCall {
         SIPCall {
-          timer: pj_timer_entry::new(),
-          ringback_on: false,
-          ring_on: false
+            timer: pj_timer_entry::new(),
+            ringback_on: false,
+            ring_on: false,
         }
     }
 }
-
-
 
 trait Account {}
 
@@ -50,22 +45,15 @@ trait IMessages {}
 
 trait Media {}
 
-
 trait Pressence {}
 
-
-trait Call {
-
-
-}
+trait Call {}
 
 // pjsua_call_dump
 trait Dump {}
 
-
 static mut SIP_CORE: Option<SIPCore> = None;
 static mut CURRENT_CALL: Option<pjsua_call_id> = None;
-
 
 pub struct SIPCore {
     pool: *mut pj_pool_t,
@@ -93,11 +81,11 @@ pub struct SIPCore {
     ring_slot: i32,
     auto_play_hangup: bool,
     duration: u32,
-    current_call: i32
+    current_call: i32,
 }
 
 impl SIPCore {
-        pub fn new() -> SIPCore {
+    pub fn new() -> SIPCore {
         // create default data
         let ctx: *mut pj_pool_t;
         unsafe {
@@ -137,10 +125,9 @@ impl SIPCore {
             ring_slot: PJSUA_INVALID_ID,
             auto_play_hangup: false,
             duration: 0,
-            current_call: -1
+            current_call: -1,
         }
     }
-
 
     pub fn start(&mut self) {
         unsafe {
@@ -181,134 +168,119 @@ impl SIPCore {
         }
     }
 
-    pub fn ringback_start(&self, call_id: pjsua_call_id) {
-
-
-    }
+    pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 
     // ring stop procedure
-    pub fn ring_stop(&self, call_id: &pjsua_call_id) {
+    pub fn ring_stop(&self, call_id: &pjsua_call_id) {}
 
-    }
+    pub fn ring_start(&self, call_id: pjsua_call_id) {}
 
-    pub fn ring_start(&self, call_id: pjsua_call_id) {
+    pub fn find_next_call(&self) {}
 
-
-    }
-
-    pub fn find_next_call(&self) {
-
-
-    }
-
-    pub fn on_call_generic_media_state(&self) {
-
-    }
+    pub fn on_call_generic_media_state(&self) {}
 
     pub fn on_call_audio_state(&self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
-
-       self.ring_stop(&ci.id); 
-
+        self.ring_stop(&ci.id);
     }
-
 
     pub fn callback_on_call_state(&mut self, call_id: pjsua_call_id, e: *mut pjsip_event) {
         unsafe {
-        let mut call_info: pjsua_call_info = pjsua_call_info::new();
-       
-        pjsua_call_get_info(call_id, &mut call_info as *mut _);
+            let mut call_info: pjsua_call_info = pjsua_call_info::new();
 
-        if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED {
-            // todo
-           self.ring_stop(&call_id);
-           let cd: *mut SIPCall = &mut self.call_data[call_id as usize] as *mut _;
-           let endpt = pjsua_get_pjsip_endpt();
+            pjsua_call_get_info(call_id, &mut call_info as *mut _);
 
-           (*cd).timer.id = PJSUA_INVALID_ID;
-           pjsip_endpt_cancel_timer(endpt, &mut (*cd).timer as *mut _);
-           
-           if self.auto_play_hangup {
-              pjsua_player_set_pos(self.wav_id, 0);
-           }
-
-           match CURRENT_CALL {
-              Some(current_call) => {
-                  if call_id == current_call {
-                      self.find_next_call();
-                  }
-              },
-              _ => panic!("panic OnCallState")
-           }
-            
-
-           println!("Call disconnected.");
-           
-        } else {
-            if self.duration == 0x7FFFFFFF && 
-                call_info.state == pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED {
+            if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED {
+                // todo
+                self.ring_stop(&call_id);
                 let cd: *mut SIPCall = &mut self.call_data[call_id as usize] as *mut _;
                 let endpt = pjsua_get_pjsip_endpt();
-                let mut delay: pj_time_val = pj_time_val::new();
 
-                (*cd).timer.id = call_id;
-                delay.sec = self.duration as i64;
-                delay.msec = 0;
-                pjsip_endpt_schedule_timer_dbg(endpt, &mut (*cd).timer as *mut _, 
-                  &delay as *const _, &mut mem::zeroed() as *mut _, 0); 
-            }
+                (*cd).timer.id = PJSUA_INVALID_ID;
+                pjsip_endpt_cancel_timer(endpt, &mut (*cd).timer as *mut _);
 
-            if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_EARLY {
-                println!("Call state changed.");
-            }
+                if self.auto_play_hangup {
+                    pjsua_player_set_pos(self.wav_id, 0);
+                }
 
-            if self.current_call==PJSUA_INVALID_ID {
-                      self.current_call = call_id;
+                if call_id == self.current_call {
+                    self.find_next_call();
+                }
+
+                println!("Call disconnected.");
+            } else {
+                if self.duration == 0x7FFFFFFF
+                    && call_info.state == pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED
+                {
+                    let cd: *mut SIPCall = &mut self.call_data[call_id as usize] as *mut _;
+                    let endpt = pjsua_get_pjsip_endpt();
+                    let mut delay: pj_time_val = pj_time_val::new();
+
+                    (*cd).timer.id = call_id;
+                    delay.sec = self.duration as i64;
+                    delay.msec = 0;
+                    pjsip_endpt_schedule_timer_dbg(
+                        endpt,
+                        &mut (*cd).timer as *mut _,
+                        &delay as *const _,
+                        &mut mem::zeroed() as *mut _,
+                        0,
+                    );
+                }
+
+                if call_info.state == pjsip_inv_state_PJSIP_INV_STATE_EARLY {
+                    println!("Call state changed.");
+                }
+
+                if self.current_call == PJSUA_INVALID_ID {
+                    self.current_call = call_id;
+                }
             }
-        }
         }
     }
 
-    pub fn callback_on_call_media_state(&self, call_id: pjsua_call_id) {    
+    pub fn callback_on_call_media_state(&self, call_id: pjsua_call_id) {
         unsafe {
             let mut call_info: pjsua_call_info = pjsua_call_info::new();
-        //let mi: u32 = 0;
-        let mut has_error = false;
+            //let mi: u32 = 0;
+            let mut has_error = false;
 
-        pjsua_call_get_info(call_id, &mut call_info as *mut _);
+            pjsua_call_get_info(call_id, &mut call_info as *mut _);
 
-        for mi in 0..call_info.media_cnt {
-            self.on_call_generic_media_state();
-            match call_info.media[mi as usize].type_ {
-              pjmedia_type_PJMEDIA_TYPE_AUDIO => {
-                self.on_call_audio_state(&call_info,
-                  mi, &mut has_error);
+            for mi in 0..call_info.media_cnt {
+                self.on_call_generic_media_state();
+                match call_info.media[mi as usize].type_ {
+                    pjmedia_type_PJMEDIA_TYPE_AUDIO => {
+                        self.on_call_audio_state(&call_info, mi, &mut has_error);
+                    }
+                    _ => println!("unsuported pjmedia type"),
+                }
+            }
 
-                },
-                _ => println!("unsuported pjmedia type")
+            if has_error {
+                let reason = CString::new("Media Failed").expect("cant create str");
+                pjsua_call_hangup(
+                    call_id,
+                    500,
+                    &pj_str(reason.as_ptr() as *mut _) as *const _,
+                    ptr::null(),
+                );
             }
         }
-
-        if has_error {
-            let reason = CString::new("Media Failed").expect("cant create str");
-            pjsua_call_hangup(call_id, 500, 
-              &pj_str(reason.as_ptr() as *mut _) as *const _, ptr::null());
-        }
-      }
     }
 
-
-    pub fn callback_on_incomming_call(&mut self,
+    pub fn callback_on_incomming_call(
+        &mut self,
         acc_id: pjsua_acc_id,
         call_id: pjsua_call_id,
         rdata: *mut pjsip_rx_data,
-     ){
+    ) {
         unsafe {
             let mut call_info: pjsua_call_info = pjsua_call_info::new();
-        
+
             pjsua_call_get_info(call_id, &mut call_info as *mut _);
 
-            self.current_call = call_id; 
-       
+            self.current_call = call_id;
+
             self.ring_start(call_id);
 
             let mut opt: pjsua_call_setting = pjsua_call_setting::new();
@@ -316,51 +288,90 @@ impl SIPCore {
         }
     }
 
+    pub fn callback_on_ip_change_progress(
+        &self,
+        op: pjsua_ip_change_op,
+        status: pj_status_t,
+        info: *const pjsua_ip_change_op_info,
+    ) {
+        unsafe {
+            let mut acc_info: pjsua_acc_info = pjsua_acc_info::new();
+            let mut tp_info: pjsua_transport_info = pjsua_transport_info::new();
 
+            if status == pj_constants__PJ_SUCCESS as pj_status_t {
+                match op {
+                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_RESTART_LIS => {
+                        pjsua_transport_get_info(
+                            (*info).lis_restart.transport_id,
+                            &mut tp_info as *mut _,
+                        );
+                        println!("restart transport.");
+                    }
+                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => {
+                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
+                        println!("transport shutdown for account.");
+                    }
+                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => {
+                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
+                        println!("update contact for account.");
+                    }
+                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => {
+                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
+                        println!("hangup call for account.");
+                    }
+                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => {
+                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
+                        println!("reinvite call for account.");
+                    }
+                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_COMPLETED => {
+                        println!("done");
+                    }
 
+                    _ => println!("warn validate c code."),
+                }
+            } else {
+                println!("IP change progress fail.");
+            }
+        }
+    }
 }
 
 // SIPUserAgent
 pub struct SIPUserAgent {
     /// hold internal pjsua data
     x: i32, // test only
-} 
+}
 
 //type SIPConfig = pjsua_config;
 
 pub const PJSUA_INVALID_ID: i32 = -1;
 
 trait SIPUserAgentInternal {
-  fn get_config(&mut self) -> &mut pjsua_config;
-  fn get_log_config(&mut self) -> &mut pjsua_logging_config;
-  fn get_media_config(&mut self) -> &mut pjsua_media_config;
+    fn get_config(&mut self) -> &mut pjsua_config;
+    fn get_log_config(&mut self) -> &mut pjsua_logging_config;
+    fn get_media_config(&mut self) -> &mut pjsua_media_config;
 }
-
 
 impl SIPUserAgent {
     // create sip user sip user agent with default ivalue
     pub fn new() -> SIPUserAgent {
-        unsafe { 
+        unsafe {
             SIP_CORE = Some(SIPCore::new());
             CURRENT_CALL = Some(PJSUA_INVALID_ID);
         }
-        
-        SIPUserAgent {
-            x: 0
-        }
+
+        SIPUserAgent { x: 0 }
     }
 
     pub fn start(self) {
-        unsafe { match SIP_CORE { 
-               Some(ref mut sipcore) => {
-                  sipcore.start()
-               },
-               _ => panic!("")
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipcore) => sipcore.start(),
+                _ => panic!(""),
             }
         }
     }
 }
-
 
 //binding clike code patern with destructor
 impl Drop for SIPCore {
@@ -373,138 +384,163 @@ impl Drop for SIPCore {
 }
 
 fn simple_registrar(rdata: *mut pjsip_rx_data) {
-  
-  unsafe {
-      let tdata: *const pjsip_tx_data = ptr::null();
-      let str_null: *const pj_str_t = ptr::null(); 
-      let status: pj_status_t;
-      let mut cnt: c_uint = 0;
-    
-      status = pjsip_endpt_create_response(pjsua_get_pjsip_endpt(), rdata as *const _, 200, str_null as *const _, tdata as *mut _);
-      if status != pj_constants__PJ_SUCCESS as i32 {
-          return;
-      }
-      #[allow(unused_assignments)]
-      let void: *const c_void = ptr::null();
-    
-      let exp: *const pjsip_expires_hdr = pjsip_msg_find_hdr((*rdata).msg_info.msg,
-                  pjsip_hdr_e_PJSIP_H_EXPIRES, void) as *const _;
+    unsafe {
+        let tdata: *const pjsip_tx_data = ptr::null();
+        let str_null: *const pj_str_t = ptr::null();
+        let status: pj_status_t;
+        let mut cnt: c_uint = 0;
 
-      let llist: pjsip_hdr = (*(*rdata).msg_info.msg).hdr; 
-      let mut h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
+        status = pjsip_endpt_create_response(
+            pjsua_get_pjsip_endpt(),
+            rdata as *const _,
+            200,
+            str_null as *const _,
+            tdata as *mut _,
+        );
+        if status != pj_constants__PJ_SUCCESS as i32 {
+            return;
+        }
+        #[allow(unused_assignments)]
+        let void: *const c_void = ptr::null();
 
-      while h != llist.next {
-          if (*h as pjsip_hdr).type_ == (pjsip_hdr_e_PJSIP_H_CONTACT as pjsip_hdr_e) {
-              
-              let c: *const pjsip_contact_hdr = h as *const pjsip_contact_hdr;  
-              let mut e: c_uint = (*c).expires;
+        let exp: *const pjsip_expires_hdr =
+            pjsip_msg_find_hdr((*rdata).msg_info.msg, pjsip_hdr_e_PJSIP_H_EXPIRES, void)
+                as *const _;
 
-              if e != 0xffffffff {
+        let llist: pjsip_hdr = (*(*rdata).msg_info.msg).hdr;
+        let mut h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
+
+        while h != llist.next {
+            if (*h as pjsip_hdr).type_ == (pjsip_hdr_e_PJSIP_H_CONTACT as pjsip_hdr_e) {
+                let c: *const pjsip_contact_hdr = h as *const pjsip_contact_hdr;
+                let mut e: c_uint = (*c).expires;
+
+                if e != 0xffffffff {
                     if !exp.is_null() {
-                        e = (*exp).ivalue;    
+                        e = (*exp).ivalue;
                     } else {
                         e = 3600;
                     }
-              }
+                }
 
                 if e > 0 {
-                    let nc: *mut pjsip_contact_hdr = pjsip_hdr_clone((*tdata).pool, 
-                                        h as *const _) as *mut pjsip_contact_hdr;
+                    let nc: *mut pjsip_contact_hdr =
+                        pjsip_hdr_clone((*tdata).pool, h as *const _) as *mut pjsip_contact_hdr;
 
                     (*nc).expires = e;
                     pj_list_insert_before((*tdata).msg as *mut _, nc as *mut _);
-                    cnt = cnt +1;
+                    cnt = cnt + 1;
                 }
                 h = (*h).next;
             }
         }
-        
+
         // todo review c code for this. it's c clasic problem
-        let srv: *mut pjsip_generic_string_hdr = pjsip_generic_string_hdr_create (
-                      (*tdata).pool, str_null, str_null);
+        let srv: *mut pjsip_generic_string_hdr =
+            pjsip_generic_string_hdr_create((*tdata).pool, str_null, str_null);
         // create server name
         let tmp: CString = CString::new("Server").expect("cant create Server string");
-        (*srv).name = pj_str(tmp.as_ptr()  as *mut c_char);
-        // create add description 
-        let tmp: CString = CString::new("IpCodec simple registrar").expect("cant create simple registrar");
+        (*srv).name = pj_str(tmp.as_ptr() as *mut c_char);
+        // create add description
+        let tmp: CString =
+            CString::new("IpCodec simple registrar").expect("cant create simple registrar");
         (*srv).hvalue = pj_str(tmp.as_ptr() as *mut c_char);
 
         pj_list_insert_before((*tdata).msg as *mut _, srv as *mut _);
         let cb: pjsip_send_callback = None;
-        pjsip_endpt_send_response2(pjsua_get_pjsip_endpt(), rdata, tdata as *mut _, void as *mut _, None);
+        pjsip_endpt_send_response2(
+            pjsua_get_pjsip_endpt(),
+            rdata,
+            tdata as *mut _,
+            void as *mut _,
+            None,
+        );
     }
 }
-
 
 // handle for callback PjsipModule
 impl PjsipModuleCallback for SIPCore {
     unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
-        // base rx request handle undefined state. 
+        // base rx request handle undefined state.
         let tdata: *const pjsip_tx_data = ptr::null();
         let status_code: pjsip_status_code;
         let status: pj_status_t;
-
 
         let mut rdata = *rdata;
         let msg = *rdata.msg_info.msg;
         let mut method = msg.line.req.method;
         // let msg_info = method.msg_info;
-        if pjsip_method_cmp(&mut method as *const _, &pjsip_ack_method as *const _) == 0{
+        if pjsip_method_cmp(&mut method as *const _, &pjsip_ack_method as *const _) == 0 {
             return pj_constants__PJ_TRUE as pj_status_t;
         }
-        
+
         if pjsip_method_cmp(&mut method as *const _, &pjsip_register_method as *const _) == 0 {
-          // call simple registrar pjsip_tx_data
-          simple_registrar(&mut rdata as *mut _); 
-          return pj_constants__PJ_TRUE as pj_status_t; 
-        }     
+            // call simple registrar pjsip_tx_data
+            simple_registrar(&mut rdata as *mut _);
+            return pj_constants__PJ_TRUE as pj_status_t;
+        }
 
         if pjsip_method_cmp(&mut method as *const _, &pjsip_notify_method as *const _) == 0 {
-          status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST as pjsip_status_code; 
+            status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST as pjsip_status_code;
         } else {
-          status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
+            status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
         }
 
         let null_ptr: *const pj_str_t = ptr::null();
-        status = pjsip_endpt_create_response(pjsua_get_pjsip_endpt(),
-                  &mut rdata as *const _, 
-                  status_code as c_int, 
-                  null_ptr,
-                  tdata as *mut *mut  _);
+        status = pjsip_endpt_create_response(
+            pjsua_get_pjsip_endpt(),
+            &mut rdata as *const _,
+            status_code as c_int,
+            null_ptr,
+            tdata as *mut *mut _,
+        );
 
         if status != (pj_constants__PJ_SUCCESS as pj_status_t) {
-          return pj_constants__PJ_TRUE as pj_status_t; 
+            return pj_constants__PJ_TRUE as pj_status_t;
         }
 
         if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
-          #[allow(unused_assignments)]
-          let mut cap_hdr: *const pjsip_hdr = ptr::null();
+            #[allow(unused_assignments)]
+            let mut cap_hdr: *const pjsip_hdr = ptr::null();
 
-          cap_hdr = pjsip_endpt_get_capability(pjsua_get_pjsip_endpt(),
-                          pjsip_hdr_e_PJSIP_H_ALLOW as i32, null_ptr);
+            cap_hdr = pjsip_endpt_get_capability(
+                pjsua_get_pjsip_endpt(),
+                pjsip_hdr_e_PJSIP_H_ALLOW as i32,
+                null_ptr,
+            );
 
-          if !cap_hdr.is_null() {
-              //pjsip_msg_add_hdr(msg, pjsip_hdr_clone(tdata.pool, cap_hdr));
-              pj_list_insert_before((*tdata).msg as *mut _, 
-                          pjsip_hdr_clone((*tdata).pool as *mut _, cap_hdr as *const _));
-          }
+            if !cap_hdr.is_null() {
+                //pjsip_msg_add_hdr(msg, pjsip_hdr_clone(tdata.pool, cap_hdr));
+                pj_list_insert_before(
+                    (*tdata).msg as *mut _,
+                    pjsip_hdr_clone((*tdata).pool as *mut _, cap_hdr as *const _),
+                );
+            }
         }
-
 
         // add user-agent header
         #[allow(unused_assignments)]
-        let mut h: *const pjsip_hdr = ptr::null(); 
-        
+        let mut h: *const pjsip_hdr = ptr::null();
+
         let ua_str = CString::new("User-Agent").expect("cant create str User-Agent.");
-        let mut ua: pj_str_t = pj_str_t {ptr: ua_str.as_ptr() as *mut _, slen: 10};
-        let agent_str = CString::new("AudioIP 0.1").expect("cant create str AudioIP 0.1"); 
-        let mut agent = pj_str_t{ptr: agent_str.as_ptr() as *mut _, slen: 11};
+        let mut ua: pj_str_t = pj_str_t {
+            ptr: ua_str.as_ptr() as *mut _,
+            slen: 10,
+        };
+        let agent_str = CString::new("AudioIP 0.1").expect("cant create str AudioIP 0.1");
+        let mut agent = pj_str_t {
+            ptr: agent_str.as_ptr() as *mut _,
+            slen: 11,
+        };
 
         h = pjsip_generic_string_hdr_create(
-          (*tdata).pool as *mut _, &mut ua as _, &mut agent as *mut _) as *mut _;
-        
+            (*tdata).pool as *mut _,
+            &mut ua as _,
+            &mut agent as *mut _,
+        ) as *mut _;
+
         pj_list_insert_before((*tdata).msg as *mut _, h as *mut _);
-         
+
         pj_constants__PJ_TRUE as pj_status_t
     }
 }
@@ -512,14 +548,13 @@ impl PjsipModuleCallback for SIPCore {
 impl PjsuaCallback for SIPCore {
     // Call status event
     unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
-      // call info data  
-      match SIP_CORE {
-          Some(ref mut sipcore) => {
-              sipcore.callback_on_call_state(call_id, e);
-          },
-          _ => panic!("Panic OnCallState")
-      } 
-
+        // call info data
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_call_state(call_id, e);
+            }
+            _ => panic!("Panic OnCallState"),
+        }
     }
 
     // Stream Destroyed;
@@ -533,11 +568,12 @@ impl PjsuaCallback for SIPCore {
 
     // Call media satate
     unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {
-      match SIP_CORE {
-          Some(ref mut sipcore) => {
-              sipcore.callback_on_call_media_state(call_id);
-          },
-          _ => panic!("Panic OnCallMediaState")}
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_call_media_state(call_id);
+            }
+            _ => panic!("Panic OnCallMediaState"),
+        }
     }
 
     // DTMF Digit2
@@ -656,7 +692,6 @@ impl PjsuaCallback for SIPCore {
 
     // Sound device operation
     unsafe extern "C" fn on_snd_dev_operation(operation: c_int) -> pj_status_t {
-
         // todo here
         0
     }
@@ -676,46 +711,13 @@ impl PjsuaCallback for SIPCore {
         status: pj_status_t,
         info: *const pjsua_ip_change_op_info,
     ) {
-        // todo here
-        // let info_str: [c_char; 128];
-        let mut acc_info: pjsua_acc_info = pjsua_acc_info::new();
-        let mut tp_info: pjsua_transport_info = pjsua_transport_info::new();
-
-        if status == pj_constants__PJ_SUCCESS as pj_status_t {
-            match op {
-              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_RESTART_LIS => {
-                  pjsua_transport_get_info((*info).lis_restart.transport_id,
-                    &mut tp_info as *mut _);
-                  println!("restart transport.");
-              },
-              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => {
-                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
-                    &mut acc_info as *mut _);
-                  println!("transport shutdown for account.");
-              },
-              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => {
-                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
-                    &mut acc_info as *mut _);
-                  println!("update contact for account.");
-              },
-              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => {
-                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
-                    &mut acc_info as *mut _);
-                  println!("hangup call for account.");
-              },
-              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => {
-                  pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id,
-                    &mut acc_info as *mut _);
-                  println!("reinvite call for account.");
-              },
-              pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_COMPLETED => {
-                  println!("done");
-              },
-
-                _ => println!("warn validate c code.") 
-            }
-        } else {
-            println!("IP change progress fail.");
+    
+        match SIP_CORE {
+          Some(ref mut sipcore) => {
+            sipcore.callback_on_ip_change_progress(op, status, info);
+          },
+          _ => panic!("Panic OnIpChangeProgress")
         }
+
     }
 }
