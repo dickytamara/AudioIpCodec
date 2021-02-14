@@ -17,8 +17,27 @@ pub type SIPBuddy = pjsua_buddy_config;
 
 pub struct SIPAudio {}
 pub struct SIPIMessages {}
-pub struct SIPMedia {}
+
+
+pub struct SIPMedia {
+    slot: i32,
+    cnt: i32,
+    port: pjmedia_port
+}
+
+
+impl SIPMedia {
+    pub fn new () -> SIPMedia {
+      SIPMedia {
+        slot: -1,
+        cnt: -1,
+        port: pjmedia_port::new()
+      }
+    }
+}
+
 pub struct SIPPressence {}
+
 
 #[derive(Copy, Clone)]
 pub struct SIPCall {
@@ -43,7 +62,9 @@ trait Audio {}
 
 trait IMessages {}
 
-trait Media {}
+trait Media {
+
+}
 
 trait Pressence {}
 
@@ -65,6 +86,8 @@ pub struct SIPCore {
     account: SIPAccount, // for now just set to 1 account
     buddy_list: Vec<SIPBuddy>,
     call_data: [SIPCall; 32],
+    ringback: SIPMedia,
+    ring: SIPMedia,
     default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
     wav_id: pjsua_player_id,
@@ -77,11 +100,11 @@ pub struct SIPCore {
     output_dev: i32,
     input_latency: u32,
     output_latency: u32,
-    ringback_slot: i32,
-    ring_slot: i32,
     auto_play_hangup: bool,
     duration: u32,
     current_call: i32,
+    aud_cnt: u32,
+    auto_answer: u32
 }
 
 impl SIPCore {
@@ -109,6 +132,8 @@ impl SIPCore {
             account: SIPAccount::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
             call_data: [SIPCall::new(); 32],
+            ringback: SIPMedia::new(),
+            ring: SIPMedia::new(),
             default_handler: pjsip_module::new(),
             redir_op: pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE,
             wav_id: PJSUA_INVALID_ID,
@@ -121,11 +146,11 @@ impl SIPCore {
             output_dev: PJSUA_INVALID_ID,
             input_latency: 100,
             output_latency: 140,
-            ringback_slot: PJSUA_INVALID_ID,
-            ring_slot: PJSUA_INVALID_ID,
             auto_play_hangup: false,
             duration: 0,
             current_call: -1,
+            aud_cnt: 0,
+            auto_answer: 0
         }
     }
 
@@ -285,8 +310,30 @@ impl SIPCore {
 
             let mut opt: pjsua_call_setting = pjsua_call_setting::new();
             pjsua_call_setting_default(&mut opt as *mut _);
+            opt.aud_cnt = self.aud_cnt;
+
+            pjsua_call_answer2(call_id, &opt as *const _, self.auto_answer,
+              &mut mem::zeroed() as *const _,
+              &mut mem::zeroed() as *const _);
         }
     }
+
+    pub fn callback_on_dtmf_digit2(&self, call_id: pjsua_call_id, info: *const pjsua_dtmf_info) {
+        unsafe {
+              let mut dtmf: &str = "None";
+              match (*info).method {
+                   pjsua_dtmf_method_PJSUA_DTMF_METHOD_RFC2833 => {
+                      dtmf = "RFC2833";
+                   },
+                   pjsua_dtmf_method_PJSUA_DTMF_METHOD_SIP_INFO => {
+                      dtmf = "SIP INFO";  
+                   },
+                   _ => println!("Unkown dtmf method")
+              }
+
+              println!("Incomming DTMF on call using method {}", dtmf);
+        }
+    } 
 
     pub fn callback_on_ip_change_progress(
         &self,
@@ -579,6 +626,12 @@ impl PjsuaCallback for SIPCore {
     // DTMF Digit2
     unsafe extern "C" fn on_dtmf_digit2(call_id: pjsua_call_id, info: *const pjsua_dtmf_info) {
         // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_dtmf_digit2(call_id, info);
+            },
+            _ => panic!("Panic OnDtmfDigit2")
+        }
     }
 
     // Call Redirected
