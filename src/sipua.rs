@@ -371,7 +371,43 @@ impl SIPCore {
         }
     } 
 
-    pub fn callback_on_call_transfer_status(
+    pub fn callback_on_buddy_evsub_state(&self,
+        buddy_id: pjsua_buddy_id,
+        sub: *mut pjsip_evsub,
+        event: *mut pjsip_event,
+    ) {
+        unsafe {
+            
+          let rdata = (*event).body.tsx_state.src.rdata;
+          // let astr = pjsip_rx_data_get_info(rdata);
+          println!("Buddy subscription state");
+        }
+    }
+
+    pub fn callback_on_pager(&self,
+        call_id: pjsua_call_id,
+        from: *const pj_str_t,
+        to: *const pj_str_t,
+        contact: *const pj_str_t,
+        mime_type: *const pj_str_t,
+        body: *const pj_str_t,
+    ) {
+        println!("OnPager");
+    }
+
+    pub fn callback_on_typing(&self, 
+        call_id: pjsua_call_id,
+        from: *const pj_str_t,
+        to: *const pj_str_t,
+        contact: *const pj_str_t,
+        is_typing: pj_bool_t,
+    ) {
+        println!("IM indication.");
+
+    }
+
+
+    pub fn callback_on_call_transfer_status(&self, 
         call_id: pjsua_call_id,
         st_code: c_int,
         st_text: *const pj_str_t,
@@ -379,9 +415,38 @@ impl SIPCore {
         p_cont: *mut pj_bool_t,
     ) {
         unsafe {
-
+            println!("Call {} transfer status={}", call_id, st_code);
+            if st_code / 100 == 2 {
+              pjsua_call_hangup(call_id, pjsip_status_code_PJSIP_SC_GONE,
+                ptr::null() as *const _, ptr::null() as *const _);
+              *p_cont = pj_constants__PJ_FALSE as pj_bool_t;
+            }
         } 
     }
+
+    pub fn callback_on_call_replaced(&self, old_call_id: pjsua_call_id, new_call_id: pjsua_call_id) {
+        unsafe {
+
+            let mut old_ci: pjsua_call_info = pjsua_call_info::new();
+            let mut new_ci: pjsua_call_info = pjsua_call_info::new();
+
+            pjsua_call_get_info(old_call_id, &mut old_ci as *mut _);
+            pjsua_call_get_info(new_call_id, &mut new_ci as *mut _);
+            
+            println!("Call {} is being replaced by call {}", old_call_id, new_call_id);
+        } 
+    } 
+
+    pub fn callback_on_nat_detect(&self, res: *const pj_stun_nat_detect_result) { 
+        unsafe {
+            if (*res).status != pj_constants__PJ_SUCCESS as pj_status_t {
+                println!("NAT detection failed.");
+            } else {
+                println!("NAT detected");
+            }
+        }
+    }
+
 
     pub fn callback_on_ip_change_progress(
         &self,
@@ -581,12 +646,11 @@ impl PjsipModuleCallback for SIPCore {
             status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
         }
 
-        let null_ptr: *const pj_str_t = ptr::null();
         status = pjsip_endpt_create_response(
             pjsua_get_pjsip_endpt(),
             &mut rdata as *const _,
             status_code as c_int,
-            null_ptr,
+            ptr::null() as *const _,
             tdata as *mut *mut _,
         );
 
@@ -601,7 +665,7 @@ impl PjsipModuleCallback for SIPCore {
             cap_hdr = pjsip_endpt_get_capability(
                 pjsua_get_pjsip_endpt(),
                 pjsip_hdr_e_PJSIP_H_ALLOW as i32,
-                null_ptr,
+                ptr::null() as *const _,
             );
 
             if !cap_hdr.is_null() {
@@ -743,7 +807,12 @@ impl PjsuaCallback for SIPCore {
         sub: *mut pjsip_evsub,
         event: *mut pjsip_event,
     ) {
-        // todo here
+      match SIP_CORE {
+          Some(ref mut sipcore) => {
+            sipcore.callback_on_buddy_evsub_state(buddy_id, sub, event);
+          },
+          _ => panic!("Panic OnBuddyEvsubState")
+      }
     }
 
     // Pager
@@ -755,7 +824,13 @@ impl PjsuaCallback for SIPCore {
         mime_type: *const pj_str_t,
         body: *const pj_str_t,
     ) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_pager(call_id, from, to,
+                  contact, mime_type, body);
+            },
+            _ => panic!("Panic OnPager")
+        }
     }
 
     // Typing event
@@ -766,7 +841,12 @@ impl PjsuaCallback for SIPCore {
         contact: *const pj_str_t,
         is_typing: pj_bool_t,
     ) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_typing(call_id, from, to, contact, is_typing);
+            }, 
+            _ => panic!("Panic OnTyping")
+        }
     }
 
     // Call transfer status
@@ -777,17 +857,33 @@ impl PjsuaCallback for SIPCore {
         final_: pj_bool_t,
         p_cont: *mut pj_bool_t,
     ) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_call_transfer_status(call_id, st_code, st_text,
+                  final_, p_cont);
+            },
+            _ => panic!("Panic OnCallTransferStatus")
+        }
     }
 
     // Call replaced
     unsafe extern "C" fn on_call_replaced(old_call_id: pjsua_call_id, new_call_id: pjsua_call_id) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_call_replaced(old_call_id, new_call_id); 
+            },
+            _ => panic!("Panic OnCallReplaced")
+        }
     }
 
     // NAT detect
     unsafe extern "C" fn on_nat_detect(res: *const pj_stun_nat_detect_result) {
-        // todo here
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_nat_detect(res);
+            }, 
+            _ => panic!("Panic OnNatDetect")
+        }
     }
 
     // MWI info
