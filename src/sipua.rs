@@ -2,6 +2,7 @@
 
 // default
 use super::pjdefault::AutoCreate;
+use super::pjlib::PjTimerEntry;
 use super::pjsip::PjsipModuleCallback;
 use super::pjsua::PjsuaCallback;
 use super::pjsua_sys::*;
@@ -50,6 +51,46 @@ impl SIPCall {
             ringback_on: false,
             ring_on: false,
         }
+    }
+}
+
+impl PjTimerEntry for SIPCall {
+    unsafe extern "C" fn pj_timer_heap_callback(
+        timer_heap: *mut pj_timer_heap_t,
+        entry: *mut pj_timer_entry,
+    ) {
+        let call_id: pjsua_call_id = (*entry).id;
+        let mut msg_data_: pjsua_msg_data = pjsua_msg_data::new();
+        let mut warn: pjsip_generic_string_hdr = pjsip_generic_string_hdr::new();
+        let mut hname = pj_str(CString::new("Warning").expect("Error").into_raw());
+        let mut hvalue = pj_str(
+            CString::new("339 \" Call duration exceeded \"")
+                .expect("Error")
+                .into_raw(),
+        );
+
+        if call_id == PJSUA_INVALID_ID {
+            println!("Invalid call ED intimer callback");
+        }
+
+        pjsua_msg_data_init(&mut msg_data_ as *mut _);
+        pjsip_generic_string_hdr_init2(
+            &mut warn as *mut _,
+            &mut hname as *mut _,
+            &mut hvalue as *mut _,
+        );
+        pj_list_insert_before(
+            (&mut msg_data_.hdr_list as *mut _) as *mut _,
+            (&mut warn as *mut _) as *mut _,
+        );
+
+        println!(
+            "Duration (seconds) has been exceeded for call {}, disconnectiong the call.",
+            call_id
+        );
+
+        (*entry).id = PJSUA_INVALID_ID;
+        pjsua_call_hangup(call_id, 200, ptr::null(), &mut msg_data_ as *mut _);
     }
 }
 
@@ -311,8 +352,8 @@ impl SIPCore {
                 call_id,
                 &opt as *const _,
                 self.auto_answer,
-                &mut mem::zeroed() as *const _,
-                &mut mem::zeroed() as *const _,
+                ptr::null_mut(),
+                ptr::null_mut(),
             );
         }
     }
@@ -672,12 +713,12 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
         if status != pj_constants__PJ_SUCCESS as i32 {
             return;
         }
-        #[allow(unused_assignments)]
-        let void: *const c_void = ptr::null();
 
-        let exp: *const pjsip_expires_hdr =
-            pjsip_msg_find_hdr((*rdata).msg_info.msg, pjsip_hdr_e_PJSIP_H_EXPIRES, void)
-                as *const _;
+        let exp: *const pjsip_expires_hdr = pjsip_msg_find_hdr(
+            (*rdata).msg_info.msg,
+            pjsip_hdr_e_PJSIP_H_EXPIRES,
+            ptr::null_mut(),
+        ) as *const _;
 
         let llist: pjsip_hdr = (*(*rdata).msg_info.msg).hdr;
         let mut h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
@@ -724,7 +765,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
             pjsua_get_pjsip_endpt(),
             rdata,
             tdata as *mut _,
-            void as *mut _,
+            ptr::null_mut(),
             None,
         );
     }

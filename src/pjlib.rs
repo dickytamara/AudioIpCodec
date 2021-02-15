@@ -221,3 +221,10 @@ impl AutoCreate<pj_timer_entry> for pj_timer_entry {
         }
     }
 }
+
+pub trait PjTimerEntry {
+    unsafe extern "C" fn pj_timer_heap_callback(
+        timer_heap: *mut pj_timer_heap_t,
+        entry: *mut pj_timer_entry,
+    );
+}

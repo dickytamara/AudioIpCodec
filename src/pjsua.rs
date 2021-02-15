@@ -799,3 +799,20 @@ impl AutoCreate<pjsua_buddy_info> for pjsua_buddy_info {
         }
     }
 }
+
+impl AutoCreate<pjsua_msg_data> for pjsua_msg_data {
+    fn new () -> pjsua_msg_data{
+        pjsua_msg_data {
+            target_uri: pj_str_t::new(),
+            hdr_list: pjsip_hdr::new(),
+            content_type: pj_str_t::new(),
+            msg_body: pj_str_t::new(),
+            multipart_ctype: pjsip_media_type::new(),
+            multipart_parts: pjsip_multipart_part::new()
+        }
+    }
+}
+
+
+
+

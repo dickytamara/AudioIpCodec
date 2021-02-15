@@ -298,3 +298,35 @@ impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
         }
     }
 }
+
+impl AutoCreate<pjsip_param> for pjsip_param {
+    fn new() -> pjsip_param {
+        pjsip_param {
+            prev: ptr::null_mut(),
+            next: ptr::null_mut(),
+            name: pj_str_t::new(),
+            value: pj_str_t::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjsip_multipart_part> for pjsip_multipart_part {
+    fn new() -> pjsip_multipart_part {
+        pjsip_multipart_part {
+            prev: ptr::null_mut(),
+            next: ptr::null_mut(),
+            hdr: pjsip_hdr::new(),
+            body: ptr::null_mut(),
+        }
+    }
+}
+
+impl AutoCreate<pjsip_media_type> for pjsip_media_type {
+    fn new() -> pjsip_media_type {
+        pjsip_media_type {
+            type_: pj_str_t::new(),
+            subtype: pj_str_t::new(),
+            param: pjsip_param::new(),
+        }
+    }
+}
