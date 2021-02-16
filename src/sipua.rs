@@ -32,6 +32,7 @@ trait SIPWavPlayerDone {
     unsafe extern "C" fn eof(port: *mut pjmedia_port, usr_data: *mut c_void);
 }
 
+// wav player
 impl SIPWavPlayer {
     pub fn new(file_path: String, play_options: u32, auto_play_hangup: bool) -> SIPWavPlayer {
         let mut player = SIPWavPlayer {
@@ -111,6 +112,7 @@ impl Drop for SIPWavPlayer {
     }
 }
 
+// wav recorder for log
 pub struct SIPWavRecorder {
     id: i32,
     files: String,
@@ -131,23 +133,140 @@ impl SIPWavRecorder {
     }
 }
 
-pub struct SIPMedia {
-    slot: i32,
-    cnt: i32,
-    port: pjmedia_port,
-}
-
-impl SIPMedia {
-    pub fn new() -> SIPMedia {
-        SIPMedia {
-            slot: -1,
-            cnt: -1,
-            port: pjmedia_port::new(),
+impl Drop for SIPWavRecorder {
+    fn drop(&mut self) {
+        unsafe {
+            pjsua_recorder_destroy(self.id);
         }
     }
 }
 
-pub struct SIPPressence {}
+// Optional
+#[derive(Clone, Copy)]
+pub struct SIPTones {
+    slot: i32,
+    desc: pjmedia_tone_desc,
+    port: *mut pjmedia_port,
+}
+
+impl SIPTones {
+    pub fn new() -> SIPTones {
+        let tones = SIPTones {
+            slot: -1,
+            desc: pjmedia_tone_desc::new(),
+            port: ptr::null_mut(),
+        };
+
+        tones
+    }
+}
+
+//  Ringback tone
+pub struct SIPRingback {
+    desc: pjmedia_tone_desc,
+    slot: i32,
+    port: *mut pjmedia_port,
+}
+
+impl SIPRingback {
+    pub fn new() -> SIPRingback {
+        SIPRingback {
+            desc: pjmedia_tone_desc::new(),
+            slot: -1,
+            port: ptr::null_mut(),
+        }
+    }
+}
+
+impl Drop for SIPRingback {
+    fn drop(&mut self) {
+        unsafe {
+            pjmedia_tonegen_stop(self.port);
+        }
+    }
+}
+
+// this tone gen will alert on incoming call
+pub struct SIPRingtone {
+    tone: [pjmedia_tone_desc; 3],
+    slot: i32,
+    port: *mut pjmedia_port,
+}
+
+impl SIPRingtone {
+    pub fn new() -> SIPRingtone {
+        SIPRingtone {
+            tone: [pjmedia_tone_desc::new(); 3],
+            slot: -1,
+            port: ptr::null_mut(),
+        }
+    }
+}
+
+impl Drop for SIPRingtone {
+    fn drop(&mut self) {
+        unsafe {
+            pjmedia_tonegen_stop(self.port);
+        }
+    }
+}
+
+pub struct SIPTransport {
+    id: i32,
+}
+
+impl SIPTransport {
+    pub fn new() -> SIPTransport {
+        SIPTransport { id: -1 }
+    }
+
+    // start create the transport
+    pub fn init(&mut self, type_: pjsip_transport_type_e, config: &pjsua_transport_config) {
+        unsafe {
+            let status = pjsua_transport_create(type_, config, &mut self.id as &mut _);
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant create transport.")
+            }
+        }
+    }
+
+    pub fn get_info(&self) -> Result<*const pjsua_transport_info, i32> {
+        unsafe {
+            let info: *mut pjsua_transport_info = ptr::null_mut();
+            let status: pj_status_t = pjsua_transport_get_info(self.id, info);
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                return Err(status);
+            }
+
+            Ok(info)
+        }
+    }
+
+    pub fn set_enable(&self, enabled: bool) {
+        unsafe {
+            let mut e = pj_constants__PJ_FALSE;
+            if enabled {
+                e = pj_constants__PJ_TRUE;
+            }
+
+            let status = pjsua_transport_set_enable(self.id, e as i32);
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant set enable transport");
+            }
+        }
+    }
+}
+
+impl Drop for SIPTransport {
+    fn drop(&mut self) {
+        unsafe {
+            pjsua_transport_close(self.id, pj_constants__PJ_TRUE as i32);
+        }
+    }
+}
 
 #[derive(Copy, Clone)]
 pub struct SIPCall {
@@ -206,21 +325,6 @@ impl PjTimerEntry for SIPCall {
     }
 }
 
-trait Account {}
-
-trait Audio {}
-
-trait IMessages {}
-
-trait Media {}
-
-trait Pressence {}
-
-trait Call {}
-
-// pjsua_call_dump
-trait Dump {}
-
 static mut SIP_CORE: Option<SIPCore> = None;
 static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 
@@ -234,8 +338,9 @@ pub struct SIPCore {
     account: SIPAccount, // for now just set to 1 account
     buddy_list: Vec<SIPBuddy>,
     call_data: [SIPCall; 32],
-    ringback: SIPMedia,
-    ring: SIPMedia,
+    tones: [SIPTones; 32],
+    ringback: SIPRingback,
+    ring: SIPRingtone,
     wav_player: Option<SIPWavPlayer>,
     wav_recorder: Option<SIPWavRecorder>,
     default_handler: pjsip_module,
@@ -278,8 +383,9 @@ impl SIPCore {
             account: SIPAccount::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
             call_data: [SIPCall::new(); 32],
-            ringback: SIPMedia::new(),
-            ring: SIPMedia::new(),
+            tones: [SIPTones::new(); 32],
+            ringback: SIPRingback::new(),
+            ring: SIPRingtone::new(),
             wav_player: None,
             wav_recorder: None,
             default_handler: pjsip_module::new(),

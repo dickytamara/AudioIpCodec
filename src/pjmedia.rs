@@ -169,3 +169,21 @@ impl AutoCreate<pjmedia_transport> for pjmedia_transport {
         }
     }
 }
+
+
+impl AutoCreate<pjmedia_tone_desc> for pjmedia_tone_desc {
+    fn new () -> pjmedia_tone_desc {
+        pjmedia_tone_desc {
+            freq1: 0,
+            freq2: 0,
+            on_msec: 0,
+            off_msec: 0,
+            volume: 0,
+            flags: 0
+        }
+    }
+}
+
+
+
+
