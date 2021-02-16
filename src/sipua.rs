@@ -365,25 +365,63 @@ impl Drop for SIPRingtone {
 
 pub struct SIPTransport {
     id: i32,
+    acc_id: i32,
 }
 
 impl SIPTransport {
     pub fn new() -> SIPTransport {
-        SIPTransport { id: -1 }
+        SIPTransport { id: -1, acc_id: -1 }
     }
 
     // start create the transport
-    pub fn init(&mut self, type_: pjsip_transport_type_e, config: *const pjsua_transport_config) {
+    pub fn init(
+        &mut self,
+        type_: pjsip_transport_type_e,
+        config: *const pjsua_transport_config,
+        rtp_config: *const pjsua_transport_config,
+    ) {
         unsafe {
             assert_ne!(config.is_null(), true);
 
-            let status = pjsua_transport_create(type_, config, &mut self.id as &mut _);
+            let mut status = pjsua_transport_create(type_, config, &mut self.id as &mut _);
 
             if status != pj_constants__PJ_SUCCESS as i32 {
                 panic!("cant create transport.")
             }
 
             assert_ne!(self.id, -1);
+
+            status = pjsua_acc_add_local(
+                self.id,
+                pj_constants__PJ_TRUE as i32,
+                &mut self.acc_id as *mut _,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init transport");
+            }
+
+            assert_ne!(self.acc_id, -1);
+
+            let pool = pjsua_pool_create(
+                CString::new("tmp-pool").expect("error").into_raw(),
+                1000,
+                1000,
+            );
+
+            let mut acc_cfg = pjsua_acc_config::new();
+            pjsua_acc_get_config(self.acc_id, pool, &mut acc_cfg as *mut _);
+
+            acc_cfg.rtp_cfg = *rtp_config;
+            if type_ == pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6
+                || type_ == pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6
+            {
+                acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
+            }
+
+            pjsua_acc_modify(self.acc_id, &mut acc_cfg as *const _);
+            pj_pool_release(pool);
+            pjsua_acc_set_online_status(pjsua_acc_get_default(), self.acc_id);
         }
     }
 
@@ -564,7 +602,7 @@ impl SIPCore {
             media_config: pjsua_media_config::new(),
             no_udp: false,
             no_tcp: false,
-            use_ipv6: true,
+            use_ipv6: false,
             udp_config: udp,
             rtp_config: rtp,
             transport: Vec::new(),
@@ -616,6 +654,8 @@ impl SIPCore {
             self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
             self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
 
+            self.rtp_config.port = 4000;
+
             // init pjsua
             pjsua_init(
                 &mut self.app_config as *mut _,
@@ -650,6 +690,7 @@ impl SIPCore {
                 transport.init(
                     pjsip_transport_type_e_PJSIP_TRANSPORT_UDP,
                     &mut self.udp_config as *const _,
+                    &mut self.rtp_config as *const _,
                 );
 
                 // tcp_cfg = transport.get_tcp_config(&self.udp_config);
@@ -664,6 +705,7 @@ impl SIPCore {
                     transport.init(
                         pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6,
                         &mut udp as *const _,
+                        &mut self.rtp_config as *const _,
                     );
 
                     self.transport.push(transport);
@@ -675,6 +717,7 @@ impl SIPCore {
                 transport.init(
                     pjsip_transport_type_e_PJSIP_TRANSPORT_TCP,
                     &mut tcp_cfg as *const _,
+                    &mut self.rtp_config as *const _,
                 );
 
                 self.transport.push(transport);
@@ -687,6 +730,7 @@ impl SIPCore {
                     transport.init(
                         pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6,
                         &mut tcp as *const _,
+                        &mut self.rtp_config as *const _,
                     );
 
                     self.transport.push(transport);
