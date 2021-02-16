@@ -739,6 +739,13 @@ impl SIPCore {
         }
     }
 
+    pub fn deinit(&mut self) {
+        unsafe {
+            pj_pool_safe_release(&mut self.pool as *mut _);
+            pjsua_destroy();
+        }
+    }
+
     pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 
     // ring stkp procedure
@@ -1162,7 +1169,7 @@ impl SIPCore {
 // SIPUserAgent
 pub struct SIPUserAgent {
     /// hold internal pjsua data
-    x: i32, // test only
+    pub x: i32, // test only
 }
 
 //type SIPConfig = pjsua_config;
@@ -1186,7 +1193,7 @@ impl SIPUserAgent {
         SIPUserAgent { x: 0 }
     }
 
-    pub fn start(self) {
+    pub fn start(&self) {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipcore) => sipcore.start(),
@@ -1196,12 +1203,15 @@ impl SIPUserAgent {
     }
 }
 
-//binding clike code patern with destructor
-impl Drop for SIPCore {
+impl Drop for SIPUserAgent {
     fn drop(&mut self) {
         unsafe {
-            pj_pool_safe_release(&mut self.pool as *mut _);
-            pjsua_destroy();
+            match SIP_CORE {
+                Some(ref mut sipcore) => {
+                    sipcore.deinit();
+                }
+                _ => (),
+            }
         }
     }
 }

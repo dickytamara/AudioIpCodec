@@ -13,7 +13,6 @@ mod pjsua;
 mod sipua;
 
 use sipua::*;
-// use pjdefault::AutoCreate;
 
 fn main() {
     let sip = SIPUserAgent::new();
