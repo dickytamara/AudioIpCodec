@@ -8,6 +8,7 @@ use super::pjsua::PjsuaCallback;
 use super::pjsua_sys::*;
 use mut_static::MutStatic;
 use std::ffi::CString;
+use std::fmt::format;
 use std::mem;
 use std::ops::Drop;
 use std::os::raw::{c_char, c_int, c_uint, c_void};
@@ -145,25 +146,68 @@ impl Drop for SIPWavRecorder {
 #[derive(Clone, Copy)]
 pub struct SIPTones {
     slot: i32,
-    desc: pjmedia_tone_desc,
+    tones: pjmedia_tone_desc,
     port: *mut pjmedia_port,
 }
 
 impl SIPTones {
     pub fn new() -> SIPTones {
-        let tones = SIPTones {
+        SIPTones {
             slot: -1,
-            desc: pjmedia_tone_desc::new(),
+            tones: pjmedia_tone_desc::new(),
             port: ptr::null_mut(),
-        };
+        }
+    }
 
-        tones
+    pub fn init(&mut self, pool: *mut pj_pool_t, freq1: u16, freq2: u16) {
+        unsafe {
+            assert_ne!(pool.is_null(), true);
+
+            let mut slabel = pj_str(
+                CString::new(format!("tone-{}-{}", freq1, freq2))
+                    .expect("error")
+                    .into_raw(),
+            );
+
+            let mut status = pjmedia_tonegen_create2(
+                pool,
+                &mut slabel as *const _,
+                8000,
+                1,
+                160,
+                16,
+                PJMEDIA_TONEGEN_LOOP,
+                &mut self.port as *mut _,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPTones");
+            }
+
+            status = pjsua_conf_add_port(pool, self.port, &mut self.slot as *mut _);
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPTones");
+            }
+
+            status = pjmedia_tonegen_play(self.port, 1, &mut self.tones as *mut _, 0);
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPTones");
+            }
+
+            assert_ne!(self.port.is_null(), true);
+            assert_ne!(self.slot, -1);
+            println!(
+                "SIPTones init slot {}, freq {} and {}",
+                self.slot, freq1, freq2
+            );
+        }
     }
 }
 
 //  Ringback tone
 pub struct SIPRingback {
-    desc: pjmedia_tone_desc,
+    tones: pjmedia_tone_desc,
     slot: i32,
     port: *mut pjmedia_port,
 }
@@ -171,9 +215,61 @@ pub struct SIPRingback {
 impl SIPRingback {
     pub fn new() -> SIPRingback {
         SIPRingback {
-            desc: pjmedia_tone_desc::new(),
+            tones: pjmedia_tone_desc::new(),
             slot: -1,
             port: ptr::null_mut(),
+        }
+    }
+
+    pub fn init(&mut self, pool: *mut pj_pool_t, media_config: pjsua_media_config) {
+        unsafe {
+            assert_ne!(pool.is_null(), true);
+
+            let samples_per_frame = media_config.audio_frame_ptime
+                * media_config.clock_rate
+                * media_config.channel_count
+                / 1000;
+
+            self.tones.freq1 = 440;
+            self.tones.freq2 = 480;
+            self.tones.on_msec = 2000;
+            self.tones.off_msec = 4000;
+
+            let mut name = pj_str(CString::new("ringback").expect("error").into_raw());
+            let mut status = pjmedia_tonegen_create2(
+                pool,
+                &mut name as *const _,
+                media_config.clock_rate,
+                media_config.channel_count,
+                samples_per_frame,
+                16,
+                PJMEDIA_TONEGEN_LOOP,
+                &mut self.port as *mut _,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPRingback");
+            }
+
+            status = pjsua_conf_add_port(pool, self.port, &mut self.slot as *mut _);
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPRingback");
+            }
+
+            status = pjmedia_tonegen_play(
+                self.port,
+                1,
+                &mut self.tones as *mut _,
+                PJMEDIA_TONEGEN_LOOP,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPRingback");
+            }
+
+            assert_ne!(self.port.is_null(), true);
+            assert_ne!(self.slot, -1);
+            println!("SIPRingback init with slot {}", self.slot);
         }
     }
 }
@@ -188,7 +284,7 @@ impl Drop for SIPRingback {
 
 // this tone gen will alert on incoming call
 pub struct SIPRingtone {
-    tone: [pjmedia_tone_desc; 3],
+    tones: [pjmedia_tone_desc; 3],
     slot: i32,
     port: *mut pjmedia_port,
 }
@@ -196,9 +292,65 @@ pub struct SIPRingtone {
 impl SIPRingtone {
     pub fn new() -> SIPRingtone {
         SIPRingtone {
-            tone: [pjmedia_tone_desc::new(); 3],
+            tones: [pjmedia_tone_desc::new(); 3],
             slot: -1,
             port: ptr::null_mut(),
+        }
+    }
+
+    pub fn init(&mut self, pool: *mut pj_pool_t, media_config: pjsua_media_config) {
+        unsafe {
+            assert_ne!(pool.is_null(), true);
+
+            let samples_per_frame = media_config.audio_frame_ptime
+                * media_config.clock_rate
+                * media_config.channel_count
+                / 1000;
+
+            for tone in self.tones.iter_mut() {
+                tone.freq1 = 800;
+                tone.freq2 = 640;
+                tone.on_msec = 200;
+                tone.off_msec = 100;
+            }
+
+            self.tones[2].off_msec = 3000;
+
+            let mut name = pj_str(CString::new("ringtone").expect("error").into_raw());
+            let mut status = pjmedia_tonegen_create2(
+                pool,
+                &mut name as *const _,
+                media_config.clock_rate,
+                media_config.channel_count,
+                samples_per_frame,
+                16,
+                PJMEDIA_TONEGEN_LOOP,
+                &mut self.port as *mut _,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPRingtone");
+            }
+
+            status = pjsua_conf_add_port(pool, self.port, &mut self.slot as *mut _);
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPRingtone");
+            }
+
+            status = pjmedia_tonegen_play(
+                self.port,
+                3,
+                self.tones.as_ptr() as *mut pjmedia_tone_desc,
+                PJMEDIA_TONEGEN_LOOP,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("cant init SIPRingtone");
+            }
+
+            assert_ne!(self.port.is_null(), true);
+            assert_ne!(self.slot, -1);
+            println!("SIPRingtone init with slot {}", self.slot);
         }
     }
 }
@@ -221,13 +373,17 @@ impl SIPTransport {
     }
 
     // start create the transport
-    pub fn init(&mut self, type_: pjsip_transport_type_e, config: &pjsua_transport_config) {
+    pub fn init(&mut self, type_: pjsip_transport_type_e, config: *const pjsua_transport_config) {
         unsafe {
+            assert_ne!(config.is_null(), true);
+
             let status = pjsua_transport_create(type_, config, &mut self.id as &mut _);
 
             if status != pj_constants__PJ_SUCCESS as i32 {
                 panic!("cant create transport.")
             }
+
+            assert_ne!(self.id, -1);
         }
     }
 
@@ -258,6 +414,30 @@ impl SIPTransport {
             }
         }
     }
+
+    // pub fn get_tcp_config(&self, config: &pjsua_transport_config) -> pjsua_transport_config{
+    // unsafe {
+    // let udp = config;
+    // let mut tcp = *config;
+    //
+    // if udp.port == 0 {
+    // let mut ti = pjsua_transport_info::new();
+    // let mut a: *mut pj_sockaddr_in = ptr::null_mut();
+    //
+    // let status = pjsua_transport_get_info(self.id, &mut ti as *mut _);
+    // if status != pj_constants__PJ_SUCCESS as i32 {
+    // panic!("Panic SIPTransport");
+    // }
+    //
+    // a = (&mut ti.local_addr as *mut pj_sockaddr) as *mut pj_sockaddr_in;
+    // let port = (*a).sin_port;
+    //
+    // tcp.port = pj_ntohs(port) as u32;
+    // }
+    //
+    // tcp
+    // }
+    // }
 }
 
 impl Drop for SIPTransport {
@@ -333,14 +513,18 @@ pub struct SIPCore {
     app_config: pjsua_config,
     log_config: pjsua_logging_config,
     media_config: pjsua_media_config,
+    no_udp: bool,
+    no_tcp: bool,
+    use_ipv6: bool,
     udp_config: pjsua_transport_config,
     rtp_config: pjsua_transport_config,
+    transport: Vec<SIPTransport>,
     account: SIPAccount, // for now just set to 1 account
     buddy_list: Vec<SIPBuddy>,
     call_data: [SIPCall; 32],
-    tones: [SIPTones; 32],
+    tones: Vec<SIPTones>,
     ringback: SIPRingback,
-    ring: SIPRingtone,
+    ringtone: SIPRingtone,
     wav_player: Option<SIPWavPlayer>,
     wav_recorder: Option<SIPWavRecorder>,
     default_handler: pjsip_module,
@@ -378,14 +562,18 @@ impl SIPCore {
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
             media_config: pjsua_media_config::new(),
+            no_udp: false,
+            no_tcp: false,
+            use_ipv6: true,
             udp_config: udp,
             rtp_config: rtp,
+            transport: Vec::new(),
             account: SIPAccount::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
             call_data: [SIPCall::new(); 32],
-            tones: [SIPTones::new(); 32],
+            tones: Vec::new(),
             ringback: SIPRingback::new(),
-            ring: SIPRingtone::new(),
+            ringtone: SIPRingtone::new(),
             wav_player: None,
             wav_recorder: None,
             default_handler: pjsip_module::new(),
@@ -434,18 +622,82 @@ impl SIPCore {
                 &mut self.log_config as *mut _,
                 &mut self.media_config as *mut _,
             );
+
             // pjsip endpoint for unhadled error
             self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
             pjsip_endpt_register_module(
                 pjsua_get_pjsip_endpt(),
                 &mut self.default_handler as *mut _,
             );
+
+            // add optional tones
+            for _ in 0..32 {
+                let mut tones = SIPTones::new();
+                tones.init(self.pool as *mut _, 440, 480);
+                self.tones.push(tones);
+            }
+
+            // init ringback
+            self.ringback.init(self.pool, self.media_config);
+
+            // init ringtone
+            self.ringtone.init(self.pool, self.media_config);
+
+            let mut tcp_cfg: pjsua_transport_config = self.udp_config;
+
+            if !self.no_udp {
+                let mut transport = SIPTransport::new();
+                transport.init(
+                    pjsip_transport_type_e_PJSIP_TRANSPORT_UDP,
+                    &mut self.udp_config as *const _,
+                );
+
+                // tcp_cfg = transport.get_tcp_config(&self.udp_config);
+
+                self.transport.push(transport);
+
+                if self.use_ipv6 == true {
+                    let mut udp = self.udp_config;
+                    udp.port = udp.port + 10;
+
+                    let mut transport = SIPTransport::new();
+                    transport.init(
+                        pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6,
+                        &mut udp as *const _,
+                    );
+
+                    self.transport.push(transport);
+                }
+            }
+
+            if !self.no_tcp {
+                let mut transport = SIPTransport::new();
+                transport.init(
+                    pjsip_transport_type_e_PJSIP_TRANSPORT_TCP,
+                    &mut tcp_cfg as *const _,
+                );
+
+                self.transport.push(transport);
+
+                if self.use_ipv6 {
+                    let mut tcp = tcp_cfg;
+                    tcp.port = tcp.port + 10;
+
+                    let mut transport = SIPTransport::new();
+                    transport.init(
+                        pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6,
+                        &mut tcp as *const _,
+                    );
+
+                    self.transport.push(transport);
+                }
+            }
         }
     }
 
     pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 
-    // ring stop procedure
+    // ring stkp procedure
     pub fn ring_stop(&self, call_id: &pjsua_call_id) {}
 
     pub fn ring_start(&self, call_id: pjsua_call_id) {}

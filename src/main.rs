@@ -13,12 +13,12 @@ mod pjsua;
 mod sipua;
 
 use sipua::*;
-//use pjdefault::AutoCreate;
+// use pjdefault::AutoCreate;
 
 fn main() {
     let sip = SIPUserAgent::new();
-    // let mut ln = String::new();
+    let mut ln = String::new();
     sip.start();
     println!("todo: main application here.");
-    //std::io::stdin().read_line(&mut ln).unwrap();
+    std::io::stdin().read_line(&mut ln).unwrap();
 }
