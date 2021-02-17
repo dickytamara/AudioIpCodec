@@ -6,7 +6,6 @@ use super::pjlib::PjTimerEntry;
 use super::pjsip::PjsipModuleCallback;
 use super::pjsua::PjsuaCallback;
 use super::pjsua_sys::*;
-use mut_static::MutStatic;
 use std::ffi::CString;
 use std::fmt::format;
 use std::mem;
@@ -14,11 +13,73 @@ use std::ops::Drop;
 use std::os::raw::{c_char, c_int, c_uint, c_void};
 use std::ptr;
 
-pub type SIPAccount = pjsua_acc_config;
+pub struct SIPAccount {
+    id: i32,
+    ctx: pjsua_acc_config,
+}
+
+impl SIPAccount {
+    pub fn new(rtp_config: pjsua_transport_config) -> SIPAccount {
+        let mut acc = SIPAccount {
+            id: -1,
+            ctx: pjsua_acc_config::new(),
+        };
+
+        acc.ctx.rtp_cfg = rtp_config;
+        acc.ctx.reg_retry_interval = 300;
+        acc.ctx.reg_first_retry_interval = 60;
+
+        unsafe {
+            let mut status = pjsua_acc_add(
+                &mut acc.ctx as *const _,
+                pj_constants__PJ_TRUE as pj_bool_t,
+                &mut acc.id as *mut _,
+            );
+
+            if status != pj_constants__PJ_SUCCESS as pj_status_t {
+                panic!("Panic SIPAccount");
+            }
+
+            status = pjsua_acc_set_online_status(
+                pjsua_acc_get_default(),
+                pj_constants__PJ_TRUE as pj_bool_t,
+            );
+            if status != pj_constants__PJ_SUCCESS as pj_status_t {
+                panic!("Panic SIPAccount");
+            }
+        }
+        assert_ne!(acc.id, -1);
+
+        acc
+    }
+}
+
 pub type SIPBuddy = pjsua_buddy_config;
 
-pub struct SIPAudio {}
 pub struct SIPIMessages {}
+
+pub struct SIPAudio {
+    capture_id: i32,
+    playback_id: i32,
+}
+
+impl SIPAudio {
+    pub fn new() -> SIPAudio {
+        SIPAudio {
+            capture_id: -1,
+            playback_id: -1,
+        }
+    }
+
+    pub fn init(&self) {
+        unsafe {
+            let status = pjsua_set_snd_dev(self.capture_id, self.playback_id);
+            if status != pj_constants__PJ_SUCCESS as i32 {
+                panic!("Panic cant initialize SIPAudio");
+            }
+        }
+    }
+}
 
 pub struct SIPWavPlayer {
     id: pjsua_player_id,
@@ -197,6 +258,7 @@ impl SIPTones {
 
             assert_ne!(self.port.is_null(), true);
             assert_ne!(self.slot, -1);
+
             println!(
                 "SIPTones init slot {}, freq {} and {}",
                 self.slot, freq1, freq2
@@ -557,12 +619,13 @@ pub struct SIPCore {
     udp_config: pjsua_transport_config,
     rtp_config: pjsua_transport_config,
     transport: Vec<SIPTransport>,
-    account: SIPAccount, // for now just set to 1 account
+    account: Vec<SIPAccount>,
     buddy_list: Vec<SIPBuddy>,
     call_data: [SIPCall; 32],
     tones: Vec<SIPTones>,
     ringback: SIPRingback,
     ringtone: SIPRingtone,
+    audio_device: SIPAudio,
     wav_player: Option<SIPWavPlayer>,
     wav_recorder: Option<SIPWavRecorder>,
     default_handler: pjsip_module,
@@ -605,13 +668,14 @@ impl SIPCore {
             use_ipv6: false,
             udp_config: udp,
             rtp_config: rtp,
-            transport: Vec::new(),
-            account: SIPAccount::new(),
+            transport: Vec::<SIPTransport>::new(),
+            account: Vec::<SIPAccount>::new(),
             buddy_list: Vec::<SIPBuddy>::new(),
             call_data: [SIPCall::new(); 32],
             tones: Vec::new(),
             ringback: SIPRingback::new(),
             ringtone: SIPRingtone::new(),
+            audio_device: SIPAudio::new(),
             wav_player: None,
             wav_recorder: None,
             default_handler: pjsip_module::new(),
@@ -685,6 +749,7 @@ impl SIPCore {
 
             let mut tcp_cfg: pjsua_transport_config = self.udp_config;
 
+            // Initialize UDP Tranport
             if !self.no_udp {
                 let mut transport = SIPTransport::new();
                 transport.init(
@@ -712,6 +777,7 @@ impl SIPCore {
                 }
             }
 
+            // initialize TCP transport
             if !self.no_tcp {
                 let mut transport = SIPTransport::new();
                 transport.init(
@@ -736,6 +802,9 @@ impl SIPCore {
                     self.transport.push(transport);
                 }
             }
+
+            // init audio device
+            self.audio_device.init();
         }
     }
 
