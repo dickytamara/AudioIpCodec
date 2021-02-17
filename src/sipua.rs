@@ -54,7 +54,135 @@ impl SIPAccount {
     }
 }
 
-pub type SIPBuddy = pjsua_buddy_config;
+// true interface for managing accounts
+pub struct SIPAccounts {
+      acc_list: Vec<SIPAccount>
+}
+
+impl SIPAccounts {
+    pub fn new() -> SIPAccounts {
+        SIPAccounts {
+            acc_list: Vec::<SIPAccount>::new()
+        }
+    }
+
+    pub fn add () {
+
+    }
+
+
+    pub fn delete() {
+
+    }
+    
+    pub fn modify() {
+
+    }
+
+    pub fn register() {
+
+    }
+
+
+    pub fn unregister() {
+
+    }
+
+    pub fn next() {
+
+    }
+
+    pub fn prev() {
+
+    }
+
+    pub fn show() {
+
+    }
+}
+
+
+
+pub struct SIPBuddy {
+    id: i32,
+    ctx: pjsua_buddy_config
+}
+
+impl SIPBuddy {
+
+    pub fn new() -> SIPBuddy {
+        SIPBuddy{
+            id: -1,
+            ctx: pjsua_buddy_config::new()
+        }
+    }
+
+
+    pub fn init(&mut self) {
+        unsafe {
+
+            let status = pjsua_buddy_add(&mut self.ctx as *const _,
+              &mut self.id as *mut _);
+
+            if status != pj_constants__PJ_SUCCESS as pj_status_t {
+                panic!("Panic SIPBuddy");
+            }
+            
+            assert_ne!(self.id, -1);
+        }
+    }
+}
+
+pub struct SIPPresence {
+    buddy_list: Vec<SIPBuddy>
+
+}
+
+impl SIPPresence {
+
+    pub fn new () -> SIPPresence {
+       SIPPresence {
+             buddy_list: Vec::<SIPBuddy>::new()
+       }
+    }
+
+
+    pub fn add_buddy() {
+
+    }
+
+    pub fn delete() {
+
+    }
+
+    pub fn send_im() {
+
+    }
+
+    pub fn subscribe() {
+
+    }
+
+
+    pub fn unsubscribe() {
+
+    }
+
+    pub fn toggle_state() {
+
+
+    }
+
+    pub fn text() {
+
+
+    }
+
+    pub fn list () {
+
+    }
+
+}
 
 pub struct SIPIMessages {}
 
@@ -514,30 +642,6 @@ impl SIPTransport {
             }
         }
     }
-
-    // pub fn get_tcp_config(&self, config: &pjsua_transport_config) -> pjsua_transport_config{
-    // unsafe {
-    // let udp = config;
-    // let mut tcp = *config;
-    //
-    // if udp.port == 0 {
-    // let mut ti = pjsua_transport_info::new();
-    // let mut a: *mut pj_sockaddr_in = ptr::null_mut();
-    //
-    // let status = pjsua_transport_get_info(self.id, &mut ti as *mut _);
-    // if status != pj_constants__PJ_SUCCESS as i32 {
-    // panic!("Panic SIPTransport");
-    // }
-    //
-    // a = (&mut ti.local_addr as *mut pj_sockaddr) as *mut pj_sockaddr_in;
-    // let port = (*a).sin_port;
-    //
-    // tcp.port = pj_ntohs(port) as u32;
-    // }
-    //
-    // tcp
-    // }
-    // }
 }
 
 impl Drop for SIPTransport {
@@ -546,6 +650,90 @@ impl Drop for SIPTransport {
             pjsua_transport_close(self.id, pj_constants__PJ_TRUE as i32);
         }
     }
+}
+
+pub struct SIPTransports {
+    transport_list: Vec<SIPTransport>,
+    udp_cfg: pjsua_transport_config,
+    rtp_cfg: pjsua_transport_config
+}
+
+impl SIPTransports {
+      pub fn new() -> SIPTransports {
+          let mut sip_transports = SIPTransports {
+              transport_list: Vec::<SIPTransport>::new(),
+              udp_cfg: pjsua_transport_config::new(),
+              rtp_cfg: pjsua_transport_config::new()
+          };
+          
+          sip_transports.udp_cfg.port = 5060;
+          sip_transports.rtp_cfg.port = 4000;
+          
+          sip_transports
+      }
+
+      pub fn add (&mut self, transport_type: u32) {
+          let mut transport = SIPTransport::new();
+          transport.init(transport_type, 
+            &mut self.udp_cfg as *const _, 
+            &mut self.rtp_cfg as *const _);
+          self.transport_list.push(transport);
+      } 
+
+      pub fn delete(&mut self, transport_id: i32) {
+          // TODO
+      }
+
+      pub fn set_ca_list_file(&mut self, file_path: &str) {
+          unsafe {
+          self.udp_cfg.tls_setting.ca_list_file = pj_str(
+              CString::new(file_path).expect("error").into_raw()
+            );
+          }
+      }
+      
+      pub fn set_cert_file(&mut self, file_path: &str) {
+          unsafe {
+              self.udp_cfg.tls_setting.cert_file = pj_str(
+                  CString::new(file_path).expect("error").into_raw()
+                );
+          }
+      }
+      
+      pub fn set_privkey_file(&mut self, file_path: &str) {
+          unsafe {
+              self.udp_cfg.tls_setting.privkey_file = pj_str(
+                    CString::new(file_path).expect("error").into_raw()
+                );
+          }
+      }
+      
+      pub fn set_password(&mut self, password: &str) {
+          unsafe {
+              self.udp_cfg.tls_setting.password = pj_str(
+                    CString::new(password).expect("error").into_raw()
+                );
+          }
+      }
+
+      pub fn set_tls_verify_server(&mut self, value: bool) {
+          self.udp_cfg.tls_setting.verify_server = if value {
+              pj_constants__PJ_TRUE as pj_bool_t
+          } else { 
+              pj_constants__PJ_FALSE as pj_bool_t
+          } 
+      }
+
+      pub fn set_tls_verify_client(&mut self, value: bool) {
+          let val = if value { 
+              pj_constants__PJ_TRUE as pj_bool_t
+          } else {
+              pj_constants__PJ_FALSE as pj_bool_t 
+          };
+
+          self.udp_cfg.tls_setting.verify_client = val;
+          self.udp_cfg.tls_setting.require_client_cert = val;
+      }
 }
 
 #[derive(Copy, Clone)]
@@ -616,11 +804,9 @@ pub struct SIPCore {
     no_udp: bool,
     no_tcp: bool,
     use_ipv6: bool,
-    udp_config: pjsua_transport_config,
-    rtp_config: pjsua_transport_config,
-    transport: Vec<SIPTransport>,
-    account: Vec<SIPAccount>,
-    buddy_list: Vec<SIPBuddy>,
+    transports: SIPTransports,
+    accounts: SIPAccounts,
+    presence: SIPPresence,
     call_data: [SIPCall; 32],
     tones: Vec<SIPTones>,
     ringback: SIPRingback,
@@ -653,11 +839,6 @@ impl SIPCore {
             ctx = pjsua_pool_create(pool_name.as_ptr(), 1000, 1000);
         }
 
-        let mut udp = pjsua_transport_config::new();
-        let mut rtp = pjsua_transport_config::new();
-        udp.port = 5060;
-        rtp.port = 4000;
-
         SIPCore {
             pool: ctx,
             app_config: pjsua_config::new(),
@@ -666,11 +847,9 @@ impl SIPCore {
             no_udp: false,
             no_tcp: false,
             use_ipv6: false,
-            udp_config: udp,
-            rtp_config: rtp,
-            transport: Vec::<SIPTransport>::new(),
-            account: Vec::<SIPAccount>::new(),
-            buddy_list: Vec::<SIPBuddy>::new(),
+            transports: SIPTransports::new(),
+            accounts: SIPAccounts::new(),
+            presence: SIPPresence::new(),
             call_data: [SIPCall::new(); 32],
             tones: Vec::new(),
             ringback: SIPRingback::new(),
@@ -718,7 +897,6 @@ impl SIPCore {
             self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
             self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
 
-            self.rtp_config.port = 4000;
 
             // init pjsua
             pjsua_init(
@@ -747,59 +925,63 @@ impl SIPCore {
             // init ringtone
             self.ringtone.init(self.pool, self.media_config);
 
-            let mut tcp_cfg: pjsua_transport_config = self.udp_config;
+//            let mut tcp_cfg: pjsua_transport_config = self.udp_config;
 
-            // Initialize UDP Tranport
+            // Initialize UDP Transport
             if !self.no_udp {
-                let mut transport = SIPTransport::new();
-                transport.init(
-                    pjsip_transport_type_e_PJSIP_TRANSPORT_UDP,
-                    &mut self.udp_config as *const _,
-                    &mut self.rtp_config as *const _,
-                );
-
+                // let mut transport = SIPTransport::new();
+                // transport.init(
+                    // pjsip_transport_type_e_PJSIP_TRANSPORT_UDP,
+                    // &mut self.udp_config as *const _,
+                    // &mut self.rtp_config as *const _,
+                // );
+//
                 // tcp_cfg = transport.get_tcp_config(&self.udp_config);
 
-                self.transport.push(transport);
-
+                // self.transport.push(transport);
+                self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
+                
                 if self.use_ipv6 == true {
-                    let mut udp = self.udp_config;
-                    udp.port = udp.port + 10;
-
-                    let mut transport = SIPTransport::new();
-                    transport.init(
-                        pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6,
-                        &mut udp as *const _,
-                        &mut self.rtp_config as *const _,
-                    );
-
-                    self.transport.push(transport);
+                    // let mut udp = self.udp_config;
+                    // udp.port = udp.port + 10;
+//
+                    // let mut transport = SIPTransport::new();
+                    // transport.init(
+                        // pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6,
+                        // &mut udp as *const _,
+                        // &mut self.rtp_config as *const _,
+                    // );
+//
+                    // self.transport.push(transport);
+                    self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6);
                 }
             }
 
             // initialize TCP transport
             if !self.no_tcp {
-                let mut transport = SIPTransport::new();
-                transport.init(
-                    pjsip_transport_type_e_PJSIP_TRANSPORT_TCP,
-                    &mut tcp_cfg as *const _,
-                    &mut self.rtp_config as *const _,
-                );
-
-                self.transport.push(transport);
-
+                // let mut transport = SIPTransport::new();
+                // transport.init(
+                    // pjsip_transport_type_e_PJSIP_TRANSPORT_TCP,
+                    // &mut tcp_cfg as *const _,
+                    // &mut self.rtp_config as *const _,
+                // );
+//
+                // self.transport.push(transport);
+//
+                self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP);
                 if self.use_ipv6 {
-                    let mut tcp = tcp_cfg;
-                    tcp.port = tcp.port + 10;
-
-                    let mut transport = SIPTransport::new();
-                    transport.init(
-                        pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6,
-                        &mut tcp as *const _,
-                        &mut self.rtp_config as *const _,
-                    );
-
-                    self.transport.push(transport);
+                    // let mut tcp = tcp_cfg;
+                    // tcp.port = tcp.port + 10;
+//
+                    // let mut transport = SIPTransport::new();
+                    // transport.init(
+                        // pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6,
+                        // &mut tcp as *const _,
+                        // &mut self.rtp_config as *const _,
+                    // );
+//
+                    // self.transport.push(transport);
+                    self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6);
                 }
             }
 
