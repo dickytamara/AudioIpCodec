@@ -474,7 +474,7 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
         unsafe {
             pjsua_media_config_default(&mut config as *mut _);
         }
-
+        
         config
     }
 }

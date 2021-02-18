@@ -56,132 +56,86 @@ impl SIPAccount {
 
 // true interface for managing accounts
 pub struct SIPAccounts {
-      acc_list: Vec<SIPAccount>
+    acc_list: Vec<SIPAccount>
 }
 
 impl SIPAccounts {
-    pub fn new() -> SIPAccounts {
+
+  pub fn new() -> SIPAccounts {
         SIPAccounts {
-            acc_list: Vec::<SIPAccount>::new()
+            acc_list: Vec::<SIPAccount>::new(),
         }
     }
 
-    pub fn add () {
+    pub fn add() {}
 
-    }
+    pub fn delete() {}
 
+    pub fn modify() {}
 
-    pub fn delete() {
+    pub fn register() {}
 
-    }
-    
-    pub fn modify() {
+    pub fn unregister() {}
 
-    }
+    pub fn next() {}
 
-    pub fn register() {
+    pub fn prev() {}
 
-    }
-
-
-    pub fn unregister() {
-
-    }
-
-    pub fn next() {
-
-    }
-
-    pub fn prev() {
-
-    }
-
-    pub fn show() {
-
-    }
+    pub fn show() {}
 }
-
-
 
 pub struct SIPBuddy {
     id: i32,
-    ctx: pjsua_buddy_config
+    ctx: pjsua_buddy_config,
 }
 
 impl SIPBuddy {
-
     pub fn new() -> SIPBuddy {
-        SIPBuddy{
+        SIPBuddy {
             id: -1,
-            ctx: pjsua_buddy_config::new()
+            ctx: pjsua_buddy_config::new(),
         }
     }
 
-
     pub fn init(&mut self) {
         unsafe {
-
-            let status = pjsua_buddy_add(&mut self.ctx as *const _,
-              &mut self.id as *mut _);
+            let status = pjsua_buddy_add(&mut self.ctx as *const _, &mut self.id as *mut _);
 
             if status != pj_constants__PJ_SUCCESS as pj_status_t {
                 panic!("Panic SIPBuddy");
             }
-            
+
             assert_ne!(self.id, -1);
         }
     }
 }
 
 pub struct SIPPresence {
-    buddy_list: Vec<SIPBuddy>
-
+    buddy_list: Vec<SIPBuddy>,
 }
 
 impl SIPPresence {
-
-    pub fn new () -> SIPPresence {
-       SIPPresence {
-             buddy_list: Vec::<SIPBuddy>::new()
-       }
+    pub fn new() -> SIPPresence {
+        SIPPresence {
+            buddy_list: Vec::<SIPBuddy>::new(),
+        }
     }
 
+    pub fn add_buddy() {}
 
-    pub fn add_buddy() {
+    pub fn delete() {}
 
-    }
+    pub fn send_im() {}
 
-    pub fn delete() {
+    pub fn subscribe() {}
 
-    }
+    pub fn unsubscribe() {}
 
-    pub fn send_im() {
+    pub fn toggle_state() {}
 
-    }
+    pub fn text() {}
 
-    pub fn subscribe() {
-
-    }
-
-
-    pub fn unsubscribe() {
-
-    }
-
-    pub fn toggle_state() {
-
-
-    }
-
-    pub fn text() {
-
-
-    }
-
-    pub fn list () {
-
-    }
-
+    pub fn list() {}
 }
 
 pub struct SIPIMessages {}
@@ -413,8 +367,6 @@ impl SIPRingback {
 
     pub fn init(&mut self, pool: *mut pj_pool_t, media_config: pjsua_media_config) {
         unsafe {
-            assert_ne!(pool.is_null(), true);
-
             let samples_per_frame = media_config.audio_frame_ptime
                 * media_config.clock_rate
                 * media_config.channel_count
@@ -553,6 +505,47 @@ impl Drop for SIPRingtone {
     }
 }
 
+pub struct SIPMedia {
+    ctx: pjsua_media_config,
+    
+}
+
+impl SIPMedia {
+    pub fn new() -> SIPMedia {
+        let mut cfg = SIPMedia {
+            ctx: pjsua_media_config::new()
+        };
+      
+        // spesific tune for AudioIpCodec
+        cfg.ctx.clock_rate = 48000;
+        cfg.ctx.snd_clock_rate = 48000;
+        cfg.ctx.channel_count = 2;
+
+        // media encoding and decoding quality
+        cfg.ctx.quality = 10;
+        
+        // disable voice activity detection
+        cfg.ctx.no_vad = pj_constants__PJ_TRUE as pj_bool_t;
+        
+        // disable echo cancelar
+        cfg.ctx.ec_tail_len = 0;
+        cfg.ctx.ec_options = 0;
+
+        cfg
+
+    }
+
+    pub fn init() {
+        let status: pj_status_t;
+        
+    }
+
+    pub fn media_list () {
+
+    }
+
+}
+
 pub struct SIPTransport {
     id: i32,
     acc_id: i32,
@@ -655,85 +648,83 @@ impl Drop for SIPTransport {
 pub struct SIPTransports {
     transport_list: Vec<SIPTransport>,
     udp_cfg: pjsua_transport_config,
-    rtp_cfg: pjsua_transport_config
+    rtp_cfg: pjsua_transport_config,
 }
 
 impl SIPTransports {
-      pub fn new() -> SIPTransports {
-          let mut sip_transports = SIPTransports {
-              transport_list: Vec::<SIPTransport>::new(),
-              udp_cfg: pjsua_transport_config::new(),
-              rtp_cfg: pjsua_transport_config::new()
-          };
-          
-          sip_transports.udp_cfg.port = 5060;
-          sip_transports.rtp_cfg.port = 4000;
-          
-          sip_transports
-      }
+    pub fn new() -> SIPTransports {
+        let mut sip_transports = SIPTransports {
+            transport_list: Vec::<SIPTransport>::new(),
+            udp_cfg: pjsua_transport_config::new(),
+            rtp_cfg: pjsua_transport_config::new(),
+        };
 
-      pub fn add (&mut self, transport_type: u32) {
-          let mut transport = SIPTransport::new();
-          transport.init(transport_type, 
-            &mut self.udp_cfg as *const _, 
-            &mut self.rtp_cfg as *const _);
-          self.transport_list.push(transport);
-      } 
+        sip_transports.udp_cfg.port = 5060;
+        sip_transports.rtp_cfg.port = 4000;
 
-      pub fn delete(&mut self, transport_id: i32) {
-          // TODO
-      }
+        sip_transports
+    }
 
-      pub fn set_ca_list_file(&mut self, file_path: &str) {
-          unsafe {
-          self.udp_cfg.tls_setting.ca_list_file = pj_str(
-              CString::new(file_path).expect("error").into_raw()
-            );
-          }
-      }
-      
-      pub fn set_cert_file(&mut self, file_path: &str) {
-          unsafe {
-              self.udp_cfg.tls_setting.cert_file = pj_str(
-                  CString::new(file_path).expect("error").into_raw()
-                );
-          }
-      }
-      
-      pub fn set_privkey_file(&mut self, file_path: &str) {
-          unsafe {
-              self.udp_cfg.tls_setting.privkey_file = pj_str(
-                    CString::new(file_path).expect("error").into_raw()
-                );
-          }
-      }
-      
-      pub fn set_password(&mut self, password: &str) {
-          unsafe {
-              self.udp_cfg.tls_setting.password = pj_str(
-                    CString::new(password).expect("error").into_raw()
-                );
-          }
-      }
+    pub fn add(&mut self, transport_type: u32) {
+        let mut transport = SIPTransport::new();
+        transport.init(
+            transport_type,
+            &mut self.udp_cfg as *const _,
+            &mut self.rtp_cfg as *const _,
+        );
+        self.transport_list.push(transport);
+    }
 
-      pub fn set_tls_verify_server(&mut self, value: bool) {
-          self.udp_cfg.tls_setting.verify_server = if value {
-              pj_constants__PJ_TRUE as pj_bool_t
-          } else { 
-              pj_constants__PJ_FALSE as pj_bool_t
-          } 
-      }
+    pub fn delete(&mut self, transport_id: i32) {
+        // TODO
+    }
 
-      pub fn set_tls_verify_client(&mut self, value: bool) {
-          let val = if value { 
-              pj_constants__PJ_TRUE as pj_bool_t
-          } else {
-              pj_constants__PJ_FALSE as pj_bool_t 
-          };
+    pub fn set_ca_list_file(&mut self, file_path: &str) {
+        unsafe {
+            self.udp_cfg.tls_setting.ca_list_file =
+                pj_str(CString::new(file_path).expect("error").into_raw());
+        }
+    }
 
-          self.udp_cfg.tls_setting.verify_client = val;
-          self.udp_cfg.tls_setting.require_client_cert = val;
-      }
+    pub fn set_cert_file(&mut self, file_path: &str) {
+        unsafe {
+            self.udp_cfg.tls_setting.cert_file =
+                pj_str(CString::new(file_path).expect("error").into_raw());
+        }
+    }
+
+    pub fn set_privkey_file(&mut self, file_path: &str) {
+        unsafe {
+            self.udp_cfg.tls_setting.privkey_file =
+                pj_str(CString::new(file_path).expect("error").into_raw());
+        }
+    }
+
+    pub fn set_password(&mut self, password: &str) {
+        unsafe {
+            self.udp_cfg.tls_setting.password =
+                pj_str(CString::new(password).expect("error").into_raw());
+        }
+    }
+
+    pub fn set_tls_verify_server(&mut self, value: bool) {
+        self.udp_cfg.tls_setting.verify_server = if value {
+            pj_constants__PJ_TRUE as pj_bool_t
+        } else {
+            pj_constants__PJ_FALSE as pj_bool_t
+        }
+    }
+
+    pub fn set_tls_verify_client(&mut self, value: bool) {
+        let val = if value {
+            pj_constants__PJ_TRUE as pj_bool_t
+        } else {
+            pj_constants__PJ_FALSE as pj_bool_t
+        };
+
+        self.udp_cfg.tls_setting.verify_client = val;
+        self.udp_cfg.tls_setting.require_client_cert = val;
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -832,15 +823,14 @@ pub struct SIPCore {
 impl SIPCore {
     pub fn new() -> SIPCore {
         // create default data
-        let ctx: *mut pj_pool_t;
         unsafe {
             pjsua_create();
-            let pool_name = CString::new("ipcodec").expect("pool_name fail.");
-            ctx = pjsua_pool_create(pool_name.as_ptr(), 1000, 1000);
+            // let pool_name = CString::new("ipcodec").expect("pool_name fail.");
+            // ctx = pjsua_pool_create(pool_name.as_ptr(), 1000, 1000);
         }
 
-        SIPCore {
-            pool: ctx,
+        let mut sip_core = SIPCore {
+            pool: ptr::null_mut(),
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
             media_config: pjsua_media_config::new(),
@@ -870,11 +860,21 @@ impl SIPCore {
             current_call: -1,
             aud_cnt: 0,
             auto_answer: 0,
-        }
+        };
+
+        sip_core
     }
 
     pub fn start(&mut self) {
         unsafe {
+            self.pool = pjsua_pool_create(
+                CString::new("ipcodec").expect("error").into_raw(),
+                1000,
+                1000,
+            );
+
+            assert_ne!(self.pool.is_null(), true);
+
             self.app_config.cb.on_call_state = Some(SIPCore::on_call_state);
             self.app_config.cb.on_stream_destroyed = Some(SIPCore::on_stream_destroyed);
             self.app_config.cb.on_call_media_state = Some(SIPCore::on_call_media_state);
@@ -897,7 +897,6 @@ impl SIPCore {
             self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
             self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
 
-
             // init pjsua
             pjsua_init(
                 &mut self.app_config as *mut _,
@@ -915,7 +914,7 @@ impl SIPCore {
             // add optional tones
             for _ in 0..32 {
                 let mut tones = SIPTones::new();
-                tones.init(self.pool as *mut _, 440, 480);
+                tones.init(self.pool, 440, 480);
                 self.tones.push(tones);
             }
 
@@ -925,63 +924,23 @@ impl SIPCore {
             // init ringtone
             self.ringtone.init(self.pool, self.media_config);
 
-//            let mut tcp_cfg: pjsua_transport_config = self.udp_config;
-
             // Initialize UDP Transport
             if !self.no_udp {
-                // let mut transport = SIPTransport::new();
-                // transport.init(
-                    // pjsip_transport_type_e_PJSIP_TRANSPORT_UDP,
-                    // &mut self.udp_config as *const _,
-                    // &mut self.rtp_config as *const _,
-                // );
-//
-                // tcp_cfg = transport.get_tcp_config(&self.udp_config);
-
-                // self.transport.push(transport);
-                self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
-                
+                self.transports
+                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
                 if self.use_ipv6 == true {
-                    // let mut udp = self.udp_config;
-                    // udp.port = udp.port + 10;
-//
-                    // let mut transport = SIPTransport::new();
-                    // transport.init(
-                        // pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6,
-                        // &mut udp as *const _,
-                        // &mut self.rtp_config as *const _,
-                    // );
-//
-                    // self.transport.push(transport);
-                    self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6);
+                    self.transports
+                        .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6);
                 }
             }
 
             // initialize TCP transport
             if !self.no_tcp {
-                // let mut transport = SIPTransport::new();
-                // transport.init(
-                    // pjsip_transport_type_e_PJSIP_TRANSPORT_TCP,
-                    // &mut tcp_cfg as *const _,
-                    // &mut self.rtp_config as *const _,
-                // );
-//
-                // self.transport.push(transport);
-//
-                self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP);
+                self.transports
+                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP);
                 if self.use_ipv6 {
-                    // let mut tcp = tcp_cfg;
-                    // tcp.port = tcp.port + 10;
-//
-                    // let mut transport = SIPTransport::new();
-                    // transport.init(
-                        // pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6,
-                        // &mut tcp as *const _,
-                        // &mut self.rtp_config as *const _,
-                    // );
-//
-                    // self.transport.push(transport);
-                    self.transports.add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6);
+                    self.transports
+                        .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6);
                 }
             }
 
@@ -1418,10 +1377,7 @@ impl SIPCore {
 }
 
 // SIPUserAgent
-pub struct SIPUserAgent {
-    /// hold internal pjsua data
-    pub x: i32, // test only
-}
+pub struct SIPUserAgent {}
 
 //type SIPConfig = pjsua_config;
 
@@ -1441,7 +1397,7 @@ impl SIPUserAgent {
             CURRENT_CALL = Some(PJSUA_INVALID_ID);
         }
 
-        SIPUserAgent { x: 0 }
+        SIPUserAgent {}
     }
 
     pub fn start(&self) {

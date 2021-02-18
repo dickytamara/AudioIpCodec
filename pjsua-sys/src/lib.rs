@@ -1,6 +1,5 @@
 #![allow(non_camel_case_types, non_upper_case_globals, non_snake_case)]
 
-
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct __BindgenBitfieldUnit<Storage> {
