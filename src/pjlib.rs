@@ -351,6 +351,7 @@ pub type _bindgen_ty_1 = ::std::os::raw::c_uint;
 pub type _bindgen_ty_2 = ::std::os::raw::c_uint;
 pub type _bindgen_ty_3 = ::std::os::raw::c_uint;
 pub type _bindgen_ty_4 = ::std::os::raw::c_uint;
+pub type _bindgen_ty_15 = ::std::os::raw::c_uint;
 
 pub type __uint8_t = ::std::os::raw::c_uchar;
 pub type __uint16_t = ::std::os::raw::c_ushort;
@@ -463,6 +464,176 @@ pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_SEND_TO: pj_ioqueue_operation_e =
 pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_ACCEPT: pj_ioqueue_operation_e = 64;
 pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_CONNECT: pj_ioqueue_operation_e = 128;
 pub type pj_ioqueue_operation_e = ::std::os::raw::c_uint;
+
+pub const pj_qos_type_PJ_QOS_TYPE_BEST_EFFORT: pj_qos_type = 0;
+pub const pj_qos_type_PJ_QOS_TYPE_BACKGROUND: pj_qos_type = 1;
+pub const pj_qos_type_PJ_QOS_TYPE_VIDEO: pj_qos_type = 2;
+pub const pj_qos_type_PJ_QOS_TYPE_VOICE: pj_qos_type = 3;
+pub const pj_qos_type_PJ_QOS_TYPE_CONTROL: pj_qos_type = 4;
+pub const pj_qos_type_PJ_QOS_TYPE_SIGNALLING: pj_qos_type = 5;
+pub type pj_qos_type = ::std::os::raw::c_uint;
+pub const pj_qos_flag_PJ_QOS_PARAM_HAS_DSCP: pj_qos_flag = 1;
+pub const pj_qos_flag_PJ_QOS_PARAM_HAS_SO_PRIO: pj_qos_flag = 2;
+pub const pj_qos_flag_PJ_QOS_PARAM_HAS_WMM: pj_qos_flag = 4;
+pub type pj_qos_flag = ::std::os::raw::c_uint;
+pub const pj_qos_wmm_prio_PJ_QOS_WMM_PRIO_BULK_EFFORT: pj_qos_wmm_prio = 0;
+pub const pj_qos_wmm_prio_PJ_QOS_WMM_PRIO_BULK: pj_qos_wmm_prio = 1;
+pub const pj_qos_wmm_prio_PJ_QOS_WMM_PRIO_VIDEO: pj_qos_wmm_prio = 2;
+pub const pj_qos_wmm_prio_PJ_QOS_WMM_PRIO_VOICE: pj_qos_wmm_prio = 3;
+pub type pj_qos_wmm_prio = ::std::os::raw::c_uint;
+
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_ESUCCESS: pj_ssl_cert_verify_flag_t = 0;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EISSUER_NOT_FOUND: pj_ssl_cert_verify_flag_t = 1;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EUNTRUSTED: pj_ssl_cert_verify_flag_t = 2;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EVALIDITY_PERIOD: pj_ssl_cert_verify_flag_t = 4;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EINVALID_FORMAT: pj_ssl_cert_verify_flag_t = 8;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EINVALID_PURPOSE: pj_ssl_cert_verify_flag_t = 16;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EISSUER_MISMATCH: pj_ssl_cert_verify_flag_t = 32;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_ECRL_FAILURE: pj_ssl_cert_verify_flag_t = 64;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EREVOKED: pj_ssl_cert_verify_flag_t = 128;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_ECHAIN_TOO_LONG: pj_ssl_cert_verify_flag_t = 256;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EIDENTITY_NOT_MATCH: pj_ssl_cert_verify_flag_t = 1073741824;
+pub const pj_ssl_cert_verify_flag_t_PJ_SSL_CERT_EUNKNOWN: pj_ssl_cert_verify_flag_t = -2147483648;
+pub type pj_ssl_cert_verify_flag_t = ::std::os::raw::c_int;
+
+pub const pj_ssl_cert_name_type_PJ_SSL_CERT_NAME_UNKNOWN: pj_ssl_cert_name_type = 0;
+pub const pj_ssl_cert_name_type_PJ_SSL_CERT_NAME_RFC822: pj_ssl_cert_name_type = 1;
+pub const pj_ssl_cert_name_type_PJ_SSL_CERT_NAME_DNS: pj_ssl_cert_name_type = 2;
+pub const pj_ssl_cert_name_type_PJ_SSL_CERT_NAME_URI: pj_ssl_cert_name_type = 3;
+pub const pj_ssl_cert_name_type_PJ_SSL_CERT_NAME_IP: pj_ssl_cert_name_type = 4;
+pub type pj_ssl_cert_name_type = ::std::os::raw::c_uint;
+
+pub const pj_ssl_cipher_PJ_TLS_UNKNOWN_CIPHER: pj_ssl_cipher = -1;
+pub const pj_ssl_cipher_PJ_TLS_NULL_WITH_NULL_NULL: pj_ssl_cipher = 0;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_NULL_MD5: pj_ssl_cipher = 1;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_NULL_SHA: pj_ssl_cipher = 2;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_NULL_SHA256: pj_ssl_cipher = 59;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_RC4_128_MD5: pj_ssl_cipher = 4;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_RC4_128_SHA: pj_ssl_cipher = 5;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_3DES_EDE_CBC_SHA: pj_ssl_cipher = 10;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_AES_128_CBC_SHA: pj_ssl_cipher = 47;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_AES_256_CBC_SHA: pj_ssl_cipher = 53;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_AES_128_CBC_SHA256: pj_ssl_cipher = 60;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_AES_256_CBC_SHA256: pj_ssl_cipher = 61;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA: pj_ssl_cipher = 13;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA: pj_ssl_cipher = 16;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA: pj_ssl_cipher = 19;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA: pj_ssl_cipher = 22;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_WITH_AES_128_CBC_SHA: pj_ssl_cipher = 48;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_WITH_AES_128_CBC_SHA: pj_ssl_cipher = 49;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_WITH_AES_128_CBC_SHA: pj_ssl_cipher = 50;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_WITH_AES_128_CBC_SHA: pj_ssl_cipher = 51;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_WITH_AES_256_CBC_SHA: pj_ssl_cipher = 54;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_WITH_AES_256_CBC_SHA: pj_ssl_cipher = 55;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_WITH_AES_256_CBC_SHA: pj_ssl_cipher = 56;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_WITH_AES_256_CBC_SHA: pj_ssl_cipher = 57;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_WITH_AES_128_CBC_SHA256: pj_ssl_cipher = 62;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_WITH_AES_128_CBC_SHA256: pj_ssl_cipher = 63;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_WITH_AES_128_CBC_SHA256: pj_ssl_cipher = 64;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_WITH_AES_128_CBC_SHA256: pj_ssl_cipher = 103;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_WITH_AES_256_CBC_SHA256: pj_ssl_cipher = 104;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_WITH_AES_256_CBC_SHA256: pj_ssl_cipher = 105;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_WITH_AES_256_CBC_SHA256: pj_ssl_cipher = 106;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_WITH_AES_256_CBC_SHA256: pj_ssl_cipher = 107;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_RC4_128_MD5: pj_ssl_cipher = 24;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_3DES_EDE_CBC_SHA: pj_ssl_cipher = 27;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_AES_128_CBC_SHA: pj_ssl_cipher = 52;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_AES_256_CBC_SHA: pj_ssl_cipher = 58;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_AES_128_CBC_SHA256: pj_ssl_cipher = 108;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_AES_256_CBC_SHA256: pj_ssl_cipher = 109;
+pub const pj_ssl_cipher_PJ_TLS_RSA_EXPORT_WITH_RC4_40_MD5: pj_ssl_cipher = 3;
+pub const pj_ssl_cipher_PJ_TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5: pj_ssl_cipher = 6;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_IDEA_CBC_SHA: pj_ssl_cipher = 7;
+pub const pj_ssl_cipher_PJ_TLS_RSA_EXPORT_WITH_DES40_CBC_SHA: pj_ssl_cipher = 8;
+pub const pj_ssl_cipher_PJ_TLS_RSA_WITH_DES_CBC_SHA: pj_ssl_cipher = 9;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA: pj_ssl_cipher = 11;
+pub const pj_ssl_cipher_PJ_TLS_DH_DSS_WITH_DES_CBC_SHA: pj_ssl_cipher = 12;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA: pj_ssl_cipher = 14;
+pub const pj_ssl_cipher_PJ_TLS_DH_RSA_WITH_DES_CBC_SHA: pj_ssl_cipher = 15;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA: pj_ssl_cipher = 17;
+pub const pj_ssl_cipher_PJ_TLS_DHE_DSS_WITH_DES_CBC_SHA: pj_ssl_cipher = 18;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA: pj_ssl_cipher = 20;
+pub const pj_ssl_cipher_PJ_TLS_DHE_RSA_WITH_DES_CBC_SHA: pj_ssl_cipher = 21;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_EXPORT_WITH_RC4_40_MD5: pj_ssl_cipher = 23;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA: pj_ssl_cipher = 25;
+pub const pj_ssl_cipher_PJ_TLS_DH_anon_WITH_DES_CBC_SHA: pj_ssl_cipher = 26;
+pub const pj_ssl_cipher_PJ_SSL_FORTEZZA_KEA_WITH_NULL_SHA: pj_ssl_cipher = 28;
+pub const pj_ssl_cipher_PJ_SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA: pj_ssl_cipher = 29;
+pub const pj_ssl_cipher_PJ_SSL_FORTEZZA_KEA_WITH_RC4_128_SHA: pj_ssl_cipher = 30;
+pub const pj_ssl_cipher_PJ_SSL_CK_RC4_128_WITH_MD5: pj_ssl_cipher = 65664;
+pub const pj_ssl_cipher_PJ_SSL_CK_RC4_128_EXPORT40_WITH_MD5: pj_ssl_cipher = 131200;
+pub const pj_ssl_cipher_PJ_SSL_CK_RC2_128_CBC_WITH_MD5: pj_ssl_cipher = 196736;
+pub const pj_ssl_cipher_PJ_SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5: pj_ssl_cipher = 262272;
+pub const pj_ssl_cipher_PJ_SSL_CK_IDEA_128_CBC_WITH_MD5: pj_ssl_cipher = 327808;
+pub const pj_ssl_cipher_PJ_SSL_CK_DES_64_CBC_WITH_MD5: pj_ssl_cipher = 393280;
+pub const pj_ssl_cipher_PJ_SSL_CK_DES_192_EDE3_CBC_WITH_MD5: pj_ssl_cipher = 458944;
+pub type pj_ssl_cipher = ::std::os::raw::c_int;
+
+pub const pj_ssl_curve_PJ_TLS_UNKNOWN_CURVE: pj_ssl_curve = 0;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT163K1: pj_ssl_curve = 1;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT163R1: pj_ssl_curve = 2;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT163R2: pj_ssl_curve = 3;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT193R1: pj_ssl_curve = 4;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT193R2: pj_ssl_curve = 5;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT233K1: pj_ssl_curve = 6;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT233R1: pj_ssl_curve = 7;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT239K1: pj_ssl_curve = 8;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT283K1: pj_ssl_curve = 9;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT283R1: pj_ssl_curve = 10;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT409K1: pj_ssl_curve = 11;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT409R1: pj_ssl_curve = 12;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT571K1: pj_ssl_curve = 13;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECT571R1: pj_ssl_curve = 14;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP160K1: pj_ssl_curve = 15;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP160R1: pj_ssl_curve = 16;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP160R2: pj_ssl_curve = 17;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP192K1: pj_ssl_curve = 18;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP192R1: pj_ssl_curve = 19;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP224K1: pj_ssl_curve = 20;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP224R1: pj_ssl_curve = 21;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP256K1: pj_ssl_curve = 22;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP256R1: pj_ssl_curve = 23;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP384R1: pj_ssl_curve = 24;
+pub const pj_ssl_curve_PJ_TLS_CURVE_SECP521R1: pj_ssl_curve = 25;
+pub const pj_ssl_curve_PJ_TLS_CURVE_BRAINPOOLP256R1: pj_ssl_curve = 26;
+pub const pj_ssl_curve_PJ_TLS_CURVE_BRAINPOOLP384R1: pj_ssl_curve = 27;
+pub const pj_ssl_curve_PJ_TLS_CURVE_BRAINPOOLP512R1: pj_ssl_curve = 28;
+pub const pj_ssl_curve_PJ_TLS_CURVE_ARBITRARY_EXPLICIT_PRIME_CURVES: pj_ssl_curve = 65281;
+pub const pj_ssl_curve_PJ_TLS_CURVE_ARBITRARY_EXPLICIT_CHAR2_CURVES: pj_ssl_curve = 65282;
+pub type pj_ssl_curve = ::std::os::raw::c_uint;
+
+pub const pj_ssl_entropy_PJ_SSL_ENTROPY_NONE: pj_ssl_entropy = 0;
+pub const pj_ssl_entropy_PJ_SSL_ENTROPY_EGD: pj_ssl_entropy = 1;
+pub const pj_ssl_entropy_PJ_SSL_ENTROPY_RANDOM: pj_ssl_entropy = 2;
+pub const pj_ssl_entropy_PJ_SSL_ENTROPY_URANDOM: pj_ssl_entropy = 3;
+pub const pj_ssl_entropy_PJ_SSL_ENTROPY_FILE: pj_ssl_entropy = 4;
+pub const pj_ssl_entropy_PJ_SSL_ENTROPY_UNKNOWN: pj_ssl_entropy = 15;
+pub type pj_ssl_entropy = ::std::os::raw::c_uint;
+pub use self::pj_ssl_entropy as pj_ssl_entropy_t;
+
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_DEFAULT: pj_ssl_sock_proto = 0;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_SSL2: pj_ssl_sock_proto = 1;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_SSL3: pj_ssl_sock_proto = 2;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_TLS1: pj_ssl_sock_proto = 4;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_TLS1_1: pj_ssl_sock_proto = 8;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_TLS1_2: pj_ssl_sock_proto = 16;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_TLS1_3: pj_ssl_sock_proto = 32;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_SSL23: pj_ssl_sock_proto = 65535;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_ALL: pj_ssl_sock_proto = 65535;
+pub const pj_ssl_sock_proto_PJ_SSL_SOCK_PROTO_DTLS1: pj_ssl_sock_proto = 65536;
+pub type pj_ssl_sock_proto = ::std::os::raw::c_uint;
+
+pub const pjsip_ssl_method_PJSIP_SSL_UNSPECIFIED_METHOD: pjsip_ssl_method = 0;
+pub const pjsip_ssl_method_PJSIP_SSLV2_METHOD: pjsip_ssl_method = 20;
+pub const pjsip_ssl_method_PJSIP_SSLV3_METHOD: pjsip_ssl_method = 30;
+pub const pjsip_ssl_method_PJSIP_TLSV1_METHOD: pjsip_ssl_method = 31;
+pub const pjsip_ssl_method_PJSIP_TLSV1_1_METHOD: pjsip_ssl_method = 32;
+pub const pjsip_ssl_method_PJSIP_TLSV1_2_METHOD: pjsip_ssl_method = 33;
+pub const pjsip_ssl_method_PJSIP_TLSV1_3_METHOD: pjsip_ssl_method = 34;
+pub const pjsip_ssl_method_PJSIP_SSLV23_METHOD: pjsip_ssl_method = 23;
+pub type pjsip_ssl_method = ::std::os::raw::c_uint;
+
+
 
 pub type pj_exit_callback = ::std::option::Option<unsafe extern "C" fn()>;
 pub type pj_error_callback = ::std::option::Option<
@@ -1022,6 +1193,337 @@ pub struct pj_ioqueue_callback {
     >,
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_qos_params {
+    pub flags: pj_uint8_t,
+    pub dscp_val: pj_uint8_t,
+    pub so_prio: pj_uint8_t,
+    pub wmm_prio: pj_qos_wmm_prio,
+}
+
+pub type pj_pool_callback =
+    ::std::option::Option<unsafe extern "C" fn(pool: *mut pj_pool_t, size: pj_size_t)>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_pool_block {
+    pub prev: *mut pj_pool_block,
+    pub next: *mut pj_pool_block,
+    pub buf: *mut ::std::os::raw::c_uchar,
+    pub cur: *mut ::std::os::raw::c_uchar,
+    pub end: *mut ::std::os::raw::c_uchar,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_pool_t {
+    pub prev: *mut pj_pool_t,
+    pub next: *mut pj_pool_t,
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub factory: *mut pj_pool_factory,
+    pub factory_data: *mut ::std::os::raw::c_void,
+    pub capacity: pj_size_t,
+    pub increment_size: pj_size_t,
+    pub block_list: pj_pool_block,
+    pub callback: pj_pool_callback,
+}
+
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_pool_factory_policy {
+    pub block_alloc: ::std::option::Option<
+        unsafe extern "C" fn(
+            factory: *mut pj_pool_factory,
+            size: pj_size_t,
+        ) -> *mut ::std::os::raw::c_void,
+    >,
+    pub block_free: ::std::option::Option<
+        unsafe extern "C" fn(
+            factory: *mut pj_pool_factory,
+            mem: *mut ::std::os::raw::c_void,
+            size: pj_size_t,
+        ),
+    >,
+    pub callback: pj_pool_callback,
+    pub flags: ::std::os::raw::c_uint,
+}
+
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_pool_factory {
+    pub policy: pj_pool_factory_policy,
+    pub create_pool: ::std::option::Option<
+        unsafe extern "C" fn(
+            factory: *mut pj_pool_factory,
+            name: *const ::std::os::raw::c_char,
+            initial_size: pj_size_t,
+            increment_size: pj_size_t,
+            callback: pj_pool_callback,
+        ) -> *mut pj_pool_t,
+    >,
+    pub release_pool: ::std::option::Option<
+        unsafe extern "C" fn(factory: *mut pj_pool_factory, pool: *mut pj_pool_t),
+    >,
+    pub dump_status: ::std::option::Option<
+        unsafe extern "C" fn(factory: *mut pj_pool_factory, detail: pj_bool_t),
+    >,
+    pub on_block_alloc: ::std::option::Option<
+        unsafe extern "C" fn(factory: *mut pj_pool_factory, size: pj_size_t) -> pj_bool_t,
+    >,
+    pub on_block_free:
+        ::std::option::Option<unsafe extern "C" fn(factory: *mut pj_pool_factory, size: pj_size_t)>,
+}
+
+
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_caching_pool {
+    pub factory: pj_pool_factory,
+    pub capacity: pj_size_t,
+    pub max_capacity: pj_size_t,
+    pub used_count: pj_size_t,
+    pub used_size: pj_size_t,
+    pub peak_used_size: pj_size_t,
+    pub free_list: [pj_list; 16usize],
+    pub used_list: pj_list,
+    pub pool_buf: [::std::os::raw::c_char; 512usize],
+    pub lock: *mut pj_lock_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_sock_t {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_t {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info {
+    pub version: ::std::os::raw::c_uint,
+    pub serial_no: [pj_uint8_t; 20usize],
+    pub subject: pj_ssl_cert_info__bindgen_ty_1,
+    pub issuer: pj_ssl_cert_info__bindgen_ty_2,
+    pub validity: pj_ssl_cert_info__bindgen_ty_3,
+    pub subj_alt_name: pj_ssl_cert_info__bindgen_ty_4,
+    pub raw: pj_str_t,
+    pub raw_chain: pj_ssl_cert_info__bindgen_ty_5,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info__bindgen_ty_1 {
+    pub cn: pj_str_t,
+    pub info: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info__bindgen_ty_2 {
+    pub cn: pj_str_t,
+    pub info: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info__bindgen_ty_3 {
+    pub start: pj_time_val,
+    pub end: pj_time_val,
+    pub gmt: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info__bindgen_ty_4 {
+    pub cnt: ::std::os::raw::c_uint,
+    pub entry: *mut pj_ssl_cert_info__bindgen_ty_4__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info__bindgen_ty_4__bindgen_ty_1 {
+    pub type_: pj_ssl_cert_name_type,
+    pub name: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_cert_info__bindgen_ty_5 {
+    pub cnt: ::std::os::raw::c_uint,
+    pub cert_raw: *mut pj_str_t,
+}
+
+pub type pj_ssl_cert_buffer = pj_str_t;
+
+
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_sock_cb {
+    pub on_data_read: ::std::option::Option<
+        unsafe extern "C" fn(
+            ssock: *mut pj_ssl_sock_t,
+            data: *mut ::std::os::raw::c_void,
+            size: pj_size_t,
+            status: pj_status_t,
+            remainder: *mut pj_size_t,
+        ) -> pj_bool_t,
+    >,
+    pub on_data_recvfrom: ::std::option::Option<
+        unsafe extern "C" fn(
+            ssock: *mut pj_ssl_sock_t,
+            data: *mut ::std::os::raw::c_void,
+            size: pj_size_t,
+            src_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_int,
+            status: pj_status_t,
+        ) -> pj_bool_t,
+    >,
+    pub on_data_sent: ::std::option::Option<
+        unsafe extern "C" fn(
+            ssock: *mut pj_ssl_sock_t,
+            send_key: *mut pj_ioqueue_op_key_t,
+            sent: pj_ssize_t,
+        ) -> pj_bool_t,
+    >,
+    pub on_accept_complete: ::std::option::Option<
+        unsafe extern "C" fn(
+            ssock: *mut pj_ssl_sock_t,
+            newsock: *mut pj_ssl_sock_t,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_int,
+        ) -> pj_bool_t,
+    >,
+    pub on_accept_complete2: ::std::option::Option<
+        unsafe extern "C" fn(
+            ssock: *mut pj_ssl_sock_t,
+            newsock: *mut pj_ssl_sock_t,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_int,
+            status: pj_status_t,
+        ) -> pj_bool_t,
+    >,
+    pub on_connect_complete: ::std::option::Option<
+        unsafe extern "C" fn(ssock: *mut pj_ssl_sock_t, status: pj_status_t) -> pj_bool_t,
+    >,
+}
+
+
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ssl_sock_info {
+    pub established: pj_bool_t,
+    pub proto: pj_uint32_t,
+    pub cipher: pj_ssl_cipher,
+    pub local_addr: pj_sockaddr,
+    pub remote_addr: pj_sockaddr,
+    pub local_cert_info: *mut pj_ssl_cert_info,
+    pub remote_cert_info: *mut pj_ssl_cert_info,
+    pub verify_status: pj_uint32_t,
+    pub last_native_err: ::std::os::raw::c_ulong,
+    pub grp_lock: *mut pj_grp_lock_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_sock_param {
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub sock_af: ::std::os::raw::c_int,
+    pub sock_type: ::std::os::raw::c_int,
+    pub ioqueue: *mut pj_ioqueue_t,
+    pub timer_heap: *mut pj_timer_heap_t,
+    pub cb: pj_ssl_sock_cb,
+    pub user_data: *mut ::std::os::raw::c_void,
+    pub proto: pj_uint32_t,
+    pub async_cnt: ::std::os::raw::c_uint,
+    pub concurrency: ::std::os::raw::c_int,
+    pub whole_data: pj_bool_t,
+    pub send_buffer_size: pj_size_t,
+    pub read_buffer_size: pj_size_t,
+    pub ciphers_num: ::std::os::raw::c_uint,
+    pub ciphers: *mut pj_ssl_cipher,
+    pub curves_num: ::std::os::raw::c_uint,
+    pub curves: *mut pj_ssl_curve,
+    pub sigalgs: pj_str_t,
+    pub entropy_type: pj_ssl_entropy_t,
+    pub entropy_path: pj_str_t,
+    pub timeout: pj_time_val,
+    pub verify_peer: pj_bool_t,
+    pub require_client_cert: pj_bool_t,
+    pub server_name: pj_str_t,
+    pub reuse_addr: pj_bool_t,
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub qos_ignore_error: pj_bool_t,
+    pub sockopt_params: pj_sockopt_params,
+    pub sockopt_ignore_error: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ssl_start_connect_param {
+    pub pool: *mut pj_pool_t,
+    pub localaddr: *const pj_sockaddr_t,
+    pub local_port_range: pj_uint16_t,
+    pub remaddr: *const pj_sockaddr_t,
+    pub addr_len: ::std::os::raw::c_int,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_tls_on_accept_fail_param {
+    pub local_addr: *const pj_sockaddr_t,
+    pub remote_addr: *const pj_sockaddr_t,
+    pub status: pj_status_t,
+    pub last_native_err: pj_status_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_tls_setting {
+    pub ca_list_file: pj_str_t,
+    pub ca_list_path: pj_str_t,
+    pub cert_file: pj_str_t,
+    pub privkey_file: pj_str_t,
+    pub ca_buf: pj_ssl_cert_buffer,
+    pub cert_buf: pj_ssl_cert_buffer,
+    pub privkey_buf: pj_ssl_cert_buffer,
+    pub password: pj_str_t,
+    pub method: pjsip_ssl_method,
+    pub proto: pj_uint32_t,
+    pub ciphers_num: ::std::os::raw::c_uint,
+    pub ciphers: *mut pj_ssl_cipher,
+    pub curves_num: ::std::os::raw::c_uint,
+    pub curves: *mut pj_ssl_curve,
+    pub sigalgs: pj_str_t,
+    pub entropy_type: pj_ssl_entropy_t,
+    pub entropy_path: pj_str_t,
+    pub verify_server: pj_bool_t,
+    pub verify_client: pj_bool_t,
+    pub require_client_cert: pj_bool_t,
+    pub timeout: pj_time_val,
+    pub reuse_addr: pj_bool_t,
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub qos_ignore_error: pj_bool_t,
+    pub sockopt_params: pj_sockopt_params,
+    pub sockopt_ignore_error: pj_bool_t,
+    pub on_accept_fail_cb:
+        ::std::option::Option<unsafe extern "C" fn(param: *const pjsip_tls_on_accept_fail_param)>,
+}
 
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
@@ -1267,7 +1769,113 @@ extern "C" {
     pub fn pj_ioqueue_recvfrom( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, buffer: *mut ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, addr: *mut pj_sockaddr_t, addrlen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
     pub fn pj_ioqueue_send( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, data: *const ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, ) -> pj_status_t;
     pub fn pj_ioqueue_sendto( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, data: *const ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, addr: *const pj_sockaddr_t, addrlen: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_set_qos_type(sock: pj_sock_t, type_: pj_qos_type) -> pj_status_t;
+    pub fn pj_sock_get_qos_type(sock: pj_sock_t, p_type: *mut pj_qos_type) -> pj_status_t;
+    pub fn pj_sock_apply_qos( sock: pj_sock_t, qos_type: pj_qos_type, qos_params: *mut pj_qos_params, log_level: ::std::os::raw::c_uint, log_sender: *const ::std::os::raw::c_char, sock_name: *const ::std::os::raw::c_char, ) -> pj_status_t;
+    pub fn pj_sock_apply_qos2( sock: pj_sock_t, qos_type: pj_qos_type, qos_params: *const pj_qos_params, log_level: ::std::os::raw::c_uint, log_sender: *const ::std::os::raw::c_char, sock_name: *const ::std::os::raw::c_char, ) -> pj_status_t;
+    pub fn pj_qos_get_params(type_: pj_qos_type, p_param: *mut pj_qos_params) -> pj_status_t;
+    pub fn pj_qos_get_type(param: *const pj_qos_params, p_type: *mut pj_qos_type) -> pj_status_t;
+    pub fn pj_sock_set_qos_params(sock: pj_sock_t, param: *mut pj_qos_params) -> pj_status_t;
+    pub fn pj_sock_get_qos_params(sock: pj_sock_t, p_param: *mut pj_qos_params) -> pj_status_t;
+    pub static mut PJ_NO_MEMORY_EXCEPTION: ::std::os::raw::c_int;
+    pub fn pj_NO_MEMORY_EXCEPTION() -> ::std::os::raw::c_int;
+    pub static mut pj_pool_factory_default_policy: pj_pool_factory_policy;
+    pub fn pj_pool_factory_get_default_policy() -> *const pj_pool_factory_policy;
+    pub fn pj_pool_create( factory: *mut pj_pool_factory, name: *const ::std::os::raw::c_char, initial_size: pj_size_t, increment_size: pj_size_t, callback: pj_pool_callback, ) -> *mut pj_pool_t;
+    pub fn pj_pool_release(pool: *mut pj_pool_t);
+    pub fn pj_pool_safe_release(ppool: *mut *mut pj_pool_t);
+    pub fn pj_pool_secure_release(ppool: *mut *mut pj_pool_t);
+    pub fn pj_pool_getobjname(pool: *const pj_pool_t) -> *const ::std::os::raw::c_char;
+    pub fn pj_pool_reset(pool: *mut pj_pool_t);
+    pub fn pj_pool_get_capacity(pool: *mut pj_pool_t) -> pj_size_t;
+    pub fn pj_pool_get_used_size(pool: *mut pj_pool_t) -> pj_size_t;
+    pub fn pj_pool_alloc(pool: *mut pj_pool_t, size: pj_size_t) -> *mut ::std::os::raw::c_void;
+    pub fn pj_pool_calloc( pool: *mut pj_pool_t, count: pj_size_t, elem: pj_size_t, ) -> *mut ::std::os::raw::c_void;
+    pub fn pj_pool_alloc_from_block( block: *mut pj_pool_block, size: pj_size_t,) -> *mut ::std::os::raw::c_void;
+    pub fn pj_pool_allocate_find( pool: *mut pj_pool_t, size: pj_size_t, ) -> *mut ::std::os::raw::c_void;
+    pub fn pj_pool_create_int( factory: *mut pj_pool_factory, name: *const ::std::os::raw::c_char, initial_size: pj_size_t, increment_size: pj_size_t, callback: pj_pool_callback, ) -> *mut pj_pool_t;
+    pub fn pj_pool_init_int( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, increment_size: pj_size_t, callback: pj_pool_callback, );
+    pub fn pj_pool_destroy_int(pool: *mut pj_pool_t);
+    pub fn pj_caching_pool_init( ch_pool: *mut pj_caching_pool, policy: *const pj_pool_factory_policy, max_capacity: pj_size_t, );
+    pub fn pj_caching_pool_destroy(ch_pool: *mut pj_caching_pool);
+    pub fn pj_ssl_cert_load_from_files( pool: *mut pj_pool_t, CA_file: *const pj_str_t, cert_file: *const pj_str_t, privkey_file: *const pj_str_t, privkey_pass: *const pj_str_t, p_cert: *mut *mut pj_ssl_cert_t, ) -> pj_status_t;
+    pub fn pj_ssl_cert_load_from_files2( pool: *mut pj_pool_t, CA_file: *const pj_str_t, CA_path: *const pj_str_t, cert_file: *const pj_str_t, privkey_file: *const pj_str_t, privkey_pass: *const pj_str_t, p_cert: *mut *mut pj_ssl_cert_t, ) -> pj_status_t;
+    pub fn pj_ssl_cert_load_from_buffer( pool: *mut pj_pool_t, CA_buf: *const pj_ssl_cert_buffer, cert_buf: *const pj_ssl_cert_buffer, privkey_buf: *const pj_ssl_cert_buffer, privkey_pass: *const pj_str_t, p_cert: *mut *mut pj_ssl_cert_t, ) -> pj_status_t;
+    pub fn pj_ssl_cert_info_dump( ci: *const pj_ssl_cert_info, indent: *const ::std::os::raw::c_char, buf: *mut ::std::os::raw::c_char, buf_size: pj_size_t, ) -> pj_ssize_t;
+    pub fn pj_ssl_cert_get_verify_status_strings( verify_status: pj_uint32_t, error_strings: *mut *const ::std::os::raw::c_char, count: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ssl_cert_wipe_keys(cert: *mut pj_ssl_cert_t);
+    pub fn pj_ssl_cipher_get_availables( ciphers: *mut pj_ssl_cipher, cipher_num: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ssl_cipher_is_supported(cipher: pj_ssl_cipher) -> pj_bool_t;
+    pub fn pj_ssl_cipher_name(cipher: pj_ssl_cipher) -> *const ::std::os::raw::c_char;
+    pub fn pj_ssl_cipher_id(cipher_name: *const ::std::os::raw::c_char) -> pj_ssl_cipher;
+    pub fn pj_ssl_curve_get_availables( curves: *mut pj_ssl_curve, curve_num: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ssl_curve_is_supported(curve: pj_ssl_curve) -> pj_bool_t;
+    pub fn pj_ssl_curve_name(curve: pj_ssl_curve) -> *const ::std::os::raw::c_char;
+    pub fn pj_ssl_curve_id(curve_name: *const ::std::os::raw::c_char) -> pj_ssl_curve;
+    pub fn pj_ssl_sock_param_default(param: *mut pj_ssl_sock_param);
+    pub fn pj_ssl_sock_param_copy( pool: *mut pj_pool_t, dst: *mut pj_ssl_sock_param, src: *const pj_ssl_sock_param, );
+    pub fn pj_ssl_sock_create( pool: *mut pj_pool_t, param: *const pj_ssl_sock_param, p_ssock: *mut *mut pj_ssl_sock_t, ) -> pj_status_t;
+    pub fn pj_ssl_sock_set_certificate( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, cert: *const pj_ssl_cert_t, ) -> pj_status_t;
+    pub fn pj_ssl_sock_close(ssock: *mut pj_ssl_sock_t) -> pj_status_t;
+    pub fn pj_ssl_sock_set_user_data( ssock: *mut pj_ssl_sock_t, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_ssl_sock_get_user_data(ssock: *mut pj_ssl_sock_t) -> *mut ::std::os::raw::c_void;
+    pub fn pj_ssl_sock_get_info( ssock: *mut pj_ssl_sock_t, info: *mut pj_ssl_sock_info,) -> pj_status_t;
+    pub fn pj_ssl_sock_start_read( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, buff_size: ::std::os::raw::c_uint, flags: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_read2( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, buff_size: ::std::os::raw::c_uint, readbuf: *mut *mut ::std::os::raw::c_void, flags: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_recvfrom( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, buff_size: ::std::os::raw::c_uint, flags: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_recvfrom2( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, buff_size: ::std::os::raw::c_uint, readbuf: *mut *mut ::std::os::raw::c_void, flags: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_ssl_sock_send( ssock: *mut pj_ssl_sock_t, send_key: *mut pj_ioqueue_op_key_t, data: *const ::std::os::raw::c_void, size: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ssl_sock_sendto( ssock: *mut pj_ssl_sock_t, send_key: *mut pj_ioqueue_op_key_t, data: *const ::std::os::raw::c_void, size: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_accept( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, local_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_accept2( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, local_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_int, newsock_param: *const pj_ssl_sock_param, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_connect( ssock: *mut pj_ssl_sock_t, pool: *mut pj_pool_t, localaddr: *const pj_sockaddr_t, remaddr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ssl_sock_start_connect2( ssock: *mut pj_ssl_sock_t, connect_param: *mut pj_ssl_start_connect_param, ) -> pj_status_t;
+    pub fn pj_ssl_sock_renegotiate(ssock: *mut pj_ssl_sock_t) -> pj_status_t;
+    pub fn pj_str(str_: *mut ::std::os::raw::c_char) -> pj_str_t;
+    pub fn pj_strassign(dst: *mut pj_str_t, src: *mut pj_str_t) -> *mut pj_str_t;
+    pub fn pj_strcpy(dst: *mut pj_str_t, src: *const pj_str_t) -> *mut pj_str_t;
+    pub fn pj_strcpy2(dst: *mut pj_str_t, src: *const ::std::os::raw::c_char) -> *mut pj_str_t;
+    pub fn pj_strncpy(dst: *mut pj_str_t, src: *const pj_str_t, max: pj_ssize_t) -> *mut pj_str_t;
+    pub fn pj_strncpy_with_null( dst: *mut pj_str_t, src: *const pj_str_t, max: pj_ssize_t, ) -> *mut pj_str_t;
+    pub fn pj_strdup( pool: *mut pj_pool_t, dst: *mut pj_str_t, src: *const pj_str_t, ) -> *mut pj_str_t;
+    pub fn pj_strdup_with_null( pool: *mut pj_pool_t, dst: *mut pj_str_t, src: *const pj_str_t, ) -> *mut pj_str_t;
+    pub fn pj_strdup2( pool: *mut pj_pool_t, dst: *mut pj_str_t, src: *const ::std::os::raw::c_char, ) -> *mut pj_str_t;
+    pub fn pj_strdup2_with_null( pool: *mut pj_pool_t, dst: *mut pj_str_t, src: *const ::std::os::raw::c_char, ) -> *mut pj_str_t;
+    pub fn pj_strdup3(pool: *mut pj_pool_t, src: *const ::std::os::raw::c_char) -> pj_str_t;
+    pub fn pj_strcmp(str1: *const pj_str_t, str2: *const pj_str_t) -> ::std::os::raw::c_int;
+    pub fn pj_strcmp2( str1: *const pj_str_t, str2: *const ::std::os::raw::c_char, ) -> ::std::os::raw::c_int;
+    pub fn pj_strncmp( str1: *const pj_str_t, str2: *const pj_str_t, len: pj_size_t, ) -> ::std::os::raw::c_int;
+    pub fn pj_strncmp2( str1: *const pj_str_t, str2: *const ::std::os::raw::c_char, len: pj_size_t, ) -> ::std::os::raw::c_int;
+    pub fn pj_stricmp(str1: *const pj_str_t, str2: *const pj_str_t) -> ::std::os::raw::c_int;
+    pub fn pj_stricmp2( str1: *const pj_str_t, str2: *const ::std::os::raw::c_char, ) -> ::std::os::raw::c_int;
+    pub fn pj_strnicmp( str1: *const pj_str_t, str2: *const pj_str_t, len: pj_size_t )-> ::std::os::raw::c_int;
+    pub fn pj_strnicmp2( str1: *const pj_str_t, str2: *const ::std::os::raw::c_char, len: pj_size_t, ) -> ::std::os::raw::c_int;
+    pub fn pj_strcat(dst: *mut pj_str_t, src: *const pj_str_t);
+    pub fn pj_strcat2(dst: *mut pj_str_t, src: *const ::std::os::raw::c_char);
+    pub fn pj_strspn(str_: *const pj_str_t, set_char: *const pj_str_t) -> pj_ssize_t;
+    pub fn pj_strspn2(str_: *const pj_str_t, set_char: *const ::std::os::raw::c_char) -> pj_ssize_t;
+    pub fn pj_strcspn(str_: *const pj_str_t, set_char: *const pj_str_t) -> pj_ssize_t;
+    pub fn pj_strcspn2( str_: *const pj_str_t, set_char: *const ::std::os::raw::c_char, ) -> pj_ssize_t;
+    pub fn pj_strtok( str_: *const pj_str_t, delim: *const pj_str_t, tok: *mut pj_str_t, start_idx: pj_size_t, ) -> pj_ssize_t;
+    pub fn pj_strtok2( str_: *const pj_str_t, delim: *const ::std::os::raw::c_char, tok: *mut pj_str_t, start_idx: pj_size_t, ) -> pj_ssize_t;
+    pub fn pj_strstr(str_: *const pj_str_t, substr: *const pj_str_t) -> *mut ::std::os::raw::c_char;
+    pub fn pj_stristr( str_: *const pj_str_t, substr: *const pj_str_t, ) -> *mut ::std::os::raw::c_char;
+    pub fn pj_strltrim(str_: *mut pj_str_t) -> *mut pj_str_t;
+    pub fn pj_strrtrim(str_: *mut pj_str_t) -> *mut pj_str_t;
+    pub fn pj_strtrim(str_: *mut pj_str_t) -> *mut pj_str_t;
+    pub fn pj_create_random_string( str_: *mut ::std::os::raw::c_char, length: pj_size_t, ) -> *mut ::std::os::raw::c_char;
+    pub fn pj_strtol(str_: *const pj_str_t) -> ::std::os::raw::c_long;
+    pub fn pj_strtol2(str_: *const pj_str_t, value: *mut ::std::os::raw::c_long) -> pj_status_t;
+    pub fn pj_strtoul(str_: *const pj_str_t) -> ::std::os::raw::c_ulong;
+    pub fn pj_strtoul2( str_: *const pj_str_t, endptr: *mut pj_str_t, base: ::std::os::raw::c_uint, ) -> ::std::os::raw::c_ulong;
+    pub fn pj_strtoul3( str_: *const pj_str_t, value: *mut ::std::os::raw::c_ulong, base: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_strtof(str_: *const pj_str_t) -> f32;
+    pub fn pj_utoa( val: ::std::os::raw::c_ulong, buf: *mut ::std::os::raw::c_char, ) -> ::std::os::raw::c_int;
+    pub fn pj_utoa_pad( val: ::std::os::raw::c_ulong, buf: *mut ::std::os::raw::c_char, min_dig: ::std::os::raw::c_int, pad: ::std::os::raw::c_int, ) -> ::std::os::raw::c_int;
 }
+
+
+
 
 
 impl AutoCreate<pj_str_t> for pj_str_t {

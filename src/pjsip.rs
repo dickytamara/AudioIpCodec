@@ -463,6 +463,15 @@ pub const pjsip_transport_state_PJSIP_TP_STATE_DESTROY: pjsip_transport_state = 
 pub type pjsip_transport_state = ::std::os::raw::c_uint;
 pub type pjsip_tp_state_listener_key = ::std::os::raw::c_void;
 
+pub const pjsip_redirect_op_PJSIP_REDIRECT_REJECT: pjsip_redirect_op = 0;
+pub const pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT: pjsip_redirect_op = 1;
+pub const pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE: pjsip_redirect_op = 2;
+pub const pjsip_redirect_op_PJSIP_REDIRECT_PENDING: pjsip_redirect_op = 3;
+pub const pjsip_redirect_op_PJSIP_REDIRECT_STOP: pjsip_redirect_op = 4;
+pub type pjsip_redirect_op = ::std::os::raw::c_uint;
+
+pub const PJSIP_UDP_TRANSPORT_KEEP_SOCKET: ::std::os::raw::c_uint = 1;
+pub const PJSIP_UDP_TRANSPORT_DESTROY_SOCKET: ::std::os::raw::c_uint = 2;
 
 
 #[repr(C)]
@@ -1456,6 +1465,78 @@ pub struct pjsip_process_rdata_param {
     pub silent: pj_bool_t,
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_target {
+    pub prev: *mut pjsip_target,
+    pub next: *mut pjsip_target,
+    pub uri: *mut pjsip_uri,
+    pub q1000: ::std::os::raw::c_int,
+    pub code: pjsip_status_code,
+    pub reason: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_target_set {
+    pub head: pjsip_target,
+    pub current: *mut pjsip_target,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_send_state {
+    pub token: *mut ::std::os::raw::c_void,
+    pub endpt: *mut pjsip_endpoint,
+    pub tdata: *mut pjsip_tx_data,
+    pub cur_transport: *mut pjsip_transport,
+    pub app_cb: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjsip_send_state, sent: pj_ssize_t, cont: *mut pj_bool_t),
+    >,
+}
+pub type pjsip_send_callback = ::std::option::Option<
+    unsafe extern "C" fn(st: *mut pjsip_send_state, sent: pj_ssize_t, cont: *mut pj_bool_t),
+>;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_response_addr {
+    pub transport: *mut pjsip_transport,
+    pub addr: pj_sockaddr,
+    pub addr_len: ::std::os::raw::c_int,
+    pub dst_host: pjsip_host_info,
+}
+
+pub type pjsip_endpt_send_callback = ::std::option::Option<
+    unsafe extern "C" fn(token: *mut ::std::os::raw::c_void, e: *mut pjsip_event),
+>;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_udp_transport_cfg {
+    pub af: ::std::os::raw::c_int,
+    pub bind_addr: pj_sockaddr,
+    pub addr_name: pjsip_host_port,
+    pub async_cnt: ::std::os::raw::c_uint,
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub sockopt_params: pj_sockopt_params,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_tcp_transport_cfg {
+    pub af: ::std::os::raw::c_int,
+    pub bind_addr: pj_sockaddr,
+    pub reuse_addr: pj_bool_t,
+    pub addr_name: pjsip_host_port,
+    pub async_cnt: ::std::os::raw::c_uint,
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub sockopt_params: pj_sockopt_params,
+    pub initial_timeout: ::std::os::raw::c_uint,
+}
+
 extern "C" {
     pub fn pjsip_event_str(e: pjsip_event_id_e) -> *const ::std::os::raw::c_char;
     pub fn pjsip_param_find( param_list: *const pjsip_param, name: *const pj_str_t, ) -> *mut pjsip_param;
@@ -1680,7 +1761,61 @@ extern "C" {
     pub fn pjsip_endpt_atexit( endpt: *mut pjsip_endpoint, func: pjsip_endpt_exit_callback, ) -> pj_status_t;
     pub fn pjsip_endpt_log_error( endpt: *mut pjsip_endpoint, sender: *const ::std::os::raw::c_char, error_code: pj_status_t, format: *const ::std::os::raw::c_char, ...);
     pub fn pjsip_endpt_send_tsx_event(endpt: *mut pjsip_endpoint, evt: *mut pjsip_event);
+    pub fn pjsip_target_set_add_uri( tset: *mut pjsip_target_set, pool: *mut pj_pool_t, uri: *const pjsip_uri, q1000: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjsip_target_set_add_from_msg( tset: *mut pjsip_target_set, pool: *mut pj_pool_t, msg: *const pjsip_msg,) -> pj_status_t;
+    pub fn pjsip_target_set_get_next(tset: *const pjsip_target_set) -> *mut pjsip_target;
+    pub fn pjsip_target_set_set_current( tset: *mut pjsip_target_set, target: *mut pjsip_target, ) -> pj_status_t;
+    pub fn pjsip_target_assign_status( target: *mut pjsip_target, pool: *mut pj_pool_t, status_code: ::std::os::raw::c_int, reason: *const pj_str_t,) -> pj_status_t;
+    pub fn pjsip_endpt_create_request( endpt: *mut pjsip_endpoint, method: *const pjsip_method, target: *const pj_str_t, from: *const pj_str_t, to: *const pj_str_t, contact: *const pj_str_t, call_id: *const pj_str_t, cseq: ::std::os::raw::c_int, text: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_endpt_create_request_from_hdr( endpt: *mut pjsip_endpoint, method: *const pjsip_method, target: *const pjsip_uri, from: *const pjsip_from_hdr, to: *const pjsip_to_hdr, contact: *const pjsip_contact_hdr, call_id: *const pjsip_cid_hdr, cseq: ::std::os::raw::c_int, text: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_endpt_create_response( endpt: *mut pjsip_endpoint, rdata: *const pjsip_rx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_endpt_create_ack( endpt: *mut pjsip_endpoint, tdata: *const pjsip_tx_data, rdata: *const pjsip_rx_data, ack: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_endpt_create_cancel( endpt: *mut pjsip_endpoint, tdata: *const pjsip_tx_data, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_get_dest_info( target_uri: *const pjsip_uri, request_uri: *const pjsip_uri, pool: *mut pj_pool_t, dest_info: *mut pjsip_host_info, ) -> pj_status_t;
+    pub fn pjsip_get_request_dest( tdata: *const pjsip_tx_data, dest_info: *mut pjsip_host_info, ) -> pj_status_t;
+    pub fn pjsip_process_route_set( tdata: *mut pjsip_tx_data, dest_info: *mut pjsip_host_info, ) -> pj_status_t;
+    pub fn pjsip_restore_strict_route_set(tdata: *mut pjsip_tx_data);
+    pub fn pjsip_endpt_send_request_stateless( endpt: *mut pjsip_endpoint, tdata: *mut pjsip_tx_data, token: *mut ::std::os::raw::c_void, cb: pjsip_send_callback, ) -> pj_status_t;
+    pub fn pjsip_endpt_send_raw( endpt: *mut pjsip_endpoint, tp_type: pjsip_transport_type_e, sel: *const pjsip_tpselector, raw_data: *const ::std::os::raw::c_void, data_len: pj_size_t, addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_int, token: *mut ::std::os::raw::c_void, cb: pjsip_tp_send_callback, ) -> pj_status_t;
+    pub fn pjsip_endpt_send_raw_to_uri( endpt: *mut pjsip_endpoint, dst_uri: *const pj_str_t, sel: *const pjsip_tpselector, raw_data: *const ::std::os::raw::c_void, data_len: pj_size_t, token: *mut ::std::os::raw::c_void, cb: pjsip_tp_send_callback, ) -> pj_status_t;
+    pub fn pjsip_get_response_addr( pool: *mut pj_pool_t, rdata: *mut pjsip_rx_data, res_addr: *mut pjsip_response_addr, ) -> pj_status_t;
+    pub fn pjsip_endpt_send_response( endpt: *mut pjsip_endpoint, res_addr: *mut pjsip_response_addr, tdata: *mut pjsip_tx_data, token: *mut ::std::os::raw::c_void, cb: pjsip_send_callback, ) -> pj_status_t;
+    pub fn pjsip_endpt_send_response2( endpt: *mut pjsip_endpoint, rdata: *mut pjsip_rx_data, tdata: *mut pjsip_tx_data, token: *mut ::std::os::raw::c_void, cb: pjsip_send_callback, ) -> pj_status_t;
+    pub fn pjsip_endpt_respond_stateless( endpt: *mut pjsip_endpoint, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, hdr_list: *const pjsip_hdr, body: *const pjsip_msg_body, ) -> pj_status_t;
+    pub fn pjsip_endpt_respond( endpt: *mut pjsip_endpoint, tsx_user: *mut pjsip_module, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, hdr_list: *const pjsip_hdr, body: *const pjsip_msg_body, p_tsx: *mut *mut pjsip_transaction, ) -> pj_status_t;
+    pub fn pjsip_endpt_send_request( endpt: *mut pjsip_endpoint, tdata: *mut pjsip_tx_data, timeout: pj_int32_t, token: *mut ::std::os::raw::c_void, cb: pjsip_endpt_send_callback, ) -> pj_status_t;
+    pub fn pjsip_endpt_create_request_fwd( endpt: *mut pjsip_endpoint, rdata: *mut pjsip_rx_data, uri: *const pjsip_uri, branch: *const pj_str_t, options: ::std::os::raw::c_uint, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_endpt_create_response_fwd( endpt: *mut pjsip_endpoint, rdata: *mut pjsip_rx_data, options: ::std::os::raw::c_uint, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_calculate_branch_id(rdata: *mut pjsip_rx_data) -> pj_str_t;
+    pub fn pjsip_udp_transport_cfg_default( cfg: *mut pjsip_udp_transport_cfg, af: ::std::os::raw::c_int, );
+    pub fn pjsip_udp_transport_start2( endpt: *mut pjsip_endpoint, cfg: *const pjsip_udp_transport_cfg, p_transport: *mut *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_start( endpt: *mut pjsip_endpoint, local: *const pj_sockaddr_in, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_transport: *mut *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_start6( endpt: *mut pjsip_endpoint, local: *const pj_sockaddr_in6, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_transport: *mut *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_attach( endpt: *mut pjsip_endpoint, sock: pj_sock_t, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_transport: *mut *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_attach2( endpt: *mut pjsip_endpoint, type_: pjsip_transport_type_e, sock: pj_sock_t, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_transport: *mut *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_get_socket(transport: *mut pjsip_transport) -> pj_sock_t;
+    pub fn pjsip_udp_transport_pause( transport: *mut pjsip_transport, option: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_restart( transport: *mut pjsip_transport, option: ::std::os::raw::c_uint, sock: pj_sock_t, local: *const pj_sockaddr_in, a_name: *const pjsip_host_port, ) -> pj_status_t;
+    pub fn pjsip_udp_transport_restart2( transport: *mut pjsip_transport, option: ::std::os::raw::c_uint, sock: pj_sock_t, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
+    pub fn pjsip_loop_start( endpt: *mut pjsip_endpoint, transport: *mut *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_loop_set_discard( tp: *mut pjsip_transport, discard: pj_bool_t, prev_value: *mut pj_bool_t, ) -> pj_status_t;
+    pub fn pjsip_loop_set_failure( tp: *mut pjsip_transport, fail_flag: ::std::os::raw::c_int, prev_value: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjsip_loop_set_recv_delay( tp: *mut pjsip_transport, delay: ::std::os::raw::c_uint, prev_value: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_loop_set_send_callback_delay( tp: *mut pjsip_transport, delay: ::std::os::raw::c_uint, prev_value: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_loop_set_delay( tp: *mut pjsip_transport, delay: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_tcp_transport_cfg_default( cfg: *mut pjsip_tcp_transport_cfg, af: ::std::os::raw::c_int, );
+    pub fn pjsip_tcp_transport_start( endpt: *mut pjsip_endpoint, local: *const pj_sockaddr_in, async_cnt: ::std::os::raw::c_uint, p_factory: *mut *mut pjsip_tpfactory, ) -> pj_status_t;
+    pub fn pjsip_tcp_transport_start2( endpt: *mut pjsip_endpoint, local: *const pj_sockaddr_in, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_factory: *mut *mut pjsip_tpfactory, ) -> pj_status_t;
+    pub fn pjsip_tcp_transport_start3( endpt: *mut pjsip_endpoint, cfg: *const pjsip_tcp_transport_cfg, p_factory: *mut *mut pjsip_tpfactory, ) -> pj_status_t;
+    pub fn pjsip_tcp_transport_get_socket(transport: *mut pjsip_transport) -> pj_sock_t;
+    pub fn pjsip_tcp_transport_lis_start( factory: *mut pjsip_tpfactory, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
+    pub fn pjsip_tcp_transport_restart( factory: *mut pjsip_tpfactory, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
 }
+
+
+
+
+
 
 
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
