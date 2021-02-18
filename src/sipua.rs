@@ -829,7 +829,7 @@ impl SIPCore {
             // ctx = pjsua_pool_create(pool_name.as_ptr(), 1000, 1000);
         }
 
-        let mut sip_core = SIPCore {
+        let sip_core = SIPCore {
             pool: ptr::null_mut(),
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),

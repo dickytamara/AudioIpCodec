@@ -1,9 +1,55 @@
 #![allow(unused_variables)]
+#![allow(non_camel_case_types)]
+#![allow(dead_code)]
 use super::pjdefault::AutoCreate;
 use super::pjsua_sys::*;
 
 use std::os::raw::{c_int, c_uint, c_void};
 use std::ptr;
+
+
+pub const PJSUA_POOL_LEN: u32 = 1000;
+pub const PJSUA_POOL_INC: u32 = 1000;
+pub const PJSUA_POOL_LEN_ACC: u32 = 512;
+pub const PJSUA_POOL_INC_ACC: u32 = 256;
+pub const PJSUA_ACC_MAX_PROXIES: u32 = 8;
+pub const PJSUA_DEFAULT_SRTP_SECURE_SIGNALING: u32 = 1;
+pub const PJSUA_ADD_ICE_TAGS: u32 = 1;
+pub const PJSUA_ACQUIRE_CALL_TIMEOUT: u32 = 2000;
+pub const PJSUA_HAS_VIDEO: u32 = 0;
+pub const PJSUA_VID_REQ_KEYFRAME_INTERVAL: u32 = 3000;
+pub const PJSUA_SEPARATE_WORKER_FOR_TIMER: u32 = 0;
+pub const PJSUA_ICE_TRANSPORT_OPTION: u32 = 0;
+pub const PJSUA_TRICKLE_ICE_NEW_CAND_CHECK_INTERVAL: u32 = 100;
+pub const PJSUA_MAX_ACC: u32 = 8;
+pub const PJSUA_REG_INTERVAL: u32 = 300;
+pub const PJSUA_UNREG_TIMEOUT: u32 = 4000;
+pub const PJSUA_DEFAULT_ACC_PRIORITY: u32 = 0;
+pub const PJSUA_UNPUBLISH_MAX_WAIT_TIME_MSEC: u32 = 2000;
+pub const PJSUA_REG_RETRY_INTERVAL: u32 = 300;
+pub const PJSUA_REG_USE_OUTBOUND_PROXY: u32 = 1;
+pub const PJSUA_REG_USE_ACC_PROXY: u32 = 2;
+pub const PJSUA_MAX_CALLS: u32 = 32;
+pub const PJSUA_MAX_VID_WINS: u32 = 16;
+pub const PJSUA_CALL_SEND_DTMF_DURATION_DEFAULT: u32 = 160;
+pub const PJSUA_XFER_NO_REQUIRE_REPLACES: u32 = 1;
+pub const PJSUA_MAX_BUDDIES: u32 = 256;
+pub const PJSUA_PRES_TIMER: u32 = 300;
+pub const PJSUA_MEDIA_HAS_PJMEDIA: u32 = 1;
+pub const PJSUA_THIRD_PARTY_STREAM_HAS_GET_INFO: u32 = 0;
+pub const PJSUA_THIRD_PARTY_STREAM_HAS_GET_STAT: u32 = 0;
+pub const PJSUA_MAX_CONF_PORTS: u32 = 254;
+pub const PJSUA_DEFAULT_CLOCK_RATE: u32 = 16000;
+pub const PJSUA_DEFAULT_AUDIO_FRAME_PTIME: u32 = 20;
+pub const PJSUA_DEFAULT_CODEC_QUALITY: u32 = 8;
+pub const PJSUA_DEFAULT_ILBC_MODE: u32 = 30;
+pub const PJSUA_DEFAULT_EC_TAIL_LEN: u32 = 200;
+pub const PJSUA_MAX_PLAYERS: u32 = 32;
+pub const PJSUA_MAX_RECORDERS: u32 = 32;
+pub const PJSUA_SDP_SESS_HAS_CONN: u32 = 0;
+pub const PJSUA_TRANSPORT_RESTART_DELAY_TIME: u32 = 10;
+
+
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
