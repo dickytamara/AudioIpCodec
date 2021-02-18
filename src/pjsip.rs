@@ -425,6 +425,16 @@ unsafe extern "C" fn(
     ) -> *mut ::std::os::raw::c_void,
 >;
 
+pub const pjsip_event_id_e_PJSIP_EVENT_UNKNOWN: pjsip_event_id_e = 0;
+pub const pjsip_event_id_e_PJSIP_EVENT_TIMER: pjsip_event_id_e = 1;
+pub const pjsip_event_id_e_PJSIP_EVENT_TX_MSG: pjsip_event_id_e = 2;
+pub const pjsip_event_id_e_PJSIP_EVENT_RX_MSG: pjsip_event_id_e = 3;
+pub const pjsip_event_id_e_PJSIP_EVENT_TRANSPORT_ERROR: pjsip_event_id_e = 4;
+pub const pjsip_event_id_e_PJSIP_EVENT_TSX_STATE: pjsip_event_id_e = 5;
+pub const pjsip_event_id_e_PJSIP_EVENT_USER: pjsip_event_id_e = 6;
+pub type pjsip_event_id_e = ::std::os::raw::c_uint;
+
+
 
 
 #[repr(C)]
@@ -950,6 +960,118 @@ pub struct pjsip_parser_const_t {
     pub pjsip_DISPLAY_SPEC: pj_cis_t,
     pub pjsip_OTHER_URI_CONTENT: pj_cis_t,
 }
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_event {
+    pub prev: *mut pjsip_event,
+    pub next: *mut pjsip_event,
+    pub type_: pjsip_event_id_e,
+    pub body: pjsip_event__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pjsip_event__bindgen_ty_1 {
+    pub timer: pjsip_event__bindgen_ty_1__bindgen_ty_1,
+    pub tsx_state: pjsip_event__bindgen_ty_1__bindgen_ty_2,
+    pub tx_msg: pjsip_event__bindgen_ty_1__bindgen_ty_3,
+    pub tx_error: pjsip_event__bindgen_ty_1__bindgen_ty_4,
+    pub rx_msg: pjsip_event__bindgen_ty_1__bindgen_ty_5,
+    pub user: pjsip_event__bindgen_ty_1__bindgen_ty_6,
+    _bindgen_union_align: [u64; 4usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_event__bindgen_ty_1__bindgen_ty_1 {
+    pub entry: *mut pj_timer_entry,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_event__bindgen_ty_1__bindgen_ty_2 {
+    pub src: pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1,
+    pub tsx: *mut pjsip_transaction,
+    pub prev_state: ::std::os::raw::c_int,
+    pub type_: pjsip_event_id_e,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 {
+    pub rdata: *mut pjsip_rx_data,
+    pub tdata: *mut pjsip_tx_data,
+    pub timer: *mut pj_timer_entry,
+    pub status: pj_status_t,
+    pub data: *mut ::std::os::raw::c_void,
+    _bindgen_union_align: u64,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_event__bindgen_ty_1__bindgen_ty_3 {
+    pub tdata: *mut pjsip_tx_data,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_event__bindgen_ty_1__bindgen_ty_4 {
+    pub tdata: *mut pjsip_tx_data,
+    pub tsx: *mut pjsip_transaction,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_event__bindgen_ty_1__bindgen_ty_5 {
+    pub rdata: *mut pjsip_rx_data,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_event__bindgen_ty_1__bindgen_ty_6 {
+    pub user1: *mut ::std::os::raw::c_void,
+    pub user2: *mut ::std::os::raw::c_void,
+    pub user3: *mut ::std::os::raw::c_void,
+    pub user4: *mut ::std::os::raw::c_void,
+}
+
+extern "C" {
+    pub fn pjsip_event_str(e: pjsip_event_id_e) -> *const ::std::os::raw::c_char;
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_module {
+    pub prev: *mut pjsip_module,
+    pub next: *mut pjsip_module,
+    pub name: pj_str_t,
+    pub id: ::std::os::raw::c_int,
+    pub priority: ::std::os::raw::c_int,
+    pub load:
+        ::std::option::Option<unsafe extern "C" fn(endpt: *mut pjsip_endpoint) -> pj_status_t>,
+    pub start: ::std::option::Option<unsafe extern "C" fn() -> pj_status_t>,
+    pub stop: ::std::option::Option<unsafe extern "C" fn() -> pj_status_t>,
+    pub unload: ::std::option::Option<unsafe extern "C" fn() -> pj_status_t>,
+    pub on_rx_request:
+        ::std::option::Option<unsafe extern "C" fn(rdata: *mut pjsip_rx_data) -> pj_bool_t>,
+    pub on_rx_response:
+        ::std::option::Option<unsafe extern "C" fn(rdata: *mut pjsip_rx_data) -> pj_bool_t>,
+    pub on_tx_request:
+        ::std::option::Option<unsafe extern "C" fn(tdata: *mut pjsip_tx_data) -> pj_status_t>,
+    pub on_tx_response:
+        ::std::option::Option<unsafe extern "C" fn(tdata: *mut pjsip_tx_data) -> pj_status_t>,
+    pub on_tsx_state: ::std::option::Option<
+        unsafe extern "C" fn(tsx: *mut pjsip_transaction, event: *mut pjsip_event),
+    >,
+}
+
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TRANSPORT_LAYER: pjsip_module_priority = 8;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TSX_LAYER: pjsip_module_priority = 16;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_UA_PROXY_LAYER: pjsip_module_priority = 32;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
+pub type pjsip_module_priority = ::std::os::raw::c_uint;
 
 extern "C" {
     pub fn pjsip_param_find( param_list: *const pjsip_param, name: *const pj_str_t, ) -> *mut pjsip_param;

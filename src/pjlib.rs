@@ -374,6 +374,16 @@ pub type pj_color_t = ::std::os::raw::c_uint;
 pub type pj_exception_id_t = ::std::os::raw::c_int;
 pub type pj_cis_elem_t = pj_uint32_t;
 
+
+pub const pj_socket_sd_type_PJ_SD_RECEIVE: pj_socket_sd_type = 0;
+pub const pj_socket_sd_type_PJ_SHUT_RD: pj_socket_sd_type = 0;
+pub const pj_socket_sd_type_PJ_SD_SEND: pj_socket_sd_type = 1;
+pub const pj_socket_sd_type_PJ_SHUT_WR: pj_socket_sd_type = 1;
+pub const pj_socket_sd_type_PJ_SD_BOTH: pj_socket_sd_type = 2;
+pub const pj_socket_sd_type_PJ_SHUT_RDWR: pj_socket_sd_type = 2;
+pub type pj_socket_sd_type = ::std::os::raw::c_uint;
+pub type pj_in_addr = in_addr;
+
 pub type pj_exit_callback = ::std::option::Option<unsafe extern "C" fn()>;
 pub type pj_error_callback = ::std::option::Option<
     unsafe extern "C" fn(
@@ -636,12 +646,146 @@ pub struct pj_scan_state {
 }
 
 
+pub type pj_timer_id_t = ::std::os::raw::c_int;
+pub type pj_timer_heap_callback = ::std::option::Option<
+    unsafe extern "C" fn(timer_heap: *mut pj_timer_heap_t, entry: *mut pj_timer_entry),
+>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_grp_lock_config {
+    pub flags: ::std::os::raw::c_uint,
+}
 
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_timer_entry {
+    pub user_data: *mut ::std::os::raw::c_void,
+    pub id: ::std::os::raw::c_int,
+    pub cb: pj_timer_heap_callback,
+    pub _timer_id: pj_timer_id_t,
+}
 
+
+pub type in_addr_t = u32;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct in_addr {
+    pub s_addr: in_addr_t,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct in6_addr {
+    pub __in6_u: in6_addr__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union in6_addr__bindgen_ty_1 {
+    pub __u6_addr8: [u8; 16usize],
+    pub __u6_addr16: [u16; 8usize],
+    pub __u6_addr32: [u32; 4usize],
+    _bindgen_union_align: [u32; 4usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_sockaddr_in {
+    pub sin_family: pj_uint16_t,
+    pub sin_port: pj_uint16_t,
+    pub sin_addr: pj_in_addr,
+    pub sin_zero_pad: [::std::os::raw::c_char; 8usize],
+}
+
+pub type pj_in6_addr = in6_addr;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_sockaddr_in6 {
+    pub sin6_family: pj_uint16_t,
+    pub sin6_port: pj_uint16_t,
+    pub sin6_flowinfo: pj_uint32_t,
+    pub sin6_addr: pj_in6_addr,
+    pub sin6_scope_id: pj_uint32_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_addr_hdr {
+    pub sa_family: pj_uint16_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pj_sockaddr {
+    pub addr: pj_addr_hdr,
+    pub ipv4: pj_sockaddr_in,
+    pub ipv6: pj_sockaddr_in6,
+    _bindgen_union_align: [u32; 7usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ip_mreq {
+    pub imr_multiaddr: pj_in_addr,
+    pub imr_interface: pj_in_addr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_sockopt_params {
+    pub cnt: ::std::os::raw::c_uint,
+    pub options: [pj_sockopt_params__bindgen_ty_1; 4usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_sockopt_params__bindgen_ty_1 {
+    pub level: ::std::os::raw::c_int,
+    pub optname: ::std::os::raw::c_int,
+    pub optval: *mut ::std::os::raw::c_void,
+    pub optlen: ::std::os::raw::c_int,
+}
 
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
+    pub static PJ_AF_UNSPEC: pj_uint16_t;
+    pub static PJ_AF_UNIX: pj_uint16_t;
+    pub static PJ_AF_INET: pj_uint16_t;
+    pub static PJ_AF_INET6: pj_uint16_t;
+    pub static PJ_AF_PACKET: pj_uint16_t;
+    pub static PJ_AF_IRDA: pj_uint16_t;
+    pub static PJ_SOCK_STREAM: pj_uint16_t;
+    pub static PJ_SOCK_DGRAM: pj_uint16_t;
+    pub static PJ_SOCK_RAW: pj_uint16_t;
+    pub static PJ_SOCK_RDM: pj_uint16_t;
+    pub static PJ_SOL_SOCKET: pj_uint16_t;
+    pub static PJ_SOL_IP: pj_uint16_t;
+    pub static PJ_SOL_TCP: pj_uint16_t;
+    pub static PJ_SOL_UDP: pj_uint16_t;
+    pub static PJ_SOL_IPV6: pj_uint16_t;
+    pub static PJ_IP_TOS: pj_uint16_t;
+    pub static PJ_IPTOS_LOWDELAY: pj_uint16_t;
+    pub static PJ_IPTOS_THROUGHPUT: pj_uint16_t;
+    pub static PJ_IPTOS_RELIABILITY: pj_uint16_t;
+    pub static PJ_IPTOS_MINCOST: pj_uint16_t;
+    pub static PJ_IPV6_TCLASS: pj_uint16_t;
+    pub static PJ_SO_TYPE: pj_uint16_t;
+    pub static PJ_SO_RCVBUF: pj_uint16_t;
+    pub static PJ_SO_SNDBUF: pj_uint16_t;
+    pub static PJ_TCP_NODELAY: pj_uint16_t;
+    pub static PJ_SO_REUSEADDR: pj_uint16_t;
+    pub static PJ_SO_NOSIGPIPE: pj_uint16_t;
+    pub static PJ_SO_PRIORITY: pj_uint16_t;
+    pub static PJ_IP_MULTICAST_IF: pj_uint16_t;
+    pub static PJ_IP_MULTICAST_TTL: pj_uint16_t;
+    pub static PJ_IP_MULTICAST_LOOP: pj_uint16_t;
+    pub static PJ_IP_ADD_MEMBERSHIP: pj_uint16_t;
+    pub static PJ_IP_DROP_MEMBERSHIP: pj_uint16_t;
+    pub static PJ_MSG_OOB: ::std::os::raw::c_int;
+    pub static PJ_MSG_PEEK: ::std::os::raw::c_int;
+    pub static PJ_MSG_DONTROUTE: ::std::os::raw::c_int;
+
     pub fn pj_get_version() -> *const ::std::os::raw::c_char;
     pub fn pj_dump_config();
     pub fn pj_init() -> pj_status_t;
@@ -715,11 +859,115 @@ extern "C" {
     pub fn pj_lock_tryacquire(lock: *mut pj_lock_t) -> pj_status_t;
     pub fn pj_lock_release(lock: *mut pj_lock_t) -> pj_status_t;
     pub fn pj_lock_destroy(lock: *mut pj_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_config_default(cfg: *mut pj_grp_lock_config);
+    pub fn pj_grp_lock_create( pool: *mut pj_pool_t, cfg: *const pj_grp_lock_config, p_grp_lock: *mut *mut pj_grp_lock_t, ) -> pj_status_t;
+    pub fn pj_grp_lock_create_w_handler( pool: *mut pj_pool_t, cfg: *const pj_grp_lock_config, member: *mut ::std::os::raw::c_void, handler: ::std::option::Option<unsafe extern "C" fn(member: *mut ::std::os::raw::c_void)>, p_grp_lock: *mut *mut pj_grp_lock_t, ) -> pj_status_t;
+    pub fn pj_grp_lock_destroy(grp_lock: *mut pj_grp_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_replace( old_lock: *mut pj_grp_lock_t, new_lock: *mut pj_grp_lock_t, ) -> pj_status_t;
+    pub fn pj_grp_lock_acquire(grp_lock: *mut pj_grp_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_tryacquire(grp_lock: *mut pj_grp_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_release(grp_lock: *mut pj_grp_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_add_handler( grp_lock: *mut pj_grp_lock_t, pool: *mut pj_pool_t, member: *mut ::std::os::raw::c_void, handler: ::std::option::Option<unsafe extern "C" fn(member: *mut ::std::os::raw::c_void)>, ) -> pj_status_t;
+    pub fn pj_grp_lock_del_handler( grp_lock: *mut pj_grp_lock_t, member: *mut ::std::os::raw::c_void, handler: ::std::option::Option<unsafe extern "C" fn(member: *mut ::std::os::raw::c_void)>, ) -> pj_status_t;
+    pub fn pj_grp_lock_add_ref(grp_lock: *mut pj_grp_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_dec_ref(grp_lock: *mut pj_grp_lock_t) -> pj_status_t;
+    pub fn pj_grp_lock_get_ref(grp_lock: *mut pj_grp_lock_t) -> ::std::os::raw::c_int;
+    pub fn pj_grp_lock_dump(grp_lock: *mut pj_grp_lock_t);
+    pub fn pj_grp_lock_chain_lock( grp_lock: *mut pj_grp_lock_t, ext_lock: *mut pj_lock_t, pos: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_grp_lock_unchain_lock( grp_lock: *mut pj_grp_lock_t, ext_lock: *mut pj_lock_t, ) -> pj_status_t;
+    pub fn pj_timer_heap_mem_size(count: pj_size_t) -> pj_size_t;
+    pub fn pj_timer_heap_create( pool: *mut pj_pool_t, count: pj_size_t, ht: *mut *mut pj_timer_heap_t, ) -> pj_status_t;
+    pub fn pj_timer_heap_destroy(ht: *mut pj_timer_heap_t);
+    pub fn pj_timer_heap_set_lock( ht: *mut pj_timer_heap_t, lock: *mut pj_lock_t, auto_del: pj_bool_t, );
+    pub fn pj_timer_heap_set_max_timed_out_per_poll( ht: *mut pj_timer_heap_t, count: ::std::os::raw::c_uint, ) -> ::std::os::raw::c_uint;
+    pub fn pj_timer_entry_init( entry: *mut pj_timer_entry, id: ::std::os::raw::c_int, user_data: *mut ::std::os::raw::c_void, cb: pj_timer_heap_callback, ) -> *mut pj_timer_entry;
+    pub fn pj_timer_entry_running(entry: *mut pj_timer_entry) -> pj_bool_t;
+    pub fn pj_timer_heap_schedule_dbg( ht: *mut pj_timer_heap_t, entry: *mut pj_timer_entry, delay: *const pj_time_val, src_file: *const ::std::os::raw::c_char, src_line: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_timer_heap_schedule_w_grp_lock_dbg( ht: *mut pj_timer_heap_t, entry: *mut pj_timer_entry, delay: *const pj_time_val, id_val: ::std::os::raw::c_int, grp_lock: *mut pj_grp_lock_t, src_file: *const ::std::os::raw::c_char, src_line: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_timer_heap_cancel( ht: *mut pj_timer_heap_t, entry: *mut pj_timer_entry, ) -> ::std::os::raw::c_int;
+    pub fn pj_timer_heap_cancel_if_active( ht: *mut pj_timer_heap_t, entry: *mut pj_timer_entry, id_val: ::std::os::raw::c_int, ) -> ::std::os::raw::c_int;
+    pub fn pj_timer_heap_count(ht: *mut pj_timer_heap_t) -> pj_size_t;
+    pub fn pj_timer_heap_earliest_time( ht: *mut pj_timer_heap_t, timeval: *mut pj_time_val, ) -> pj_status_t;
+    pub fn pj_timer_heap_poll( ht: *mut pj_timer_heap_t, next_delay: *mut pj_time_val, ) -> ::std::os::raw::c_uint;
+    pub fn pj_timer_heap_dump(ht: *mut pj_timer_heap_t);
+    pub fn pj_ntohs(netshort: pj_uint16_t) -> pj_uint16_t;
+    pub fn pj_htons(hostshort: pj_uint16_t) -> pj_uint16_t;
+    pub fn pj_ntohl(netlong: pj_uint32_t) -> pj_uint32_t;
+    pub fn pj_htonl(hostlong: pj_uint32_t) -> pj_uint32_t;
+    pub fn pj_inet_ntoa(inaddr: pj_in_addr) -> *mut ::std::os::raw::c_char;
+    pub fn pj_inet_aton(cp: *const pj_str_t, inp: *mut pj_in_addr) -> ::std::os::raw::c_int;
+    pub fn pj_inet_pton( af: ::std::os::raw::c_int, src: *const pj_str_t, dst: *mut ::std::os::raw::c_void,) -> pj_status_t;
+    pub fn pj_inet_ntop( af: ::std::os::raw::c_int, src: *const ::std::os::raw::c_void, dst: *mut ::std::os::raw::c_char, size: ::std::os::raw::c_int,) -> pj_status_t;
+    pub fn pj_inet_ntop2( af: ::std::os::raw::c_int, src: *const ::std::os::raw::c_void, dst: *mut ::std::os::raw::c_char, size: ::std::os::raw::c_int, ) -> *mut ::std::os::raw::c_char;
+    pub fn pj_sockaddr_print( addr: *const pj_sockaddr_t, buf: *mut ::std::os::raw::c_char, size: ::std::os::raw::c_int, flags: ::std::os::raw::c_uint, )-> *mut ::std::os::raw::c_char;
+    pub fn pj_inet_addr(cp: *const pj_str_t) -> pj_in_addr;
+    pub fn pj_inet_addr2(cp: *const ::std::os::raw::c_char) -> pj_in_addr;
+    pub fn pj_sockaddr_in_init( addr: *mut pj_sockaddr_in, cp: *const pj_str_t, port: pj_uint16_t, ) -> pj_status_t;
+    pub fn pj_sockaddr_init( af: ::std::os::raw::c_int, addr: *mut pj_sockaddr, cp: *const pj_str_t, port: pj_uint16_t,) -> pj_status_t;
+    pub fn pj_sockaddr_cmp( addr1: *const pj_sockaddr_t, addr2: *const pj_sockaddr_t, ) -> ::std::os::raw::c_int;
+    pub fn pj_sockaddr_get_addr(addr: *const pj_sockaddr_t) -> *mut ::std::os::raw::c_void;
+    pub fn pj_sockaddr_has_addr(addr: *const pj_sockaddr_t) -> pj_bool_t;
+    pub fn pj_sockaddr_get_addr_len(addr: *const pj_sockaddr_t) -> ::std::os::raw::c_uint;
+    pub fn pj_sockaddr_get_len(addr: *const pj_sockaddr_t) -> ::std::os::raw::c_uint;
+    pub fn pj_sockaddr_copy_addr(dst: *mut pj_sockaddr, src: *const pj_sockaddr);
+    pub fn pj_sockaddr_cp(dst: *mut pj_sockaddr_t, src: *const pj_sockaddr_t);
+    pub fn pj_sockaddr_synthesize( dst_af: ::std::os::raw::c_int, dst: *mut pj_sockaddr_t, src: *const pj_sockaddr_t, ) -> pj_status_t;
+    pub fn pj_sockaddr_in_get_addr(addr: *const pj_sockaddr_in) -> pj_in_addr;
+    pub fn pj_sockaddr_in_set_addr(addr: *mut pj_sockaddr_in, hostaddr: pj_uint32_t);
+    pub fn pj_sockaddr_in_set_str_addr(addr: *mut pj_sockaddr_in,cp: *const pj_str_t,) -> pj_status_t;
+    pub fn pj_sockaddr_set_str_addr( af: ::std::os::raw::c_int, addr: *mut pj_sockaddr, cp: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_sockaddr_get_port(addr: *const pj_sockaddr_t) -> pj_uint16_t;
+    pub fn pj_sockaddr_in_get_port(addr: *const pj_sockaddr_in) -> pj_uint16_t;
+    pub fn pj_sockaddr_set_port(addr: *mut pj_sockaddr, hostport: pj_uint16_t) -> pj_status_t;
+    pub fn pj_sockaddr_in_set_port(addr: *mut pj_sockaddr_in, hostport: pj_uint16_t);
+    pub fn pj_sockaddr_parse( af: ::std::os::raw::c_int, options: ::std::os::raw::c_uint, str_: *const pj_str_t, addr: *mut pj_sockaddr,) -> pj_status_t;
+    pub fn pj_sockaddr_parse2( af: ::std::os::raw::c_int, options: ::std::os::raw::c_uint, str_: *const pj_str_t, hostpart: *mut pj_str_t, port: *mut pj_uint16_t, raf: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_gethostname() -> *const pj_str_t;
+    pub fn pj_gethostaddr() -> pj_in_addr;
+    pub fn pj_sock_socket( family: ::std::os::raw::c_int, type_: ::std::os::raw::c_int, protocol: ::std::os::raw::c_int, sock: *mut pj_sock_t, ) -> pj_status_t;
+    pub fn pj_sock_close(sockfd: pj_sock_t) -> pj_status_t;
+    pub fn pj_sock_bind( sockfd: pj_sock_t, my_addr: *const pj_sockaddr_t, addrlen: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_bind_in(sockfd: pj_sock_t, addr: pj_uint32_t, port: pj_uint16_t) -> pj_status_t;
+    pub fn pj_sock_bind_random( sockfd: pj_sock_t, addr: *const pj_sockaddr_t, port_range: pj_uint16_t, max_try: pj_uint16_t,) -> pj_status_t;
+    pub fn pj_sock_listen(sockfd: pj_sock_t, backlog: ::std::os::raw::c_int) -> pj_status_t;
+    pub fn pj_sock_accept( serverfd: pj_sock_t, newsock: *mut pj_sock_t, addr: *mut pj_sockaddr_t, addrlen: *mut ::std::os::raw::c_int,) -> pj_status_t;
+    pub fn pj_sock_connect( sockfd: pj_sock_t, serv_addr: *const pj_sockaddr_t, addrlen: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_getpeername( sockfd: pj_sock_t, addr: *mut pj_sockaddr_t, namelen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_getsockname( sockfd: pj_sock_t, addr: *mut pj_sockaddr_t, namelen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_getsockopt( sockfd: pj_sock_t, level: pj_uint16_t, optname: pj_uint16_t, optval: *mut ::std::os::raw::c_void, optlen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_setsockopt( sockfd: pj_sock_t, level: pj_uint16_t, optname: pj_uint16_t, optval: *const ::std::os::raw::c_void, optlen: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_setsockopt_params( sockfd: pj_sock_t, params: *const pj_sockopt_params, ) -> pj_status_t;
+    pub fn pj_sock_setsockopt_sobuf( sockfd: pj_sock_t, optname: pj_uint16_t, auto_retry: pj_bool_t, buf_size: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_sock_recv( sockfd: pj_sock_t, buf: *mut ::std::os::raw::c_void, len: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_sock_recvfrom( sockfd: pj_sock_t, buf: *mut ::std::os::raw::c_void, len: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, from: *mut pj_sockaddr_t, fromlen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_send( sockfd: pj_sock_t, buf: *const ::std::os::raw::c_void, len: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_sock_sendto( sockfd: pj_sock_t, buf: *const ::std::os::raw::c_void, len: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, to: *const pj_sockaddr_t, tolen: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_sock_shutdown(sockfd: pj_sock_t, how: ::std::os::raw::c_int) -> pj_status_t;
+    pub fn pj_addr_str_print( host_str: *const pj_str_t, port: ::std::os::raw::c_int, buf: *mut ::std::os::raw::c_char, size: ::std::os::raw::c_int, flag: ::std::os::raw::c_u t, ) -> *mut ::std::os::raw::c_char;
+    pub fn pj_dns_make_query( packet: *mut ::std::os::raw::c_void, size: *mut ::std::os::raw::c_uint, id: pj_uint16_t, qtype: ::std::os::raw::c_int, name: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_dns_parse_packet( pool: *mut pj_pool_t, packet: *const ::std::os::raw::c_void, size: ::std::os::raw::c_uint, p_res: *mut *mut pj_dns_parsed_packet, ) -> pj_status_t;
+    pub fn pj_dns_packet_dup( pool: *mut pj_pool_t, p: *const pj_dns_parsed_packet, options: ::std::os::raw::c_uint, p_dst: *mut *mut pj_dns_parsed_packet, );
+    pub fn pj_dns_get_type_name(type_: ::std::os::raw::c_int) -> *const ::std::os::raw::c_char;
+    pub fn pj_dns_init_srv_rr( rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: ::std::os::raw::c_uint, ttl: ::std::os::raw::c_uint, prio: ::std::os::raw::c_uint, weight: ::std::os::raw::c_uint, port: ::std::os::raw::c_uint, target: *const pj_str_t, );
+    pub fn pj_dns_init_cname_rr( rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: ::std::os::raw::c_uint, ttl: ::std::os::raw::c_uint, name: *const pj_str_t, );
+    pub fn pj_dns_init_a_rr( rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: ::std::os::raw::c_uint, ttl: ::std::os::raw::c_uint, ip_addr: *const pj_in_addr, );
+    pub fn pj_dns_init_aaaa_rr( rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: ::std::os::raw::c_uint, ttl: ::std::os::raw::c_uint, ip_addr: *const pj_in6_addr, );
+    pub fn pj_dns_dump_packet(res: *const pj_dns_parsed_packet);
+    pub fn pj_dns_settings_default(s: *mut pj_dns_settings);
+    pub fn pj_dns_resolver_create( pf: *mut pj_pool_factory, name: *const ::std::os::raw::c_char, options: ::std::os::raw::c_uint, timer: *mut pj_timer_heap_t, ioqueue: *mut pj_ioqueue_t, p_resolver: *mut *mut pj_dns_resolver, ) -> pj_status_t;
+    pub fn pj_dns_resolver_set_ns( resolver: *mut pj_dns_resolver, count: ::std::os::raw::c_uint, servers: *const pj_str_t, ports: *const pj_uint16_t, ) -> pj_status_t;
+    pub fn pj_dns_resolver_get_settings( resolver: *mut pj_dns_resolver, st: *mut pj_dns_settings,) -> pj_status_t;
+    pub fn pj_dns_resolver_set_settings( resolver: *mut pj_dns_resolver, st: *const pj_dns_settings, ) -> pj_status_t;
+    pub fn pj_dns_resolver_handle_events( resolver: *mut pj_dns_resolver, timeout: *const pj_time_val, );
+    pub fn pj_dns_resolver_destroy( resolver: *mut pj_dns_resolver, notify: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_dns_resolver_start_query( resolver: *mut pj_dns_resolver, name: *const pj_str_t, type_: ::std::os::raw::c_int, options: ::std::os::raw::c_uint, cb: pj_dns_callback, user_data: *mut ::std::os::raw::c_void, p_query: *mut *mut pj_dns_async_query, ) -> pj_status_t;
+    pub fn pj_dns_resolver_cancel_query( query: *mut pj_dns_async_query, notify: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_dns_parse_a_response( pkt: *const pj_dns_parsed_packet, rec: *mut pj_dns_a_record, ) -> pj_status_t;
+    pub fn pj_dns_parse_addr_response( pkt: *const pj_dns_parsed_packet, rec: *mut pj_dns_addr_record, ) -> pj_status_t;
+    pub fn pj_dns_resolver_add_entry( resolver: *mut pj_dns_resolver, pkt: *const pj_dns_parsed_packet, set_ttl: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_dns_resolver_get_cached_count( resolver: *mut pj_dns_resolver, ) -> ::std::os::raw::c_uint;
+    pub fn pj_dns_resolver_dump(resolver: *mut pj_dns_resolver, detail: pj_bool_t);
 }
-
-
-
-
 
 
 
