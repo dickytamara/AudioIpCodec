@@ -384,6 +384,86 @@ pub const pj_socket_sd_type_PJ_SHUT_RDWR: pj_socket_sd_type = 2;
 pub type pj_socket_sd_type = ::std::os::raw::c_uint;
 pub type pj_in_addr = in_addr;
 
+pub const PJ_DNS_CLASS_IN: ::std::os::raw::c_uint = 1;
+pub type _bindgen_ty_14 = ::std::os::raw::c_uint;
+pub const pj_dns_type_PJ_DNS_TYPE_A: pj_dns_type = 1;
+pub const pj_dns_type_PJ_DNS_TYPE_NS: pj_dns_type = 2;
+pub const pj_dns_type_PJ_DNS_TYPE_MD: pj_dns_type = 3;
+pub const pj_dns_type_PJ_DNS_TYPE_MF: pj_dns_type = 4;
+pub const pj_dns_type_PJ_DNS_TYPE_CNAME: pj_dns_type = 5;
+pub const pj_dns_type_PJ_DNS_TYPE_SOA: pj_dns_type = 6;
+pub const pj_dns_type_PJ_DNS_TYPE_MB: pj_dns_type = 7;
+pub const pj_dns_type_PJ_DNS_TYPE_MG: pj_dns_type = 8;
+pub const pj_dns_type_PJ_DNS_TYPE_MR: pj_dns_type = 9;
+pub const pj_dns_type_PJ_DNS_TYPE_NULL: pj_dns_type = 10;
+pub const pj_dns_type_PJ_DNS_TYPE_WKS: pj_dns_type = 11;
+pub const pj_dns_type_PJ_DNS_TYPE_PTR: pj_dns_type = 12;
+pub const pj_dns_type_PJ_DNS_TYPE_HINFO: pj_dns_type = 13;
+pub const pj_dns_type_PJ_DNS_TYPE_MINFO: pj_dns_type = 14;
+pub const pj_dns_type_PJ_DNS_TYPE_MX: pj_dns_type = 15;
+pub const pj_dns_type_PJ_DNS_TYPE_TXT: pj_dns_type = 16;
+pub const pj_dns_type_PJ_DNS_TYPE_RP: pj_dns_type = 17;
+pub const pj_dns_type_PJ_DNS_TYPE_AFSB: pj_dns_type = 18;
+pub const pj_dns_type_PJ_DNS_TYPE_X25: pj_dns_type = 19;
+pub const pj_dns_type_PJ_DNS_TYPE_ISDN: pj_dns_type = 20;
+pub const pj_dns_type_PJ_DNS_TYPE_RT: pj_dns_type = 21;
+pub const pj_dns_type_PJ_DNS_TYPE_NSAP: pj_dns_type = 22;
+pub const pj_dns_type_PJ_DNS_TYPE_NSAP_PTR: pj_dns_type = 23;
+pub const pj_dns_type_PJ_DNS_TYPE_SIG: pj_dns_type = 24;
+pub const pj_dns_type_PJ_DNS_TYPE_KEY: pj_dns_type = 25;
+pub const pj_dns_type_PJ_DNS_TYPE_PX: pj_dns_type = 26;
+pub const pj_dns_type_PJ_DNS_TYPE_GPOS: pj_dns_type = 27;
+pub const pj_dns_type_PJ_DNS_TYPE_AAAA: pj_dns_type = 28;
+pub const pj_dns_type_PJ_DNS_TYPE_LOC: pj_dns_type = 29;
+pub const pj_dns_type_PJ_DNS_TYPE_NXT: pj_dns_type = 30;
+pub const pj_dns_type_PJ_DNS_TYPE_EID: pj_dns_type = 31;
+pub const pj_dns_type_PJ_DNS_TYPE_NIMLOC: pj_dns_type = 32;
+pub const pj_dns_type_PJ_DNS_TYPE_SRV: pj_dns_type = 33;
+pub const pj_dns_type_PJ_DNS_TYPE_ATMA: pj_dns_type = 34;
+pub const pj_dns_type_PJ_DNS_TYPE_NAPTR: pj_dns_type = 35;
+pub const pj_dns_type_PJ_DNS_TYPE_KX: pj_dns_type = 36;
+pub const pj_dns_type_PJ_DNS_TYPE_CERT: pj_dns_type = 37;
+pub const pj_dns_type_PJ_DNS_TYPE_A6: pj_dns_type = 38;
+pub const pj_dns_type_PJ_DNS_TYPE_DNAME: pj_dns_type = 39;
+pub const pj_dns_type_PJ_DNS_TYPE_OPT: pj_dns_type = 41;
+pub const pj_dns_type_PJ_DNS_TYPE_APL: pj_dns_type = 42;
+pub const pj_dns_type_PJ_DNS_TYPE_DS: pj_dns_type = 43;
+pub const pj_dns_type_PJ_DNS_TYPE_SSHFP: pj_dns_type = 44;
+pub const pj_dns_type_PJ_DNS_TYPE_IPSECKEY: pj_dns_type = 45;
+pub const pj_dns_type_PJ_DNS_TYPE_RRSIG: pj_dns_type = 46;
+pub const pj_dns_type_PJ_DNS_TYPE_NSEC: pj_dns_type = 47;
+pub const pj_dns_type_PJ_DNS_TYPE_DNSKEY: pj_dns_type = 48;
+pub type pj_dns_type = ::std::os::raw::c_uint;
+
+pub const pj_dns_rcode_PJ_DNS_RCODE_FORMERR: pj_dns_rcode = 1;
+pub const pj_dns_rcode_PJ_DNS_RCODE_SERVFAIL: pj_dns_rcode = 2;
+pub const pj_dns_rcode_PJ_DNS_RCODE_NXDOMAIN: pj_dns_rcode = 3;
+pub const pj_dns_rcode_PJ_DNS_RCODE_NOTIMPL: pj_dns_rcode = 4;
+pub const pj_dns_rcode_PJ_DNS_RCODE_REFUSED: pj_dns_rcode = 5;
+pub const pj_dns_rcode_PJ_DNS_RCODE_YXDOMAIN: pj_dns_rcode = 6;
+pub const pj_dns_rcode_PJ_DNS_RCODE_YXRRSET: pj_dns_rcode = 7;
+pub const pj_dns_rcode_PJ_DNS_RCODE_NXRRSET: pj_dns_rcode = 8;
+pub const pj_dns_rcode_PJ_DNS_RCODE_NOTAUTH: pj_dns_rcode = 9;
+pub const pj_dns_rcode_PJ_DNS_RCODE_NOTZONE: pj_dns_rcode = 10;
+pub type pj_dns_rcode = ::std::os::raw::c_uint;
+
+pub const pj_dns_dup_options_PJ_DNS_NO_QD: pj_dns_dup_options = 1;
+pub const pj_dns_dup_options_PJ_DNS_NO_ANS: pj_dns_dup_options = 2;
+pub const pj_dns_dup_options_PJ_DNS_NO_NS: pj_dns_dup_options = 4;
+pub const pj_dns_dup_options_PJ_DNS_NO_AR: pj_dns_dup_options = 8;
+pub type pj_dns_dup_options = ::std::os::raw::c_uint;
+
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_NONE: pj_ioqueue_operation_e = 0;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_READ: pj_ioqueue_operation_e = 1;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_RECV: pj_ioqueue_operation_e = 2;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_RECV_FROM: pj_ioqueue_operation_e = 4;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_WRITE: pj_ioqueue_operation_e = 8;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_SEND: pj_ioqueue_operation_e = 16;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_SEND_TO: pj_ioqueue_operation_e = 32;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_ACCEPT: pj_ioqueue_operation_e = 64;
+pub const pj_ioqueue_operation_e_PJ_IOQUEUE_OP_CONNECT: pj_ioqueue_operation_e = 128;
+pub type pj_ioqueue_operation_e = ::std::os::raw::c_uint;
+
 pub type pj_exit_callback = ::std::option::Option<unsafe extern "C" fn()>;
 pub type pj_error_callback = ::std::option::Option<
     unsafe extern "C" fn(
@@ -747,6 +827,202 @@ pub struct pj_sockopt_params__bindgen_ty_1 {
     pub optlen: ::std::os::raw::c_int,
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_hdr {
+    pub id: pj_uint16_t,
+    pub flags: pj_uint16_t,
+    pub qdcount: pj_uint16_t,
+    pub anscount: pj_uint16_t,
+    pub nscount: pj_uint16_t,
+    pub arcount: pj_uint16_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_query {
+    pub name: pj_str_t,
+    pub type_: pj_uint16_t,
+    pub dnsclass: pj_uint16_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_dns_parsed_rr {
+    pub name: pj_str_t,
+    pub type_: pj_uint16_t,
+    pub dnsclass: pj_uint16_t,
+    pub ttl: pj_uint32_t,
+    pub rdlength: pj_uint16_t,
+    pub data: *mut ::std::os::raw::c_void,
+    pub rdata: pj_dns_parsed_rr_rdata,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pj_dns_parsed_rr_rdata {
+    pub srv: pj_dns_parsed_rr_rdata_srv,
+    pub cname: pj_dns_parsed_rr_rdata_cname,
+    pub ns: pj_dns_parsed_rr_rdata_ns,
+    pub ptr: pj_dns_parsed_rr_rdata_ptr,
+    pub a: pj_dns_parsed_rr_rdata_a,
+    pub aaaa: pj_dns_parsed_rr_rdata_aaaa,
+    _bindgen_union_align: [u64; 3usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_rr_rdata_srv {
+    pub prio: pj_uint16_t,
+    pub weight: pj_uint16_t,
+    pub port: pj_uint16_t,
+    pub target: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_rr_rdata_cname {
+    pub name: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_rr_rdata_ns {
+    pub name: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_rr_rdata_ptr {
+    pub name: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_rr_rdata_a {
+    pub ip_addr: pj_in_addr,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_dns_parsed_rr_rdata_aaaa {
+    pub ip_addr: pj_in6_addr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_parsed_packet {
+    pub hdr: pj_dns_hdr,
+    pub q: *mut pj_dns_parsed_query,
+    pub ans: *mut pj_dns_parsed_rr,
+    pub ns: *mut pj_dns_parsed_rr,
+    pub arr: *mut pj_dns_parsed_rr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_resolver {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_async_query {
+    _unused: [u8; 0],
+}
+pub type pj_dns_callback = ::std::option::Option<
+    unsafe extern "C" fn(
+        user_data: *mut ::std::os::raw::c_void,
+        status: pj_status_t,
+        response: *mut pj_dns_parsed_packet,
+    ),
+>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_dns_settings {
+    pub options: ::std::os::raw::c_uint,
+    pub qretr_delay: ::std::os::raw::c_uint,
+    pub qretr_count: ::std::os::raw::c_uint,
+    pub cache_max_ttl: ::std::os::raw::c_uint,
+    pub good_ns_ttl: ::std::os::raw::c_uint,
+    pub bad_ns_ttl: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_dns_a_record {
+    pub name: pj_str_t,
+    pub alias: pj_str_t,
+    pub addr_count: ::std::os::raw::c_uint,
+    pub addr: [pj_in_addr; 8usize],
+    pub buf_: [::std::os::raw::c_char; 128usize],
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_dns_addr_record {
+    pub name: pj_str_t,
+    pub alias: pj_str_t,
+    pub addr_count: ::std::os::raw::c_uint,
+    pub addr: [pj_dns_addr_record__bindgen_ty_1; 8usize],
+    pub buf_: [::std::os::raw::c_char; 128usize],
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_dns_addr_record__bindgen_ty_1 {
+    pub af: ::std::os::raw::c_int,
+    pub ip: pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1 {
+    pub v4: pj_in_addr,
+    pub v6: pj_in6_addr,
+    _bindgen_union_align: [u32; 4usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ioqueue_op_key_t {
+    pub internal__: [*mut ::std::os::raw::c_void; 32usize],
+    pub activesock_data: *mut ::std::os::raw::c_void,
+    pub user_data: *mut ::std::os::raw::c_void,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ioqueue_callback {
+    pub on_read_complete: ::std::option::Option<
+        unsafe extern "C" fn(
+            key: *mut pj_ioqueue_key_t,
+            op_key: *mut pj_ioqueue_op_key_t,
+            bytes_read: pj_ssize_t,
+        ),
+    >,
+    pub on_write_complete: ::std::option::Option<
+        unsafe extern "C" fn(
+            key: *mut pj_ioqueue_key_t,
+            op_key: *mut pj_ioqueue_op_key_t,
+            bytes_sent: pj_ssize_t,
+        ),
+    >,
+    pub on_accept_complete: ::std::option::Option<
+        unsafe extern "C" fn(
+            key: *mut pj_ioqueue_key_t,
+            op_key: *mut pj_ioqueue_op_key_t,
+            sock: pj_sock_t,
+            status: pj_status_t,
+        ),
+    >,
+    pub on_connect_complete: ::std::option::Option<
+        unsafe extern "C" fn(key: *mut pj_ioqueue_key_t, status: pj_status_t),
+    >,
+}
+
+
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
     pub static PJ_AF_UNSPEC: pj_uint16_t;
@@ -967,9 +1243,31 @@ extern "C" {
     pub fn pj_dns_resolver_add_entry( resolver: *mut pj_dns_resolver, pkt: *const pj_dns_parsed_packet, set_ttl: pj_bool_t, ) -> pj_status_t;
     pub fn pj_dns_resolver_get_cached_count( resolver: *mut pj_dns_resolver, ) -> ::std::os::raw::c_uint;
     pub fn pj_dns_resolver_dump(resolver: *mut pj_dns_resolver, detail: pj_bool_t);
+    pub fn pj_ioqueue_name() -> *const ::std::os::raw::c_char;
+    pub fn pj_ioqueue_create( pool: *mut pj_pool_t, max_fd: pj_size_t, ioqueue: *mut *mut pj_ioqueue_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_destroy(ioque: *mut pj_ioqueue_t) -> pj_status_t;
+    pub fn pj_ioqueue_set_lock( ioque: *mut pj_ioqueue_t, lock: *mut pj_lock_t, auto_delete: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_set_default_concurrency( ioqueue: *mut pj_ioqueue_t, allow: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_register_sock( pool: *mut pj_pool_t, ioque: *mut pj_ioqueue_t, sock: pj_sock_t, user_data: *mut ::std::os::raw::c_void, cb: *const pj_ioqueue_callback, key: *mut *mut pj_ioqueue_key_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_register_sock2( pool: *mut pj_pool_t, ioque: *mut pj_ioqueue_t, sock: pj_sock_t, grp_lock: *mut pj_grp_lock_t, user_data: *mut ::std::os::raw::c_void, cb: *const pj_ioqueue_callback, key: *mut *mut pj_ioqueue_key_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_unregister(key: *mut pj_ioqueue_key_t) -> pj_status_t;
+    pub fn pj_ioqueue_get_user_data(key: *mut pj_ioqueue_key_t) -> *mut ::std::os::raw::c_void;
+    pub fn pj_ioqueue_set_user_data( key: *mut pj_ioqueue_key_t, user_data: *mut ::std::os::raw::c_void, old_data: *mut *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_ioqueue_set_concurrency(key: *mut pj_ioqueue_key_t, allow: pj_bool_t) -> pj_status_t;
+    pub fn pj_ioqueue_lock_key(key: *mut pj_ioqueue_key_t) -> pj_status_t;
+    pub fn pj_ioqueue_trylock_key(key: *mut pj_ioqueue_key_t) -> pj_status_t;
+    pub fn pj_ioqueue_unlock_key(key: *mut pj_ioqueue_key_t) -> pj_status_t;
+    pub fn pj_ioqueue_op_key_init(op_key: *mut pj_ioqueue_op_key_t, size: pj_size_t);
+    pub fn pj_ioqueue_is_pending( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, ) -> pj_bool_t;
+    pub fn pj_ioqueue_post_completion( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, bytes_status: pj_ssize_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_accept( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, new_sock: *mut pj_sock_t, local: *mut pj_sockaddr_t, remote: *mut pj_sockaddr_t, addrlen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ioqueue_connect( key: *mut pj_ioqueue_key_t, addr: *const pj_sockaddr_t, addrlen: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ioqueue_poll( ioque: *mut pj_ioqueue_t, timeout: *const pj_time_val, ) -> ::std::os::raw::c_int;
+    pub fn pj_ioqueue_recv( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, buffer: *mut ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_recvfrom( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, buffer: *mut ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, addr: *mut pj_sockaddr_t, addrlen: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ioqueue_send( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, data: *const ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_ioqueue_sendto( key: *mut pj_ioqueue_key_t, op_key: *mut pj_ioqueue_op_key_t, data: *const ::std::os::raw::c_void, length: *mut pj_ssize_t, flags: pj_uint32_t, addr: *const pj_sockaddr_t, addrlen: ::std::os::raw::c_int, ) -> pj_status_t;
 }
-
-
 
 
 impl AutoCreate<pj_str_t> for pj_str_t {

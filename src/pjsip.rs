@@ -434,7 +434,22 @@ pub const pjsip_event_id_e_PJSIP_EVENT_TSX_STATE: pjsip_event_id_e = 5;
 pub const pjsip_event_id_e_PJSIP_EVENT_USER: pjsip_event_id_e = 6;
 pub type pjsip_event_id_e = ::std::os::raw::c_uint;
 
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TRANSPORT_LAYER: pjsip_module_priority = 8;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TSX_LAYER: pjsip_module_priority = 16;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_UA_PROXY_LAYER: pjsip_module_priority = 32;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
+pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
+pub type pjsip_module_priority = ::std::os::raw::c_uint;
 
+pub const pjsip_transport_flags_e_PJSIP_TRANSPORT_RELIABLE: pjsip_transport_flags_e = 1;
+pub const pjsip_transport_flags_e_PJSIP_TRANSPORT_SECURE: pjsip_transport_flags_e = 2;
+pub const pjsip_transport_flags_e_PJSIP_TRANSPORT_DATAGRAM: pjsip_transport_flags_e = 4;
+pub type pjsip_transport_flags_e = ::std::os::raw::c_uint;
+
+pub const pjsip_tpselector_type_PJSIP_TPSELECTOR_NONE: pjsip_tpselector_type = 0;
+pub const pjsip_tpselector_type_PJSIP_TPSELECTOR_TRANSPORT: pjsip_tpselector_type = 1;
+pub const pjsip_tpselector_type_PJSIP_TPSELECTOR_LISTENER: pjsip_tpselector_type = 2;
+pub type pjsip_tpselector_type = ::std::os::raw::c_uint;
 
 
 #[repr(C)]
@@ -1036,9 +1051,7 @@ pub struct pjsip_event__bindgen_ty_1__bindgen_ty_6 {
     pub user4: *mut ::std::os::raw::c_void,
 }
 
-extern "C" {
-    pub fn pjsip_event_str(e: pjsip_event_id_e) -> *const ::std::os::raw::c_char;
-}
+
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1066,14 +1079,259 @@ pub struct pjsip_module {
     >,
 }
 
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TRANSPORT_LAYER: pjsip_module_priority = 8;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TSX_LAYER: pjsip_module_priority = 16;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_UA_PROXY_LAYER: pjsip_module_priority = 32;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
-pub type pjsip_module_priority = ::std::os::raw::c_uint;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_server_addresses {
+    pub count: ::std::os::raw::c_uint,
+    pub entry: [pjsip_server_addresses__bindgen_ty_1; 16usize],
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_server_addresses__bindgen_ty_1 {
+    pub type_: pjsip_transport_type_e,
+    pub priority: ::std::os::raw::c_uint,
+    pub weight: ::std::os::raw::c_uint,
+    pub addr: pj_sockaddr,
+    pub addr_len: ::std::os::raw::c_int,
+}
+pub type pjsip_resolver_callback = ::std::option::Option<
+    unsafe extern "C" fn(
+        status: pj_status_t,
+        token: *mut ::std::os::raw::c_void,
+        addr: *const pjsip_server_addresses,
+    ),
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_ext_resolver {
+    pub resolve: ::std::option::Option<
+        unsafe extern "C" fn(
+            resolver: *mut pjsip_resolver_t,
+            pool: *mut pj_pool_t,
+            target: *const pjsip_host_info,
+            token: *mut ::std::os::raw::c_void,
+            cb: pjsip_resolver_callback,
+        ),
+    >,
+}
+
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_tpselector {
+    pub type_: pjsip_tpselector_type,
+    pub disable_connection_reuse: pj_bool_t,
+    pub u: pjsip_tpselector__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pjsip_tpselector__bindgen_ty_1 {
+    pub transport: *mut pjsip_transport,
+    pub listener: *mut pjsip_tpfactory,
+    pub ptr: *mut ::std::os::raw::c_void,
+    _bindgen_union_align: u64,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_rx_data_op_key {
+    pub op_key: pj_ioqueue_op_key_t,
+    pub rdata: *mut pjsip_rx_data,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_rx_data {
+    pub tp_info: pjsip_rx_data__bindgen_ty_1,
+    pub pkt_info: pjsip_rx_data__bindgen_ty_2,
+    pub msg_info: pjsip_rx_data__bindgen_ty_3,
+    pub endpt_info: pjsip_rx_data__bindgen_ty_4,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_rx_data__bindgen_ty_1 {
+    pub pool: *mut pj_pool_t,
+    pub transport: *mut pjsip_transport,
+    pub tp_data: *mut ::std::os::raw::c_void,
+    pub op_key: pjsip_rx_data_op_key,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_rx_data__bindgen_ty_2 {
+    pub timestamp: pj_time_val,
+    pub packet: [::std::os::raw::c_char; 4000usize],
+    pub zero: pj_uint32_t,
+    pub len: pj_ssize_t,
+    pub src_addr: pj_sockaddr,
+    pub src_addr_len: ::std::os::raw::c_int,
+    pub src_name: [::std::os::raw::c_char; 46usize],
+    pub src_port: ::std::os::raw::c_int,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_rx_data__bindgen_ty_3 {
+    pub msg_buf: *mut ::std::os::raw::c_char,
+    pub len: ::std::os::raw::c_int,
+    pub msg: *mut pjsip_msg,
+    pub info: *mut ::std::os::raw::c_char,
+    pub cid: *mut pjsip_cid_hdr,
+    pub from: *mut pjsip_from_hdr,
+    pub to: *mut pjsip_to_hdr,
+    pub via: *mut pjsip_via_hdr,
+    pub cseq: *mut pjsip_cseq_hdr,
+    pub max_fwd: *mut pjsip_max_fwd_hdr,
+    pub route: *mut pjsip_route_hdr,
+    pub record_route: *mut pjsip_rr_hdr,
+    pub ctype: *mut pjsip_ctype_hdr,
+    pub clen: *mut pjsip_clen_hdr,
+    pub require: *mut pjsip_require_hdr,
+    pub supported: *mut pjsip_supported_hdr,
+    pub parse_err: pjsip_parser_err_report,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_rx_data__bindgen_ty_4 {
+    pub mod_data: [*mut ::std::os::raw::c_void; 32usize],
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_tx_data_op_key {
+    pub key: pj_ioqueue_op_key_t,
+    pub tdata: *mut pjsip_tx_data,
+    pub token: *mut ::std::os::raw::c_void,
+    pub callback: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pjsip_transport,
+            arg2: *mut ::std::os::raw::c_void,
+            arg3: pj_ssize_t,
+        ),
+    >,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_tx_data {
+    pub prev: *mut pjsip_tx_data,
+    pub next: *mut pjsip_tx_data,
+    pub pool: *mut pj_pool_t,
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub info: *mut ::std::os::raw::c_char,
+    pub rx_timestamp: pj_time_val,
+    pub mgr: *mut pjsip_tpmgr,
+    pub op_key: pjsip_tx_data_op_key,
+    pub lock: *mut pj_lock_t,
+    pub msg: *mut pjsip_msg,
+    pub saved_strict_route: *mut pjsip_route_hdr,
+    pub buf: pjsip_buffer,
+    pub ref_cnt: *mut pj_atomic_t,
+    pub is_pending: ::std::os::raw::c_int,
+    pub token: *mut ::std::os::raw::c_void,
+    pub cb: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut ::std::os::raw::c_void,
+            arg2: *mut pjsip_tx_data,
+            arg3: pj_ssize_t,
+        ),
+    >,
+    pub dest_info: pjsip_tx_data__bindgen_ty_1,
+    pub tp_info: pjsip_tx_data__bindgen_ty_2,
+    pub tp_sel: pjsip_tpselector,
+    pub auth_retry: pj_bool_t,
+    pub mod_data: [*mut ::std::os::raw::c_void; 32usize],
+    pub via_addr: pjsip_host_port,
+    pub via_tp: *const ::std::os::raw::c_void,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_tx_data__bindgen_ty_1 {
+    pub name: pj_str_t,
+    pub addr: pjsip_server_addresses,
+    pub cur_addr: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_tx_data__bindgen_ty_2 {
+    pub transport: *mut pjsip_transport,
+    pub dst_addr: pj_sockaddr,
+    pub dst_addr_len: ::std::os::raw::c_int,
+    pub dst_name: [::std::os::raw::c_char; 46usize],
+    pub dst_port: ::std::os::raw::c_int,
+}
+
+pub type pjsip_transport_callback = ::std::option::Option<
+    unsafe extern "C" fn(
+        tp: *mut pjsip_transport,
+        token: *mut ::std::os::raw::c_void,
+        sent_bytes: pj_ssize_t,
+    ),
+>;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_transport_key {
+    pub type_: ::std::os::raw::c_long,
+    pub rem_addr: pj_sockaddr,
+}
+
+pub const pjsip_transport_dir_PJSIP_TP_DIR_NONE: pjsip_transport_dir = 0;
+pub const pjsip_transport_dir_PJSIP_TP_DIR_OUTGOING: pjsip_transport_dir = 1;
+pub const pjsip_transport_dir_PJSIP_TP_DIR_INCOMING: pjsip_transport_dir = 2;
+pub type pjsip_transport_dir = ::std::os::raw::c_uint;
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_transport {
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub pool: *mut pj_pool_t,
+    pub ref_cnt: *mut pj_atomic_t,
+    pub lock: *mut pj_lock_t,
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub tracing: pj_bool_t,
+    pub is_shutdown: pj_bool_t,
+    pub is_destroying: pj_bool_t,
+    pub key: pjsip_transport_key,
+    pub type_name: *mut ::std::os::raw::c_char,
+    pub flag: ::std::os::raw::c_uint,
+    pub info: *mut ::std::os::raw::c_char,
+    pub addr_len: ::std::os::raw::c_int,
+    pub local_addr: pj_sockaddr,
+    pub local_name: pjsip_host_port,
+    pub remote_name: pjsip_host_port,
+    pub dir: pjsip_transport_dir,
+    pub endpt: *mut pjsip_endpoint,
+    pub tpmgr: *mut pjsip_tpmgr,
+    pub factory: *mut pjsip_tpfactory,
+    pub idle_timer: pj_timer_entry,
+    pub last_recv_ts: pj_timestamp,
+    pub last_recv_len: pj_size_t,
+    pub data: *mut ::std::os::raw::c_void,
+    pub send_msg: ::std::option::Option<
+        unsafe extern "C" fn(
+            transport: *mut pjsip_transport,
+            tdata: *mut pjsip_tx_data,
+            rem_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_int,
+            token: *mut ::std::os::raw::c_void,
+            callback: pjsip_transport_callback,
+        ) -> pj_status_t,
+    >,
+    pub do_shutdown:
+        ::std::option::Option<unsafe extern "C" fn(transport: *mut pjsip_transport) -> pj_status_t>,
+    pub destroy:
+        ::std::option::Option<unsafe extern "C" fn(transport: *mut pjsip_transport) -> pj_status_t>,
+}
 
 extern "C" {
+    pub fn pjsip_event_str(e: pjsip_event_id_e) -> *const ::std::os::raw::c_char;
     pub fn pjsip_param_find( param_list: *const pjsip_param, name: *const pj_str_t, ) -> *mut pjsip_param;
     pub fn pjsip_param_cmp( param_list1: *const pjsip_param, param_list2: *const pjsip_param, ig_nf: pj_bool_t, ) -> ::std::os::raw::c_int;
     pub fn pjsip_param_clone( pool: *mut pj_pool_t, dst_list: *mut pjsip_param, src_list: *const pjsip_param, );
@@ -1208,23 +1466,42 @@ extern "C" {
     pub fn pjsip_concat_param_imp( param: *mut pj_str_t, pool: *mut pj_pool_t, pname: *const pj_str_t, pvalue: *const pj_str_t, sepchar: ::std::os::raw::c_int, );
     pub fn pjsip_parse_end_hdr_imp(scanner: *mut pj_scanner);
     pub fn pjsip_parse_generic_array_hdr_imp( hdr: *mut pjsip_generic_array_hdr, scanner: *mut pj_scanner, );
+    pub fn pjsip_resolver_create( pool: *mut pj_pool_t, p_res: *mut *mut pjsip_resolver_t, ) -> pj_status_t;
+    pub fn pjsip_resolver_set_resolver( res: *mut pjsip_resolver_t, dns_res: *mut pj_dns_resolver,) -> pj_status_t;
+    pub fn pjsip_resolver_set_ext_resolver(res: *mut pjsip_resolver_t,ext_res: *mut pjsip_ext_resolver, ) -> pj_status_t;
+    pub fn pjsip_resolver_get_resolver(res: *mut pjsip_resolver_t) -> *mut pj_dns_resolver;
+    pub fn pjsip_resolver_destroy(resolver: *mut pjsip_resolver_t);
+    pub fn pjsip_resolve( resolver: *mut pjsip_resolver_t, pool: *mut pj_pool_t, target: *const pjsip_host_info, token: *mut ::std::os::raw::c_void, cb: pjsip_resolver_callback,);
+    pub fn pjsip_transport_register_type( tp_flag: ::std::os::raw::c_uint, tp_name: *const ::std::os::raw::c_char, def_port: ::std::os::raw::c_int, p_tp_type: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjsip_transport_get_type_from_name(name: *const pj_str_t) -> pjsip_transport_type_e;
+    pub fn pjsip_transport_get_type_from_flag( flag: ::std::os::raw::c_uint, ) -> pjsip_transport_type_e;
+    pub fn pjsip_transport_type_get_af(type_: pjsip_transport_type_e) -> ::std::os::raw::c_int;
+    pub fn pjsip_transport_get_flag_from_type( type_: pjsip_transport_type_e, ) -> ::std::os::raw::c_uint;
+    pub fn pjsip_transport_get_default_port_for_type( type_: pjsip_transport_type_e, ) -> ::std::os::raw::c_int;
+    pub fn pjsip_transport_get_type_name( t: pjsip_transport_type_e, ) -> *const ::std::os::raw::c_char;
+    pub fn pjsip_transport_get_type_desc(t: pjsip_transport_type_e, ) -> *const ::std::os::raw::c_char;
+    pub fn pjsip_tpselector_add_ref(sel: *mut pjsip_tpselector);
+    pub fn pjsip_tpselector_dec_ref(sel: *mut pjsip_tpselector);
+    pub fn pjsip_rx_data_get_info(rdata: *mut pjsip_rx_data) -> *mut ::std::os::raw::c_char;
+    pub fn pjsip_rx_data_clone( src: *const pjsip_rx_data, flags: ::std::os::raw::c_uint, p_rdata: *mut *mut pjsip_rx_data, ) -> pj_status_t;
+    pub fn pjsip_rx_data_free_cloned(rdata: *mut pjsip_rx_data) -> pj_status_t;
+    pub fn pjsip_tx_data_create( mgr: *mut pjsip_tpmgr, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_tx_data_add_ref(tdata: *mut pjsip_tx_data);
+    pub fn pjsip_tx_data_dec_ref(tdata: *mut pjsip_tx_data) -> pj_status_t;
+    pub fn pjsip_tx_data_encode(tdata: *mut pjsip_tx_data) -> pj_status_t;
+    pub fn pjsip_tx_data_is_valid(tdata: *mut pjsip_tx_data) -> pj_bool_t;
+    pub fn pjsip_tx_data_invalidate_msg(tdata: *mut pjsip_tx_data);
+    pub fn pjsip_tx_data_get_info(tdata: *mut pjsip_tx_data) -> *mut ::std::os::raw::c_char;
+    pub fn pjsip_tx_data_set_transport( tdata: *mut pjsip_tx_data, sel: *const pjsip_tpselector, ) -> pj_status_t;
+    pub fn pjsip_tx_data_clone( src: *const pjsip_tx_data, flags: ::std::os::raw::c_uint, p_rdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_transport_register(mgr: *mut pjsip_tpmgr, tp: *mut pjsip_transport) -> pj_status_t;
+    pub fn pjsip_transport_shutdown(tp: *mut pjsip_transport) -> pj_status_t;
+    pub fn pjsip_transport_shutdown2(tp: *mut pjsip_transport, force: pj_bool_t) -> pj_status_t;
+    pub fn pjsip_transport_destroy(tp: *mut pjsip_transport) -> pj_status_t;
+    pub fn pjsip_transport_add_ref(tp: *mut pjsip_transport) -> pj_status_t;
+    pub fn pjsip_transport_dec_ref(tp: *mut pjsip_transport) -> pj_status_t;
+    pub fn pjsip_tpmgr_receive_packet( mgr: *mut pjsip_tpmgr, rdata: *mut pjsip_rx_data, ) -> pj_ssize_t;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
