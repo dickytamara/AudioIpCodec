@@ -2302,6 +2302,741 @@ extern "C" {
 }
 
 
+pub const pjsip_inv_state_PJSIP_INV_STATE_NULL: pjsip_inv_state = 0;
+pub const pjsip_inv_state_PJSIP_INV_STATE_CALLING: pjsip_inv_state = 1;
+pub const pjsip_inv_state_PJSIP_INV_STATE_INCOMING: pjsip_inv_state = 2;
+pub const pjsip_inv_state_PJSIP_INV_STATE_EARLY: pjsip_inv_state = 3;
+pub const pjsip_inv_state_PJSIP_INV_STATE_CONNECTING: pjsip_inv_state = 4;
+pub const pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED: pjsip_inv_state = 5;
+pub const pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED: pjsip_inv_state = 6;
+pub type pjsip_inv_state = ::std::os::raw::c_uint;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_inv_on_rx_offer_cb_param {
+    pub offer: *const pjmedia_sdp_session,
+    pub rdata: *const pjsip_rx_data,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_inv_callback {
+    pub on_state_changed: ::std::option::Option<
+        unsafe extern "C" fn(inv: *mut pjsip_inv_session, e: *mut pjsip_event),
+    >,
+    pub on_new_session: ::std::option::Option<
+        unsafe extern "C" fn(inv: *mut pjsip_inv_session, e: *mut pjsip_event),
+    >,
+    pub on_tsx_state_changed: ::std::option::Option<
+        unsafe extern "C" fn(
+            inv: *mut pjsip_inv_session,
+            tsx: *mut pjsip_transaction,
+            e: *mut pjsip_event,
+        ),
+    >,
+    pub on_rx_offer: ::std::option::Option<
+        unsafe extern "C" fn(inv: *mut pjsip_inv_session, offer: *const pjmedia_sdp_session),
+    >,
+    pub on_rx_offer2: ::std::option::Option<
+        unsafe extern "C" fn(
+            inv: *mut pjsip_inv_session,
+            param: *mut pjsip_inv_on_rx_offer_cb_param,
+        ),
+    >,
+    pub on_rx_reinvite: ::std::option::Option<
+        unsafe extern "C" fn(
+            inv: *mut pjsip_inv_session,
+            offer: *const pjmedia_sdp_session,
+            rdata: *mut pjsip_rx_data,
+        ) -> pj_status_t,
+    >,
+    pub on_create_offer: ::std::option::Option<
+        unsafe extern "C" fn(inv: *mut pjsip_inv_session, p_offer: *mut *mut pjmedia_sdp_session),
+    >,
+    pub on_media_update: ::std::option::Option<
+        unsafe extern "C" fn(inv_ses: *mut pjsip_inv_session, status: pj_status_t),
+    >,
+    pub on_send_ack: ::std::option::Option<
+        unsafe extern "C" fn(inv: *mut pjsip_inv_session, rdata: *mut pjsip_rx_data),
+    >,
+    pub on_redirected: ::std::option::Option<
+        unsafe extern "C" fn(
+            inv: *mut pjsip_inv_session,
+            target: *const pjsip_uri,
+            e: *const pjsip_event,
+        ) -> pjsip_redirect_op,
+    >,
+}
+
+pub const pjsip_inv_option_PJSIP_INV_SUPPORT_100REL: pjsip_inv_option = 1;
+pub const pjsip_inv_option_PJSIP_INV_SUPPORT_TIMER: pjsip_inv_option = 2;
+pub const pjsip_inv_option_PJSIP_INV_SUPPORT_UPDATE: pjsip_inv_option = 4;
+pub const pjsip_inv_option_PJSIP_INV_SUPPORT_ICE: pjsip_inv_option = 8;
+pub const pjsip_inv_option_PJSIP_INV_REQUIRE_ICE: pjsip_inv_option = 16;
+pub const pjsip_inv_option_PJSIP_INV_REQUIRE_100REL: pjsip_inv_option = 32;
+pub const pjsip_inv_option_PJSIP_INV_REQUIRE_TIMER: pjsip_inv_option = 64;
+pub const pjsip_inv_option_PJSIP_INV_ALWAYS_USE_TIMER: pjsip_inv_option = 128;
+pub const pjsip_inv_option_PJSIP_INV_SUPPORT_TRICKLE_ICE: pjsip_inv_option = 256;
+pub const pjsip_inv_option_PJSIP_INV_REQUIRE_TRICKLE_ICE: pjsip_inv_option = 512;
+pub type pjsip_inv_option = ::std::os::raw::c_uint;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_timer {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_inv_session {
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub pool: *mut pj_pool_t,
+    pub pool_prov: *mut pj_pool_t,
+    pub pool_active: *mut pj_pool_t,
+    pub state: pjsip_inv_state,
+    pub cancelling: pj_bool_t,
+    pub pending_cancel: pj_bool_t,
+    pub pending_bye: *mut pjsip_tx_data,
+    pub cause: pjsip_status_code,
+    pub cause_text: pj_str_t,
+    pub notify: pj_bool_t,
+    pub cb_called: ::std::os::raw::c_uint,
+    pub dlg: *mut pjsip_dialog,
+    pub role: pjsip_role_e,
+    pub options: ::std::os::raw::c_uint,
+    pub neg: *mut pjmedia_sdp_neg,
+    pub sdp_neg_flags: ::std::os::raw::c_uint,
+    pub invite_tsx: *mut pjsip_transaction,
+    pub invite_req: *mut pjsip_tx_data,
+    pub last_answer: *mut pjsip_tx_data,
+    pub last_ack: *mut pjsip_tx_data,
+    pub last_ack_cseq: pj_int32_t,
+    pub mod_data: [*mut ::std::os::raw::c_void; 32usize],
+    pub timer: *mut pjsip_timer,
+    pub following_fork: pj_bool_t,
+    pub ref_cnt: *mut pj_atomic_t,
+    pub updated_sdp_answer: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_rdata_sdp_info {
+    pub body: pj_str_t,
+    pub sdp_err: pj_status_t,
+    pub sdp: *mut pjmedia_sdp_session,
+}
+
+extern "C" {
+    pub fn pjsip_inv_usage_init( endpt: *mut pjsip_endpoint, cb: *const pjsip_inv_callback, ) -> pj_status_t;
+    pub fn pjsip_inv_usage_instance() -> *mut pjsip_module;
+    pub fn pjsip_inv_usage_dump();
+    pub fn pjsip_inv_create_uac( dlg: *mut pjsip_dialog, local_sdp: *const pjmedia_sdp_session, options: ::std::os::raw::c_uint, p_inv: *mut *mut pjsip_inv_session, ) -> pj_status_t;
+    pub fn pjsip_inv_verify_request( rdata: *mut pjsip_rx_data, options: *mut ::std::os::raw::c_uint, sdp: *const pjmedia_sdp_session, dlg: *mut pjsip_dialog, endpt: *mut pjsip_endpoint, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_verify_request2( rdata: *mut pjsip_rx_data, options: *mut ::std::os::raw::c_uint, offer: *const pjmedia_sdp_session, answer: *const pjmedia_sdp_session, dlg: *mut pjsip_dialog, endpt: *mut pjsip_endpoint, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_verify_request3( rdata: *mut pjsip_rx_data, tmp_pool: *mut pj_pool_t, options: *mut ::std::os::raw::c_uint, offer: *const pjmedia_sdp_session, answer: *const pjmedia_sdp_session, dlg: *mut pjsip_dialog, endpt: *mut pjsip_endpoint, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_create_uas( dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data, local_sdp: *const pjmedia_sdp_session, options: ::std::os::raw::c_uint, p_inv: *mut *mut pjsip_inv_session, ) -> pj_status_t;
+    pub fn pjsip_inv_add_ref(inv: *mut pjsip_inv_session) -> pj_status_t;
+    pub fn pjsip_inv_dec_ref(inv: *mut pjsip_inv_session) -> pj_status_t;
+    pub fn pjsip_inv_terminate( inv: *mut pjsip_inv_session, st_code: ::std::os::raw::c_int, notify: pj_bool_t, ) -> pj_status_t;
+    pub fn pjsip_inv_uac_restart(inv: *mut pjsip_inv_session, new_offer: pj_bool_t) -> pj_status_t;
+    pub fn pjsip_inv_process_redirect( inv: *mut pjsip_inv_session, cmd: pjsip_redirect_op, e: *mut pjsip_event, ) -> pj_status_t;
+    pub fn pjsip_inv_invite( inv: *mut pjsip_inv_session, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_initial_answer( inv: *mut pjsip_inv_session, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, sdp: *const pjmedia_sdp_session, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_answer( inv: *mut pjsip_inv_session, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, local_sdp: *const pjmedia_sdp_session, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_set_local_sdp( inv: *mut pjsip_inv_session, sdp: *const pjmedia_sdp_session, ) -> pj_status_t;
+    pub fn pjsip_inv_set_sdp_answer( inv: *mut pjsip_inv_session, sdp: *const pjmedia_sdp_session, ) -> pj_status_t;
+    pub fn pjsip_inv_end_session( inv: *mut pjsip_inv_session, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_cancel_reinvite( inv: *mut pjsip_inv_session, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_reinvite( inv: *mut pjsip_inv_session, new_contact: *const pj_str_t, new_offer: *const pjmedia_sdp_session, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_update( inv: *mut pjsip_inv_session, new_contact: *const pj_str_t, offer: *const pjmedia_sdp_session, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_create_ack( inv: *mut pjsip_inv_session, cseq: ::std::os::raw::c_int, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_inv_send_msg( inv: *mut pjsip_inv_session, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_dlg_get_inv_session(dlg: *mut pjsip_dialog) -> *mut pjsip_inv_session;
+    pub fn pjsip_tsx_get_inv_session(tsx: *mut pjsip_transaction) -> *mut pjsip_inv_session;
+    pub fn pjsip_inv_state_name(state: pjsip_inv_state) -> *const ::std::os::raw::c_char;
+    pub fn pjsip_create_sdp_body( pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, p_body: *mut *mut pjsip_msg_body, ) -> pj_status_t;
+    pub fn pjsip_rdata_get_sdp_info(rdata: *mut pjsip_rx_data) -> *mut pjsip_rdata_sdp_info;
+    pub fn pjsip_rdata_get_sdp_info2( rdata: *mut pjsip_rx_data, med_type: *const pjsip_media_type, ) -> *mut pjsip_rdata_sdp_info;
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_regc {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_regc_cbparam {
+    pub regc: *mut pjsip_regc,
+    pub token: *mut ::std::os::raw::c_void,
+    pub status: pj_status_t,
+    pub code: ::std::os::raw::c_int,
+    pub reason: pj_str_t,
+    pub rdata: *mut pjsip_rx_data,
+    pub expiration: ::std::os::raw::c_uint,
+    pub contact_cnt: ::std::os::raw::c_int,
+    pub contact: [*mut pjsip_contact_hdr; 10usize],
+    pub is_unreg: pj_bool_t,
+}
+
+pub type pjsip_regc_cb = ::std::option::Option<unsafe extern "C" fn(param: *mut pjsip_regc_cbparam)>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_regc_tsx_cb_param {
+    pub cbparam: pjsip_regc_cbparam,
+    pub contact_cnt: ::std::os::raw::c_int,
+    pub contact: [pj_str_t; 10usize],
+}
+
+pub type pjsip_regc_tsx_cb = ::std::option::Option<unsafe extern "C" fn(param: *mut pjsip_regc_tsx_cb_param)>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_regc_info {
+    pub server_uri: pj_str_t,
+    pub client_uri: pj_str_t,
+    pub is_busy: pj_bool_t,
+    pub auto_reg: pj_bool_t,
+    pub interval: ::std::os::raw::c_uint,
+    pub next_reg: ::std::os::raw::c_uint,
+    pub transport: *mut pjsip_transport,
+}
+
+extern "C" {
+    pub fn pjsip_regc_get_module() -> *mut pjsip_module;
+    pub fn pjsip_regc_create( endpt: *mut pjsip_endpoint, token: *mut ::std::os::raw::c_void, cb: pjsip_regc_cb, p_regc: *mut *mut pjsip_regc, ) -> pj_status_t;
+    pub fn pjsip_regc_destroy(regc: *mut pjsip_regc) -> pj_status_t;
+    pub fn pjsip_regc_get_info(regc: *mut pjsip_regc, info: *mut pjsip_regc_info) -> pj_status_t;
+    pub fn pjsip_regc_get_pool(regc: *mut pjsip_regc) -> *mut pj_pool_t;
+    pub fn pjsip_regc_init( regc: *mut pjsip_regc, srv_url: *const pj_str_t, from_url: *const pj_str_t, to_url: *const pj_str_t, ccnt: ::std::os::raw::c_int, contact: *const pj_str_t, expires: pj_uint32_t, ) -> pj_status_t;
+    pub fn pjsip_regc_add_ref(regc: *mut pjsip_regc);
+    pub fn pjsip_regc_dec_ref(regc: *mut pjsip_regc) -> pj_status_t;
+    pub fn pjsip_regc_set_reg_tsx_cb( regc: *mut pjsip_regc, tsx_cb: pjsip_regc_tsx_cb, ) -> pj_status_t;
+    pub fn pjsip_regc_set_via_sent_by( regc: *mut pjsip_regc, via_addr: *mut pjsip_host_port, via_tp: *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_regc_set_delay_before_refresh( regc: *mut pjsip_regc, delay: pj_uint32_t, ) -> pj_status_t;
+    pub fn pjsip_regc_set_credentials( regc: *mut pjsip_regc, count: ::std::os::raw::c_int, cred: *const pjsip_cred_info, ) -> pj_status_t;
+    pub fn pjsip_regc_set_prefs( regc: *mut pjsip_regc, pref: *const pjsip_auth_clt_pref, ) -> pj_status_t;
+    pub fn pjsip_regc_set_route_set( regc: *mut pjsip_regc, route_set: *const pjsip_route_hdr, ) -> pj_status_t;
+    pub fn pjsip_regc_set_transport( regc: *mut pjsip_regc, sel: *const pjsip_tpselector, ) -> pj_status_t;
+    pub fn pjsip_regc_release_transport(regc: *mut pjsip_regc) -> pj_status_t;
+    pub fn pjsip_regc_add_headers(regc: *mut pjsip_regc, hdr_list: *const pjsip_hdr) -> pj_status_t;
+    pub fn pjsip_regc_register( regc: *mut pjsip_regc, autoreg: pj_bool_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_regc_unregister( regc: *mut pjsip_regc, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_regc_unregister_all( regc: *mut pjsip_regc, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_regc_update_contact( regc: *mut pjsip_regc, ccnt: ::std::os::raw::c_int, contact: *const pj_str_t, ) -> pj_status_t;
+    pub fn pjsip_regc_update_expires(regc: *mut pjsip_regc, expires: pj_uint32_t) -> pj_status_t;
+    pub fn pjsip_regc_send(regc: *mut pjsip_regc, tdata: *mut pjsip_tx_data) -> pj_status_t;
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_replaces_hdr {
+    pub prev: *mut pjsip_replaces_hdr,
+    pub next: *mut pjsip_replaces_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub call_id: pj_str_t,
+    pub to_tag: pj_str_t,
+    pub from_tag: pj_str_t,
+    pub early_only: pj_bool_t,
+    pub other_param: pjsip_param,
+}
+
+extern "C" {
+    pub fn pjsip_replaces_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_replaces_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_replaces_hdr;
+    pub fn pjsip_replaces_verify_request( rdata: *mut pjsip_rx_data, p_dlg: *mut *mut pjsip_dialog, lock_dlg: pj_bool_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_evsub {
+    _unused: [u8; 0],
+}
+
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_NULL: pjsip_evsub_state = 0;
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_SENT: pjsip_evsub_state = 1;
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_ACCEPTED: pjsip_evsub_state = 2;
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_PENDING: pjsip_evsub_state = 3;
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_ACTIVE: pjsip_evsub_state = 4;
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_TERMINATED: pjsip_evsub_state = 5;
+pub const pjsip_evsub_state_PJSIP_EVSUB_STATE_UNKNOWN: pjsip_evsub_state = 6;
+pub type pjsip_evsub_state = ::std::os::raw::c_uint;
+pub const PJSIP_EVSUB_NO_EVENT_ID: ::std::os::raw::c_uint = 1;
+pub type _bindgen_ty_18 = ::std::os::raw::c_uint;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_evsub_user {
+    pub on_evsub_state:
+        ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub, event: *mut pjsip_event)>,
+    pub on_tsx_state: ::std::option::Option<
+        unsafe extern "C" fn(
+            sub: *mut pjsip_evsub,
+            tsx: *mut pjsip_transaction,
+            event: *mut pjsip_event,
+        ),
+    >,
+    pub on_rx_refresh: ::std::option::Option<
+        unsafe extern "C" fn(
+            sub: *mut pjsip_evsub,
+            rdata: *mut pjsip_rx_data,
+            p_st_code: *mut ::std::os::raw::c_int,
+            p_st_text: *mut *mut pj_str_t,
+            res_hdr: *mut pjsip_hdr,
+            p_body: *mut *mut pjsip_msg_body,
+        ),
+    >,
+    pub on_rx_notify: ::std::option::Option<
+        unsafe extern "C" fn(
+            sub: *mut pjsip_evsub,
+            rdata: *mut pjsip_rx_data,
+            p_st_code: *mut ::std::os::raw::c_int,
+            p_st_text: *mut *mut pj_str_t,
+            res_hdr: *mut pjsip_hdr,
+            p_body: *mut *mut pjsip_msg_body,
+        ),
+    >,
+    pub on_client_refresh: ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub)>,
+    pub on_server_timeout: ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub)>,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_timer_setting {
+    pub min_se: ::std::os::raw::c_uint,
+    pub sess_expires: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_sess_expires_hdr {
+    pub prev: *mut pjsip_sess_expires_hdr,
+    pub next: *mut pjsip_sess_expires_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub sess_expires: ::std::os::raw::c_uint,
+    pub refresher: pj_str_t,
+    pub other_param: pjsip_param,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_min_se_hdr {
+    pub prev: *mut pjsip_min_se_hdr,
+    pub next: *mut pjsip_min_se_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub min_se: ::std::os::raw::c_uint,
+    pub other_param: pjsip_param,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_event_hdr {
+    pub prev: *mut pjsip_event_hdr,
+    pub next: *mut pjsip_event_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub event_type: pj_str_t,
+    pub id_param: pj_str_t,
+    pub other_param: pjsip_param,
+}
+
+
+pub type pjsip_allow_events_hdr = pjsip_generic_array_hdr;
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_sub_state_hdr {
+    pub prev: *mut pjsip_sub_state_hdr,
+    pub next: *mut pjsip_sub_state_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub sub_state: pj_str_t,
+    pub reason_param: pj_str_t,
+    pub expires_param: ::std::os::raw::c_uint,
+    pub retry_after: ::std::os::raw::c_int,
+    pub other_param: pjsip_param,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_xml_attr {
+    pub prev: *mut pj_xml_attr,
+    pub next: *mut pj_xml_attr,
+    pub name: pj_str_t,
+    pub value: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_xml_node_head {
+    pub prev: *mut pj_xml_node,
+    pub next: *mut pj_xml_node,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_xml_node {
+    pub prev: *mut pj_xml_node,
+    pub next: *mut pj_xml_node,
+    pub name: pj_str_t,
+    pub attr_head: pj_xml_attr,
+    pub node_head: pj_xml_node_head,
+    pub content: pj_str_t,
+}
+
+
+pub type pjpidf_pres = pj_xml_node;
+pub type pjpidf_tuple = pj_xml_node;
+pub type pjpidf_status = pj_xml_node;
+pub type pjpidf_note = pj_xml_node;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_status_op {
+    pub construct:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_status)>,
+    pub is_basic_open:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_status) -> pj_bool_t>,
+    pub set_basic_open:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_status, arg2: pj_bool_t)>,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_tuple_op {
+    pub construct: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub get_id:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub set_id: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub get_status:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_tuple) -> *mut pjpidf_status>,
+    pub get_contact:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub set_contact: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub set_contact_prio: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub get_contact_prio:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub add_note: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pj_pool_t,
+            arg2: *mut pjpidf_tuple,
+            arg3: *const pj_str_t,
+        ) -> *mut pjpidf_note,
+    >,
+    pub get_first_note:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_tuple) -> *mut pjpidf_note>,
+    pub get_next_note: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_tuple, arg2: *mut pjpidf_note) -> *mut pjpidf_note,
+    >,
+    pub get_timestamp:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub set_timestamp: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub set_timestamp_np: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *mut pj_str_t),
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_pres_op {
+    pub construct: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_pres, arg3: *const pj_str_t),
+    >,
+    pub add_tuple: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pj_pool_t,
+            arg2: *mut pjpidf_pres,
+            arg3: *const pj_str_t,
+        ) -> *mut pjpidf_tuple,
+    >,
+    pub get_first_tuple:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_pres) -> *mut pjpidf_tuple>,
+    pub get_next_tuple: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_tuple) -> *mut pjpidf_tuple,
+    >,
+    pub find_tuple: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *const pj_str_t) -> *mut pjpidf_tuple,
+    >,
+    pub remove_tuple: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_tuple),
+    >,
+    pub add_note: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pj_pool_t,
+            arg2: *mut pjpidf_pres,
+            arg3: *const pj_str_t,
+        ) -> *mut pjpidf_note,
+    >,
+    pub get_first_note:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_pres) -> *mut pjpidf_note>,
+    pub get_next_note: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_note) -> *mut pjpidf_note,
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_op_desc {
+    pub pres: pjpidf_pres_op,
+    pub tuple: pjpidf_tuple_op,
+    pub status: pjpidf_status_op,
+}
+
+pub type pjxpidf_pres = pj_xml_node;
+
+pub const pjrpid_activity_PJRPID_ACTIVITY_UNKNOWN: pjrpid_activity = 0;
+pub const pjrpid_activity_PJRPID_ACTIVITY_AWAY: pjrpid_activity = 1;
+pub const pjrpid_activity_PJRPID_ACTIVITY_BUSY: pjrpid_activity = 2;
+pub type pjrpid_activity = ::std::os::raw::c_uint;
+pub const pjrpid_element_type_PJRPID_ELEMENT_TYPE_PERSON: pjrpid_element_type = 0;
+pub type pjrpid_element_type = ::std::os::raw::c_uint;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjrpid_element {
+    pub type_: pjrpid_element_type,
+    pub id: pj_str_t,
+    pub activity: pjrpid_activity,
+    pub note: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_pres_status {
+    pub info_cnt: ::std::os::raw::c_uint,
+    pub info: [pjsip_pres_status__bindgen_ty_1; 8usize],
+    pub _is_valid: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_pres_status__bindgen_ty_1 {
+    pub basic_open: pj_bool_t,
+    pub rpid: pjrpid_element,
+    pub id: pj_str_t,
+    pub contact: pj_str_t,
+    pub tuple_node: *mut pj_xml_node,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_publishc {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_publishc_opt {
+    pub queue_request: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_publishc_cbparam {
+    pub pubc: *mut pjsip_publishc,
+    pub token: *mut ::std::os::raw::c_void,
+    pub status: pj_status_t,
+    pub code: ::std::os::raw::c_int,
+    pub reason: pj_str_t,
+    pub rdata: *mut pjsip_rx_data,
+    pub expiration: ::std::os::raw::c_uint,
+}
+
+pub type pjsip_publishc_cb = ::std::option::Option<unsafe extern "C" fn(param: *mut pjsip_publishc_cbparam)>;
+
+
+extern "C" {
+    pub static pjsip_subscribe_method: pjsip_method;
+    pub static pjsip_notify_method: pjsip_method;
+    pub fn pjsip_get_subscribe_method() -> *const pjsip_method;
+    pub fn pjsip_get_notify_method() -> *const pjsip_method;
+    pub fn pjsip_evsub_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_evsub_instance() -> *mut pjsip_module;
+    pub fn pjsip_evsub_register_pkg( pkg_mod: *mut pjsip_module, event_name: *const pj_str_t, expires: ::std::os::raw::c_uint, accept_cnt: ::std::os::raw::c_uint, accept: *const pj_str_t, ) -> pj_status_t;
+    pub fn pjsip_evsub_get_allow_events_hdr(m: *mut pjsip_module) -> *const pjsip_hdr;
+    pub fn pjsip_evsub_create_uac( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, event: *const pj_str_t, option: ::std::os::raw::c_uint, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_evsub_create_uas( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, rdata: *mut pjsip_rx_data, option: ::std::os::raw::c_uint, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_evsub_terminate(sub: *mut pjsip_evsub, notify: pj_bool_t) -> pj_status_t;
+    pub fn pjsip_evsub_get_state(sub: *mut pjsip_evsub) -> pjsip_evsub_state;
+    pub fn pjsip_evsub_get_state_name(sub: *mut pjsip_evsub) -> *const ::std::os::raw::c_char;
+    pub fn pjsip_evsub_get_termination_reason(sub: *mut pjsip_evsub) -> *const pj_str_t;
+    pub fn pjsip_evsub_initiate( sub: *mut pjsip_evsub, method: *const pjsip_method, expires: pj_uint32_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_evsub_add_header(sub: *mut pjsip_evsub, hdr_list: *const pjsip_hdr) -> pj_status_t;
+    pub fn pjsip_evsub_accept( sub: *mut pjsip_evsub, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, hdr_list: *const pjsip_hdr, ) -> pj_status_t;
+    pub fn pjsip_evsub_notify( sub: *mut pjsip_evsub, state: pjsip_evsub_state, state_str: *const pj_str_t, reason: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_evsub_current_notify( sub: *mut pjsip_evsub, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_evsub_send_request( sub: *mut pjsip_evsub, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_tsx_get_evsub(tsx: *mut pjsip_transaction) -> *mut pjsip_evsub;
+    pub fn pjsip_evsub_set_mod_data( sub: *mut pjsip_evsub, mod_id: ::std::os::raw::c_uint, data: *mut ::std::os::raw::c_void, );
+    pub fn pjsip_evsub_get_mod_data( sub: *mut pjsip_evsub, mod_id: ::std::os::raw::c_uint, ) -> *mut ::std::os::raw::c_void;
+    pub fn pjsip_evsub_add_ref(sub: *mut pjsip_evsub) -> pj_status_t;
+    pub fn pjsip_evsub_dec_ref(sub: *mut pjsip_evsub) -> pj_status_t;
+    pub fn pjsip_evsub_uas_set_timeout(sub: *mut pjsip_evsub, seconds: pj_uint32_t);
+    pub static pjsip_refer_method: pjsip_method;
+    pub fn pjsip_get_refer_method() -> *const pjsip_method;
+    pub fn pjsip_xfer_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_xfer_create_uac( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_xfer_create_uas( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, rdata: *mut pjsip_rx_data, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_xfer_initiate( sub: *mut pjsip_evsub, refer_to_uri: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_xfer_accept( sub: *mut pjsip_evsub, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, hdr_list: *const pjsip_hdr, ) -> pj_status_t;
+    pub fn pjsip_xfer_notify( sub: *mut pjsip_evsub, state: pjsip_evsub_state, xfer_st_code: ::std::os::raw::c_int, xfer_st_text: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_xfer_current_notify( sub: *mut pjsip_evsub, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_xfer_send_request(sub: *mut pjsip_evsub, tdata: *mut pjsip_tx_data) -> pj_status_t;
+    pub static pjsip_prack_method: pjsip_method;
+    pub fn pjsip_get_prack_method() -> *const pjsip_method;
+    pub fn pjsip_100rel_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_100rel_attach(inv: *mut pjsip_inv_session) -> pj_status_t;
+    pub fn pjsip_100rel_is_reliable(rdata: *mut pjsip_rx_data) -> pj_bool_t;
+    pub fn pjsip_100rel_create_prack( inv: *mut pjsip_inv_session, rdata: *mut pjsip_rx_data, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_100rel_send_prack( inv: *mut pjsip_inv_session, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_100rel_on_rx_prack( inv: *mut pjsip_inv_session, rdata: *mut pjsip_rx_data, ) -> pj_status_t;
+    pub fn pjsip_100rel_tx_response( inv: *mut pjsip_inv_session, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_100rel_end_session(inv: *mut pjsip_inv_session) -> pj_status_t;
+    pub fn pjsip_timer_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_timer_setting_default(setting: *mut pjsip_timer_setting) -> pj_status_t;
+    pub fn pjsip_timer_init_session( inv: *mut pjsip_inv_session, setting: *const pjsip_timer_setting, ) -> pj_status_t;
+    pub fn pjsip_sess_expires_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_sess_expires_hdr;
+    pub fn pjsip_min_se_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_min_se_hdr;
+    pub fn pjsip_timer_update_req( inv: *mut pjsip_inv_session, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_timer_process_resp( inv: *mut pjsip_inv_session, rdata: *const pjsip_rx_data, st_code: *mut pjsip_status_code, ) -> pj_status_t;
+    pub fn pjsip_timer_handle_refresh_error( inv: *mut pjsip_inv_session, event: *mut pjsip_event, ) -> pj_status_t;
+    pub fn pjsip_timer_process_req( inv: *mut pjsip_inv_session, rdata: *const pjsip_rx_data, st_code: *mut pjsip_status_code, ) -> pj_status_t;
+    pub fn pjsip_timer_update_resp( inv: *mut pjsip_inv_session, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_timer_end_session(inv: *mut pjsip_inv_session) -> pj_status_t;
+    pub fn pjsip_event_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_event_hdr;
+    pub fn pjsip_allow_events_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_allow_events_hdr;
+    pub fn pjsip_sub_state_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_sub_state_hdr;
+    pub fn pjsip_evsub_init_parser();
+    pub fn pj_xml_parse( pool: *mut pj_pool_t, msg: *mut ::std::os::raw::c_char, len: pj_size_t, ) -> *mut pj_xml_node;
+    pub fn pj_xml_print( node: *const pj_xml_node, buf: *mut ::std::os::raw::c_char, len: pj_size_t, prolog: pj_bool_t, ) -> ::std::os::raw::c_int;
+    pub fn pj_xml_clone(pool: *mut pj_pool_t, rhs: *const pj_xml_node) -> *mut pj_xml_node;
+    pub fn pj_xml_node_new(pool: *mut pj_pool_t, name: *const pj_str_t) -> *mut pj_xml_node;
+    pub fn pj_xml_attr_new( pool: *mut pj_pool_t, name: *const pj_str_t, value: *const pj_str_t, ) -> *mut pj_xml_attr;
+    pub fn pj_xml_add_node(parent: *mut pj_xml_node, node: *mut pj_xml_node);
+    pub fn pj_xml_add_attr(node: *mut pj_xml_node, attr: *mut pj_xml_attr);
+    pub fn pj_xml_find_node(parent: *const pj_xml_node, name: *const pj_str_t) -> *mut pj_xml_node;
+    pub fn pj_xml_find_next_node( parent: *const pj_xml_node, node: *const pj_xml_node, name: *const pj_str_t, ) -> *mut pj_xml_node;
+    pub fn pj_xml_find_node_rec( parent: *const pj_xml_node, name: *const pj_str_t, ) -> *mut pj_xml_node;
+    pub fn pj_xml_find_attr( node: *const pj_xml_node, name: *const pj_str_t, value: *const pj_str_t, ) -> *mut pj_xml_attr;
+    pub fn pj_xml_find( parent: *const pj_xml_node, name: *const pj_str_t, data: *const ::std::os::raw::c_void, match_: ::std::option::Option< unsafe extern "C" fn( arg1: *const pj_xml_node, arg2: *const ::std::os::raw::c_void, ) -> pj_bool_t, >, ) -> *mut pj_xml_node;
+    pub fn pj_xml_find_rec( parent: *const pj_xml_node, name: *const pj_str_t, data: *const ::std::os::raw::c_void, match_: ::std::option::Option< unsafe extern "C" fn( arg1: *const pj_xml_node, arg2: *const ::std::os::raw::c_void, ) -> pj_bool_t, >, ) -> *mut pj_xml_node;
+    pub fn pjsip_iscomposing_create_xml( pool: *mut pj_pool_t, is_composing: pj_bool_t, lst_actv: *const pj_time_val, content_tp: *const pj_str_t, refresh: ::std::os::raw::c_int, ) -> *mut pj_xml_node;
+    pub fn pjsip_iscomposing_create_body( pool: *mut pj_pool_t, is_composing: pj_bool_t, lst_actv: *const pj_time_val, content_tp: *const pj_str_t, refresh: ::std::os::raw::c_int, ) -> *mut pjsip_msg_body;
+    pub fn pjsip_iscomposing_parse( pool: *mut pj_pool_t, msg: *mut ::std::os::raw::c_char, len: pj_size_t, p_is_composing: *mut pj_bool_t, p_last_active: *mut *mut pj_str_t, p_content_type: *mut *mut pj_str_t, p_refresh: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjsip_mwi_init_module( endpt: *mut pjsip_endpoint, mod_evsub: *mut pjsip_module, ) -> pj_status_t;
+    pub fn pjsip_mwi_instance() -> *mut pjsip_module;
+    pub fn pjsip_mwi_create_uac( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, options: ::std::os::raw::c_uint, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_mwi_create_uas( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, rdata: *mut pjsip_rx_data, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_mwi_terminate(sub: *mut pjsip_evsub, notify: pj_bool_t) -> pj_status_t;
+    pub fn pjsip_mwi_initiate( sub: *mut pjsip_evsub, expires: pj_uint32_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_mwi_accept( sub: *mut pjsip_evsub, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, hdr_list: *const pjsip_hdr, ) -> pj_status_t;
+    pub fn pjsip_mwi_notify( sub: *mut pjsip_evsub, state: pjsip_evsub_state, state_str: *const pj_str_t, reason: *const pj_str_t, mime_type: *const pjsip_media_type, body: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_mwi_current_notify( sub: *mut pjsip_evsub, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_mwi_send_request(sub: *mut pjsip_evsub, tdata: *mut pjsip_tx_data) -> pj_status_t;
+    pub static mut pjpidf_op: pjpidf_op_desc;
+    pub fn pjpidf_create(pool: *mut pj_pool_t, entity: *const pj_str_t) -> *mut pjpidf_pres;
+    pub fn pjpidf_parse( pool: *mut pj_pool_t, text: *mut ::std::os::raw::c_char, len: ::std::os::raw::c_int, ) -> *mut pjpidf_pres;
+    pub fn pjpidf_print( pres: *const pjpidf_pres, buf: *mut ::std::os::raw::c_char, len: ::std::os::raw::c_int, ) -> ::std::os::raw::c_int;
+    pub fn pjpidf_pres_construct( pool: *mut pj_pool_t, pres: *mut pjpidf_pres, entity: *const pj_str_t, );
+    pub fn pjpidf_pres_add_tuple( pool: *mut pj_pool_t, pres: *mut pjpidf_pres, id: *const pj_str_t, ) -> *mut pjpidf_tuple;
+    pub fn pjpidf_pres_get_first_tuple(pres: *mut pjpidf_pres) -> *mut pjpidf_tuple;
+    pub fn pjpidf_pres_get_next_tuple( pres: *mut pjpidf_pres, t: *mut pjpidf_tuple, ) -> *mut pjpidf_tuple;
+    pub fn pjpidf_pres_find_tuple(pres: *mut pjpidf_pres, id: *const pj_str_t) -> *mut pjpidf_tuple;
+    pub fn pjpidf_pres_remove_tuple(pres: *mut pjpidf_pres, arg1: *mut pjpidf_tuple);
+    pub fn pjpidf_pres_add_note( pool: *mut pj_pool_t, pres: *mut pjpidf_pres, text: *const pj_str_t, ) -> *mut pjpidf_note;
+    pub fn pjpidf_pres_get_first_note(pres: *mut pjpidf_pres) -> *mut pjpidf_note;
+    pub fn pjpidf_pres_get_next_note( arg1: *mut pjpidf_pres, arg2: *mut pjpidf_note, ) -> *mut pjpidf_note;
+    pub fn pjpidf_tuple_construct(pool: *mut pj_pool_t, t: *mut pjpidf_tuple, id: *const pj_str_t);
+    pub fn pjpidf_tuple_get_id(t: *const pjpidf_tuple) -> *const pj_str_t;
+    pub fn pjpidf_tuple_set_id(pool: *mut pj_pool_t, t: *mut pjpidf_tuple, id: *const pj_str_t);
+    pub fn pjpidf_tuple_get_status(t: *mut pjpidf_tuple) -> *mut pjpidf_status;
+    pub fn pjpidf_tuple_get_contact(t: *const pjpidf_tuple) -> *const pj_str_t;
+    pub fn pjpidf_tuple_set_contact( pool: *mut pj_pool_t, t: *mut pjpidf_tuple, contact: *const pj_str_t, );
+    pub fn pjpidf_tuple_set_contact_prio( pool: *mut pj_pool_t, t: *mut pjpidf_tuple, prio: *const pj_str_t, );
+    pub fn pjpidf_tuple_get_contact_prio(t: *const pjpidf_tuple) -> *const pj_str_t;
+    pub fn pjpidf_tuple_add_note( pool: *mut pj_pool_t, t: *mut pjpidf_tuple, text: *const pj_str_t, ) -> *mut pjpidf_note;
+    pub fn pjpidf_tuple_get_first_note(t: *mut pjpidf_tuple) -> *mut pjpidf_note;
+    pub fn pjpidf_tuple_get_next_note( t: *mut pjpidf_tuple, n: *mut pjpidf_note, ) -> *mut pjpidf_note;
+    pub fn pjpidf_tuple_get_timestamp(t: *const pjpidf_tuple) -> *const pj_str_t;
+    pub fn pjpidf_tuple_set_timestamp( pool: *mut pj_pool_t, t: *mut pjpidf_tuple, ts: *const pj_str_t, );
+    pub fn pjpidf_tuple_set_timestamp_np( arg1: *mut pj_pool_t, t: *mut pjpidf_tuple, ts: *mut pj_str_t, );
+    pub fn pjpidf_status_construct(arg1: *mut pj_pool_t, arg2: *mut pjpidf_status);
+    pub fn pjpidf_status_is_basic_open(arg1: *const pjpidf_status) -> pj_bool_t;
+    pub fn pjpidf_status_set_basic_open(arg1: *mut pjpidf_status, arg2: pj_bool_t);
+    pub fn pjxpidf_create(pool: *mut pj_pool_t, uri: *const pj_str_t) -> *mut pjxpidf_pres;
+    pub fn pjxpidf_parse( pool: *mut pj_pool_t, text: *mut ::std::os::raw::c_char, len: pj_size_t, ) -> *mut pjxpidf_pres;
+    pub fn pjxpidf_print( pres: *mut pjxpidf_pres, text: *mut ::std::os::raw::c_char, len: pj_size_t, ) -> ::std::os::raw::c_int;
+    pub fn pjxpidf_get_uri(pres: *mut pjxpidf_pres) -> *mut pj_str_t;
+    pub fn pjxpidf_set_uri( pool: *mut pj_pool_t, pres: *mut pjxpidf_pres, uri: *const pj_str_t, ) -> pj_status_t;
+    pub fn pjxpidf_get_status(pres: *mut pjxpidf_pres) -> pj_bool_t;
+    pub fn pjxpidf_set_status(pres: *mut pjxpidf_pres, status: pj_bool_t) -> pj_status_t;
+    pub fn pjrpid_element_dup( pool: *mut pj_pool_t, dst: *mut pjrpid_element, src: *const pjrpid_element, );
+    pub fn pjrpid_add_element( pres: *mut pjpidf_pres, pool: *mut pj_pool_t, options: ::std::os::raw::c_uint, elem: *const pjrpid_element, ) -> pj_status_t;
+    pub fn pjrpid_get_element( pres: *const pjpidf_pres, pool: *mut pj_pool_t, elem: *mut pjrpid_element, ) -> pj_status_t;
+    pub fn pjsip_pres_init_module( endpt: *mut pjsip_endpoint, mod_evsub: *mut pjsip_module, ) -> pj_status_t;
+    pub fn pjsip_pres_instance() -> *mut pjsip_module;
+    pub fn pjsip_pres_create_uac( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, options: ::std::os::raw::c_uint, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_pres_create_uas( dlg: *mut pjsip_dialog, user_cb: *const pjsip_evsub_user, rdata: *mut pjsip_rx_data, p_evsub: *mut *mut pjsip_evsub, ) -> pj_status_t;
+    pub fn pjsip_pres_terminate(sub: *mut pjsip_evsub, notify: pj_bool_t) -> pj_status_t;
+    pub fn pjsip_pres_initiate( sub: *mut pjsip_evsub, expires: pj_uint32_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_pres_add_header(sub: *mut pjsip_evsub, hdr_list: *const pjsip_hdr) -> pj_status_t;
+    pub fn pjsip_pres_accept( sub: *mut pjsip_evsub, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, hdr_list: *const pjsip_hdr, ) -> pj_status_t;
+    pub fn pjsip_pres_notify( sub: *mut pjsip_evsub, state: pjsip_evsub_state, state_str: *const pj_str_t, reason: *const pj_str_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_pres_current_notify( sub: *mut pjsip_evsub, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_pres_send_request(sub: *mut pjsip_evsub, tdata: *mut pjsip_tx_data) -> pj_status_t;
+    pub fn pjsip_pres_get_status( sub: *mut pjsip_evsub, status: *mut pjsip_pres_status, ) -> pj_status_t;
+    pub fn pjsip_pres_set_status( sub: *mut pjsip_evsub, status: *const pjsip_pres_status, ) -> pj_status_t;
+    pub fn pjsip_pres_create_pidf( pool: *mut pj_pool_t, status: *const pjsip_pres_status, entity: *const pj_str_t, p_body: *mut *mut pjsip_msg_body, ) -> pj_status_t;
+    pub fn pjsip_pres_create_xpidf( pool: *mut pj_pool_t, status: *const pjsip_pres_status, entity: *const pj_str_t, p_body: *mut *mut pjsip_msg_body, ) -> pj_status_t;
+    pub fn pjsip_pres_parse_pidf( rdata: *mut pjsip_rx_data, pool: *mut pj_pool_t, status: *mut pjsip_pres_status, ) -> pj_status_t;
+    pub fn pjsip_pres_parse_pidf2( body: *mut ::std::os::raw::c_char, body_len: ::std::os::raw::c_uint, pool: *mut pj_pool_t, status: *mut pjsip_pres_status, ) -> pj_status_t;
+    pub fn pjsip_pres_parse_xpidf( rdata: *mut pjsip_rx_data, pool: *mut pj_pool_t, status: *mut pjsip_pres_status, ) -> pj_status_t;
+    pub fn pjsip_pres_parse_xpidf2( body: *mut ::std::os::raw::c_char, body_len: ::std::os::raw::c_uint, pool: *mut pj_pool_t, status: *mut pjsip_pres_status, ) -> pj_status_t;
+    pub static pjsip_publish_method: pjsip_method;
+    pub fn pjsip_publishc_opt_default(opt: *mut pjsip_publishc_opt);
+    pub fn pjsip_publishc_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_publishc_create( endpt: *mut pjsip_endpoint, opt: *const pjsip_publishc_opt, token: *mut ::std::os::raw::c_void, cb: pjsip_publishc_cb, p_pubc: *mut *mut pjsip_publishc, ) -> pj_status_t;
+    pub fn pjsip_publishc_destroy(pubc: *mut pjsip_publishc) -> pj_status_t;
+    pub fn pjsip_publishc_get_pool(pubc: *mut pjsip_publishc) -> *mut pj_pool_t;
+    pub fn pjsip_publishc_init( pubc: *mut pjsip_publishc, event: *const pj_str_t, target_uri: *const pj_str_t, from_uri: *const pj_str_t, to_uri: *const pj_str_t, expires: pj_uint32_t, ) -> pj_status_t;
+    pub fn pjsip_publishc_set_credentials( pubc: *mut pjsip_publishc, count: ::std::os::raw::c_int, c: *const pjsip_cred_info, ) -> pj_status_t;
+    pub fn pjsip_publishc_set_route_set( pubc: *mut pjsip_publishc, rs: *const pjsip_route_hdr, ) -> pj_status_t;
+    pub fn pjsip_publishc_set_headers( pubc: *mut pjsip_publishc, hdr_list: *const pjsip_hdr, ) -> pj_status_t;
+    pub fn pjsip_publishc_set_via_sent_by( pubc: *mut pjsip_publishc, via_addr: *mut pjsip_host_port, via_tp: *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_publishc_publish( pubc: *mut pjsip_publishc, auto_refresh: pj_bool_t, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_publishc_unpublish( pubc: *mut pjsip_publishc, p_tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_publishc_update_expires( pubc: *mut pjsip_publishc, expires: pj_uint32_t, ) -> pj_status_t;
+    pub fn pjsip_publishc_send(pubc: *mut pjsip_publishc, tdata: *mut pjsip_tx_data) -> pj_status_t;
+}
+
+
+
+
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
     for pjsip_cred_info__bindgen_ty_1__bindgen_ty_1
 {
