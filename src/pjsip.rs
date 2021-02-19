@@ -2932,19 +2932,6 @@ extern "C" {
     pub fn pjsip_allow_events_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_allow_events_hdr;
     pub fn pjsip_sub_state_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_sub_state_hdr;
     pub fn pjsip_evsub_init_parser();
-    pub fn pj_xml_parse( pool: *mut pj_pool_t, msg: *mut ::std::os::raw::c_char, len: pj_size_t, ) -> *mut pj_xml_node;
-    pub fn pj_xml_print( node: *const pj_xml_node, buf: *mut ::std::os::raw::c_char, len: pj_size_t, prolog: pj_bool_t, ) -> ::std::os::raw::c_int;
-    pub fn pj_xml_clone(pool: *mut pj_pool_t, rhs: *const pj_xml_node) -> *mut pj_xml_node;
-    pub fn pj_xml_node_new(pool: *mut pj_pool_t, name: *const pj_str_t) -> *mut pj_xml_node;
-    pub fn pj_xml_attr_new( pool: *mut pj_pool_t, name: *const pj_str_t, value: *const pj_str_t, ) -> *mut pj_xml_attr;
-    pub fn pj_xml_add_node(parent: *mut pj_xml_node, node: *mut pj_xml_node);
-    pub fn pj_xml_add_attr(node: *mut pj_xml_node, attr: *mut pj_xml_attr);
-    pub fn pj_xml_find_node(parent: *const pj_xml_node, name: *const pj_str_t) -> *mut pj_xml_node;
-    pub fn pj_xml_find_next_node( parent: *const pj_xml_node, node: *const pj_xml_node, name: *const pj_str_t, ) -> *mut pj_xml_node;
-    pub fn pj_xml_find_node_rec( parent: *const pj_xml_node, name: *const pj_str_t, ) -> *mut pj_xml_node;
-    pub fn pj_xml_find_attr( node: *const pj_xml_node, name: *const pj_str_t, value: *const pj_str_t, ) -> *mut pj_xml_attr;
-    pub fn pj_xml_find( parent: *const pj_xml_node, name: *const pj_str_t, data: *const ::std::os::raw::c_void, match_: ::std::option::Option< unsafe extern "C" fn( arg1: *const pj_xml_node, arg2: *const ::std::os::raw::c_void, ) -> pj_bool_t, >, ) -> *mut pj_xml_node;
-    pub fn pj_xml_find_rec( parent: *const pj_xml_node, name: *const pj_str_t, data: *const ::std::os::raw::c_void, match_: ::std::option::Option< unsafe extern "C" fn( arg1: *const pj_xml_node, arg2: *const ::std::os::raw::c_void, ) -> pj_bool_t, >, ) -> *mut pj_xml_node;
     pub fn pjsip_iscomposing_create_xml( pool: *mut pj_pool_t, is_composing: pj_bool_t, lst_actv: *const pj_time_val, content_tp: *const pj_str_t, refresh: ::std::os::raw::c_int, ) -> *mut pj_xml_node;
     pub fn pjsip_iscomposing_create_body( pool: *mut pj_pool_t, is_composing: pj_bool_t, lst_actv: *const pj_time_val, content_tp: *const pj_str_t, refresh: ::std::os::raw::c_int, ) -> *mut pjsip_msg_body;
     pub fn pjsip_iscomposing_parse( pool: *mut pj_pool_t, msg: *mut ::std::os::raw::c_char, len: pj_size_t, p_is_composing: *mut pj_bool_t, p_last_active: *mut *mut pj_str_t, p_content_type: *mut *mut pj_str_t, p_refresh: *mut ::std::os::raw::c_int, ) -> pj_status_t;
@@ -3033,8 +3020,6 @@ extern "C" {
     pub fn pjsip_publishc_update_expires( pubc: *mut pjsip_publishc, expires: pj_uint32_t, ) -> pj_status_t;
     pub fn pjsip_publishc_send(pubc: *mut pjsip_publishc, tdata: *mut pjsip_tx_data) -> pj_status_t;
 }
-
-
 
 
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
