@@ -633,6 +633,21 @@ pub const pjsip_ssl_method_PJSIP_TLSV1_3_METHOD: pjsip_ssl_method = 34;
 pub const pjsip_ssl_method_PJSIP_SSLV23_METHOD: pjsip_ssl_method = 23;
 pub type pjsip_ssl_method = ::std::os::raw::c_uint;
 
+pub const pj_sys_info_flag_PJ_SYS_HAS_IOS_BG: pj_sys_info_flag = 1;
+pub type pj_sys_info_flag = ::std::os::raw::c_uint;
+
+pub const pj_thread_create_flags_PJ_THREAD_SUSPENDED: pj_thread_create_flags = 1;
+pub type pj_thread_create_flags = ::std::os::raw::c_uint;
+pub type pj_thread_proc = ::std::option::Option<
+    unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
+>;
+pub type pj_thread_desc = [::std::os::raw::c_long; 64usize];
+
+
+pub const pj_mutex_type_e_PJ_MUTEX_DEFAULT: pj_mutex_type_e = 0;
+pub const pj_mutex_type_e_PJ_MUTEX_SIMPLE: pj_mutex_type_e = 1;
+pub const pj_mutex_type_e_PJ_MUTEX_RECURSE: pj_mutex_type_e = 2;
+pub type pj_mutex_type_e = ::std::os::raw::c_uint;
 
 
 pub type pj_exit_callback = ::std::option::Option<unsafe extern "C" fn()>;
@@ -643,6 +658,8 @@ pub type pj_error_callback = ::std::option::Option<
         max: pj_size_t,
     ) -> pj_str_t,
 >;
+
+
 
 
 
@@ -1514,6 +1531,34 @@ pub struct pjsip_tls_setting {
         ::std::option::Option<unsafe extern "C" fn(param: *const pjsip_tls_on_accept_fail_param)>,
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_sys_info {
+    pub machine: pj_str_t,
+    pub os_name: pj_str_t,
+    pub os_ver: pj_uint32_t,
+    pub sdk_name: pj_str_t,
+    pub sdk_ver: pj_uint32_t,
+    pub info: pj_str_t,
+    pub flags: pj_uint32_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_symbianos_params {
+    pub rsocketserv: *mut ::std::os::raw::c_void,
+    pub rconnection: *mut ::std::os::raw::c_void,
+    pub rhostresolver: *mut ::std::os::raw::c_void,
+    pub rhostresolver6: *mut ::std::os::raw::c_void,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_rwmutex_t {
+    _unused: [u8; 0],
+}
+
+
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
     pub static PJ_AF_UNSPEC: pj_uint16_t;
@@ -1861,8 +1906,97 @@ extern "C" {
     pub fn pj_strtof(str_: *const pj_str_t) -> f32;
     pub fn pj_utoa( val: ::std::os::raw::c_ulong, buf: *mut ::std::os::raw::c_char, ) -> ::std::os::raw::c_int;
     pub fn pj_utoa_pad( val: ::std::os::raw::c_ulong, buf: *mut ::std::os::raw::c_char, min_dig: ::std::os::raw::c_int, pad: ::std::os::raw::c_int, ) -> ::std::os::raw::c_int;
+    pub fn pj_get_sys_info() -> *const pj_sys_info;
+    pub fn pj_getpid() -> pj_uint32_t;
+    pub fn pj_thread_create( pool: *mut pj_pool_t, thread_name: *const ::std::os::raw::c_char, proc_: pj_thread_proc, arg: *mut ::std::os::raw::c_void, stack_size: pj_size_t, flags: ::std::os::raw::c_uint, thread: *mut *mut pj_thread_t, ) -> pj_status_t;
+    pub fn pj_thread_register( thread_name: *const ::std::os::raw::c_char, desc: *mut ::std::os::raw::c_long, thread: *mut *mut pj_thread_t, ) -> pj_status_t;
+    pub fn pj_thread_is_registered() -> pj_bool_t;
+    pub fn pj_thread_get_prio(thread: *mut pj_thread_t) -> ::std::os::raw::c_int;
+    pub fn pj_thread_set_prio(thread: *mut pj_thread_t, prio: ::std::os::raw::c_int) -> pj_status_t;
+    pub fn pj_thread_get_prio_min(thread: *mut pj_thread_t) -> ::std::os::raw::c_int;
+    pub fn pj_thread_get_prio_max(thread: *mut pj_thread_t) -> ::std::os::raw::c_int;
+    pub fn pj_thread_get_os_handle(thread: *mut pj_thread_t) -> *mut ::std::os::raw::c_void;
+    pub fn pj_thread_get_name(thread: *mut pj_thread_t) -> *const ::std::os::raw::c_char;
+    pub fn pj_thread_resume(thread: *mut pj_thread_t) -> pj_status_t;
+    pub fn pj_thread_this() -> *mut pj_thread_t;
+    pub fn pj_thread_join(thread: *mut pj_thread_t) -> pj_status_t;
+    pub fn pj_thread_destroy(thread: *mut pj_thread_t) -> pj_status_t;
+    pub fn pj_thread_sleep(msec: ::std::os::raw::c_uint) -> pj_status_t;
+    pub fn pj_symbianos_poll( priority: ::std::os::raw::c_int, ms_timeout: ::std::os::raw::c_int, ) -> pj_bool_t;
+    pub fn pj_symbianos_set_params(prm: *mut pj_symbianos_params) -> pj_status_t;
+    pub fn pj_symbianos_set_connection_status(up: pj_bool_t);
+    pub fn pj_thread_local_alloc(index: *mut ::std::os::raw::c_long) -> pj_status_t;
+    pub fn pj_thread_local_free(index: ::std::os::raw::c_long);
+    pub fn pj_thread_local_set( index: ::std::os::raw::c_long, value: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_thread_local_get(index: ::std::os::raw::c_long) -> *mut ::std::os::raw::c_void;
+    pub fn pj_atomic_create( pool: *mut pj_pool_t, initial: pj_atomic_value_t, atomic: *mut *mut pj_atomic_t, ) -> pj_status_t;
+    pub fn pj_atomic_destroy(atomic_var: *mut pj_atomic_t) -> pj_status_t;
+    pub fn pj_atomic_set(atomic_var: *mut pj_atomic_t, value: pj_atomic_value_t);
+    pub fn pj_atomic_get(atomic_var: *mut pj_atomic_t) -> pj_atomic_value_t;
+    pub fn pj_atomic_inc(atomic_var: *mut pj_atomic_t);
+    pub fn pj_atomic_inc_and_get(atomic_var: *mut pj_atomic_t) -> pj_atomic_value_t;
+    pub fn pj_atomic_dec(atomic_var: *mut pj_atomic_t);
+    pub fn pj_atomic_dec_and_get(atomic_var: *mut pj_atomic_t) -> pj_atomic_value_t;
+    pub fn pj_atomic_add(atomic_var: *mut pj_atomic_t, value: pj_atomic_value_t);
+    pub fn pj_atomic_add_and_get( atomic_var: *mut pj_atomic_t, value: pj_atomic_value_t, ) -> pj_atomic_value_t;
+    pub fn pj_mutex_create( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, type_: ::std::os::raw::c_int, mutex: *mut *mut pj_mutex_t, ) -> pj_status_t;
+    pub fn pj_mutex_create_simple( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, mutex: *mut *mut pj_mutex_t, ) -> pj_status_t;
+    pub fn pj_mutex_create_recursive( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, mutex: *mut *mut pj_mutex_t, ) -> pj_status_t;
+    pub fn pj_mutex_lock(mutex: *mut pj_mutex_t) -> pj_status_t;
+    pub fn pj_mutex_unlock(mutex: *mut pj_mutex_t) -> pj_status_t;
+    pub fn pj_mutex_trylock(mutex: *mut pj_mutex_t) -> pj_status_t;
+    pub fn pj_mutex_destroy(mutex: *mut pj_mutex_t) -> pj_status_t;
+    pub fn pj_mutex_is_locked(mutex: *mut pj_mutex_t) -> pj_bool_t;
+    pub fn pj_rwmutex_create( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, mutex: *mut *mut pj_rwmutex_t, ) -> pj_status_t;
+    pub fn pj_rwmutex_lock_read(mutex: *mut pj_rwmutex_t) -> pj_status_t;
+    pub fn pj_rwmutex_lock_write(mutex: *mut pj_rwmutex_t) -> pj_status_t;
+    pub fn pj_rwmutex_unlock_read(mutex: *mut pj_rwmutex_t) -> pj_status_t;
+    pub fn pj_rwmutex_unlock_write(mutex: *mut pj_rwmutex_t) -> pj_status_t;
+    pub fn pj_rwmutex_destroy(mutex: *mut pj_rwmutex_t) -> pj_status_t;
+    pub fn pj_enter_critical_section();
+    pub fn pj_leave_critical_section();
+    pub fn pj_sem_create( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, initial: ::std::os::raw::c_uint, max: ::std::os::raw::c_uint, sem: *mut *mut pj_sem_t, ) -> pj_status_t;
+    pub fn pj_sem_wait(sem: *mut pj_sem_t) -> pj_status_t;
+    pub fn pj_sem_trywait(sem: *mut pj_sem_t) -> pj_status_t;
+    pub fn pj_sem_post(sem: *mut pj_sem_t) -> pj_status_t;
+    pub fn pj_sem_destroy(sem: *mut pj_sem_t) -> pj_status_t;
+    pub fn pj_event_create( pool: *mut pj_pool_t, name: *const ::std::os::raw::c_char, manual_reset: pj_bool_t, initial: pj_bool_t, event: *mut *mut pj_event_t, ) -> pj_status_t;
+    pub fn pj_event_wait(event: *mut pj_event_t) -> pj_status_t;
+    pub fn pj_event_trywait(event: *mut pj_event_t) -> pj_status_t;
+    pub fn pj_event_set(event: *mut pj_event_t) -> pj_status_t;
+    pub fn pj_event_pulse(event: *mut pj_event_t) -> pj_status_t;
+    pub fn pj_event_reset(event: *mut pj_event_t) -> pj_status_t;
+    pub fn pj_event_destroy(event: *mut pj_event_t) -> pj_status_t;
+    pub fn pj_gettimeofday(tv: *mut pj_time_val) -> pj_status_t;
+    pub fn pj_time_decode(tv: *const pj_time_val, pt: *mut pj_parsed_time) -> pj_status_t;
+    pub fn pj_time_encode(pt: *const pj_parsed_time, tv: *mut pj_time_val) -> pj_status_t;
+    pub fn pj_time_local_to_gmt(tv: *mut pj_time_val) -> pj_status_t;
+    pub fn pj_time_gmt_to_local(tv: *mut pj_time_val) -> pj_status_t;
+    pub fn pj_term_set_color(color: pj_color_t) -> pj_status_t;
+    pub fn pj_term_get_color() -> pj_color_t;
+    pub fn pj_gettickcount(tv: *mut pj_time_val) -> pj_status_t;
+    pub fn pj_get_timestamp(ts: *mut pj_timestamp) -> pj_status_t;
+    pub fn pj_get_timestamp_freq(freq: *mut pj_timestamp) -> pj_status_t;
+    pub fn pj_elapsed_time(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_time_val;
+    pub fn pj_elapsed_msec(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_uint32_t;
+    pub fn pj_elapsed_msec64(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_uint64_t;
+    pub fn pj_elapsed_usec(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_uint32_t;
+    pub fn pj_elapsed_nanosec(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_uint32_t;
+    pub fn pj_elapsed_cycle(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_uint32_t;
+    pub fn pj_run_app( main_func: pj_main_func_ptr, argc: ::std::os::raw::c_int, argv: *mut *mut ::std::os::raw::c_char, flags: ::std::os::raw::c_uint, ) -> ::std::os::raw::c_int;
+    pub fn pj_thread_init() -> pj_status_t;
 }
 
+
+
+
+
+pub type pj_main_func_ptr = ::std::option::Option<
+    unsafe extern "C" fn(
+        argc: ::std::os::raw::c_int,
+        argv: *mut *mut ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int,
+>;
 
 
 

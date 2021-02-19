@@ -2297,6 +2297,8 @@ extern "C" {
     pub fn pjsip_dlg_on_tsx_state( dlg: *mut pjsip_dialog, tsx: *mut pjsip_transaction, e: *mut pjsip_event, );
     pub fn pjsip_dlg_on_rx_request(dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data);
     pub fn pjsip_dlg_on_rx_response(dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data);
+    pub fn pjnath_init() -> pj_status_t;
+    pub fn pjnath_perror( sender: *const ::std::os::raw::c_char, title: *const ::std::os::raw::c_char, status: pj_status_t, );
 }
 
 
