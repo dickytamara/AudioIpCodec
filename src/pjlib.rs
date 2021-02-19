@@ -1229,8 +1229,6 @@ pub struct pj_pool_t {
     pub callback: pj_pool_callback,
 }
 
-
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_pool_factory_policy {
@@ -1250,8 +1248,6 @@ pub struct pj_pool_factory_policy {
     pub callback: pj_pool_callback,
     pub flags: ::std::os::raw::c_uint,
 }
-
-
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1278,8 +1274,6 @@ pub struct pj_pool_factory {
     pub on_block_free:
         ::std::option::Option<unsafe extern "C" fn(factory: *mut pj_pool_factory, size: pj_size_t)>,
 }
-
-
 
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1366,9 +1360,6 @@ pub struct pj_ssl_cert_info__bindgen_ty_5 {
 
 pub type pj_ssl_cert_buffer = pj_str_t;
 
-
-
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_ssl_sock_cb {
@@ -1419,8 +1410,6 @@ pub struct pj_ssl_sock_cb {
         unsafe extern "C" fn(ssock: *mut pj_ssl_sock_t, status: pj_status_t) -> pj_bool_t,
     >,
 }
-
-
 
 #[repr(C)]
 #[derive(Copy, Clone)]

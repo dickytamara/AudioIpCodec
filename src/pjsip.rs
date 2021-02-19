@@ -473,6 +473,45 @@ pub type pjsip_redirect_op = ::std::os::raw::c_uint;
 pub const PJSIP_UDP_TRANSPORT_KEEP_SOCKET: ::std::os::raw::c_uint = 1;
 pub const PJSIP_UDP_TRANSPORT_DESTROY_SOCKET: ::std::os::raw::c_uint = 2;
 
+pub type pjsip_proxy_authenticate_hdr = pjsip_www_authenticate_hdr;
+pub const pjsip_cred_data_type_PJSIP_CRED_DATA_PLAIN_PASSWD: pjsip_cred_data_type = 0;
+pub const pjsip_cred_data_type_PJSIP_CRED_DATA_DIGEST: pjsip_cred_data_type = 1;
+pub const pjsip_cred_data_type_PJSIP_CRED_DATA_EXT_AKA: pjsip_cred_data_type = 16;
+pub type pjsip_cred_data_type = ::std::os::raw::c_uint;
+pub const pjsip_auth_qop_type_PJSIP_AUTH_QOP_NONE: pjsip_auth_qop_type = 0;
+pub const pjsip_auth_qop_type_PJSIP_AUTH_QOP_AUTH: pjsip_auth_qop_type = 1;
+pub const pjsip_auth_qop_type_PJSIP_AUTH_QOP_AUTH_INT: pjsip_auth_qop_type = 2;
+pub const pjsip_auth_qop_type_PJSIP_AUTH_QOP_UNKNOWN: pjsip_auth_qop_type = 3;
+pub type pjsip_auth_qop_type = ::std::os::raw::c_uint;
+pub type pjsip_cred_cb = ::std::option::Option<
+    unsafe extern "C" fn(
+        pool: *mut pj_pool_t,
+        chal: *const pjsip_digest_challenge,
+        cred: *const pjsip_cred_info,
+        method: *const pj_str_t,
+        auth: *mut pjsip_digest_credential,
+    ) -> pj_status_t,
+>;
+
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_NULL: pjsip_tsx_state_e = 0;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_CALLING: pjsip_tsx_state_e = 1;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_TRYING: pjsip_tsx_state_e = 2;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_PROCEEDING: pjsip_tsx_state_e = 3;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_COMPLETED: pjsip_tsx_state_e = 4;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_CONFIRMED: pjsip_tsx_state_e = 5;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_TERMINATED: pjsip_tsx_state_e = 6;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_DESTROYED: pjsip_tsx_state_e = 7;
+pub const pjsip_tsx_state_e_PJSIP_TSX_STATE_MAX: pjsip_tsx_state_e = 8;
+pub type pjsip_tsx_state_e = ::std::os::raw::c_uint;
+
+pub const pjsip_dialog_state_PJSIP_DIALOG_STATE_NULL: pjsip_dialog_state = 0;
+pub const pjsip_dialog_state_PJSIP_DIALOG_STATE_ESTABLISHED: pjsip_dialog_state = 1;
+pub type pjsip_dialog_state = ::std::os::raw::c_uint;
+pub const pjsip_dialog_cap_status_PJSIP_DIALOG_CAP_UNSUPPORTED: pjsip_dialog_cap_status = 0;
+pub const pjsip_dialog_cap_status_PJSIP_DIALOG_CAP_SUPPORTED: pjsip_dialog_cap_status = 1;
+pub const pjsip_dialog_cap_status_PJSIP_DIALOG_CAP_UNKNOWN: pjsip_dialog_cap_status = 2;
+pub type pjsip_dialog_cap_status = ::std::os::raw::c_uint;
+
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1537,6 +1576,361 @@ pub struct pjsip_tcp_transport_cfg {
     pub initial_timeout: ::std::os::raw::c_uint,
 }
 
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_tls_state_info {
+    pub ssl_sock_info: *mut pj_ssl_sock_info,
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_common_credential {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_digest_credential {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+    pub username: pj_str_t,
+    pub nonce: pj_str_t,
+    pub uri: pj_str_t,
+    pub response: pj_str_t,
+    pub algorithm: pj_str_t,
+    pub cnonce: pj_str_t,
+    pub opaque: pj_str_t,
+    pub qop: pj_str_t,
+    pub nc: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_pgp_credential {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+    pub version: pj_str_t,
+    pub signature: pj_str_t,
+    pub signed_by: pj_str_t,
+    pub nonce: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_oauth_credential {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+    pub username: pj_str_t,
+    pub token: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_authorization_hdr {
+    pub prev: *mut pjsip_authorization_hdr,
+    pub next: *mut pjsip_authorization_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub scheme: pj_str_t,
+    pub credential: pjsip_authorization_hdr__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pjsip_authorization_hdr__bindgen_ty_1 {
+    pub common: pjsip_common_credential,
+    pub digest: pjsip_digest_credential,
+    pub pgp: pjsip_pgp_credential,
+    pub oauth: pjsip_oauth_credential,
+    _bindgen_union_align: [u64; 26usize],
+}
+
+pub type pjsip_proxy_authorization_hdr = pjsip_authorization_hdr;
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_common_challenge {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_digest_challenge {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+    pub domain: pj_str_t,
+    pub nonce: pj_str_t,
+    pub opaque: pj_str_t,
+    pub stale: ::std::os::raw::c_int,
+    pub algorithm: pj_str_t,
+    pub qop: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_pgp_challenge {
+    pub realm: pj_str_t,
+    pub other_param: pjsip_param,
+    pub version: pj_str_t,
+    pub micalgorithm: pj_str_t,
+    pub pubalgorithm: pj_str_t,
+    pub nonce: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_www_authenticate_hdr {
+    pub prev: *mut pjsip_www_authenticate_hdr,
+    pub next: *mut pjsip_www_authenticate_hdr,
+    pub type_: pjsip_hdr_e,
+    pub name: pj_str_t,
+    pub sname: pj_str_t,
+    pub vptr: *mut pjsip_hdr_vptr,
+    pub scheme: pj_str_t,
+    pub challenge: pjsip_www_authenticate_hdr__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pjsip_www_authenticate_hdr__bindgen_ty_1 {
+    pub common: pjsip_common_challenge,
+    pub digest: pjsip_digest_challenge,
+    pub pgp: pjsip_pgp_challenge,
+    _bindgen_union_align: [u64; 19usize],
+}
+
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_cred_info {
+    pub realm: pj_str_t,
+    pub scheme: pj_str_t,
+    pub username: pj_str_t,
+    pub data_type: ::std::os::raw::c_int,
+    pub data: pj_str_t,
+    pub ext: pjsip_cred_info__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pjsip_cred_info__bindgen_ty_1 {
+    pub aka: pjsip_cred_info__bindgen_ty_1__bindgen_ty_1,
+    _bindgen_union_align: [u64; 7usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {
+    pub k: pj_str_t,
+    pub op: pj_str_t,
+    pub amf: pj_str_t,
+    pub cb: pjsip_cred_cb,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_cached_auth_hdr {
+    pub prev: *mut pjsip_cached_auth_hdr,
+    pub next: *mut pjsip_cached_auth_hdr,
+    pub method: pjsip_method,
+    pub hdr: *mut pjsip_authorization_hdr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_cached_auth {
+    pub prev: *mut pjsip_cached_auth,
+    pub next: *mut pjsip_cached_auth,
+    pub pool: *mut pj_pool_t,
+    pub realm: pj_str_t,
+    pub is_proxy: pj_bool_t,
+    pub qop_value: pjsip_auth_qop_type,
+    pub stale_cnt: ::std::os::raw::c_uint,
+    pub nc: pj_uint32_t,
+    pub cnonce: pj_str_t,
+    pub last_chal: *mut pjsip_www_authenticate_hdr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_auth_clt_pref {
+    pub initial_auth: pj_bool_t,
+    pub algorithm: pj_str_t,
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_auth_clt_sess {
+    pub pool: *mut pj_pool_t,
+    pub endpt: *mut pjsip_endpoint,
+    pub pref: pjsip_auth_clt_pref,
+    pub cred_cnt: ::std::os::raw::c_uint,
+    pub cred_info: *mut pjsip_cred_info,
+    pub cached_auth: pjsip_cached_auth,
+}
+
+
+pub type pjsip_auth_lookup_cred = ::std::option::Option<
+    unsafe extern "C" fn(
+        pool: *mut pj_pool_t,
+        realm: *const pj_str_t,
+        acc_name: *const pj_str_t,
+        cred_info: *mut pjsip_cred_info,
+    ) -> pj_status_t,
+>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_auth_lookup_cred_param {
+    pub realm: pj_str_t,
+    pub acc_name: pj_str_t,
+    pub rdata: *mut pjsip_rx_data,
+}
+
+pub type pjsip_auth_lookup_cred2 = ::std::option::Option<
+    unsafe extern "C" fn(
+        pool: *mut pj_pool_t,
+        param: *const pjsip_auth_lookup_cred_param,
+        cred_info: *mut pjsip_cred_info,
+    ) -> pj_status_t,
+>;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_auth_srv {
+    pub realm: pj_str_t,
+    pub is_proxy: pj_bool_t,
+    pub lookup: pjsip_auth_lookup_cred,
+    pub lookup2: pjsip_auth_lookup_cred2,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_auth_srv_init_param {
+    pub realm: *const pj_str_t,
+    pub lookup2: pjsip_auth_lookup_cred2,
+    pub options: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_transaction {
+    pub pool: *mut pj_pool_t,
+    pub tsx_user: *mut pjsip_module,
+    pub endpt: *mut pjsip_endpoint,
+    pub terminating: pj_bool_t,
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub mutex_b: *mut pj_mutex_t,
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub role: pjsip_role_e,
+    pub method: pjsip_method,
+    pub cseq: pj_int32_t,
+    pub transaction_key: pj_str_t,
+    pub hashed_key: pj_uint32_t,
+    pub branch: pj_str_t,
+    pub status_code: ::std::os::raw::c_int,
+    pub status_text: pj_str_t,
+    pub state: pjsip_tsx_state_e,
+    pub handle_200resp: ::std::os::raw::c_int,
+    pub tracing: ::std::os::raw::c_int,
+    pub state_handler: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjsip_transaction, arg2: *mut pjsip_event) -> pj_status_t,
+    >,
+    pub transport: *mut pjsip_transport,
+    pub is_reliable: pj_bool_t,
+    pub addr: pj_sockaddr,
+    pub addr_len: ::std::os::raw::c_int,
+    pub res_addr: pjsip_response_addr,
+    pub transport_flag: ::std::os::raw::c_uint,
+    pub transport_err: pj_status_t,
+    pub tp_sel: pjsip_tpselector,
+    pub pending_tx: *mut pjsip_tx_data,
+    pub tp_st_key: *mut pjsip_tp_state_listener_key,
+    pub last_tx: *mut pjsip_tx_data,
+    pub retransmit_count: ::std::os::raw::c_int,
+    pub retransmit_timer: pj_timer_entry,
+    pub timeout_timer: pj_timer_entry,
+    pub mod_data: [*mut ::std::os::raw::c_void; 32usize],
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_ua_init_param {
+    pub on_dlg_forked: ::std::option::Option<
+        unsafe extern "C" fn(
+            first_set: *mut pjsip_dialog,
+            res: *mut pjsip_rx_data,
+        ) -> *mut pjsip_dialog,
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_dlg_party {
+    pub info: *mut pjsip_fromto_hdr,
+    pub info_str: pj_str_t,
+    pub tag_hval: pj_uint32_t,
+    pub contact: *mut pjsip_contact_hdr,
+    pub first_cseq: pj_int32_t,
+    pub cseq: pj_int32_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjsip_dialog {
+    pub prev: *mut pjsip_dialog,
+    pub next: *mut pjsip_dialog,
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub pool: *mut pj_pool_t,
+    pub ua: *mut pjsip_user_agent,
+    pub endpt: *mut pjsip_endpoint,
+    pub grp_lock_: *mut pj_grp_lock_t,
+    pub dlg_set: *mut ::std::os::raw::c_void,
+    pub state: pjsip_dialog_state,
+    pub target: *mut pjsip_uri,
+    pub target_set: pjsip_target_set,
+    pub inv_hdr: pjsip_hdr,
+    pub local: pjsip_dlg_party,
+    pub remote: pjsip_dlg_party,
+    pub rem_cap_hdr: pjsip_hdr,
+    pub role: pjsip_role_e,
+    pub uac_has_2xx: pj_bool_t,
+    pub secure: pj_bool_t,
+    pub add_allow: pj_bool_t,
+    pub call_id: *mut pjsip_cid_hdr,
+    pub route_set: pjsip_route_hdr,
+    pub route_set_frozen: pj_bool_t,
+    pub auth_sess: pjsip_auth_clt_sess,
+    pub sess_count: ::std::os::raw::c_int,
+    pub tsx_count: ::std::os::raw::c_int,
+    pub tp_sel: pjsip_tpselector,
+    pub usage_cnt: ::std::os::raw::c_uint,
+    pub usage: [*mut pjsip_module; 32usize],
+    pub mod_data: [*mut ::std::os::raw::c_void; 32usize],
+    pub via_addr: pjsip_host_port,
+    pub via_tp: *const ::std::os::raw::c_void,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_dlg_create_uac_param {
+    pub ua: *mut pjsip_user_agent,
+    pub local_uri: pj_str_t,
+    pub local_contact: pj_str_t,
+    pub remote_uri: pj_str_t,
+    pub target: pj_str_t,
+    pub grp_lock: *mut pj_grp_lock_t,
+}
+
 extern "C" {
     pub fn pjsip_event_str(e: pjsip_event_id_e) -> *const ::std::os::raw::c_char;
     pub fn pjsip_param_find( param_list: *const pjsip_param, name: *const pj_str_t, ) -> *mut pjsip_param;
@@ -1810,12 +2204,100 @@ extern "C" {
     pub fn pjsip_tcp_transport_get_socket(transport: *mut pjsip_transport) -> pj_sock_t;
     pub fn pjsip_tcp_transport_lis_start( factory: *mut pjsip_tpfactory, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
     pub fn pjsip_tcp_transport_restart( factory: *mut pjsip_tpfactory, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
+    pub fn pjsip_tls_setting_wipe_keys(opt: *mut pjsip_tls_setting);
+    pub fn pjsip_tls_transport_start( endpt: *mut pjsip_endpoint, opt: *const pjsip_tls_setting, local: *const pj_sockaddr_in, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_factory: *mut *mut pjsip_tpfactory, ) -> pj_status_t;
+    pub fn pjsip_tls_transport_start2( endpt: *mut pjsip_endpoint, opt: *const pjsip_tls_setting, local: *const pj_sockaddr, a_name: *const pjsip_host_port, async_cnt: ::std::os::raw::c_uint, p_factory: *mut *mut pjsip_tpfactory, ) -> pj_status_t;
+    pub fn pjsip_tls_transport_lis_start( factory: *mut pjsip_tpfactory, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
+    pub fn pjsip_tls_transport_restart( factory: *mut pjsip_tpfactory, local: *const pj_sockaddr, a_name: *const pjsip_host_port, ) -> pj_status_t;
+    pub fn pjsip_authorization_hdr_create(pool: *mut pj_pool_t) -> *mut pjsip_authorization_hdr;
+    pub fn pjsip_proxy_authorization_hdr_create( pool: *mut pj_pool_t, ) -> *mut pjsip_proxy_authorization_hdr;
+    pub fn pjsip_www_authenticate_hdr_create( pool: *mut pj_pool_t, ) -> *mut pjsip_www_authenticate_hdr;
+    pub fn pjsip_proxy_authenticate_hdr_create( pool: *mut pj_pool_t, ) -> *mut pjsip_proxy_authenticate_hdr;
+    pub fn pjsip_auth_clt_pref_dup( pool: *mut pj_pool_t, dst: *mut pjsip_auth_clt_pref, src: *const pjsip_auth_clt_pref, );
+    pub fn pjsip_cred_info_dup( pool: *mut pj_pool_t, dst: *mut pjsip_cred_info, src: *const pjsip_cred_info, );
+    pub fn pjsip_cred_info_cmp( cred1: *const pjsip_cred_info, cred2: *const pjsip_cred_info, ) -> ::std::os::raw::c_int;
+    pub fn pjsip_auth_clt_init( sess: *mut pjsip_auth_clt_sess, endpt: *mut pjsip_endpoint, pool: *mut pj_pool_t, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_auth_clt_deinit(sess: *mut pjsip_auth_clt_sess) -> pj_status_t;
+    pub fn pjsip_auth_clt_clone( pool: *mut pj_pool_t, sess: *mut pjsip_auth_clt_sess, rhs: *const pjsip_auth_clt_sess, ) -> pj_status_t;
+    pub fn pjsip_auth_clt_set_credentials( sess: *mut pjsip_auth_clt_sess, cred_cnt: ::std::os::raw::c_int, c: *const pjsip_cred_info, ) -> pj_status_t;
+    pub fn pjsip_auth_clt_set_prefs( sess: *mut pjsip_auth_clt_sess, p: *const pjsip_auth_clt_pref, ) -> pj_status_t;
+    pub fn pjsip_auth_clt_get_prefs( sess: *mut pjsip_auth_clt_sess, p: *mut pjsip_auth_clt_pref, ) -> pj_status_t;
+    pub fn pjsip_auth_clt_init_req( sess: *mut pjsip_auth_clt_sess, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_auth_clt_reinit_req( sess: *mut pjsip_auth_clt_sess, rdata: *const pjsip_rx_data, old_request: *mut pjsip_tx_data, new_request: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_auth_srv_init( pool: *mut pj_pool_t, auth_srv: *mut pjsip_auth_srv, realm: *const pj_str_t, lookup: pjsip_auth_lookup_cred, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_auth_srv_init2( pool: *mut pj_pool_t, auth_srv: *mut pjsip_auth_srv, param: *const pjsip_auth_srv_init_param, ) -> pj_status_t;
+    pub fn pjsip_auth_srv_verify( auth_srv: *mut pjsip_auth_srv, rdata: *mut pjsip_rx_data, status_code: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjsip_auth_srv_challenge( auth_srv: *mut pjsip_auth_srv, qop: *const pj_str_t, nonce: *const pj_str_t, opaque: *const pj_str_t, stale: pj_bool_t, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_auth_create_digest( result: *mut pj_str_t, nonce: *const pj_str_t, nc: *const pj_str_t, cnonce: *const pj_str_t, qop: *const pj_str_t, uri: *const pj_str_t, realm: *const pj_str_t, cred_info: *const pjsip_cred_info, method: *const pj_str_t, );
+    pub fn pjsip_auth_create_aka_response( pool: *mut pj_pool_t, chal: *const pjsip_digest_challenge, cred: *const pjsip_cred_info, method: *const pj_str_t, auth: *mut pjsip_digest_credential, ) -> pj_status_t;
+    pub fn pjsip_tsx_layer_init_module(endpt: *mut pjsip_endpoint) -> pj_status_t;
+    pub fn pjsip_tsx_layer_instance() -> *mut pjsip_module;
+    pub fn pjsip_tsx_layer_destroy() -> pj_status_t;
+    pub fn pjsip_tsx_layer_get_tsx_count() -> ::std::os::raw::c_uint;
+    pub fn pjsip_tsx_layer_find_tsx( key: *const pj_str_t, lock: pj_bool_t, ) -> *mut pjsip_transaction;
+    pub fn pjsip_tsx_layer_find_tsx2( key: *const pj_str_t, add_ref: pj_bool_t, ) -> *mut pjsip_transaction;
+    pub fn pjsip_tsx_create_uac( tsx_user: *mut pjsip_module, tdata: *mut pjsip_tx_data, p_tsx: *mut *mut pjsip_transaction, ) -> pj_status_t;
+    pub fn pjsip_tsx_create_uac2( tsx_user: *mut pjsip_module, tdata: *mut pjsip_tx_data, grp_lock: *mut pj_grp_lock_t, p_tsx: *mut *mut pjsip_transaction, ) -> pj_status_t;
+    pub fn pjsip_tsx_create_uas( tsx_user: *mut pjsip_module, rdata: *mut pjsip_rx_data, p_tsx: *mut *mut pjsip_transaction, ) -> pj_status_t;
+    pub fn pjsip_tsx_create_uas2( tsx_user: *mut pjsip_module, rdata: *mut pjsip_rx_data, grp_lock: *mut pj_grp_lock_t, p_tsx: *mut *mut pjsip_transaction, ) -> pj_status_t;
+    pub fn pjsip_tsx_set_transport( tsx: *mut pjsip_transaction, sel: *const pjsip_tpselector, ) -> pj_status_t;
+    pub fn pjsip_tsx_recv_msg(tsx: *mut pjsip_transaction, rdata: *mut pjsip_rx_data);
+    pub fn pjsip_tsx_send_msg( tsx: *mut pjsip_transaction, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_tsx_retransmit_no_state( tsx: *mut pjsip_transaction, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_tsx_create_key( pool: *mut pj_pool_t, key: *mut pj_str_t, role: pjsip_role_e, method: *const pjsip_method, rdata: *const pjsip_rx_data, ) -> pj_status_t;
+    pub fn pjsip_tsx_terminate( tsx: *mut pjsip_transaction, code: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjsip_tsx_stop_retransmit(tsx: *mut pjsip_transaction) -> pj_status_t;
+    pub fn pjsip_tsx_set_timeout( tsx: *mut pjsip_transaction, millisec: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjsip_rdata_get_tsx(rdata: *mut pjsip_rx_data) -> *mut pjsip_transaction;
+    pub fn pjsip_tsx_layer_dump(detail: pj_bool_t);
+    pub fn pjsip_tsx_state_str(state: pjsip_tsx_state_e) -> *const ::std::os::raw::c_char;
+    pub fn pjsip_role_name(role: pjsip_role_e) -> *const ::std::os::raw::c_char;
+    pub fn pjsip_ua_init_module( endpt: *mut pjsip_endpoint, prm: *const pjsip_ua_init_param, ) -> pj_status_t;
+    pub fn pjsip_ua_instance() -> *mut pjsip_user_agent;
+    pub fn pjsip_ua_get_dlg_set_count() -> pj_uint32_t;
+    pub fn pjsip_ua_find_dialog( call_id: *const pj_str_t, local_tag: *const pj_str_t, remote_tag: *const pj_str_t, lock_dialog: pj_bool_t, ) -> *mut pjsip_dialog;
+    pub fn pjsip_ua_destroy() -> pj_status_t;
+    pub fn pjsip_ua_dump(detail: pj_bool_t);
+    pub fn pjsip_ua_get_endpt(ua: *mut pjsip_user_agent) -> *mut pjsip_endpoint;
+    pub fn pjsip_ua_register_dlg(ua: *mut pjsip_user_agent, dlg: *mut pjsip_dialog) -> pj_status_t;
+    pub fn pjsip_ua_unregister_dlg( ua: *mut pjsip_user_agent, dlg: *mut pjsip_dialog, ) -> pj_status_t;
+    pub fn pjsip_method_creates_dialog(m: *const pjsip_method) -> pj_bool_t;
+    pub fn pjsip_dlg_create_uac( ua: *mut pjsip_user_agent, local_uri: *const pj_str_t, local_contact: *const pj_str_t, remote_uri: *const pj_str_t, target: *const pj_str_t, p_dlg: *mut *mut pjsip_dialog, ) -> pj_status_t;
+    pub fn pjsip_dlg_create_uac2( create_param: *const pjsip_dlg_create_uac_param, p_dlg: *mut *mut pjsip_dialog, ) -> pj_status_t;
+    pub fn pjsip_dlg_create_uas_and_inc_lock( ua: *mut pjsip_user_agent, rdata: *mut pjsip_rx_data, contact: *const pj_str_t, p_dlg: *mut *mut pjsip_dialog, ) -> pj_status_t;
+    pub fn pjsip_dlg_set_transport( dlg: *mut pjsip_dialog, sel: *const pjsip_tpselector, ) -> pj_status_t;
+    pub fn pjsip_dlg_set_via_sent_by( dlg: *mut pjsip_dialog, via_addr: *mut pjsip_host_port, via_tp: *mut pjsip_transport, ) -> pj_status_t;
+    pub fn pjsip_dlg_fork( original_dlg: *const pjsip_dialog, rdata: *const pjsip_rx_data, new_dlg: *mut *mut pjsip_dialog, ) -> pj_status_t;
+    pub fn pjsip_dlg_terminate(dlg: *mut pjsip_dialog) -> pj_status_t;
+    pub fn pjsip_dlg_set_route_set( dlg: *mut pjsip_dialog, route_set: *const pjsip_route_hdr, ) -> pj_status_t;
+    pub fn pjsip_dlg_inc_session(dlg: *mut pjsip_dialog, mod_: *mut pjsip_module) -> pj_status_t;
+    pub fn pjsip_dlg_dec_session(dlg: *mut pjsip_dialog, mod_: *mut pjsip_module) -> pj_status_t;
+    pub fn pjsip_dlg_add_usage( dlg: *mut pjsip_dialog, module: *mut pjsip_module, mod_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pjsip_dlg_has_usage(dlg: *mut pjsip_dialog, module: *mut pjsip_module) -> pj_bool_t;
+    pub fn pjsip_dlg_set_mod_data( dlg: *mut pjsip_dialog, mod_id: ::std::os::raw::c_int, data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pjsip_dlg_get_mod_data( dlg: *mut pjsip_dialog, mod_id: ::std::os::raw::c_int, ) -> *mut ::std::os::raw::c_void;
+    pub fn pjsip_dlg_inc_lock(dlg: *mut pjsip_dialog);
+    pub fn pjsip_dlg_try_inc_lock(dlg: *mut pjsip_dialog) -> pj_status_t;
+    pub fn pjsip_dlg_dec_lock(dlg: *mut pjsip_dialog);
+    pub fn pjsip_dlg_get_lock(dlg: *mut pjsip_dialog) -> *mut pj_grp_lock_t;
+    pub fn pjsip_rdata_get_dlg(rdata: *mut pjsip_rx_data) -> *mut pjsip_dialog;
+    pub fn pjsip_tdata_get_dlg(tdata: *mut pjsip_tx_data) -> *mut pjsip_dialog;
+    pub fn pjsip_tsx_get_dlg(tsx: *mut pjsip_transaction) -> *mut pjsip_dialog;
+    pub fn pjsip_dlg_create_request( dlg: *mut pjsip_dialog, method: *const pjsip_method, cseq: ::std::os::raw::c_int, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_dlg_send_request( dlg: *mut pjsip_dialog, tdata: *mut pjsip_tx_data, mod_data_id: ::std::os::raw::c_int, mod_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pjsip_dlg_create_response( dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, tdata: *mut *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_dlg_modify_response( dlg: *mut pjsip_dialog, tdata: *mut pjsip_tx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, ) -> pj_status_t;
+    pub fn pjsip_dlg_send_response( dlg: *mut pjsip_dialog, tsx: *mut pjsip_transaction, tdata: *mut pjsip_tx_data, ) -> pj_status_t;
+    pub fn pjsip_dlg_respond( dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data, st_code: ::std::os::raw::c_int, st_text: *const pj_str_t, hdr_list: *const pjsip_hdr, body: *const pjsip_msg_body, ) -> pj_status_t;
+    pub fn pjsip_dlg_remote_has_cap( dlg: *mut pjsip_dialog, htype: ::std::os::raw::c_int, hname: *const pj_str_t, token: *const pj_str_t, ) -> pjsip_dialog_cap_status;
+    pub fn pjsip_dlg_get_remote_cap_hdr( dlg: *mut pjsip_dialog, htype: ::std::os::raw::c_int, hname: *const pj_str_t, ) -> *const pjsip_hdr;
+    pub fn pjsip_dlg_set_remote_cap_hdr( dlg: *mut pjsip_dialog, cap_hdr: *const pjsip_generic_array_hdr, ) -> pj_status_t;
+    pub fn pjsip_dlg_remove_remote_cap_hdr( dlg: *mut pjsip_dialog, htype: ::std::os::raw::c_int, hname: *const pj_str_t, ) -> pj_status_t;
+    pub fn pjsip_dlg_update_remote_cap( dlg: *mut pjsip_dialog, msg: *const pjsip_msg, strict: pj_bool_t, ) -> pj_status_t;
+    pub fn pjsip_dlg_on_tsx_state( dlg: *mut pjsip_dialog, tsx: *mut pjsip_transaction, e: *mut pjsip_event, );
+    pub fn pjsip_dlg_on_rx_request(dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data);
+    pub fn pjsip_dlg_on_rx_response(dlg: *mut pjsip_dialog, rdata: *mut pjsip_rx_data);
 }
-
-
-
-
-
 
 
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
