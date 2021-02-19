@@ -659,10 +659,245 @@ pub type pj_error_callback = ::std::option::Option<
     ) -> pj_str_t,
 >;
 
+pub const pj_stun_method_e_PJ_STUN_BINDING_METHOD: pj_stun_method_e = 1;
+pub const pj_stun_method_e_PJ_STUN_SHARED_SECRET_METHOD: pj_stun_method_e = 2;
+pub const pj_stun_method_e_PJ_STUN_ALLOCATE_METHOD: pj_stun_method_e = 3;
+pub const pj_stun_method_e_PJ_STUN_REFRESH_METHOD: pj_stun_method_e = 4;
+pub const pj_stun_method_e_PJ_STUN_SEND_METHOD: pj_stun_method_e = 6;
+pub const pj_stun_method_e_PJ_STUN_DATA_METHOD: pj_stun_method_e = 7;
+pub const pj_stun_method_e_PJ_STUN_CREATE_PERM_METHOD: pj_stun_method_e = 8;
+pub const pj_stun_method_e_PJ_STUN_CHANNEL_BIND_METHOD: pj_stun_method_e = 9;
+pub const pj_stun_method_e_PJ_STUN_CONNECT_METHOD: pj_stun_method_e = 10;
+pub const pj_stun_method_e_PJ_STUN_CONNECTION_BIND_METHOD: pj_stun_method_e = 11;
+pub const pj_stun_method_e_PJ_STUN_CONNECTION_ATTEMPT_METHOD: pj_stun_method_e = 12;
+pub const pj_stun_method_e_PJ_STUN_METHOD_MAX: pj_stun_method_e = 13;
+pub type pj_stun_method_e = ::std::os::raw::c_uint;
 
+pub const pj_stun_msg_class_e_PJ_STUN_REQUEST_CLASS: pj_stun_msg_class_e = 0;
+pub const pj_stun_msg_class_e_PJ_STUN_INDICATION_CLASS: pj_stun_msg_class_e = 1;
+pub const pj_stun_msg_class_e_PJ_STUN_SUCCESS_CLASS: pj_stun_msg_class_e = 2;
+pub const pj_stun_msg_class_e_PJ_STUN_ERROR_CLASS: pj_stun_msg_class_e = 3;
+pub type pj_stun_msg_class_e = ::std::os::raw::c_uint;
 
+pub const pj_stun_msg_type_PJ_STUN_BINDING_REQUEST: pj_stun_msg_type = 1;
+pub const pj_stun_msg_type_PJ_STUN_BINDING_RESPONSE: pj_stun_msg_type = 257;
+pub const pj_stun_msg_type_PJ_STUN_BINDING_ERROR_RESPONSE: pj_stun_msg_type = 273;
+pub const pj_stun_msg_type_PJ_STUN_BINDING_INDICATION: pj_stun_msg_type = 17;
+pub const pj_stun_msg_type_PJ_STUN_SHARED_SECRET_REQUEST: pj_stun_msg_type = 2;
+pub const pj_stun_msg_type_PJ_STUN_SHARED_SECRET_RESPONSE: pj_stun_msg_type = 258;
+pub const pj_stun_msg_type_PJ_STUN_SHARED_SECRET_ERROR_RESPONSE: pj_stun_msg_type = 274;
+pub const pj_stun_msg_type_PJ_STUN_ALLOCATE_REQUEST: pj_stun_msg_type = 3;
+pub const pj_stun_msg_type_PJ_STUN_ALLOCATE_RESPONSE: pj_stun_msg_type = 259;
+pub const pj_stun_msg_type_PJ_STUN_ALLOCATE_ERROR_RESPONSE: pj_stun_msg_type = 275;
+pub const pj_stun_msg_type_PJ_STUN_REFRESH_REQUEST: pj_stun_msg_type = 4;
+pub const pj_stun_msg_type_PJ_STUN_REFRESH_RESPONSE: pj_stun_msg_type = 260;
+pub const pj_stun_msg_type_PJ_STUN_REFRESH_ERROR_RESPONSE: pj_stun_msg_type = 276;
+pub const pj_stun_msg_type_PJ_STUN_SEND_INDICATION: pj_stun_msg_type = 22;
+pub const pj_stun_msg_type_PJ_STUN_DATA_INDICATION: pj_stun_msg_type = 23;
+pub const pj_stun_msg_type_PJ_STUN_CREATE_PERM_REQUEST: pj_stun_msg_type = 8;
+pub const pj_stun_msg_type_PJ_STUN_CREATE_PERM_RESPONSE: pj_stun_msg_type = 264;
+pub const pj_stun_msg_type_PJ_STUN_CREATE_PERM_ERROR_RESPONSE: pj_stun_msg_type = 280;
+pub const pj_stun_msg_type_PJ_STUN_CHANNEL_BIND_REQUEST: pj_stun_msg_type = 9;
+pub const pj_stun_msg_type_PJ_STUN_CHANNEL_BIND_RESPONSE: pj_stun_msg_type = 265;
+pub const pj_stun_msg_type_PJ_STUN_CHANNEL_BIND_ERROR_RESPONSE: pj_stun_msg_type = 281;
+pub const pj_stun_msg_type_PJ_STUN_CONNECTION_BIND_REQUEST: pj_stun_msg_type = 11;
+pub const pj_stun_msg_type_PJ_STUN_CONNECTION_ATTEMPT_INDICATION: pj_stun_msg_type = 28;
+pub type pj_stun_msg_type = ::std::os::raw::c_uint;
 
+pub const pj_stun_attr_type_PJ_STUN_ATTR_MAPPED_ADDR: pj_stun_attr_type = 1;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_RESPONSE_ADDR: pj_stun_attr_type = 2;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_CHANGE_REQUEST: pj_stun_attr_type = 3;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_SOURCE_ADDR: pj_stun_attr_type = 4;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_CHANGED_ADDR: pj_stun_attr_type = 5;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_USERNAME: pj_stun_attr_type = 6;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_PASSWORD: pj_stun_attr_type = 7;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_MESSAGE_INTEGRITY: pj_stun_attr_type = 8;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_ERROR_CODE: pj_stun_attr_type = 9;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_UNKNOWN_ATTRIBUTES: pj_stun_attr_type = 10;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_REFLECTED_FROM: pj_stun_attr_type = 11;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_CHANNEL_NUMBER: pj_stun_attr_type = 12;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_LIFETIME: pj_stun_attr_type = 13;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_MAGIC_COOKIE: pj_stun_attr_type = 15;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_BANDWIDTH: pj_stun_attr_type = 16;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_XOR_PEER_ADDR: pj_stun_attr_type = 18;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_DATA: pj_stun_attr_type = 19;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_REALM: pj_stun_attr_type = 20;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_NONCE: pj_stun_attr_type = 21;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_XOR_RELAYED_ADDR: pj_stun_attr_type = 22;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_REQ_ADDR_TYPE: pj_stun_attr_type = 23;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_REQ_ADDR_FAMILY: pj_stun_attr_type = 23;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_EVEN_PORT: pj_stun_attr_type = 24;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_REQ_TRANSPORT: pj_stun_attr_type = 25;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_DONT_FRAGMENT: pj_stun_attr_type = 26;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_XOR_MAPPED_ADDR: pj_stun_attr_type = 32;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_TIMER_VAL: pj_stun_attr_type = 33;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_RESERVATION_TOKEN: pj_stun_attr_type = 34;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_XOR_REFLECTED_FROM: pj_stun_attr_type = 35;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_PRIORITY: pj_stun_attr_type = 36;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_USE_CANDIDATE: pj_stun_attr_type = 37;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_CONNECTION_ID: pj_stun_attr_type = 42;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_ICMP: pj_stun_attr_type = 48;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_END_MANDATORY_ATTR: pj_stun_attr_type = 49;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_START_EXTENDED_ATTR: pj_stun_attr_type = 32801;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_SOFTWARE: pj_stun_attr_type = 32802;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_ALTERNATE_SERVER: pj_stun_attr_type = 32803;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_REFRESH_INTERVAL: pj_stun_attr_type = 32804;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_FINGERPRINT: pj_stun_attr_type = 32808;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_ICE_CONTROLLED: pj_stun_attr_type = 32809;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_ICE_CONTROLLING: pj_stun_attr_type = 32810;
+pub const pj_stun_attr_type_PJ_STUN_ATTR_END_EXTENDED_ATTR: pj_stun_attr_type = 32811;
+pub type pj_stun_attr_type = ::std::os::raw::c_uint;
 
+pub const pj_stun_status_PJ_STUN_SC_TRY_ALTERNATE: pj_stun_status = 300;
+pub const pj_stun_status_PJ_STUN_SC_BAD_REQUEST: pj_stun_status = 400;
+pub const pj_stun_status_PJ_STUN_SC_UNAUTHORIZED: pj_stun_status = 401;
+pub const pj_stun_status_PJ_STUN_SC_FORBIDDEN: pj_stun_status = 403;
+pub const pj_stun_status_PJ_STUN_SC_UNKNOWN_ATTRIBUTE: pj_stun_status = 420;
+pub const pj_stun_status_PJ_STUN_SC_ALLOCATION_MISMATCH: pj_stun_status = 437;
+pub const pj_stun_status_PJ_STUN_SC_STALE_NONCE: pj_stun_status = 438;
+pub const pj_stun_status_PJ_STUN_SC_TRANSITIONING: pj_stun_status = 439;
+pub const pj_stun_status_PJ_STUN_SC_WRONG_CREDENTIALS: pj_stun_status = 441;
+pub const pj_stun_status_PJ_STUN_SC_UNSUPP_TRANSPORT_PROTO: pj_stun_status = 442;
+pub const pj_stun_status_PJ_STUN_SC_OPER_TCP_ONLY: pj_stun_status = 445;
+pub const pj_stun_status_PJ_STUN_SC_CONNECTION_FAILURE: pj_stun_status = 446;
+pub const pj_stun_status_PJ_STUN_SC_CONNECTION_TIMEOUT: pj_stun_status = 447;
+pub const pj_stun_status_PJ_STUN_SC_ALLOCATION_QUOTA_REACHED: pj_stun_status = 486;
+pub const pj_stun_status_PJ_STUN_SC_ROLE_CONFLICT: pj_stun_status = 487;
+pub const pj_stun_status_PJ_STUN_SC_SERVER_ERROR: pj_stun_status = 500;
+pub const pj_stun_status_PJ_STUN_SC_INSUFFICIENT_CAPACITY: pj_stun_status = 508;
+pub const pj_stun_status_PJ_STUN_SC_GLOBAL_FAILURE: pj_stun_status = 600;
+pub type pj_stun_status = ::std::os::raw::c_uint;
+
+pub type pj_stun_fingerprint_attr = pj_stun_uint_attr;
+pub type pj_stun_realm_attr = pj_stun_string_attr;
+pub type pj_stun_nonce_attr = pj_stun_string_attr;
+pub type pj_stun_mapped_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_xor_mapped_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_software_attr = pj_stun_string_attr;
+pub type pj_stun_alt_server_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_refresh_interval_attr = pj_stun_uint_attr;
+pub type pj_stun_response_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_changed_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_change_request_attr = pj_stun_uint_attr;
+pub type pj_stun_src_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_reflected_from_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_username_attr = pj_stun_string_attr;
+pub type pj_stun_password_attr = pj_stun_string_attr;
+pub type pj_stun_channel_number_attr = pj_stun_uint_attr;
+pub type pj_stun_lifetime_attr = pj_stun_uint_attr;
+pub type pj_stun_bandwidth_attr = pj_stun_uint_attr;
+pub type pj_stun_xor_peer_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_data_attr = pj_stun_binary_attr;
+pub type pj_stun_xor_relayed_addr_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_req_addr_type_attr = pj_stun_uint_attr;
+pub type pj_stun_even_port_attr = pj_stun_uint_attr;
+pub type pj_stun_req_transport_attr = pj_stun_uint_attr;
+pub type pj_stun_dont_fragment_attr = pj_stun_empty_attr;
+pub type pj_stun_res_token_attr = pj_stun_uint64_attr;
+pub type pj_stun_xor_reflected_from_attr = pj_stun_sockaddr_attr;
+pub type pj_stun_priority_attr = pj_stun_uint_attr;
+pub type pj_stun_use_candidate_attr = pj_stun_empty_attr;
+pub type pj_stun_timer_val_attr = pj_stun_uint_attr;
+pub type pj_stun_ice_controlling_attr = pj_stun_uint64_attr;
+pub type pj_stun_ice_controlled_attr = pj_stun_uint64_attr;
+pub type pj_stun_icmp_attr = pj_stun_uint_attr;
+
+pub const pj_stun_decode_options_PJ_STUN_IS_DATAGRAM: pj_stun_decode_options = 1;
+pub const pj_stun_decode_options_PJ_STUN_CHECK_PACKET: pj_stun_decode_options = 2;
+pub const pj_stun_decode_options_PJ_STUN_NO_AUTHENTICATE: pj_stun_decode_options = 4;
+pub const pj_stun_decode_options_PJ_STUN_NO_FINGERPRINT_CHECK: pj_stun_decode_options = 8;
+pub type pj_stun_decode_options = ::std::os::raw::c_uint;
+
+pub const pj_stun_auth_type_PJ_STUN_AUTH_NONE: pj_stun_auth_type = 0;
+pub const pj_stun_auth_type_PJ_STUN_AUTH_SHORT_TERM: pj_stun_auth_type = 1;
+pub const pj_stun_auth_type_PJ_STUN_AUTH_LONG_TERM: pj_stun_auth_type = 2;
+pub type pj_stun_auth_type = ::std::os::raw::c_uint;
+pub const pj_stun_auth_cred_type_PJ_STUN_AUTH_CRED_STATIC: pj_stun_auth_cred_type = 0;
+pub const pj_stun_auth_cred_type_PJ_STUN_AUTH_CRED_DYNAMIC: pj_stun_auth_cred_type = 1;
+pub type pj_stun_auth_cred_type = ::std::os::raw::c_uint;
+pub const pj_stun_passwd_type_PJ_STUN_PASSWD_PLAIN: pj_stun_passwd_type = 0;
+pub const pj_stun_passwd_type_PJ_STUN_PASSWD_HASHED: pj_stun_passwd_type = 1;
+pub type pj_stun_passwd_type = ::std::os::raw::c_uint;
+
+pub const pj_stun_sess_msg_log_flag_PJ_STUN_SESS_LOG_TX_REQ: pj_stun_sess_msg_log_flag = 1;
+pub const pj_stun_sess_msg_log_flag_PJ_STUN_SESS_LOG_TX_RES: pj_stun_sess_msg_log_flag = 2;
+pub const pj_stun_sess_msg_log_flag_PJ_STUN_SESS_LOG_TX_IND: pj_stun_sess_msg_log_flag = 4;
+pub const pj_stun_sess_msg_log_flag_PJ_STUN_SESS_LOG_RX_REQ: pj_stun_sess_msg_log_flag = 8;
+pub const pj_stun_sess_msg_log_flag_PJ_STUN_SESS_LOG_RX_RES: pj_stun_sess_msg_log_flag = 16;
+pub const pj_stun_sess_msg_log_flag_PJ_STUN_SESS_LOG_RX_IND: pj_stun_sess_msg_log_flag = 32;
+pub type pj_stun_sess_msg_log_flag = ::std::os::raw::c_uint;
+
+pub const pj_ice_cand_type_PJ_ICE_CAND_TYPE_HOST: pj_ice_cand_type = 0;
+pub const pj_ice_cand_type_PJ_ICE_CAND_TYPE_SRFLX: pj_ice_cand_type = 1;
+pub const pj_ice_cand_type_PJ_ICE_CAND_TYPE_PRFLX: pj_ice_cand_type = 2;
+pub const pj_ice_cand_type_PJ_ICE_CAND_TYPE_RELAYED: pj_ice_cand_type = 3;
+pub const pj_ice_cand_type_PJ_ICE_CAND_TYPE_MAX: pj_ice_cand_type = 4;
+pub type pj_ice_cand_type = ::std::os::raw::c_uint;
+
+pub const pj_ice_sess_check_state_PJ_ICE_SESS_CHECK_STATE_FROZEN: pj_ice_sess_check_state = 0;
+pub const pj_ice_sess_check_state_PJ_ICE_SESS_CHECK_STATE_WAITING: pj_ice_sess_check_state = 1;
+pub const pj_ice_sess_check_state_PJ_ICE_SESS_CHECK_STATE_IN_PROGRESS: pj_ice_sess_check_state = 2;
+pub const pj_ice_sess_check_state_PJ_ICE_SESS_CHECK_STATE_SUCCEEDED: pj_ice_sess_check_state = 3;
+pub const pj_ice_sess_check_state_PJ_ICE_SESS_CHECK_STATE_FAILED: pj_ice_sess_check_state = 4;
+pub type pj_ice_sess_check_state = ::std::os::raw::c_uint;
+
+pub const pj_ice_sess_checklist_state_PJ_ICE_SESS_CHECKLIST_ST_IDLE: pj_ice_sess_checklist_state = 0;
+pub const pj_ice_sess_checklist_state_PJ_ICE_SESS_CHECKLIST_ST_RUNNING: pj_ice_sess_checklist_state = 1;
+pub const pj_ice_sess_checklist_state_PJ_ICE_SESS_CHECKLIST_ST_COMPLETED: pj_ice_sess_checklist_state = 2;
+pub type pj_ice_sess_checklist_state = ::std::os::raw::c_uint;
+
+pub const pj_ice_sess_role_PJ_ICE_SESS_ROLE_UNKNOWN: pj_ice_sess_role = 0;
+pub const pj_ice_sess_role_PJ_ICE_SESS_ROLE_CONTROLLED: pj_ice_sess_role = 1;
+pub const pj_ice_sess_role_PJ_ICE_SESS_ROLE_CONTROLLING: pj_ice_sess_role = 2;
+pub type pj_ice_sess_role = ::std::os::raw::c_uint;
+
+pub const pj_ice_sess_trickle_PJ_ICE_SESS_TRICKLE_DISABLED: pj_ice_sess_trickle = 0;
+pub const pj_ice_sess_trickle_PJ_ICE_SESS_TRICKLE_HALF: pj_ice_sess_trickle = 1;
+pub const pj_ice_sess_trickle_PJ_ICE_SESS_TRICKLE_FULL: pj_ice_sess_trickle = 2;
+pub type pj_ice_sess_trickle = ::std::os::raw::c_uint;
+
+pub const pj_stun_sock_op_PJ_STUN_SOCK_DNS_OP: pj_stun_sock_op = 1;
+pub const pj_stun_sock_op_PJ_STUN_SOCK_BINDING_OP: pj_stun_sock_op = 2;
+pub const pj_stun_sock_op_PJ_STUN_SOCK_KEEP_ALIVE_OP: pj_stun_sock_op = 3;
+pub const pj_stun_sock_op_PJ_STUN_SOCK_MAPPED_ADDR_CHANGE: pj_stun_sock_op = 4;
+pub type pj_stun_sock_op = ::std::os::raw::c_uint;
+
+pub const pj_turn_tp_type_PJ_TURN_TP_UDP: pj_turn_tp_type = 17;
+pub const pj_turn_tp_type_PJ_TURN_TP_TCP: pj_turn_tp_type = 6;
+pub const pj_turn_tp_type_PJ_TURN_TP_TLS: pj_turn_tp_type = 56;
+pub type pj_turn_tp_type = ::std::os::raw::c_uint;
+
+pub const pj_turn_state_t_PJ_TURN_STATE_NULL: pj_turn_state_t = 0;
+pub const pj_turn_state_t_PJ_TURN_STATE_RESOLVING: pj_turn_state_t = 1;
+pub const pj_turn_state_t_PJ_TURN_STATE_RESOLVED: pj_turn_state_t = 2;
+pub const pj_turn_state_t_PJ_TURN_STATE_ALLOCATING: pj_turn_state_t = 3;
+pub const pj_turn_state_t_PJ_TURN_STATE_READY: pj_turn_state_t = 4;
+pub const pj_turn_state_t_PJ_TURN_STATE_DEALLOCATING: pj_turn_state_t = 5;
+pub const pj_turn_state_t_PJ_TURN_STATE_DEALLOCATED: pj_turn_state_t = 6;
+pub const pj_turn_state_t_PJ_TURN_STATE_DESTROYING: pj_turn_state_t = 7;
+pub type pj_turn_state_t = ::std::os::raw::c_uint;
+
+pub const pj_ice_strans_op_PJ_ICE_STRANS_OP_INIT: pj_ice_strans_op = 0;
+pub const pj_ice_strans_op_PJ_ICE_STRANS_OP_NEGOTIATION: pj_ice_strans_op = 1;
+pub const pj_ice_strans_op_PJ_ICE_STRANS_OP_KEEP_ALIVE: pj_ice_strans_op = 2;
+pub const pj_ice_strans_op_PJ_ICE_STRANS_OP_ADDR_CHANGE: pj_ice_strans_op = 3;
+pub type pj_ice_strans_op = ::std::os::raw::c_uint;
+
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_NULL: pj_ice_strans_state = 0;
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_INIT: pj_ice_strans_state = 1;
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_READY: pj_ice_strans_state = 2;
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_SESS_READY: pj_ice_strans_state = 3;
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_NEGO: pj_ice_strans_state = 4;
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_RUNNING: pj_ice_strans_state = 5;
+pub const pj_ice_strans_state_PJ_ICE_STRANS_STATE_FAILED: pj_ice_strans_state = 6;
+pub type pj_ice_strans_state = ::std::os::raw::c_uint;
+
+pub type pj_main_func_ptr = ::std::option::Option<
+    unsafe extern "C" fn(
+        argc: ::std::os::raw::c_int,
+        argv: *mut *mut ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int,
+>;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -1558,6 +1793,812 @@ pub struct pj_rwmutex_t {
     _unused: [u8; 0],
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_msg_hdr {
+    pub type_: pj_uint16_t,
+    pub length: pj_uint16_t,
+    pub magic: pj_uint32_t,
+    pub tsx_id: [pj_uint8_t; 12usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_attr_hdr {
+    pub type_: pj_uint16_t,
+    pub length: pj_uint16_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_stun_sockaddr_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub xor_ed: pj_bool_t,
+    pub sockaddr: pj_sockaddr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_empty_attr {
+    pub hdr: pj_stun_attr_hdr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_string_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub value: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_uint_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub value: pj_uint32_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_stun_uint64_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub value: pj_timestamp,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_binary_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub magic: pj_uint32_t,
+    pub length: ::std::os::raw::c_uint,
+    pub data: *mut pj_uint8_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_msgint_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub hmac: [pj_uint8_t; 20usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_errcode_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub err_code: ::std::os::raw::c_int,
+    pub reason: pj_str_t,
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+
+pub struct pj_stun_unknown_attr {
+    pub hdr: pj_stun_attr_hdr,
+    pub attr_count: ::std::os::raw::c_uint,
+    pub attrs: [pj_uint16_t; 16usize],
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_msg {
+    pub hdr: pj_stun_msg_hdr,
+    pub attr_count: ::std::os::raw::c_uint,
+    pub attr: [*mut pj_stun_attr_hdr; 16usize],
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_stun_auth_cred {
+    pub type_: pj_stun_auth_cred_type,
+    pub data: pj_stun_auth_cred__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pj_stun_auth_cred__bindgen_ty_1 {
+    pub static_cred: pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1,
+    pub dyn_cred: pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2,
+    _bindgen_union_align: [u64; 9usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
+    pub realm: pj_str_t,
+    pub username: pj_str_t,
+    pub data_type: pj_stun_passwd_type,
+    pub data: pj_str_t,
+    pub nonce: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
+    pub user_data: *mut ::std::os::raw::c_void,
+    pub get_auth: ::std::option::Option<
+        unsafe extern "C" fn(
+            user_data: *mut ::std::os::raw::c_void,
+            pool: *mut pj_pool_t,
+            realm: *mut pj_str_t,
+            nonce: *mut pj_str_t,
+        ) -> pj_status_t,
+    >,
+    pub get_cred: ::std::option::Option<
+        unsafe extern "C" fn(
+            msg: *const pj_stun_msg,
+            user_data: *mut ::std::os::raw::c_void,
+            pool: *mut pj_pool_t,
+            realm: *mut pj_str_t,
+            username: *mut pj_str_t,
+            nonce: *mut pj_str_t,
+            data_type: *mut pj_stun_passwd_type,
+            data: *mut pj_str_t,
+        ) -> pj_status_t,
+    >,
+    pub get_password: ::std::option::Option<
+        unsafe extern "C" fn(
+            msg: *const pj_stun_msg,
+            user_data: *mut ::std::os::raw::c_void,
+            realm: *const pj_str_t,
+            username: *const pj_str_t,
+            pool: *mut pj_pool_t,
+            data_type: *mut pj_stun_passwd_type,
+            data: *mut pj_str_t,
+        ) -> pj_status_t,
+    >,
+    pub verify_nonce: ::std::option::Option<
+        unsafe extern "C" fn(
+            msg: *const pj_stun_msg,
+            user_data: *mut ::std::os::raw::c_void,
+            realm: *const pj_str_t,
+            username: *const pj_str_t,
+            nonce: *const pj_str_t,
+        ) -> pj_bool_t,
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_req_cred_info {
+    pub realm: pj_str_t,
+    pub username: pj_str_t,
+    pub nonce: pj_str_t,
+    pub auth_key: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_config {
+    pub pf: *mut pj_pool_factory,
+    pub ioqueue: *mut pj_ioqueue_t,
+    pub timer_heap: *mut pj_timer_heap_t,
+    pub options: ::std::os::raw::c_uint,
+    pub rto_msec: ::std::os::raw::c_uint,
+    pub res_cache_msec: ::std::os::raw::c_uint,
+    pub software_name: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_client_tsx {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_tsx_cb {
+    pub on_complete: ::std::option::Option<
+        unsafe extern "C" fn(
+            tsx: *mut pj_stun_client_tsx,
+            status: pj_status_t,
+            response: *const pj_stun_msg,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_send_msg: ::std::option::Option<
+        unsafe extern "C" fn(
+            tsx: *mut pj_stun_client_tsx,
+            stun_pkt: *const ::std::os::raw::c_void,
+            pkt_size: pj_size_t,
+        ) -> pj_status_t,
+    >,
+    pub on_destroy: ::std::option::Option<unsafe extern "C" fn(tsx: *mut pj_stun_client_tsx)>,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_session {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_session_cb {
+    pub on_send_msg: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_stun_session,
+            token: *mut ::std::os::raw::c_void,
+            pkt: *const ::std::os::raw::c_void,
+            pkt_size: pj_size_t,
+            dst_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+    pub on_rx_request: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_stun_session,
+            pkt: *const pj_uint8_t,
+            pkt_len: ::std::os::raw::c_uint,
+            rdata: *const pj_stun_rx_data,
+            token: *mut ::std::os::raw::c_void,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+    pub on_request_complete: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_stun_session,
+            status: pj_status_t,
+            token: *mut ::std::os::raw::c_void,
+            tdata: *mut pj_stun_tx_data,
+            response: *const pj_stun_msg,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_rx_indication: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_stun_session,
+            pkt: *const pj_uint8_t,
+            pkt_len: ::std::os::raw::c_uint,
+            msg: *const pj_stun_msg,
+            token: *mut ::std::os::raw::c_void,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_rx_data {
+    pub msg: *mut pj_stun_msg,
+    pub info: pj_stun_req_cred_info,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_tx_data {
+    pub prev: *mut pj_stun_tx_data,
+    pub next: *mut pj_stun_tx_data,
+    pub pool: *mut pj_pool_t,
+    pub sess: *mut pj_stun_session,
+    pub msg: *mut pj_stun_msg,
+    pub token: *mut ::std::os::raw::c_void,
+    pub client_tsx: *mut pj_stun_client_tsx,
+    pub retransmit: pj_bool_t,
+    pub msg_magic: pj_uint32_t,
+    pub msg_key: [pj_uint8_t; 12usize],
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub auth_info: pj_stun_req_cred_info,
+    pub pkt: *mut ::std::os::raw::c_void,
+    pub max_len: ::std::os::raw::c_uint,
+    pub pkt_size: pj_size_t,
+    pub addr_len: ::std::os::raw::c_uint,
+    pub dst_addr: *const pj_sockaddr_t,
+    pub res_timer: pj_timer_entry,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_sess_comp {
+    pub valid_check: *mut pj_ice_sess_check,
+    pub nominated_check: *mut pj_ice_sess_check,
+    pub stun_sess: *mut pj_stun_session,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_msg_data {
+    pub transport_id: ::std::os::raw::c_uint,
+    pub has_req_data: pj_bool_t,
+    pub data: pj_ice_msg_data_data,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pj_ice_msg_data_data {
+    pub req: pj_ice_msg_data_data_request_data,
+    _bindgen_union_align: [u64; 5usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_msg_data_data_request_data {
+    pub ice: *mut pj_ice_sess,
+    pub clist: *mut pj_ice_sess_checklist,
+    pub ckid: ::std::os::raw::c_uint,
+    pub lcand: *mut pj_ice_sess_cand,
+    pub rcand: *mut pj_ice_sess_cand,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_sess_cand {
+    pub id: ::std::os::raw::c_uint,
+    pub type_: pj_ice_cand_type,
+    pub status: pj_status_t,
+    pub comp_id: pj_uint8_t,
+    pub transport_id: pj_uint8_t,
+    pub local_pref: pj_uint16_t,
+    pub foundation: pj_str_t,
+    pub prio: pj_uint32_t,
+    pub addr: pj_sockaddr,
+    pub base_addr: pj_sockaddr,
+    pub rel_addr: pj_sockaddr,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_sess_check {
+    pub lcand: *mut pj_ice_sess_cand,
+    pub rcand: *mut pj_ice_sess_cand,
+    pub foundation_idx: ::std::os::raw::c_int,
+    pub prio: pj_timestamp,
+    pub state: pj_ice_sess_check_state,
+    pub tdata: *mut pj_stun_tx_data,
+    pub nominated: pj_bool_t,
+    pub err_code: pj_status_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_sess_checklist {
+    pub state: pj_ice_sess_checklist_state,
+    pub count: ::std::os::raw::c_uint,
+    pub checks: [pj_ice_sess_check; 32usize],
+    pub foundation_cnt: ::std::os::raw::c_uint,
+    pub foundation: [pj_str_t; 32usize],
+    pub timer: pj_timer_entry,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_sess_cb {
+    pub on_valid_pair: ::std::option::Option<unsafe extern "C" fn(ice: *mut pj_ice_sess)>,
+    pub on_ice_complete:
+        ::std::option::Option<unsafe extern "C" fn(ice: *mut pj_ice_sess, status: pj_status_t)>,
+    pub on_tx_pkt: ::std::option::Option<
+        unsafe extern "C" fn(
+            ice: *mut pj_ice_sess,
+            comp_id: ::std::os::raw::c_uint,
+            transport_id: ::std::os::raw::c_uint,
+            pkt: *const ::std::os::raw::c_void,
+            size: pj_size_t,
+            dst_addr: *const pj_sockaddr_t,
+            dst_addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+    pub on_rx_data: ::std::option::Option<
+        unsafe extern "C" fn(
+            ice: *mut pj_ice_sess,
+            comp_id: ::std::os::raw::c_uint,
+            transport_id: ::std::os::raw::c_uint,
+            pkt: *mut ::std::os::raw::c_void,
+            size: pj_size_t,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_rx_check {
+    pub prev: *mut pj_ice_rx_check,
+    pub next: *mut pj_ice_rx_check,
+    pub comp_id: ::std::os::raw::c_uint,
+    pub transport_id: ::std::os::raw::c_uint,
+    pub src_addr: pj_sockaddr,
+    pub src_addr_len: ::std::os::raw::c_uint,
+    pub use_candidate: pj_bool_t,
+    pub priority: pj_uint32_t,
+    pub role_attr: *mut pj_stun_uint64_attr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_sess_options {
+    pub aggressive: pj_bool_t,
+    pub nominated_check_delay: ::std::os::raw::c_uint,
+    pub controlled_agent_want_nom_timeout: ::std::os::raw::c_int,
+    pub trickle: pj_ice_sess_trickle,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_sess {
+    pub obj_name: [::std::os::raw::c_char; 32usize],
+    pub pool: *mut pj_pool_t,
+    pub user_data: *mut ::std::os::raw::c_void,
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub role: pj_ice_sess_role,
+    pub opt: pj_ice_sess_options,
+    pub tie_breaker: pj_timestamp,
+    pub prefs: *mut pj_uint8_t,
+    pub is_nominating: pj_bool_t,
+    pub is_complete: pj_bool_t,
+    pub is_destroying: pj_bool_t,
+    pub valid_pair_found: pj_bool_t,
+    pub is_trickling: pj_bool_t,
+    pub ice_status: pj_status_t,
+    pub timer: pj_timer_entry,
+    pub cb: pj_ice_sess_cb,
+    pub stun_cfg: pj_stun_config,
+    pub tx_ufrag: pj_str_t,
+    pub tx_uname: pj_str_t,
+    pub tx_pass: pj_str_t,
+    pub rx_ufrag: pj_str_t,
+    pub rx_uname: pj_str_t,
+    pub rx_pass: pj_str_t,
+    pub comp_cnt: ::std::os::raw::c_uint,
+    pub comp: [pj_ice_sess_comp; 2usize],
+    pub comp_ka: ::std::os::raw::c_uint,
+    pub lcand_cnt: ::std::os::raw::c_uint,
+    pub lcand: [pj_ice_sess_cand; 16usize],
+    pub lcand_paired: ::std::os::raw::c_uint,
+    pub rcand_cnt: ::std::os::raw::c_uint,
+    pub rcand: [pj_ice_sess_cand; 16usize],
+    pub rcand_paired: ::std::os::raw::c_uint,
+    pub tp_data: [pj_ice_msg_data; 5usize],
+    pub early_check: pj_ice_rx_check,
+    pub clist: pj_ice_sess_checklist,
+    pub valid_list: pj_ice_sess_checklist,
+    pub tmp: pj_ice_sess__bindgen_ty_1,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union pj_ice_sess__bindgen_ty_1 {
+    pub txt: [::std::os::raw::c_char; 128usize],
+    pub errmsg: [::std::os::raw::c_char; 80usize],
+    _bindgen_union_align: [u8; 128usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_sock {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_stun_sock_cb {
+    pub on_rx_data: ::std::option::Option<
+        unsafe extern "C" fn(
+            stun_sock: *mut pj_stun_sock,
+            pkt: *mut ::std::os::raw::c_void,
+            pkt_len: ::std::os::raw::c_uint,
+            src_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ) -> pj_bool_t,
+    >,
+    pub on_data_sent: ::std::option::Option<
+        unsafe extern "C" fn(
+            stun_sock: *mut pj_stun_sock,
+            send_key: *mut pj_ioqueue_op_key_t,
+            sent: pj_ssize_t,
+        ) -> pj_bool_t,
+    >,
+    pub on_status: ::std::option::Option<
+        unsafe extern "C" fn(
+            stun_sock: *mut pj_stun_sock,
+            op: pj_stun_sock_op,
+            status: pj_status_t,
+        ) -> pj_bool_t,
+    >,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_stun_sock_info {
+    pub bound_addr: pj_sockaddr,
+    pub srv_addr: pj_sockaddr,
+    pub mapped_addr: pj_sockaddr,
+    pub alias_cnt: ::std::os::raw::c_uint,
+    pub aliases: [pj_sockaddr; 8usize],
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_stun_sock_cfg {
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub max_pkt_size: ::std::os::raw::c_uint,
+    pub async_cnt: ::std::os::raw::c_uint,
+    pub bound_addr: pj_sockaddr,
+    pub port_range: pj_uint16_t,
+    pub ka_interval: ::std::os::raw::c_int,
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub qos_ignore_error: pj_bool_t,
+    pub so_rcvbuf_size: ::std::os::raw::c_uint,
+    pub so_sndbuf_size: ::std::os::raw::c_uint,
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_session {
+    _unused: [u8; 0],
+}
+
+#[repr(C, packed)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_channel_data {
+    pub ch_number: pj_uint16_t,
+    pub length: pj_uint16_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_session_cb {
+    pub on_send_pkt: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            pkt: *const pj_uint8_t,
+            pkt_len: ::std::os::raw::c_uint,
+            dst_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+    pub on_stun_send_pkt: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            pkt: *const pj_uint8_t,
+            pkt_len: ::std::os::raw::c_uint,
+            dst_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+    pub on_channel_bound: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+            ch_num: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_rx_data: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            pkt: *mut ::std::os::raw::c_void,
+            pkt_len: ::std::os::raw::c_uint,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_state: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            old_state: pj_turn_state_t,
+            new_state: pj_turn_state_t,
+        ),
+    >,
+    pub on_connection_attempt: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            conn_id: pj_uint32_t,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_connection_bind_status: ::std::option::Option<
+        unsafe extern "C" fn(
+            sess: *mut pj_turn_session,
+            status: pj_status_t,
+            conn_id: pj_uint32_t,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_alloc_param {
+    pub bandwidth: ::std::os::raw::c_int,
+    pub lifetime: ::std::os::raw::c_int,
+    pub ka_interval: ::std::os::raw::c_int,
+    pub af: ::std::os::raw::c_int,
+    pub peer_conn_type: pj_turn_tp_type,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_turn_session_info {
+    pub state: pj_turn_state_t,
+    pub last_status: pj_status_t,
+    pub conn_type: pj_turn_tp_type,
+    pub server: pj_sockaddr,
+    pub mapped_addr: pj_sockaddr,
+    pub relay_addr: pj_sockaddr,
+    pub lifetime: ::std::os::raw::c_int,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_session_on_rx_pkt_param {
+    pub pkt: *mut ::std::os::raw::c_void,
+    pub pkt_len: pj_size_t,
+    pub parsed_len: pj_size_t,
+    pub src_addr: *const pj_sockaddr_t,
+    pub src_addr_len: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_sock {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_sock_cb {
+    pub on_rx_data: ::std::option::Option<
+        unsafe extern "C" fn(
+            turn_sock: *mut pj_turn_sock,
+            pkt: *mut ::std::os::raw::c_void,
+            pkt_len: ::std::os::raw::c_uint,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_data_sent: ::std::option::Option<
+        unsafe extern "C" fn(sock: *mut pj_turn_sock, sent: pj_ssize_t) -> pj_bool_t,
+    >,
+    pub on_state: ::std::option::Option<
+        unsafe extern "C" fn(
+            turn_sock: *mut pj_turn_sock,
+            old_state: pj_turn_state_t,
+            new_state: pj_turn_state_t,
+        ),
+    >,
+    pub on_connection_attempt: ::std::option::Option<
+        unsafe extern "C" fn(
+            turn_sock: *mut pj_turn_sock,
+            conn_id: pj_uint32_t,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ) -> pj_status_t,
+    >,
+    pub on_connection_status: ::std::option::Option<
+        unsafe extern "C" fn(
+            turn_sock: *mut pj_turn_sock,
+            status: pj_status_t,
+            conn_id: pj_uint32_t,
+            peer_addr: *const pj_sockaddr_t,
+            addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_turn_sock_tls_cfg {
+    pub ca_list_file: pj_str_t,
+    pub ca_list_path: pj_str_t,
+    pub cert_file: pj_str_t,
+    pub privkey_file: pj_str_t,
+    pub ca_buf: pj_ssl_cert_buffer,
+    pub cert_buf: pj_ssl_cert_buffer,
+    pub privkey_buf: pj_ssl_cert_buffer,
+    pub password: pj_str_t,
+    pub ssock_param: pj_ssl_sock_param,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_turn_sock_cfg {
+    pub grp_lock: *mut pj_grp_lock_t,
+    pub max_pkt_size: ::std::os::raw::c_uint,
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub qos_ignore_error: pj_bool_t,
+    pub bound_addr: pj_sockaddr,
+    pub port_range: pj_uint16_t,
+    pub so_rcvbuf_size: ::std::os::raw::c_uint,
+    pub so_sndbuf_size: ::std::os::raw::c_uint,
+    pub tls_cfg: pj_turn_sock_tls_cfg,
+}
+
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_strans {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_strans_cb {
+    pub on_rx_data: ::std::option::Option<
+        unsafe extern "C" fn(
+            ice_st: *mut pj_ice_strans,
+            comp_id: ::std::os::raw::c_uint,
+            pkt: *mut ::std::os::raw::c_void,
+            size: pj_size_t,
+            src_addr: *const pj_sockaddr_t,
+            src_addr_len: ::std::os::raw::c_uint,
+        ),
+    >,
+    pub on_data_sent:
+        ::std::option::Option<unsafe extern "C" fn(sock: *mut pj_ice_strans, sent: pj_ssize_t)>,
+    pub on_valid_pair: ::std::option::Option<unsafe extern "C" fn(ice_st: *mut pj_ice_strans)>,
+    pub on_ice_complete: ::std::option::Option<
+        unsafe extern "C" fn(ice_st: *mut pj_ice_strans, op: pj_ice_strans_op, status: pj_status_t),
+    >,
+    pub on_new_candidate: ::std::option::Option<
+        unsafe extern "C" fn(
+            ice_st: *mut pj_ice_strans,
+            cand: *const pj_ice_sess_cand,
+            end_of_cand: pj_bool_t,
+        ),
+    >,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_strans_stun_cfg {
+    pub af: ::std::os::raw::c_int,
+    pub cfg: pj_stun_sock_cfg,
+    pub max_host_cands: ::std::os::raw::c_uint,
+    pub loop_addr: pj_bool_t,
+    pub server: pj_str_t,
+    pub port: pj_uint16_t,
+    pub ignore_stun_error: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_strans_turn_cfg {
+    pub af: ::std::os::raw::c_int,
+    pub cfg: pj_turn_sock_cfg,
+    pub server: pj_str_t,
+    pub port: pj_uint16_t,
+    pub conn_type: pj_turn_tp_type,
+    pub auth_cred: pj_stun_auth_cred,
+    pub alloc_param: pj_turn_alloc_param,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pj_ice_strans_cfg {
+    pub af: ::std::os::raw::c_int,
+    pub stun_cfg: pj_stun_config,
+    pub resolver: *mut pj_dns_resolver,
+    pub opt: pj_ice_sess_options,
+    pub stun: pj_ice_strans_stun_cfg,
+    pub stun_tp_cnt: ::std::os::raw::c_uint,
+    pub stun_tp: [pj_ice_strans_stun_cfg; 2usize],
+    pub turn: pj_ice_strans_turn_cfg,
+    pub turn_tp_cnt: ::std::os::raw::c_uint,
+    pub turn_tp: [pj_ice_strans_turn_cfg; 3usize],
+    pub num_send_buf: ::std::os::raw::c_uint,
+    pub send_buf_size: ::std::os::raw::c_uint,
+    pub comp: [pj_ice_strans_cfg__bindgen_ty_1; 2usize],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_ice_strans_cfg__bindgen_ty_1 {
+    pub qos_type: pj_qos_type,
+    pub qos_params: pj_qos_params,
+    pub so_rcvbuf_size: ::std::os::raw::c_uint,
+    pub so_sndbuf_size: ::std::os::raw::c_uint,
+}
+
 
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
@@ -1985,20 +3026,174 @@ extern "C" {
     pub fn pj_elapsed_cycle(start: *const pj_timestamp, stop: *const pj_timestamp) -> pj_uint32_t;
     pub fn pj_run_app( main_func: pj_main_func_ptr, argc: ::std::os::raw::c_int, argv: *mut *mut ::std::os::raw::c_char, flags: ::std::os::raw::c_uint, ) -> ::std::os::raw::c_int;
     pub fn pj_thread_init() -> pj_status_t;
+    pub fn pj_stun_get_method_name( msg_type: ::std::os::raw::c_uint, ) -> *const ::std::os::raw::c_char;
+    pub fn pj_stun_get_class_name( msg_type: ::std::os::raw::c_uint, ) -> *const ::std::os::raw::c_char;
+    pub fn pj_stun_get_attr_name( attr_type: ::std::os::raw::c_uint, ) -> *const ::std::os::raw::c_char;
+    pub fn pj_stun_get_err_reason(err_code: ::std::os::raw::c_int) -> pj_str_t;
+    pub fn pj_stun_set_padding_char(chr: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+    pub fn pj_stun_msg_init( msg: *mut pj_stun_msg, msg_type: ::std::os::raw::c_uint, magic: pj_uint32_t, tsx_id: *const pj_uint8_t, ) -> pj_status_t;
+    pub fn pj_stun_msg_create( pool: *mut pj_pool_t, msg_type: ::std::os::raw::c_uint, magic: pj_uint32_t, tsx_id: *const pj_uint8_t, p_msg: *mut *mut pj_stun_msg, ) -> pj_status_t;
+    pub fn pj_stun_msg_clone(pool: *mut pj_pool_t, msg: *const pj_stun_msg) -> *mut pj_stun_msg;
+    pub fn pj_stun_msg_create_response( pool: *mut pj_pool_t, req_msg: *const pj_stun_msg, err_code: ::std::os::raw::c_uint, err_msg: *const pj_str_t, p_response: *mut *mut pj_stun_msg, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_attr(msg: *mut pj_stun_msg, attr: *mut pj_stun_attr_hdr) -> pj_status_t;
+    pub fn pj_stun_msg_encode( msg: *mut pj_stun_msg, pkt_buf: *mut pj_uint8_t, buf_size: pj_size_t, options: ::std::os::raw::c_uint, key: *const pj_str_t, p_msg_len: *mut pj_size_t, ) -> pj_status_t;
+    pub fn pj_stun_msg_check( pdu: *const pj_uint8_t, pdu_len: pj_size_t, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_msg_decode( pool: *mut pj_pool_t, pdu: *const pj_uint8_t, pdu_len: pj_size_t, options: ::std::os::raw::c_uint, p_msg: *mut *mut pj_stun_msg, p_parsed_len: *mut pj_size_t, p_response: *mut *mut pj_stun_msg, ) -> pj_status_t;
+    pub fn pj_stun_msg_dump( msg: *const pj_stun_msg, buffer: *mut ::std::os::raw::c_char, length: ::std::os::raw::c_uint, printed_len: *mut ::std::os::raw::c_uint, ) -> *mut ::std::os::raw::c_char;
+    pub fn pj_stun_msg_find_attr( msg: *const pj_stun_msg, attr_type: ::std::os::raw::c_int, start_index: ::std::os::raw::c_uint, ) -> *mut pj_stun_attr_hdr;
+    pub fn pj_stun_attr_clone( pool: *mut pj_pool_t, attr: *const pj_stun_attr_hdr, ) -> *mut pj_stun_attr_hdr;
+    pub fn pj_stun_sockaddr_attr_init( attr: *mut pj_stun_sockaddr_attr, attr_type: ::std::os::raw::c_int, xor_ed: pj_bool_t, addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_sockaddr_attr_create( pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, xor_ed: pj_bool_t, addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, p_attr: *mut *mut pj_stun_sockaddr_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_sockaddr_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_type: ::std::os::raw::c_int, xor_ed: pj_bool_t, addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_string_attr_init( attr: *mut pj_stun_string_attr, pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, value: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_stun_string_attr_create( pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, value: *const pj_str_t, p_attr: *mut *mut pj_stun_string_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_string_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_type: ::std::os::raw::c_int, value: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_stun_uint_attr_create( pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, value: pj_uint32_t, p_attr: *mut *mut pj_stun_uint_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_uint_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_type: ::std::os::raw::c_int, value: pj_uint32_t, ) -> pj_status_t;
+    pub fn pj_stun_uint64_attr_create( pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, value: *const pj_timestamp, p_attr: *mut *mut pj_stun_uint64_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_uint64_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_type: ::std::os::raw::c_int, value: *const pj_timestamp, ) -> pj_status_t;
+    pub fn pj_stun_msgint_attr_create( pool: *mut pj_pool_t, p_attr: *mut *mut pj_stun_msgint_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_msgint_attr(pool: *mut pj_pool_t, msg: *mut pj_stun_msg) -> pj_status_t;
+    pub fn pj_stun_errcode_attr_create( pool: *mut pj_pool_t, err_code: ::std::os::raw::c_int, err_reason: *const pj_str_t, p_attr: *mut *mut pj_stun_errcode_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_errcode_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, err_code: ::std::os::raw::c_int, err_reason: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_stun_unknown_attr_create( pool: *mut pj_pool_t, attr_cnt: ::std::os::raw::c_uint, attr: *const pj_uint16_t, p_attr: *mut *mut pj_stun_unknown_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_unknown_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_cnt: ::std::os::raw::c_uint, attr: *const pj_uint16_t, ) -> pj_status_t;
+    pub fn pj_stun_binary_attr_init( attr: *mut pj_stun_binary_attr, pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, data: *const pj_uint8_t, length: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_binary_attr_create( pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, data: *const pj_uint8_t, length: ::std::os::raw::c_uint, p_attr: *mut *mut pj_stun_binary_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_binary_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_type: ::std::os::raw::c_int, data: *const pj_uint8_t, length: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_empty_attr_create( pool: *mut pj_pool_t, attr_type: ::std::os::raw::c_int, p_attr: *mut *mut pj_stun_empty_attr, ) -> pj_status_t;
+    pub fn pj_stun_msg_add_empty_attr( pool: *mut pj_pool_t, msg: *mut pj_stun_msg, attr_type: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_stun_auth_cred_dup( pool: *mut pj_pool_t, dst: *mut pj_stun_auth_cred, src: *const pj_stun_auth_cred, );
+    pub fn pj_stun_req_cred_info_dup( pool: *mut pj_pool_t, dst: *mut pj_stun_req_cred_info, src: *const pj_stun_req_cred_info, );
+    pub fn pj_stun_create_key( pool: *mut pj_pool_t, key: *mut pj_str_t, realm: *const pj_str_t, username: *const pj_str_t, data_type: pj_stun_passwd_type, data: *const pj_str_t, );
+    pub fn pj_stun_authenticate_request( pkt: *const pj_uint8_t, pkt_len: ::std::os::raw::c_uint, msg: *const pj_stun_msg, cred: *mut pj_stun_auth_cred, pool: *mut pj_pool_t, info: *mut pj_stun_req_cred_info, p_response: *mut *mut pj_stun_msg, ) -> pj_status_t;
+    pub fn pj_stun_auth_valid_for_msg(msg: *const pj_stun_msg) -> pj_bool_t;
+    pub fn pj_stun_authenticate_response( pkt: *const pj_uint8_t, pkt_len: ::std::os::raw::c_uint, msg: *const pj_stun_msg, key: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_stun_client_tsx_create( cfg: *mut pj_stun_config, pool: *mut pj_pool_t, grp_lock: *mut pj_grp_lock_t, cb: *const pj_stun_tsx_cb, p_tsx: *mut *mut pj_stun_client_tsx, ) -> pj_status_t;
+    pub fn pj_stun_client_tsx_schedule_destroy( tsx: *mut pj_stun_client_tsx, delay: *const pj_time_val, ) -> pj_status_t;
+    pub fn pj_stun_client_tsx_destroy(tsx: *mut pj_stun_client_tsx) -> pj_status_t;
+    pub fn pj_stun_client_tsx_stop(tsx: *mut pj_stun_client_tsx) -> pj_status_t;
+    pub fn pj_stun_client_tsx_is_complete(tsx: *mut pj_stun_client_tsx) -> pj_bool_t;
+    pub fn pj_stun_client_tsx_set_data( tsx: *mut pj_stun_client_tsx, data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_stun_client_tsx_get_data(tsx: *mut pj_stun_client_tsx) -> *mut ::std::os::raw::c_void;
+    pub fn pj_stun_client_tsx_send_msg( tsx: *mut pj_stun_client_tsx, retransmit: pj_bool_t, pkt: *mut ::std::os::raw::c_void, pkt_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_client_tsx_retransmit( tsx: *mut pj_stun_client_tsx, mod_count: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_stun_client_tsx_on_rx_msg( tsx: *mut pj_stun_client_tsx, msg: *const pj_stun_msg, src_addr: *const pj_sockaddr_t, src_addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_session_create( cfg: *mut pj_stun_config, name: *const ::std::os::raw::c_char, cb: *const pj_stun_session_cb, fingerprint: pj_bool_t, grp_lock: *mut pj_grp_lock_t, p_sess: *mut *mut pj_stun_session, ) -> pj_status_t;
+    pub fn pj_stun_session_destroy(sess: *mut pj_stun_session) -> pj_status_t;
+    pub fn pj_stun_session_set_user_data( sess: *mut pj_stun_session, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_stun_session_get_user_data(sess: *mut pj_stun_session) -> *mut ::std::os::raw::c_void;
+    pub fn pj_stun_session_get_grp_lock(sess: *mut pj_stun_session) -> *mut pj_grp_lock_t;
+    pub fn pj_stun_session_set_software_name( sess: *mut pj_stun_session, sw: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_stun_session_set_credential( sess: *mut pj_stun_session, auth_type: pj_stun_auth_type, cred: *const pj_stun_auth_cred, ) -> pj_status_t;
+    pub fn pj_stun_session_set_log(sess: *mut pj_stun_session, flags: ::std::os::raw::c_uint);
+    pub fn pj_stun_session_use_fingerprint( sess: *mut pj_stun_session, use_: pj_bool_t, ) -> pj_bool_t;
+    pub fn pj_stun_session_create_req( sess: *mut pj_stun_session, msg_type: ::std::os::raw::c_int, magic: pj_uint32_t, tsx_id: *const pj_uint8_t, p_tdata: *mut *mut pj_stun_tx_data, ) -> pj_status_t;
+    pub fn pj_stun_session_create_ind( sess: *mut pj_stun_session, msg_type: ::std::os::raw::c_int, p_tdata: *mut *mut pj_stun_tx_data, ) -> pj_status_t;
+    pub fn pj_stun_session_create_res( sess: *mut pj_stun_session, rdata: *const pj_stun_rx_data, err_code: ::std::os::raw::c_uint, err_msg: *const pj_str_t, p_tdata: *mut *mut pj_stun_tx_data, ) -> pj_status_t;
+    pub fn pj_stun_session_send_msg( sess: *mut pj_stun_session, token: *mut ::std::os::raw::c_void, cache_res: pj_bool_t, retransmit: pj_bool_t, dst_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, tdata: *mut pj_stun_tx_data, ) -> pj_status_t;
+    pub fn pj_stun_session_respond( sess: *mut pj_stun_session, rdata: *const pj_stun_rx_data, code: ::std::os::raw::c_uint, err_msg: *const ::std::os::raw::c_char, token: *mut ::std::os::raw::c_void, cache: pj_bool_t, dst_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_session_cancel_req( sess: *mut pj_stun_session, tdata: *mut pj_stun_tx_data, notify: pj_bool_t, status: pj_status_t, ) -> pj_status_t;
+    pub fn pj_stun_session_retransmit_req( sess: *mut pj_stun_session, tdata: *mut pj_stun_tx_data, mod_count: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_stun_session_on_rx_pkt( sess: *mut pj_stun_session, packet: *const ::std::os::raw::c_void, pkt_size: pj_size_t, options: ::std::os::raw::c_uint, token: *mut ::std::os::raw::c_void, parsed_len: *mut pj_size_t, src_addr: *const pj_sockaddr_t, src_addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_stun_msg_destroy_tdata(sess: *mut pj_stun_session, tdata: *mut pj_stun_tx_data);
+    pub fn pj_ice_get_cand_type_name(type_: pj_ice_cand_type) -> *const ::std::os::raw::c_char;
+    pub fn pj_ice_sess_role_name(role: pj_ice_sess_role) -> *const ::std::os::raw::c_char;
+    pub fn pj_ice_calc_foundation( pool: *mut pj_pool_t, foundation: *mut pj_str_t, type_: pj_ice_cand_type, base_addr: *const pj_sockaddr, );
+    pub fn pj_ice_sess_options_default(opt: *mut pj_ice_sess_options);
+    pub fn pj_ice_sess_create( stun_cfg: *mut pj_stun_config, name: *const ::std::os::raw::c_char, role: pj_ice_sess_role, comp_cnt: ::std::os::raw::c_uint, cb: *const pj_ice_sess_cb, local_ufrag: *const pj_str_t, local_passwd: *const pj_str_t, grp_lock: *mut pj_grp_lock_t, p_ice: *mut *mut pj_ice_sess, ) -> pj_status_t;
+    pub fn pj_ice_sess_get_options( ice: *mut pj_ice_sess, opt: *mut pj_ice_sess_options, ) -> pj_status_t;
+    pub fn pj_ice_sess_set_options( ice: *mut pj_ice_sess, opt: *const pj_ice_sess_options, ) -> pj_status_t;
+    pub fn pj_ice_sess_destroy(ice: *mut pj_ice_sess) -> pj_status_t;
+    pub fn pj_ice_sess_change_role( ice: *mut pj_ice_sess, new_role: pj_ice_sess_role, ) -> pj_status_t;
+    pub fn pj_ice_sess_set_prefs(ice: *mut pj_ice_sess, prefs: *const pj_uint8_t) -> pj_status_t;
+    pub fn pj_ice_sess_add_cand( ice: *mut pj_ice_sess, comp_id: ::std::os::raw::c_uint, transport_id: ::std::os::raw::c_uint, type_: pj_ice_cand_type, local_pref: pj_uint16_t, foundation: *const pj_str_t, addr: *const pj_sockaddr_t, base_addr: *const pj_sockaddr_t, rel_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_int, p_cand_id: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ice_sess_find_default_cand( ice: *mut pj_ice_sess, comp_id: ::std::os::raw::c_uint, p_cand_id: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ice_sess_create_check_list( ice: *mut pj_ice_sess, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rem_cand_cnt: ::std::os::raw::c_uint, rem_cand: *const pj_ice_sess_cand, ) -> pj_status_t;
+    pub fn pj_ice_sess_update_check_list( ice: *mut pj_ice_sess, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rem_cand_cnt: ::std::os::raw::c_uint, rem_cand: *const pj_ice_sess_cand, trickle_done: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_ice_sess_start_check(ice: *mut pj_ice_sess) -> pj_status_t;
+    pub fn pj_ice_sess_send_data( ice: *mut pj_ice_sess, comp_id: ::std::os::raw::c_uint, data: *const ::std::os::raw::c_void, data_len: pj_size_t, ) -> pj_status_t;
+    pub fn pj_ice_sess_on_rx_pkt( ice: *mut pj_ice_sess, comp_id: ::std::os::raw::c_uint, transport_id: ::std::os::raw::c_uint, pkt: *mut ::std::os::raw::c_void, pkt_size: pj_size_t, src_addr: *const pj_sockaddr_t, src_addr_len: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_stun_sock_op_name(op: pj_stun_sock_op) -> *const ::std::os::raw::c_char;
+    pub fn pj_stun_sock_cfg_default(cfg: *mut pj_stun_sock_cfg);
+    pub fn pj_stun_sock_create( stun_cfg: *mut pj_stun_config, name: *const ::std::os::raw::c_char, af: ::std::os::raw::c_int, cb: *const pj_stun_sock_cb, cfg: *const pj_stun_sock_cfg, user_data: *mut ::std::os::raw::c_void, p_sock: *mut *mut pj_stun_sock, ) -> pj_status_t;
+    pub fn pj_stun_sock_start( stun_sock: *mut pj_stun_sock, domain: *const pj_str_t, default_port: pj_uint16_t, resolver: *mut pj_dns_resolver, ) -> pj_status_t;
+    pub fn pj_stun_sock_destroy(sock: *mut pj_stun_sock) -> pj_status_t;
+    pub fn pj_stun_sock_set_user_data( stun_sock: *mut pj_stun_sock, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_stun_sock_get_user_data(stun_sock: *mut pj_stun_sock) -> *mut ::std::os::raw::c_void;
+    pub fn pj_stun_sock_get_grp_lock(stun_sock: *mut pj_stun_sock) -> *mut pj_grp_lock_t;
+    pub fn pj_stun_sock_get_info( stun_sock: *mut pj_stun_sock, info: *mut pj_stun_sock_info, ) -> pj_status_t;
+    pub fn pj_stun_sock_sendto( stun_sock: *mut pj_stun_sock, send_key: *mut pj_ioqueue_op_key_t, pkt: *const ::std::os::raw::c_void, pkt_len: ::std::os::raw::c_uint, flag: ::std::os::raw::c_uint, dst_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_alloc_param_default(prm: *mut pj_turn_alloc_param);
+    pub fn pj_turn_alloc_param_copy( pool: *mut pj_pool_t, dst: *mut pj_turn_alloc_param, src: *const pj_turn_alloc_param, );
+    pub fn pj_turn_state_name(state: pj_turn_state_t) -> *const ::std::os::raw::c_char;
+    pub fn pj_turn_session_create( cfg: *const pj_stun_config, name: *const ::std::os::raw::c_char, af: ::std::os::raw::c_int, conn_type: pj_turn_tp_type, grp_lock: *mut pj_grp_lock_t, cb: *const pj_turn_session_cb, options: ::std::os::raw::c_uint, user_data: *mut ::std::os::raw::c_void, p_sess: *mut *mut pj_turn_session, ) -> pj_status_t;
+    pub fn pj_turn_session_shutdown(sess: *mut pj_turn_session) -> pj_status_t;
+    pub fn pj_turn_session_destroy( sess: *mut pj_turn_session, last_err: pj_status_t, ) -> pj_status_t;
+    pub fn pj_turn_session_get_info( sess: *mut pj_turn_session, info: *mut pj_turn_session_info, ) -> pj_status_t;
+    pub fn pj_turn_session_set_user_data( sess: *mut pj_turn_session, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_turn_session_get_user_data(sess: *mut pj_turn_session) -> *mut ::std::os::raw::c_void;
+    pub fn pj_turn_session_get_grp_lock(sess: *mut pj_turn_session) -> *mut pj_grp_lock_t;
+    pub fn pj_turn_session_set_log(sess: *mut pj_turn_session, flags: ::std::os::raw::c_uint);
+    pub fn pj_turn_session_set_software_name( sess: *mut pj_turn_session, sw: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_turn_session_set_server( sess: *mut pj_turn_session, domain: *const pj_str_t, default_port: ::std::os::raw::c_int, resolver: *mut pj_dns_resolver, ) -> pj_status_t;
+    pub fn pj_turn_session_set_credential( sess: *mut pj_turn_session, cred: *const pj_stun_auth_cred, ) -> pj_status_t;
+    pub fn pj_turn_session_alloc( sess: *mut pj_turn_session, param: *const pj_turn_alloc_param, ) -> pj_status_t;
+    pub fn pj_turn_session_set_perm( sess: *mut pj_turn_session, addr_cnt: ::std::os::raw::c_uint, addr: *const pj_sockaddr, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_session_sendto( sess: *mut pj_turn_session, pkt: *const pj_uint8_t, pkt_len: ::std::os::raw::c_uint, peer_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_session_bind_channel( sess: *mut pj_turn_session, peer: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_session_on_rx_pkt( sess: *mut pj_turn_session, pkt: *mut ::std::os::raw::c_void, pkt_len: pj_size_t, parsed_len: *mut pj_size_t, ) -> pj_status_t;
+    pub fn pj_turn_session_on_rx_pkt2( sess: *mut pj_turn_session, prm: *mut pj_turn_session_on_rx_pkt_param, ) -> pj_status_t;
+    pub fn pj_turn_session_connection_bind( sess: *mut pj_turn_session, pool: *mut pj_pool_t, conn_id: pj_uint32_t, peer_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_sock_tls_cfg_default(tls_cfg: *mut pj_turn_sock_tls_cfg);
+    pub fn pj_turn_sock_tls_cfg_dup( pool: *mut pj_pool_t, dst: *mut pj_turn_sock_tls_cfg, src: *const pj_turn_sock_tls_cfg, );
+    pub fn pj_turn_sock_tls_cfg_wipe_keys(tls_cfg: *mut pj_turn_sock_tls_cfg);
+    pub fn pj_turn_sock_cfg_default(cfg: *mut pj_turn_sock_cfg);
+    pub fn pj_turn_sock_create( cfg: *mut pj_stun_config, af: ::std::os::raw::c_int, conn_type: pj_turn_tp_type, cb: *const pj_turn_sock_cb, setting: *const pj_turn_sock_cfg, user_data: *mut ::std::os::raw::c_void, p_turn_sock: *mut *mut pj_turn_sock, ) -> pj_status_t;
+    pub fn pj_turn_sock_destroy(turn_sock: *mut pj_turn_sock);
+    pub fn pj_turn_sock_set_user_data( turn_sock: *mut pj_turn_sock, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pj_turn_sock_get_user_data(turn_sock: *mut pj_turn_sock) -> *mut ::std::os::raw::c_void;
+    pub fn pj_turn_sock_get_grp_lock(turn_sock: *mut pj_turn_sock) -> *mut pj_grp_lock_t;
+    pub fn pj_turn_sock_get_info( turn_sock: *mut pj_turn_sock, info: *mut pj_turn_session_info, ) -> pj_status_t;
+    pub fn pj_turn_sock_lock(turn_sock: *mut pj_turn_sock) -> pj_status_t;
+    pub fn pj_turn_sock_unlock(turn_sock: *mut pj_turn_sock) -> pj_status_t;
+    pub fn pj_turn_sock_set_log(turn_sock: *mut pj_turn_sock, flags: ::std::os::raw::c_uint);
+    pub fn pj_turn_sock_set_software_name( turn_sock: *mut pj_turn_sock, sw: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_turn_sock_alloc( turn_sock: *mut pj_turn_sock, domain: *const pj_str_t, default_port: ::std::os::raw::c_int, resolver: *mut pj_dns_resolver, cred: *const pj_stun_auth_cred, param: *const pj_turn_alloc_param, ) -> pj_status_t;
+    pub fn pj_turn_sock_set_perm( turn_sock: *mut pj_turn_sock, addr_cnt: ::std::os::raw::c_uint, addr: *const pj_sockaddr, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_sock_sendto( turn_sock: *mut pj_turn_sock, pkt: *const pj_uint8_t, pkt_len: ::std::os::raw::c_uint, peer_addr: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_turn_sock_bind_channel( turn_sock: *mut pj_turn_sock, peer: *const pj_sockaddr_t, addr_len: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ice_strans_cfg_default(cfg: *mut pj_ice_strans_cfg);
+    pub fn pj_ice_strans_stun_cfg_default(cfg: *mut pj_ice_strans_stun_cfg);
+    pub fn pj_ice_strans_turn_cfg_default(cfg: *mut pj_ice_strans_turn_cfg);
+    pub fn pj_ice_strans_cfg_copy( pool: *mut pj_pool_t, dst: *mut pj_ice_strans_cfg, src: *const pj_ice_strans_cfg, );
+    pub fn pj_ice_strans_create( name: *const ::std::os::raw::c_char, cfg: *const pj_ice_strans_cfg, comp_cnt: ::std::os::raw::c_uint, user_data: *mut ::std::os::raw::c_void, cb: *const pj_ice_strans_cb, p_ice_st: *mut *mut pj_ice_strans, ) -> pj_status_t;
+    pub fn pj_ice_strans_get_state(ice_st: *mut pj_ice_strans) -> pj_ice_strans_state;
+    pub fn pj_ice_strans_state_name(state: pj_ice_strans_state) -> *const ::std::os::raw::c_char;
+    pub fn pj_ice_strans_destroy(ice_st: *mut pj_ice_strans) -> pj_status_t;
+    pub fn pj_ice_strans_get_user_data(ice_st: *mut pj_ice_strans) -> *mut ::std::os::raw::c_void;
+    pub fn pj_ice_strans_get_options( ice_st: *mut pj_ice_strans, opt: *mut pj_ice_sess_options, ) -> pj_status_t;
+    pub fn pj_ice_strans_set_options( ice_st: *mut pj_ice_strans, opt: *const pj_ice_sess_options, ) -> pj_status_t;
+    pub fn pj_ice_strans_update_comp_cnt( ice_st: *mut pj_ice_strans, comp_cnt: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pj_ice_strans_get_grp_lock(ice_st: *mut pj_ice_strans) -> *mut pj_grp_lock_t;
+    pub fn pj_ice_strans_init_ice( ice_st: *mut pj_ice_strans, role: pj_ice_sess_role, local_ufrag: *const pj_str_t, local_passwd: *const pj_str_t, ) -> pj_status_t;
+    pub fn pj_ice_strans_has_sess(ice_st: *mut pj_ice_strans) -> pj_bool_t;
+    pub fn pj_ice_strans_sess_is_running(ice_st: *mut pj_ice_strans) -> pj_bool_t;
+    pub fn pj_ice_strans_sess_is_complete(ice_st: *mut pj_ice_strans) -> pj_bool_t;
+    pub fn pj_ice_strans_get_running_comp_cnt(ice_st: *mut pj_ice_strans) -> ::std::os::raw::c_uint;
+    pub fn pj_ice_strans_get_ufrag_pwd( ice_st: *mut pj_ice_strans, loc_ufrag: *mut pj_str_t, loc_pwd: *mut pj_str_t, rem_ufrag: *mut pj_str_t, rem_pwd: *mut pj_str_t, ) -> pj_status_t;
+    pub fn pj_ice_strans_get_cands_count( ice_st: *mut pj_ice_strans, comp_id: ::std::os::raw::c_uint, ) -> ::std::os::raw::c_uint;
+    pub fn pj_ice_strans_enum_cands( ice_st: *mut pj_ice_strans, comp_id: ::std::os::raw::c_uint, count: *mut ::std::os::raw::c_uint, cand: *mut pj_ice_sess_cand, ) -> pj_status_t;
+    pub fn pj_ice_strans_get_def_cand( ice_st: *mut pj_ice_strans, comp_id: ::std::os::raw::c_uint, cand: *mut pj_ice_sess_cand, ) -> pj_status_t;
+    pub fn pj_ice_strans_get_role(ice_st: *mut pj_ice_strans) -> pj_ice_sess_role;
+    pub fn pj_ice_strans_change_role( ice_st: *mut pj_ice_strans, new_role: pj_ice_sess_role, ) -> pj_status_t;
+    pub fn pj_ice_strans_start_ice( ice_st: *mut pj_ice_strans, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rcand_cnt: ::std::os::raw::c_uint, rcand: *const pj_ice_sess_cand, ) -> pj_status_t;
+    pub fn pj_ice_strans_update_check_list( ice_st: *mut pj_ice_strans, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rcand_cnt: ::std::os::raw::c_uint, rcand: *const pj_ice_sess_cand, rcand_end: pj_bool_t, ) -> pj_status_t;
+    pub fn pj_ice_strans_get_valid_pair( ice_st: *const pj_ice_strans, comp_id: ::std::os::raw::c_uint, ) -> *const pj_ice_sess_check;
+    pub fn pj_ice_strans_stop_ice(ice_st: *mut pj_ice_strans) -> pj_status_t;
+    pub fn pj_ice_strans_sendto( ice_st: *mut pj_ice_strans, comp_id: ::std::os::raw::c_uint, data: *const ::std::os::raw::c_void, data_len: pj_size_t, dst_addr: *const pj_sockaddr_t, dst_addr_len: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pj_ice_strans_sendto2( ice_st: *mut pj_ice_strans, comp_id: ::std::os::raw::c_uint, data: *const ::std::os::raw::c_void, data_len: pj_size_t, dst_addr: *const pj_sockaddr_t, dst_addr_len: ::std::os::raw::c_int, ) -> pj_status_t;
 }
-
-
-
-
-
-pub type pj_main_func_ptr = ::std::option::Option<
-    unsafe extern "C" fn(
-        argc: ::std::os::raw::c_int,
-        argv: *mut *mut ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int,
->;
-
-
 
 
 impl AutoCreate<pj_str_t> for pj_str_t {
