@@ -1,7 +1,12 @@
-#![allow(non_camel_case_types, unused_variables)]
 #![allow(dead_code)]
+#![allow(unused_variables)]
+#![allow(non_camel_case_types)]
+#![allow(non_upper_case_globals)]
+#![allow(non_snake_case)]
+
 use super::pjdefault::AutoCreate;
-use super::pjsua_sys::*;
+use super::pjlib::*;
+use super::pjmedia::*;
 use std::ptr;
 
 
@@ -2670,159 +2675,6 @@ pub struct pjsip_sub_state_hdr {
     pub expires_param: ::std::os::raw::c_uint,
     pub retry_after: ::std::os::raw::c_int,
     pub other_param: pjsip_param,
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_xml_attr {
-    pub prev: *mut pj_xml_attr,
-    pub next: *mut pj_xml_attr,
-    pub name: pj_str_t,
-    pub value: pj_str_t,
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_xml_node_head {
-    pub prev: *mut pj_xml_node,
-    pub next: *mut pj_xml_node,
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_xml_node {
-    pub prev: *mut pj_xml_node,
-    pub next: *mut pj_xml_node,
-    pub name: pj_str_t,
-    pub attr_head: pj_xml_attr,
-    pub node_head: pj_xml_node_head,
-    pub content: pj_str_t,
-}
-
-
-pub type pjpidf_pres = pj_xml_node;
-pub type pjpidf_tuple = pj_xml_node;
-pub type pjpidf_status = pj_xml_node;
-pub type pjpidf_note = pj_xml_node;
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjpidf_status_op {
-    pub construct:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_status)>,
-    pub is_basic_open:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_status) -> pj_bool_t>,
-    pub set_basic_open:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_status, arg2: pj_bool_t)>,
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjpidf_tuple_op {
-    pub construct: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
-    >,
-    pub get_id:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
-    pub set_id: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
-    >,
-    pub get_status:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_tuple) -> *mut pjpidf_status>,
-    pub get_contact:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
-    pub set_contact: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
-    >,
-    pub set_contact_prio: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
-    >,
-    pub get_contact_prio:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
-    pub add_note: ::std::option::Option<
-        unsafe extern "C" fn(
-            arg1: *mut pj_pool_t,
-            arg2: *mut pjpidf_tuple,
-            arg3: *const pj_str_t,
-        ) -> *mut pjpidf_note,
-    >,
-    pub get_first_note:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_tuple) -> *mut pjpidf_note>,
-    pub get_next_note: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pjpidf_tuple, arg2: *mut pjpidf_note) -> *mut pjpidf_note,
-    >,
-    pub get_timestamp:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
-    pub set_timestamp: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
-    >,
-    pub set_timestamp_np: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *mut pj_str_t),
-    >,
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjpidf_pres_op {
-    pub construct: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_pres, arg3: *const pj_str_t),
-    >,
-    pub add_tuple: ::std::option::Option<
-        unsafe extern "C" fn(
-            arg1: *mut pj_pool_t,
-            arg2: *mut pjpidf_pres,
-            arg3: *const pj_str_t,
-        ) -> *mut pjpidf_tuple,
-    >,
-    pub get_first_tuple:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_pres) -> *mut pjpidf_tuple>,
-    pub get_next_tuple: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_tuple) -> *mut pjpidf_tuple,
-    >,
-    pub find_tuple: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *const pj_str_t) -> *mut pjpidf_tuple,
-    >,
-    pub remove_tuple: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_tuple),
-    >,
-    pub add_note: ::std::option::Option<
-        unsafe extern "C" fn(
-            arg1: *mut pj_pool_t,
-            arg2: *mut pjpidf_pres,
-            arg3: *const pj_str_t,
-        ) -> *mut pjpidf_note,
-    >,
-    pub get_first_note:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_pres) -> *mut pjpidf_note>,
-    pub get_next_note: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_note) -> *mut pjpidf_note,
-    >,
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjpidf_op_desc {
-    pub pres: pjpidf_pres_op,
-    pub tuple: pjpidf_tuple_op,
-    pub status: pjpidf_status_op,
-}
-
-pub type pjxpidf_pres = pj_xml_node;
-
-pub const pjrpid_activity_PJRPID_ACTIVITY_UNKNOWN: pjrpid_activity = 0;
-pub const pjrpid_activity_PJRPID_ACTIVITY_AWAY: pjrpid_activity = 1;
-pub const pjrpid_activity_PJRPID_ACTIVITY_BUSY: pjrpid_activity = 2;
-pub type pjrpid_activity = ::std::os::raw::c_uint;
-pub const pjrpid_element_type_PJRPID_ELEMENT_TYPE_PERSON: pjrpid_element_type = 0;
-pub type pjrpid_element_type = ::std::os::raw::c_uint;
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjrpid_element {
-    pub type_: pjrpid_element_type,
-    pub id: pj_str_t,
-    pub activity: pjrpid_activity,
-    pub note: pj_str_t,
 }
 
 #[repr(C)]

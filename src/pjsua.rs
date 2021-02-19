@@ -1,8 +1,12 @@
 #![allow(unused_variables)]
 #![allow(non_camel_case_types)]
+#![allow(non_upper_case_globals)]
 #![allow(dead_code)]
+
 use super::pjdefault::AutoCreate;
-use super::pjsua_sys::*;
+use super::pjlib::*;
+use super::pjmedia::*;
+use super::pjsip::*;
 
 use std::os::raw::{c_int, c_uint, c_void};
 use std::ptr;
@@ -769,9 +773,6 @@ pub const pjsua_snd_dev_mode_PJSUA_SND_DEV_SPEAKER_ONLY: pjsua_snd_dev_mode = 1;
 pub const pjsua_snd_dev_mode_PJSUA_SND_DEV_NO_IMMEDIATE_OPEN: pjsua_snd_dev_mode = 2;
 pub type pjsua_snd_dev_mode = ::std::os::raw::c_uint;
 
-pub type __builtin_va_list = [__va_list_tag; 1usize];
-
-
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct pjsua_acc_config {
@@ -1114,15 +1115,6 @@ pub struct pjsua_vid_conf_port_info {
     pub listeners: [pjsua_conf_port_id; 254usize],
     pub transmitter_cnt: ::std::os::raw::c_uint,
     pub transmitters: [pjsua_conf_port_id; 254usize],
-}
-
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct __va_list_tag {
-    pub gp_offset: ::std::os::raw::c_uint,
-    pub fp_offset: ::std::os::raw::c_uint,
-    pub overflow_arg_area: *mut ::std::os::raw::c_void,
-    pub reg_save_area: *mut ::std::os::raw::c_void,
 }
 
 extern "C" {

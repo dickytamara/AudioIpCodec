@@ -2,14 +2,9 @@
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 
-
 //mod pjproject_sys;
 use super::pjdefault::AutoCreate;
-use super::pjsua_sys::*;
 use std::ptr;
-
-
-
 
 pub const PJ_CC_NAME: &'static [u8; 4usize] = b"gcc\0";
 pub const PJ_HAS_INT64: u32 = 1;
@@ -1009,7 +1004,16 @@ pub type pj_hash_entry_buf = [*mut ::std::os::raw::c_void; 4usize];
 
 pub type pjstun_password_attr = pjstun_username_attr;
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct __va_list_tag {
+    pub gp_offset: ::std::os::raw::c_uint,
+    pub fp_offset: ::std::os::raw::c_uint,
+    pub overflow_arg_area: *mut ::std::os::raw::c_void,
+    pub reg_save_area: *mut ::std::os::raw::c_void,
+}
 
+pub type __builtin_va_list = [__va_list_tag; 1usize];
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -3391,6 +3395,157 @@ pub struct pj_fd_set_t {
     pub data: [pj_sock_t; 68usize],
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_xml_attr {
+    pub prev: *mut pj_xml_attr,
+    pub next: *mut pj_xml_attr,
+    pub name: pj_str_t,
+    pub value: pj_str_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_xml_node_head {
+    pub prev: *mut pj_xml_node,
+    pub next: *mut pj_xml_node,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_xml_node {
+    pub prev: *mut pj_xml_node,
+    pub next: *mut pj_xml_node,
+    pub name: pj_str_t,
+    pub attr_head: pj_xml_attr,
+    pub node_head: pj_xml_node_head,
+    pub content: pj_str_t,
+}
+
+pub type pjpidf_pres = pj_xml_node;
+pub type pjpidf_tuple = pj_xml_node;
+pub type pjpidf_status = pj_xml_node;
+pub type pjpidf_note = pj_xml_node;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_status_op {
+    pub construct:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_status)>,
+    pub is_basic_open:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_status) -> pj_bool_t>,
+    pub set_basic_open:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_status, arg2: pj_bool_t)>,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_tuple_op {
+    pub construct: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub get_id:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub set_id: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub get_status:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_tuple) -> *mut pjpidf_status>,
+    pub get_contact:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub set_contact: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub set_contact_prio: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub get_contact_prio:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub add_note: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pj_pool_t,
+            arg2: *mut pjpidf_tuple,
+            arg3: *const pj_str_t,
+        ) -> *mut pjpidf_note,
+    >,
+    pub get_first_note:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_tuple) -> *mut pjpidf_note>,
+    pub get_next_note: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_tuple, arg2: *mut pjpidf_note) -> *mut pjpidf_note,
+    >,
+    pub get_timestamp:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *const pjpidf_tuple) -> *const pj_str_t>,
+    pub set_timestamp: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *const pj_str_t),
+    >,
+    pub set_timestamp_np: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_tuple, arg3: *mut pj_str_t),
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_pres_op {
+    pub construct: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pj_pool_t, arg2: *mut pjpidf_pres, arg3: *const pj_str_t),
+    >,
+    pub add_tuple: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pj_pool_t,
+            arg2: *mut pjpidf_pres,
+            arg3: *const pj_str_t,
+        ) -> *mut pjpidf_tuple,
+    >,
+    pub get_first_tuple:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_pres) -> *mut pjpidf_tuple>,
+    pub get_next_tuple: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_tuple) -> *mut pjpidf_tuple,
+    >,
+    pub find_tuple: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *const pj_str_t) -> *mut pjpidf_tuple,
+    >,
+    pub remove_tuple: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_tuple),
+    >,
+    pub add_note: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: *mut pj_pool_t,
+            arg2: *mut pjpidf_pres,
+            arg3: *const pj_str_t,
+        ) -> *mut pjpidf_note,
+    >,
+    pub get_first_note:
+        ::std::option::Option<unsafe extern "C" fn(arg1: *mut pjpidf_pres) -> *mut pjpidf_note>,
+    pub get_next_note: ::std::option::Option<
+        unsafe extern "C" fn(arg1: *mut pjpidf_pres, arg2: *mut pjpidf_note) -> *mut pjpidf_note,
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjpidf_op_desc {
+    pub pres: pjpidf_pres_op,
+    pub tuple: pjpidf_tuple_op,
+    pub status: pjpidf_status_op,
+}
+
+pub type pjxpidf_pres = pj_xml_node;
+
+pub const pjrpid_activity_PJRPID_ACTIVITY_UNKNOWN: pjrpid_activity = 0;
+pub const pjrpid_activity_PJRPID_ACTIVITY_AWAY: pjrpid_activity = 1;
+pub const pjrpid_activity_PJRPID_ACTIVITY_BUSY: pjrpid_activity = 2;
+pub type pjrpid_activity = ::std::os::raw::c_uint;
+pub const pjrpid_element_type_PJRPID_ELEMENT_TYPE_PERSON: pjrpid_element_type = 0;
+pub type pjrpid_element_type = ::std::os::raw::c_uint;
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjrpid_element {
+    pub type_: pjrpid_element_type,
+    pub id: pj_str_t,
+    pub activity: pjrpid_activity,
+    pub note: pj_str_t,
+}
 
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
@@ -3588,7 +3743,7 @@ extern "C" {
     pub fn pj_sock_send( sockfd: pj_sock_t, buf: *const ::std::os::raw::c_void, len: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, ) -> pj_status_t;
     pub fn pj_sock_sendto( sockfd: pj_sock_t, buf: *const ::std::os::raw::c_void, len: *mut pj_ssize_t, flags: ::std::os::raw::c_uint, to: *const pj_sockaddr_t, tolen: ::std::os::raw::c_int, ) -> pj_status_t;
     pub fn pj_sock_shutdown(sockfd: pj_sock_t, how: ::std::os::raw::c_int) -> pj_status_t;
-    pub fn pj_addr_str_print( host_str: *const pj_str_t, port: ::std::os::raw::c_int, buf: *mut ::std::os::raw::c_char, size: ::std::os::raw::c_int, flag: ::std::os::raw::c_u t, ) -> *mut ::std::os::raw::c_char;
+    pub fn pj_addr_str_print( host_str: *const pj_str_t, port: ::std::os::raw::c_int, buf: *mut ::std::os::raw::c_char, size: ::std::os::raw::c_int, flag: ::std::os::raw::c_uint, ) -> *mut ::std::os::raw::c_char;
     pub fn pj_dns_make_query( packet: *mut ::std::os::raw::c_void, size: *mut ::std::os::raw::c_uint, id: pj_uint16_t, qtype: ::std::os::raw::c_int, name: *const pj_str_t, ) -> pj_status_t;
     pub fn pj_dns_parse_packet( pool: *mut pj_pool_t, packet: *const ::std::os::raw::c_void, size: ::std::os::raw::c_uint, p_res: *mut *mut pj_dns_parsed_packet, ) -> pj_status_t;
     pub fn pj_dns_packet_dup( pool: *mut pj_pool_t, p: *const pj_dns_parsed_packet, options: ::std::os::raw::c_uint, p_dst: *mut *mut pj_dns_parsed_packet, );
@@ -4150,7 +4305,7 @@ extern "C" {
     pub fn pj_hash_calc( hval: pj_uint32_t, key: *const ::std::os::raw::c_void, keylen: ::std::os::raw::c_uint, ) -> pj_uint32_t;
     pub fn pj_hash_calc_tolower( hval: pj_uint32_t, result: *mut ::std::os::raw::c_char, key: *const pj_str_t, ) -> pj_uint32_t;
     pub fn pj_hash_create( pool: *mut pj_pool_t, size: ::std::os::raw::c_uint, ) -> *mut pj_hash_table_t;
-    pub fn pj_hash_get( ht: *mut pj_hash_table_t, key: *const ::std::os::raw::c_void, keylen: ::std::os::raw::c_uint, hval: *mut pj_uint32 , ) -> *mut ::std::os::raw::c_void;
+    pub fn pj_hash_get( ht: *mut pj_hash_table_t, key: *const ::std::os::raw::c_void, keylen: ::std::os::raw::c_uint, hval: *mut pj_uint32_t , ) -> *mut ::std::os::raw::c_void;
     pub fn pj_hash_get_lower( ht: *mut pj_hash_table_t, key: *const ::std::os::raw::c_void, keylen: ::std::os::raw::c_uint, hval: *mut pj_uint32_t )-> *mut ::std::os::raw::c_void;
     pub fn pj_hash_set( pool: *mut pj_pool_t, ht: *mut pj_hash_table_t, key: *const ::std::os::raw::c_void, keylen: ::std::os::raw::c_uint, hval: pj_uint32_t, value: *mut ::std::os::raw::c_void, );
     pub fn pj_hash_set_lower( pool: *mut pj_pool_t, ht: *mut pj_hash_table_t, key: *const ::std::os::raw::c_void, keylen: ::std::os::raw::c_uint, hval: pj_uint32_t, value: *mut ::std::os::raw::c_void,);

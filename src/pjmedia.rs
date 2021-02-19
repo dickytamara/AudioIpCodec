@@ -1,7 +1,9 @@
 #![allow(dead_code)]
+#![allow(non_camel_case_types)]
+#![allow(non_upper_case_globals)]
 
 use super::pjdefault::AutoCreate;
-use super::pjsua_sys::*;
+use super::pjlib::*;
 use std::ptr;
 
 pub const PJMEDIA_POOL_LEN_ENDPT: u32 = 512;
@@ -4541,7 +4543,7 @@ extern "C" {
     pub fn pjmedia_wav_player_port_set_pos( port: *mut pjmedia_port, offset: pj_uint32_t, ) -> pj_status_t;
     pub fn pjmedia_wav_player_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
     pub fn pjmedia_wav_player_set_eof_cb( port: *mut pjmedia_port, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option<unsafe extern "C" fn( port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void, ) -> pj_status_t, >, ) -> pj_status_t;
-    pub fn pjmedia_wav_player_set_eof_cb2( port: *mut pjmedia_port, user_data: *mut ::std::os::raw::c_void, cb: ::std::op ::Option< unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void), >, ) -> pj_status_t;
+    pub fn pjmedia_wav_player_set_eof_cb2( port: *mut pjmedia_port, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option< unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void), >, ) -> pj_status_t;
     pub fn pjmedia_wav_writer_port_create( pool: *mut pj_pool_t, filename: *const ::std::os::raw::c_char, clock_rate: ::std::os::raw::c_uint, channel_count: ::std::os::raw::c_uint, samples_per_frame: ::std::os::raw::c_uint, bits_per_sample: ::std::os::raw::c_uint, flags: ::std::os::raw::c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port, ) -> pj_status_t;
     pub fn pjmedia_wav_writer_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
     pub fn pjmedia_wav_writer_port_set_cb( port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option< unsafe extern "C" fn( port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void, ) -> pj_status_t, >, ) -> pj_status_t;
