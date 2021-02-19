@@ -1049,6 +1049,70 @@ pub type pjmedia_event_publish_flag = ::std::os::raw::c_uint;
 pub const pjmedia_event_mgr_flag_PJMEDIA_EVENT_MGR_NO_THREAD: pjmedia_event_mgr_flag = 1;
 pub type pjmedia_event_mgr_flag = ::std::os::raw::c_uint;
 
+pub const pjmedia_transport_ice_options_PJMEDIA_ICE_NO_SRC_ADDR_CHECKING: pjmedia_transport_ice_options = 1;
+pub const pjmedia_transport_ice_options_PJMEDIA_ICE_DISABLE_ICE_MISMATCH: pjmedia_transport_ice_options = 2;
+pub type pjmedia_transport_ice_options = ::std::os::raw::c_uint;
+
+pub const pjmedia_srtp_crypto_option_PJMEDIA_SRTP_NO_ENCRYPTION: pjmedia_srtp_crypto_option = 1;
+pub const pjmedia_srtp_crypto_option_PJMEDIA_SRTP_NO_AUTHENTICATION: pjmedia_srtp_crypto_option = 2;
+pub type pjmedia_srtp_crypto_option = ::std::os::raw::c_uint;
+
+pub const pjmedia_srtp_use_PJMEDIA_SRTP_DISABLED: pjmedia_srtp_use = 0;
+pub const pjmedia_srtp_use_PJMEDIA_SRTP_UNKNOWN: pjmedia_srtp_use = 0;
+pub const pjmedia_srtp_use_PJMEDIA_SRTP_OPTIONAL: pjmedia_srtp_use = 1;
+pub const pjmedia_srtp_use_PJMEDIA_SRTP_MANDATORY: pjmedia_srtp_use = 2;
+pub type pjmedia_srtp_use = ::std::os::raw::c_uint;
+
+pub const pjmedia_srtp_keying_method_PJMEDIA_SRTP_KEYING_SDES: pjmedia_srtp_keying_method = 0;
+pub const pjmedia_srtp_keying_method_PJMEDIA_SRTP_KEYING_DTLS_SRTP: pjmedia_srtp_keying_method = 1;
+pub const pjmedia_srtp_keying_method_PJMEDIA_SRTP_KEYINGS_COUNT: pjmedia_srtp_keying_method = 2;
+pub type pjmedia_srtp_keying_method = ::std::os::raw::c_uint;
+
+pub const pjmedia_transport_udp_options_PJMEDIA_UDP_NO_SRC_ADDR_CHECKING: pjmedia_transport_udp_options = 1;
+pub type pjmedia_transport_udp_options = ::std::os::raw::c_uint;
+
+pub const pjmedia_vid_stream_rc_method_PJMEDIA_VID_STREAM_RC_NONE: pjmedia_vid_stream_rc_method = 0;
+pub const pjmedia_vid_stream_rc_method_PJMEDIA_VID_STREAM_RC_SIMPLE_BLOCKING: pjmedia_vid_stream_rc_method = 1;
+pub type pjmedia_vid_stream_rc_method = ::std::os::raw::c_uint;
+
+pub const pjmedia_vid_conf_layout_PJMEDIA_VID_CONF_LAYOUT_DEFAULT: pjmedia_vid_conf_layout = 0;
+pub const pjmedia_vid_conf_layout_PJMEDIA_VID_CONF_LAYOUT_SELECTIVE_FOCUS: pjmedia_vid_conf_layout = 1;
+pub const pjmedia_vid_conf_layout_PJMEDIA_VID_CONF_LAYOUT_INTERVAL_FOCUS: pjmedia_vid_conf_layout = 2;
+pub const pjmedia_vid_conf_layout_PJMEDIA_VID_CONF_LAYOUT_CUSTOM: pjmedia_vid_conf_layout = 3;
+pub type pjmedia_vid_conf_layout = ::std::os::raw::c_uint;
+
+pub const pjmedia_file_player_option_PJMEDIA_FILE_NO_LOOP: pjmedia_file_player_option = 1;
+pub type pjmedia_file_player_option = ::std::os::raw::c_uint;
+
+pub const pjmedia_file_writer_option_PJMEDIA_FILE_WRITE_PCM: pjmedia_file_writer_option = 0;
+pub const pjmedia_file_writer_option_PJMEDIA_FILE_WRITE_ALAW: pjmedia_file_writer_option = 1;
+pub const pjmedia_file_writer_option_PJMEDIA_FILE_WRITE_ULAW: pjmedia_file_writer_option = 2;
+pub type pjmedia_file_writer_option = ::std::os::raw::c_uint;
+
+pub const pjmedia_wave_fmt_tag_PJMEDIA_WAVE_FMT_TAG_PCM: pjmedia_wave_fmt_tag = 1;
+pub const pjmedia_wave_fmt_tag_PJMEDIA_WAVE_FMT_TAG_ALAW: pjmedia_wave_fmt_tag = 6;
+pub const pjmedia_wave_fmt_tag_PJMEDIA_WAVE_FMT_TAG_ULAW: pjmedia_wave_fmt_tag = 7;
+pub type pjmedia_wave_fmt_tag = ::std::os::raw::c_uint;
+
+pub const pjmedia_wsola_option_PJMEDIA_WSOLA_NO_HANNING: pjmedia_wsola_option = 1;
+pub const pjmedia_wsola_option_PJMEDIA_WSOLA_NO_PLC: pjmedia_wsola_option = 2;
+pub const pjmedia_wsola_option_PJMEDIA_WSOLA_NO_DISCARD: pjmedia_wsola_option = 4;
+pub const pjmedia_wsola_option_PJMEDIA_WSOLA_NO_FADING: pjmedia_wsola_option = 8;
+pub type pjmedia_wsola_option = ::std::os::raw::c_uint;
+
+pub const pjmedia_amr_options_PJMEDIA_AMR_NO_NB: pjmedia_amr_options = 1;
+pub const pjmedia_amr_options_PJMEDIA_AMR_NO_WB: pjmedia_amr_options = 2;
+pub type pjmedia_amr_options = ::std::os::raw::c_uint;
+
+pub type pjmedia_codec_amrnb_config = pjmedia_codec_amr_config;
+pub type pjmedia_codec_amrwb_config = pjmedia_codec_amr_config;
+
+pub const pjmedia_speex_options_PJMEDIA_SPEEX_NO_NB: pjmedia_speex_options = 1;
+pub const pjmedia_speex_options_PJMEDIA_SPEEX_NO_WB: pjmedia_speex_options = 2;
+pub const pjmedia_speex_options_PJMEDIA_SPEEX_NO_UWB: pjmedia_speex_options = 4;
+pub type pjmedia_speex_options = ::std::os::raw::c_uint;
+
+
 
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
@@ -3556,6 +3620,436 @@ pub struct pjmedia_tone_digit_map__bindgen_ty_1 {
     pub freq2: ::std::os::raw::c_short,
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_ice_cb {
+    pub on_ice_complete: ::std::option::Option<
+        unsafe extern "C" fn(tp: *mut pjmedia_transport, op: pj_ice_strans_op, status: pj_status_t),
+    >,
+    pub on_ice_complete2: ::std::option::Option<
+        unsafe extern "C" fn(
+            tp: *mut pjmedia_transport,
+            op: pj_ice_strans_op,
+            status: pj_status_t,
+            user_data: *mut ::std::os::raw::c_void,
+        ),
+    >,
+    pub on_new_candidate: ::std::option::Option<
+        unsafe extern "C" fn(
+            tp: *mut pjmedia_transport,
+            cand: *const pj_ice_sess_cand,
+            last: pj_bool_t,
+        ),
+    >,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjmedia_ice_transport_info {
+    pub active: pj_bool_t,
+    pub sess_state: pj_ice_strans_state,
+    pub role: pj_ice_sess_role,
+    pub comp_cnt: ::std::os::raw::c_uint,
+    pub comp: [pjmedia_ice_transport_info__bindgen_ty_1; 2usize],
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjmedia_ice_transport_info__bindgen_ty_1 {
+    pub lcand_type: pj_ice_cand_type,
+    pub lcand_addr: pj_sockaddr,
+    pub rcand_type: pj_ice_cand_type,
+    pub rcand_addr: pj_sockaddr,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_loop_tp_setting {
+    pub af: ::std::os::raw::c_int,
+    pub addr: pj_str_t,
+    pub port: ::std::os::raw::c_int,
+    pub disable_rx: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_srtp_crypto {
+    pub key: pj_str_t,
+    pub name: pj_str_t,
+    pub flags: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_srtp_cb {
+    pub on_srtp_nego_complete: ::std::option::Option<
+        unsafe extern "C" fn(tp: *mut pjmedia_transport, status: pj_status_t),
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_srtp_setting {
+    pub use_: pjmedia_srtp_use,
+    pub close_member_tp: pj_bool_t,
+    pub crypto_count: ::std::os::raw::c_uint,
+    pub crypto: [pjmedia_srtp_crypto; 16usize],
+    pub keying_count: ::std::os::raw::c_uint,
+    pub keying: [pjmedia_srtp_keying_method; 2usize],
+    pub cb: pjmedia_srtp_cb,
+    pub user_data: *mut ::std::os::raw::c_void,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_srtp_info {
+    pub active: pj_bool_t,
+    pub rx_policy: pjmedia_srtp_crypto,
+    pub tx_policy: pjmedia_srtp_crypto,
+    pub use_: pjmedia_srtp_use,
+    pub peer_use: pjmedia_srtp_use,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjmedia_srtp_dtls_nego_param {
+    pub rem_fingerprint: pj_str_t,
+    pub rem_addr: pj_sockaddr,
+    pub rem_rtcp: pj_sockaddr,
+    pub is_role_active: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_conf {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_conf_setting {
+    pub max_slot_cnt: ::std::os::raw::c_uint,
+    pub frame_rate: ::std::os::raw::c_uint,
+    pub layout: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjmedia_vid_conf_port_info {
+    pub slot: ::std::os::raw::c_uint,
+    pub name: pj_str_t,
+    pub format: pjmedia_format,
+    pub listener_cnt: ::std::os::raw::c_uint,
+    pub listener_slots: *mut ::std::os::raw::c_uint,
+    pub transmitter_cnt: ::std::os::raw::c_uint,
+    pub transmitter_slots: *mut ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjmedia_vid_port_param {
+    pub vidparam: pjmedia_vid_dev_param,
+    pub active: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_port {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_stream_rc_config {
+    pub method: pjmedia_vid_stream_rc_method,
+    pub bandwidth: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_stream_sk_config {
+    pub count: ::std::os::raw::c_uint,
+    pub interval: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct pjmedia_vid_stream_info {
+    pub type_: pjmedia_type,
+    pub proto: pjmedia_tp_proto,
+    pub dir: pjmedia_dir,
+    pub rem_addr: pj_sockaddr,
+    pub rem_rtcp: pj_sockaddr,
+    pub rtcp_mux: pj_bool_t,
+    pub loc_rtcp_fb: pjmedia_rtcp_fb_info,
+    pub rem_rtcp_fb: pjmedia_rtcp_fb_info,
+    pub tx_pt: ::std::os::raw::c_uint,
+    pub rx_pt: ::std::os::raw::c_uint,
+    pub ssrc: pj_uint32_t,
+    pub cname: pj_str_t,
+    pub has_rem_ssrc: pj_bool_t,
+    pub rem_ssrc: pj_uint32_t,
+    pub rem_cname: pj_str_t,
+    pub rtp_ts: pj_uint32_t,
+    pub rtp_seq: pj_uint16_t,
+    pub rtp_seq_ts_set: pj_uint8_t,
+    pub jb_init: ::std::os::raw::c_int,
+    pub jb_min_pre: ::std::os::raw::c_int,
+    pub jb_max_pre: ::std::os::raw::c_int,
+    pub jb_max: ::std::os::raw::c_int,
+    pub codec_info: pjmedia_vid_codec_info,
+    pub codec_param: *mut pjmedia_vid_codec_param,
+    pub rtcp_sdes_bye_disabled: pj_bool_t,
+    pub rc_cfg: pjmedia_vid_stream_rc_config,
+    pub sk_cfg: pjmedia_vid_stream_sk_config,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_stream {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wav_player_info {
+    pub fmt_id: pjmedia_format_id,
+    pub payload_bits_per_sample: ::std::os::raw::c_uint,
+    pub size_bytes: pj_uint32_t,
+    pub size_samples: pj_uint32_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wave_hdr {
+    pub riff_hdr: pjmedia_wave_hdr__bindgen_ty_1,
+    pub fmt_hdr: pjmedia_wave_hdr__bindgen_ty_2,
+    pub data_hdr: pjmedia_wave_hdr__bindgen_ty_3,
+}
+
+#[repr(C, packed(2))]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wave_hdr__bindgen_ty_1 {
+    pub riff: pj_uint32_t,
+    pub file_len: pj_uint32_t,
+    pub wave: pj_uint32_t,
+}
+
+#[repr(C, packed(2))]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wave_hdr__bindgen_ty_2 {
+    pub fmt: pj_uint32_t,
+    pub len: pj_uint32_t,
+    pub fmt_tag: pj_uint16_t,
+    pub nchan: pj_uint16_t,
+    pub sample_rate: pj_uint32_t,
+    pub bytes_per_sec: pj_uint32_t,
+    pub block_align: pj_uint16_t,
+    pub bits_per_sample: pj_uint16_t,
+}
+
+#[repr(C, packed(2))]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wave_hdr__bindgen_ty_3 {
+    pub data: pj_uint32_t,
+    pub len: pj_uint32_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wave_subchunk {
+    pub id: pj_uint32_t,
+    pub len: pj_uint32_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_wsola {
+    _unused: [u8; 0],
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_codec_passthrough_setting {
+    pub fmt_cnt: ::std::os::raw::c_uint,
+    pub fmts: *mut pjmedia_format,
+    pub ilbc_mode: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_audio_codec_config {
+    pub speex: pjmedia_audio_codec_config__bindgen_ty_1,
+    pub ilbc: pjmedia_audio_codec_config__bindgen_ty_2,
+    pub passthrough: pjmedia_audio_codec_config__bindgen_ty_3,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_audio_codec_config__bindgen_ty_1 {
+    pub option: ::std::os::raw::c_uint,
+    pub quality: ::std::os::raw::c_int,
+    pub complexity: ::std::os::raw::c_int,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_audio_codec_config__bindgen_ty_2 {
+    pub mode: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_audio_codec_config__bindgen_ty_3 {
+    pub setting: pjmedia_codec_passthrough_setting,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_codec_amr_config {
+    pub octet_align: pj_bool_t,
+    pub bitrate: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_codec_opus_config {
+    pub sample_rate: ::std::os::raw::c_uint,
+    pub channel_cnt: ::std::os::raw::c_uint,
+    pub frm_ptime: ::std::os::raw::c_uint,
+    pub bit_rate: ::std::os::raw::c_uint,
+    pub packet_loss: ::std::os::raw::c_uint,
+    pub complexity: ::std::os::raw::c_uint,
+    pub cbr: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_codec_silk_setting {
+    pub enabled: pj_bool_t,
+    pub quality: ::std::os::raw::c_int,
+    pub complexity: ::std::os::raw::c_int,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_factory_op {
+    pub init:
+        ::std::option::Option<unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> pj_status_t>,
+    pub destroy:
+        ::std::option::Option<unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> pj_status_t>,
+    pub get_dev_count: ::std::option::Option<
+        unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> ::std::os::raw::c_uint,
+    >,
+    pub get_dev_info: ::std::option::Option<
+        unsafe extern "C" fn(
+            f: *mut pjmedia_vid_dev_factory,
+            index: ::std::os::raw::c_uint,
+            info: *mut pjmedia_vid_dev_info,
+        ) -> pj_status_t,
+    >,
+    pub default_param: ::std::option::Option<
+        unsafe extern "C" fn(
+            pool: *mut pj_pool_t,
+            f: *mut pjmedia_vid_dev_factory,
+            index: ::std::os::raw::c_uint,
+            param: *mut pjmedia_vid_dev_param,
+        ) -> pj_status_t,
+    >,
+    pub create_stream: ::std::option::Option<
+        unsafe extern "C" fn(
+            f: *mut pjmedia_vid_dev_factory,
+            param: *mut pjmedia_vid_dev_param,
+            cb: *const pjmedia_vid_dev_cb,
+            user_data: *mut ::std::os::raw::c_void,
+            p_vid_strm: *mut *mut pjmedia_vid_dev_stream,
+        ) -> pj_status_t,
+    >,
+    pub refresh:
+        ::std::option::Option<unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> pj_status_t>,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_factory {
+    pub sys: pjmedia_vid_dev_factory__bindgen_ty_1,
+    pub op: *mut pjmedia_vid_dev_factory_op,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_factory__bindgen_ty_1 {
+    pub drv_idx: ::std::os::raw::c_uint,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_stream_op {
+    pub get_param: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            param: *mut pjmedia_vid_dev_param,
+        ) -> pj_status_t,
+    >,
+    pub get_cap: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            cap: pjmedia_vid_dev_cap,
+            value: *mut ::std::os::raw::c_void,
+        ) -> pj_status_t,
+    >,
+    pub set_cap: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            cap: pjmedia_vid_dev_cap,
+            value: *const ::std::os::raw::c_void,
+        ) -> pj_status_t,
+    >,
+    pub start: ::std::option::Option<
+        unsafe extern "C" fn(strm: *mut pjmedia_vid_dev_stream) -> pj_status_t,
+    >,
+    pub get_frame: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            frame: *mut pjmedia_frame,
+        ) -> pj_status_t,
+    >,
+    pub put_frame: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            frame: *const pjmedia_frame,
+        ) -> pj_status_t,
+    >,
+    pub stop: ::std::option::Option<
+        unsafe extern "C" fn(strm: *mut pjmedia_vid_dev_stream) -> pj_status_t,
+    >,
+    pub destroy: ::std::option::Option<
+        unsafe extern "C" fn(strm: *mut pjmedia_vid_dev_stream) -> pj_status_t,
+    >,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_stream {
+    pub sys: pjmedia_vid_dev_stream__bindgen_ty_1,
+    pub op: *mut pjmedia_vid_dev_stream_op,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_stream__bindgen_ty_1 {
+    pub drv_idx: ::std::os::raw::c_uint,
+    pub is_running: pj_bool_t,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_avi_dev_param {
+    pub path: pj_str_t,
+    pub title: pj_str_t,
+    pub avi_streams: *mut pjmedia_avi_streams,
+}
+
 extern "C" {
     pub fn pjmedia_type_name(t: pjmedia_type) -> *const ::std::os::raw::c_char;
     pub fn pjmedia_get_type(name: *const pj_str_t) -> pjmedia_type;
@@ -3960,8 +4454,166 @@ extern "C" {
     pub fn pjmedia_tonegen_get_digit_map( tonegen: *mut pjmedia_port, m: *mut *const pjmedia_tone_digit_map, ) -> pj_status_t;
     pub fn pjmedia_tonegen_set_digit_map( tonegen: *mut pjmedia_port, m: *mut pjmedia_tone_digit_map, ) -> pj_status_t;
     pub fn pjmedia_tp_adapter_create( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, base_tp: *mut pjmedia_transport, del_base: pj_bool_t, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_ice_create( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, comp_cnt: ::std::os::raw::c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_ice_create2( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, comp_cnt: ::std::os::raw::c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, options: ::std::os::raw::c_uint, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_ice_create3( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, comp_cnt: ::std::os::raw::c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, options: ::std::os::raw::c_uint, user_data: *mut ::std::os::raw::c_void, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_ice_get_grp_lock(tp: *mut pjmedia_transport) -> *mut pj_grp_lock_t;
+    pub fn pjmedia_ice_add_ice_cb( tp: *mut pjmedia_transport, cb: *const pjmedia_ice_cb, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pjmedia_ice_remove_ice_cb( tp: *mut pjmedia_transport, cb: *const pjmedia_ice_cb, user_data: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pjmedia_ice_sdp_has_trickle( sdp: *const pjmedia_sdp_session, med_idx: ::std::os::raw::c_uint, ) -> pj_bool_t;
+    pub fn pjmedia_ice_trickle_update( tp: *mut pjmedia_transport, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rcand_cnt: ::std::os::raw::c_uint, rcand: *const pj_ice_sess_cand, rcand_end: pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_ice_trickle_decode_sdp( sdp: *const pjmedia_sdp_session, media_index: ::std::os::raw::c_uint, mid: *mut pj_str_t, ufrag: *mut pj_str_t, passwd: *mut pj_str_t, cand_cnt: *mut ::std::os::raw::c_uint, cand: *mut pj_ice_sess_cand, end_of_cand: *mut pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_ice_trickle_encode_sdp( sdp_pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, mid: *const pj_str_t, ufrag: *const pj_str_t, passwd: *const pj_str_t, cand_cnt: ::std::os::raw::c_uint, cand: *const pj_ice_sess_cand, end_of_cand: pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_ice_trickle_has_new_cand(tp: *mut pjmedia_transport) -> pj_bool_t;
+    pub fn pjmedia_ice_trickle_send_local_cand( tp: *mut pjmedia_transport, sdp_pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, p_end_of_cand: *mut pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_loop_tp_setting_default(opt: *mut pjmedia_loop_tp_setting);
+    pub fn pjmedia_transport_loop_create( endpt: *mut pjmedia_endpt, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_transport_loop_create2( endpt: *mut pjmedia_endpt, opt: *const pjmedia_loop_tp_setting, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_transport_loop_disable_rx( tp: *mut pjmedia_transport, user: *mut ::std::os::raw::c_void, disabled: pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_srtp_init_lib(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_srtp_setting_default(opt: *mut pjmedia_srtp_setting);
+    pub fn pjmedia_srtp_enum_crypto( count: *mut ::std::os::raw::c_uint, crypto: *mut pjmedia_srtp_crypto, ) -> pj_status_t;
+    pub fn pjmedia_srtp_enum_keying( count: *mut ::std::os::raw::c_uint, keying: *mut pjmedia_srtp_keying_method, ) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_create( endpt: *mut pjmedia_endpt, tp: *mut pjmedia_transport, opt: *const pjmedia_srtp_setting, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_dtls_get_fingerprint( srtp: *mut pjmedia_transport, hash: *const ::std::os::raw::c_char, buf: *mut ::std::os::raw::c_char, len: *mut pj_size_t, ) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_dtls_start_nego( srtp: *mut pjmedia_transport, param: *const pjmedia_srtp_dtls_nego_param, ) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_start( srtp: *mut pjmedia_transport, tx: *const pjmedia_srtp_crypto, rx: *const pjmedia_srtp_crypto, ) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_stop(srtp: *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_decrypt_pkt( tp: *mut pjmedia_transport, is_rtp: pj_bool_t, pkt: *mut ::std::os::raw::c_void, pkt_len: *mut ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_get_member( srtp: *mut pjmedia_transport, ) -> *mut pjmedia_transport;
+    pub fn pjmedia_transport_udp_create( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, port: ::std::os::raw::c_int, options: ::std::os::raw::c_uint, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_transport_udp_create2( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, addr: *const pj_str_t, port: ::std::os::raw::c_int, options: ::std::os::raw::c_uint, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_transport_udp_create3( endpt: *mut pjmedia_endpt, af: ::std::os::raw::c_int, name: *const ::std::os::raw::c_char, addr: *const pj_str_t, port: ::std::os::raw::c_int, options: ::std::os::raw::c_uint, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_transport_udp_attach( endpt: *mut pjmedia_endpt, name: *const ::std::os::raw::c_char, si: *const pjmedia_sock_info, options: ::std::os::raw::c_uint, p_tp: *mut *mut pjmedia_transport, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_setting_default(opt: *mut pjmedia_vid_conf_setting);
+    pub fn pjmedia_vid_conf_create( pool: *mut pj_pool_t, opt: *const pjmedia_vid_conf_setting, p_vid_conf: *mut *mut pjmedia_vid_conf, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_destroy(vid_conf: *mut pjmedia_vid_conf) -> pj_status_t;
+    pub fn pjmedia_vid_conf_add_port( vid_conf: *mut pjmedia_vid_conf, pool: *mut pj_pool_t, port: *mut pjmedia_port, name: *const pj_str_t, opt: *mut ::std::os::raw::c_void, p_slot: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_remove_port( vid_conf: *mut pjmedia_vid_conf, slot: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_get_port_count( vid_conf: *mut pjmedia_vid_conf, ) -> ::std::os::raw::c_uint;
+    pub fn pjmedia_vid_conf_enum_ports( vid_conf: *mut pjmedia_vid_conf, slots: *mut ::std::os::raw::c_uint, count: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_get_port_info( vid_conf: *mut pjmedia_vid_conf, slot: ::std::os::raw::c_uint, info: *mut pjmedia_vid_conf_port_info, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_connect_port( vid_conf: *mut pjmedia_vid_conf, src_slot: ::std::os::raw::c_uint, sink_slot: ::std::os::raw::c_uint, opt: *mut ::std::os::raw::c_void, ) -> pj_status_t;
+    pub fn pjmedia_vid_conf_disconnect_port( vid_conf: *mut pjmedia_vid_conf, src_slot: ::std::os::raw::c_uint, sink_slot: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_vid_dev_subsys_init(pf: *mut pj_pool_factory) -> pj_status_t;
+    pub fn pjmedia_vid_dev_subsys_get_pool_factory() -> *mut pj_pool_factory;
+    pub fn pjmedia_vid_dev_subsys_shutdown() -> pj_status_t;
+    pub fn pjmedia_vid_register_factory( vdf: pjmedia_vid_dev_factory_create_func_ptr, factory: *mut pjmedia_vid_dev_factory, ) -> pj_status_t;
+    pub fn pjmedia_vid_unregister_factory( vdf: pjmedia_vid_dev_factory_create_func_ptr, factory: *mut pjmedia_vid_dev_factory, ) -> pj_status_t;
+    pub fn pjmedia_vid_port_param_default(prm: *mut pjmedia_vid_port_param);
+    pub fn pjmedia_vid_port_create( pool: *mut pj_pool_t, prm: *const pjmedia_vid_port_param, p_vp: *mut *mut pjmedia_vid_port, ) -> pj_status_t;
+    pub fn pjmedia_vid_port_set_cb( vid_port: *mut pjmedia_vid_port, cb: *const pjmedia_vid_dev_cb, user_data: *mut ::std::os::raw::c_void, );
+    pub fn pjmedia_vid_port_get_stream( vid_port: *mut pjmedia_vid_port, ) -> *mut pjmedia_vid_dev_stream;
+    pub fn pjmedia_vid_port_get_passive_port(vid_port: *mut pjmedia_vid_port) -> *mut pjmedia_port;
+    pub fn pjmedia_vid_port_get_clock_src( vid_port: *mut pjmedia_vid_port, ) -> *mut pjmedia_clock_src;
+    pub fn pjmedia_vid_port_set_clock_src( vid_port: *mut pjmedia_vid_port, clocksrc: *mut pjmedia_clock_src, ) -> pj_status_t;
+    pub fn pjmedia_vid_port_subscribe_event( vid_port: *mut pjmedia_vid_port, port: *mut pjmedia_port, ) -> pj_status_t;
+    pub fn pjmedia_vid_port_connect( vid_port: *mut pjmedia_vid_port, port: *mut pjmedia_port, destroy: pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_vid_port_disconnect(vid_port: *mut pjmedia_vid_port) -> pj_status_t;
+    pub fn pjmedia_vid_port_get_connected_port( vid_port: *mut pjmedia_vid_port, ) -> *mut pjmedia_port;
+    pub fn pjmedia_vid_port_start(vid_port: *mut pjmedia_vid_port) -> pj_status_t;
+    pub fn pjmedia_vid_port_is_running(vid_port: *mut pjmedia_vid_port) -> pj_bool_t;
+    pub fn pjmedia_vid_port_stop(vid_port: *mut pjmedia_vid_port) -> pj_status_t;
+    pub fn pjmedia_vid_port_destroy(vid_port: *mut pjmedia_vid_port);
+    pub fn pjmedia_vid_stream_info_from_sdp( si: *mut pjmedia_vid_stream_info, pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, local: *const pjmedia_sdp_session, remote: *const pjmedia_sdp_session, stream_idx: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_rc_config_default(cfg: *mut pjmedia_vid_stream_rc_config);
+    pub fn pjmedia_vid_stream_sk_config_default(cfg: *mut pjmedia_vid_stream_sk_config);
+    pub fn pjmedia_vid_stream_create( endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, info: *mut pjmedia_vid_stream_info, tp: *mut pjmedia_transport, user_data: *mut ::std::os::raw::c_void, p_stream: *mut *mut pjmedia_vid_stream, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_destroy(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_get_port( stream: *mut pjmedia_vid_stream, dir: pjmedia_dir, p_port: *mut *mut pjmedia_port, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_get_transport(st: *mut pjmedia_vid_stream) -> *mut pjmedia_transport;
+    pub fn pjmedia_vid_stream_get_stat( stream: *const pjmedia_vid_stream, stat: *mut pjmedia_rtcp_stat, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_reset_stat(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_get_stat_jbuf( stream: *const pjmedia_vid_stream, state: *mut pjmedia_jb_state, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_get_info( stream: *const pjmedia_vid_stream, info: *mut pjmedia_vid_stream_info, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_start(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_is_running( stream: *mut pjmedia_vid_stream, dir: pjmedia_dir, ) -> pj_bool_t;
+    pub fn pjmedia_vid_stream_pause( stream: *mut pjmedia_vid_stream, dir: pjmedia_dir, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_resume( stream: *mut pjmedia_vid_stream, dir: pjmedia_dir, ) -> pj_status_t;
+    pub fn pjmedia_vid_stream_send_keyframe(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_send_rtcp_sdes(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_send_rtcp_bye(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_send_rtcp_pli(stream: *mut pjmedia_vid_stream) -> pj_status_t;
+    pub fn pjmedia_vid_stream_get_rtp_session_info( stream: *mut pjmedia_vid_stream, session_info: *mut pjmedia_stream_rtp_sess_info, ) -> pj_status_t;
+    pub fn pjmedia_wav_player_port_create( pool: *mut pj_pool_t, filename: *const ::std::os::raw::c_char, ptime: ::std::os::raw::c_uint, flags: ::std::os::raw::c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port, ) -> pj_status_t;
+    pub fn pjmedia_wav_player_get_info( port: *mut pjmedia_port, i: *mut pjmedia_wav_player_info, ) -> pj_status_t;
+    pub fn pjmedia_wav_player_get_len(port: *mut pjmedia_port) -> pj_ssize_t;
+    pub fn pjmedia_wav_player_port_set_pos( port: *mut pjmedia_port, offset: pj_uint32_t, ) -> pj_status_t;
+    pub fn pjmedia_wav_player_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
+    pub fn pjmedia_wav_player_set_eof_cb( port: *mut pjmedia_port, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option<unsafe extern "C" fn( port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void, ) -> pj_status_t, >, ) -> pj_status_t;
+    pub fn pjmedia_wav_player_set_eof_cb2( port: *mut pjmedia_port, user_data: *mut ::std::os::raw::c_void, cb: ::std::op ::Option< unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void), >, ) -> pj_status_t;
+    pub fn pjmedia_wav_writer_port_create( pool: *mut pj_pool_t, filename: *const ::std::os::raw::c_char, clock_rate: ::std::os::raw::c_uint, channel_count: ::std::os::raw::c_uint, samples_per_frame: ::std::os::raw::c_uint, bits_per_sample: ::std::os::raw::c_uint, flags: ::std::os::raw::c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port, ) -> pj_status_t;
+    pub fn pjmedia_wav_writer_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
+    pub fn pjmedia_wav_writer_port_set_cb( port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option< unsafe extern "C" fn( port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void, ) -> pj_status_t, >, ) -> pj_status_t;
+    pub fn pjmedia_wav_writer_port_set_cb2( port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option< unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void), >, ) -> pj_status_t;
+    pub fn pjmedia_wav_playlist_create( pool: *mut pj_pool_t, port_label: *const pj_str_t, file_list: *const pj_str_t, file_count: ::std::os::raw::c_int, ptime: ::std::os::raw::c_uint, options: ::std::os::raw::c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port, ) -> pj_status_t;
+    pub fn pjmedia_wav_playlist_set_eof_cb( port: *mut pjmedia_port, user_data: *mut ::std::os::raw::c_void, cb: ::std::option::Option< unsafe extern "C" fn( port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void, ) -> pj_status_t, >, ) -> pj_status_t;
+    pub fn pjmedia_wav_playlist_set_eof_cb2(port: *mut pjmedia_port,user_data: *mut ::std::os::raw::c_void,cb: ::std::option::Option< unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut ::std::os::raw::c_void), >, ) -> pj_status_t;
+    pub fn pjmedia_wave_hdr_file_to_host(hdr: *mut pjmedia_wave_hdr);
+    pub fn pjmedia_wave_hdr_host_to_file(hdr: *mut pjmedia_wave_hdr);
+    pub fn pjmedia_wsola_create( pool: *mut pj_pool_t, clock_rate: ::std::os::raw::c_uint, samples_per_frame: ::std::os::raw::c_uint, channel_count: ::std::os::raw::c_uint, options: ::std::os::raw::c_uint, p_wsola: *mut *mut pjmedia_wsola, ) -> pj_status_t;
+    pub fn pjmedia_wsola_set_max_expand( wsola: *mut pjmedia_wsola, msec: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_wsola_destroy(wsola: *mut pjmedia_wsola) -> pj_status_t;
+    pub fn pjmedia_wsola_reset( wsola: *mut pjmedia_wsola, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_wsola_save( wsola: *mut pjmedia_wsola, frm: *mut pj_int16_t, prev_lost: pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_wsola_generate(wsola: *mut pjmedia_wsola, frm: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_wsola_discard( wsola: *mut pjmedia_wsola, buf1: *mut pj_int16_t, buf1_cnt: ::std::os::raw::c_uint, buf2: *mut pj_int16_t, buf2_cnt: ::std::os::raw::c_uint, erase_cnt: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_codec_passthrough_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_passthrough_init2( endpt: *mut pjmedia_endpt, setting: *const pjmedia_codec_passthrough_setting, ) -> pj_status_t;
+    pub fn pjmedia_codec_passthrough_deinit() -> pj_status_t;
+    pub fn pjmedia_audio_codec_config_default(cfg: *mut pjmedia_audio_codec_config);
+    pub fn pjmedia_codec_register_audio_codecs( endpt: *mut pjmedia_endpt, c: *const pjmedia_audio_codec_config, ) -> pj_status_t;
+    pub fn pjmedia_codec_bcg729_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_bcg729_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_ffmpeg_vid_init( mgr: *mut pjmedia_vid_codec_mgr, pf: *mut pj_pool_factory, ) -> pj_status_t;
+    pub fn pjmedia_codec_ffmpeg_vid_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_g722_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_g722_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_g722_set_pcm_shift(val: ::std::os::raw::c_uint) -> pj_status_t;
+    pub fn pjmedia_codec_g7221_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_g7221_set_mode( sample_rate: ::std::os::raw::c_uint, bitrate: ::std::os::raw::c_uint, enabled: pj_bool_t, ) -> pj_status_t;
+    pub fn pjmedia_codec_g7221_set_pcm_shift(val: ::std::os::raw::c_int) -> pj_status_t;
+    pub fn pjmedia_codec_g7221_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_gsm_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_gsm_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_ilbc_init( endpt: *mut pjmedia_endpt, mode: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjmedia_codec_ilbc_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_ipp_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_ipp_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_l16_init( endpt: *mut pjmedia_endpt, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_codec_l16_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amr_init( endpt: *mut pjmedia_endpt, options: ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amr_init_default(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amr_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amrnb_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amrnb_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amrnb_set_config( cfg: *const pjmedia_codec_amrnb_config, ) -> pj_status_t;
+    pub fn pjmedia_codec_opencore_amrwb_set_config( cfg: *const pjmedia_codec_amrwb_config, ) -> pj_status_t;
+    pub fn pjmedia_codec_openh264_vid_init( mgr: *mut pjmedia_vid_codec_mgr, pf: *mut pj_pool_factory, ) -> pj_status_t;
+    pub fn pjmedia_codec_openh264_vid_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_opus_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_opus_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_opus_get_config(cfg: *mut pjmedia_codec_opus_config) -> pj_status_t;
+    pub fn pjmedia_codec_opus_set_default_param( cfg: *const pjmedia_codec_opus_config, param: *mut pjmedia_codec_param, ) -> pj_status_t;
+    pub fn pjmedia_codec_silk_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_silk_set_config( clock_rate: ::std::os::raw::c_uint, opt: *const pjmedia_codec_silk_setting, ) -> pj_status_t;
+    pub fn pjmedia_codec_silk_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_speex_init( endpt: *mut pjmedia_endpt, options: ::std::os::raw::c_uint, quality: ::std::os::raw::c_int, complexity: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjmedia_codec_speex_init_default(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_speex_set_param( clock_rate: ::std::os::raw::c_uint, quality: ::std::os::raw::c_int, complexity: ::std::os::raw::c_int, ) -> pj_status_t;
+    pub fn pjmedia_codec_speex_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_vid_toolbox_init( mgr: *mut pjmedia_vid_codec_mgr, pf: *mut pj_pool_factory, ) -> pj_status_t;
+    pub fn pjmedia_codec_vid_toolbox_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_vpx_vid_init( mgr: *mut pjmedia_vid_codec_mgr, pf: *mut pj_pool_factory, ) -> pj_status_t;
+    pub fn pjmedia_codec_vpx_vid_deinit() -> pj_status_t;
+    pub fn pjmedia_vid_dev_get_local_index( id: pjmedia_vid_dev_index, p_f: *mut *mut pjmedia_vid_dev_factory, p_local_index: *mut ::std::os::raw::c_uint, ) -> pj_status_t;
+    pub fn pjmedia_vid_dev_get_global_index( f: *const pjmedia_vid_dev_factory, local_idx: ::std::os::raw::c_uint, pid: *mut pjmedia_vid_dev_index, ) -> pj_status_t;
+    pub fn pjmedia_avi_dev_param_default(p: *mut pjmedia_avi_dev_param);
+    pub fn pjmedia_avi_dev_create_factory( pf: *mut pj_pool_factory, max_dev: ::std::os::raw::c_uint, p_ret: *mut *mut pjmedia_vid_dev_factory, ) -> pj_status_t;
+    pub fn pjmedia_avi_dev_alloc( f: *mut pjmedia_vid_dev_factory, param: *mut pjmedia_avi_dev_param, p_id: *mut pjmedia_vid_dev_index, ) -> pj_status_t;
+    pub fn pjmedia_avi_dev_get_param( id: pjmedia_vid_dev_index, param: *mut pjmedia_avi_dev_param, ) -> pj_status_t;
+    pub fn pjmedia_avi_dev_free(id: pjmedia_vid_dev_index) -> pj_status_t;
 }
-
 
 
 impl AutoCreate<pjmedia_srtp_crypto> for pjmedia_srtp_crypto {
