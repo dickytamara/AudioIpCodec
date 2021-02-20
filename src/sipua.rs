@@ -1,6 +1,13 @@
 #![allow(dead_code, unused_variables, unused_imports, non_upper_case_globals)]
 
 // default
+use super::pj_sys::*;
+use super::pjmedia_sys::*;
+use super::pjsip_sys::*;
+use super::pjsip_simple_sys::*;
+use super::pjsua_sys::*;
+
+
 use super::pjdefault::AutoCreate;
 use super::pjlib::PjTimerEntry;
 use super::pjsip::PjsipModuleCallback;
@@ -9,6 +16,7 @@ use super::pjlib::*;
 use super::pjmedia::*;
 use super::pjsip::*;
 use super::pjsua::*;
+
 use std::ffi::CString;
 use std::fmt::format;
 use std::mem;
