@@ -4,7 +4,7 @@
 extern crate gtk;
 extern crate gio;
 
-use gtk::{Builder, LevelBar, Stack, Statusbar, prelude::*};
+use gtk::{Builder, LevelBar, Stack, Statusbar, Scale, prelude::*};
 use gio::prelude::*;
 
 use std::env::args;
@@ -41,7 +41,7 @@ fn main() {
     let sldr_input_level: gtk::Scale = builder.get_object("sldr_input_level").unwrap();
     let lbl_input_device: gtk::Label = builder.get_object("lbl_input_device").unwrap();
     let cmb_input_device: gtk::ComboBox = builder.get_object("cmb_input_device").unwrap();
-    let btn_input_mute: gtk::Button = builder.get_object("btn_input_mute").unwrap();
+    let btn_input_mute: gtk::ToggleButton = builder.get_object("btn_input_mute").unwrap();
 
     // output
     let lbl_topbar_input: gtk::Label = builder.get_object("lbl_topbar_input").unwrap();
@@ -54,8 +54,7 @@ fn main() {
     let sldr_output_level: gtk::Scale = builder.get_object("sldr_output_level").unwrap();
     let lbl_output_device: gtk::Label = builder.get_object("lbl_output_device").unwrap();
     let cmb_output_device: gtk::ComboBox = builder.get_object("cmb_output_device").unwrap();
-    let btn_output_mute: gtk::Button = builder.get_object("btn_output_mute").unwrap();
-
+    let btn_output_mute: gtk::ToggleButton = builder.get_object("btn_output_mute").unwrap();
 
     // main function button
     let btn_main_call: gtk::Button = builder.get_object("btn_main_call").unwrap();
@@ -71,6 +70,58 @@ fn main() {
     // status bar
     let statusbar_main: gtk::Statusbar = builder.get_object("statusbar_main").unwrap();
     let lbl_statusbar_main: gtk::Label = builder.get_object("lbl_statusbar_main").unwrap();
+
+    // default config
+    sldr_input_level.set_range(0.0, 100.0);
+    sldr_input_level.set_value(100.0);
+    sldr_input_level.set_increments(1.0, 5.0);
+    sldr_input_level.set_slider_size_fixed(true);
+    sldr_input_level.set_round_digits(0);
+    sldr_input_level.set_digits(0);
+
+    sldr_input_level.connect_value_changed(| sldr| {
+        println!("sldr_input_level value: {}", sldr.get_value());
+    });
+
+    // default config
+    sldr_output_level.set_range(0.0,100.0);
+    sldr_output_level.set_value(100.0);
+    sldr_output_level.set_increments(1.0, 5.0);
+    sldr_output_level.set_slider_size_fixed(true);
+    sldr_output_level.set_round_digits(0);
+    sldr_output_level.set_digits(0);
+
+    sldr_output_level.connect_value_changed(| sldr | {
+        println!("sldr_output_level value: {}", sldr.get_value());
+    });
+
+
+    // input
+    btn_input_level_dec.connect_clicked(move|_| {
+        println!("btn_input_level_dec");
+    });
+
+    btn_input_level_inc.connect_clicked(move|_|{
+        println!("btn_input_level_inc");
+    });
+
+    btn_input_mute.connect_clicked(|btn| {
+        println!("btn_input_mute active: {}", btn.get_active());
+    });
+
+    // output
+    btn_output_level_dec.connect_clicked(|_| {
+        println!("btn_output_level_dec");
+    });
+
+    btn_output_level_inc.connect_clicked(|_| {
+        println!("btn_output_level_inc");
+    });
+
+    btn_output_mute.connect_clicked(|btn| {
+        println!("btn_output_mute active: {}", btn.get_active());
+    });
+
 
 
     // init application
