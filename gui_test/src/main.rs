@@ -3,16 +3,20 @@
 
 extern crate gtk;
 extern crate gio;
+extern crate glib;
 
-use gtk::{Builder, LevelBar, Stack, Statusbar, Scale, prelude::*};
+use gtk::prelude::*;
 use gio::prelude::*;
 
 use std::env::args;
 use std::include_str;
-use gtk::{Application, ApplicationWindow, Button};
 
+use gtk::{Application, ApplicationWindow, Button, Builder, LevelBar, Stack, Statusbar, Scale};
+use glib::clone;
 
 fn main() {
+
+
     gtk::init().expect("GTK fail to initialize");
 
     let application = Application::new(
@@ -95,34 +99,58 @@ fn main() {
         println!("sldr_output_level value: {}", sldr.get_value());
     });
 
-
     // input
-    btn_input_level_dec.connect_clicked(move|_| {
+    btn_input_level_dec.connect_clicked(clone!(@weak sldr_input_level as sldr => move |_| {
         println!("btn_input_level_dec");
-    });
+        let val = sldr.get_value();
+        sldr.set_value(val - 1.0);
+    }));
 
-    btn_input_level_inc.connect_clicked(move|_|{
+    btn_input_level_inc.connect_clicked(clone!(@weak sldr_input_level as sldr => move |_|{
         println!("btn_input_level_inc");
-    });
+        let val = sldr .get_value();
+        sldr.set_value(val + 1.0);
+    }));
 
     btn_input_mute.connect_clicked(|btn| {
         println!("btn_input_mute active: {}", btn.get_active());
     });
 
     // output
-    btn_output_level_dec.connect_clicked(|_| {
+    btn_output_level_dec.connect_clicked(clone!(@weak sldr_output_level as sldr => move |_| {
         println!("btn_output_level_dec");
-    });
+        sldr.set_value(sldr.get_value() - 1.0);
+    }));
 
-    btn_output_level_inc.connect_clicked(|_| {
+    btn_output_level_inc.connect_clicked(clone!(@weak sldr_output_level as sldr => move |_| {
         println!("btn_output_level_inc");
-    });
+        sldr.set_value(sldr.get_value() + 1.0);
+    }));
 
     btn_output_mute.connect_clicked(|btn| {
         println!("btn_output_mute active: {}", btn.get_active());
     });
 
+    // main function button
+    btn_main_call.connect_clicked(|_| {
+        println!("btn_main_call");
+    });
 
+    btn_main_account.connect_clicked(|_| {
+        println!("btn_main_account");
+    });
+
+    btn_main_settings.connect_clicked(|_| {
+        println!("btn_main_settings");
+    });
+
+    btn_main_codec.connect_clicked(|_| {
+        println!("btn_main_codec");
+    });
+
+    btn_main_about.connect_clicked(|_| {
+        println!("btn_main_about");
+    });
 
     // init application
     application.connect_activate(move |app| {
@@ -131,8 +159,6 @@ fn main() {
         main_window.show_all();
     });
 
-
-    // add env later this only for
     // sub testing gui
     application.run(&args().collect::<Vec<_>>());
 }
