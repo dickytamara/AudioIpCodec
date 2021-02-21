@@ -452,7 +452,7 @@
             <property name="margin-top">15</property>
             <property name="margin-bottom">10</property>
             <child>
-              <object class="GtkButtonBox">
+              <object class="GtkButtonBox" id="btnbox_main">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin-end">10</property>
@@ -460,7 +460,7 @@
                 <property name="spacing">8</property>
                 <property name="layout-style">start</property>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="btn_main_call">
                     <property name="label" translatable="yes">Call
 </property>
                     <property name="visible">True</property>
@@ -474,7 +474,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="btn_main_account">
                     <property name="label" translatable="yes">Account
 </property>
                     <property name="visible">True</property>
@@ -488,7 +488,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="btn_main_settings">
                     <property name="label" translatable="yes">Settings
 </property>
                     <property name="visible">True</property>
@@ -502,7 +502,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="btn_main_codec">
                     <property name="label" translatable="yes">Codec
 </property>
                     <property name="visible">True</property>
@@ -516,7 +516,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="btn_main_about">
                     <property name="label" translatable="yes">About
 </property>
                     <property name="visible">True</property>
@@ -536,7 +536,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkStack">
+              <object class="GtkStack" id="stack_main">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
@@ -556,7 +556,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkStatusbar" id="statbar">
+          <object class="GtkStatusbar" id="statusbar_main">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-left">10</property>
@@ -573,7 +573,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkLabel" id="lbl_statusbar_main">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">label</property>

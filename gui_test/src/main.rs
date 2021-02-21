@@ -4,7 +4,7 @@
 extern crate gtk;
 extern crate gio;
 
-use gtk::{Builder, LevelBar, prelude::*};
+use gtk::{Builder, LevelBar, Stack, Statusbar, prelude::*};
 use gio::prelude::*;
 
 use std::env::args;
@@ -55,6 +55,23 @@ fn main() {
     let lbl_output_device: gtk::Label = builder.get_object("lbl_output_device").unwrap();
     let cmb_output_device: gtk::ComboBox = builder.get_object("cmb_output_device").unwrap();
     let btn_output_mute: gtk::Button = builder.get_object("btn_output_mute").unwrap();
+
+
+    // main function button
+    let btn_main_call: gtk::Button = builder.get_object("btn_main_call").unwrap();
+    let btn_main_account: gtk::Button = builder.get_object("btn_main_account").unwrap();
+    let btn_main_settings: gtk::Button = builder.get_object("btn_main_settings").unwrap();
+    let btn_main_codec: gtk::Button = builder.get_object("btn_main_codec").unwrap();
+    let btn_main_about: gtk::Button = builder.get_object("btn_main_about").unwrap();
+
+    // main content wrapper
+    let btnbox_main: gtk::ButtonBox = builder.get_object("btnbox_main").unwrap();
+    let stack_main: gtk::Stack = builder.get_object("stack_main").unwrap();
+
+    // status bar
+    let statusbar_main: gtk::Statusbar = builder.get_object("statusbar_main").unwrap();
+    let lbl_statusbar_main: gtk::Label = builder.get_object("lbl_statusbar_main").unwrap();
+
 
     // init application
     application.connect_activate(move |app| {
