@@ -189,7 +189,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="cmb_input_dev">
+                      <object class="GtkComboBox" id="cmb_input_device">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="margin-end">4</property>
@@ -383,7 +383,7 @@
                     <property name="can-focus">False</property>
                     <property name="margin-start">25</property>
                     <child>
-                      <object class="GtkLabel" id="lbl_input_device ">
+                      <object class="GtkLabel" id="lbl_output_device">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">Device : </property>
@@ -395,7 +395,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="cmb_output_dev">
+                      <object class="GtkComboBox" id="cmb_output_device">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="margin-end">4</property>
@@ -447,16 +447,17 @@
           <object class="GtkPaned">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
             <property name="margin-top">15</property>
+            <property name="margin-bottom">10</property>
             <child>
               <object class="GtkButtonBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-start">10</property>
                 <property name="margin-end">10</property>
-                <property name="margin-top">10</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">5</property>
+                <property name="spacing">8</property>
                 <property name="layout-style">start</property>
                 <child>
                   <object class="GtkButton">
