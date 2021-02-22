@@ -18,6 +18,7 @@ use gio::prelude::*;
 use std::env;
 use std::include_str;
 use gtk::{Application, ApplicationWindow, Button, Builder, Scale};
+use glib::clone;
 
 
 mod pjdefault;
@@ -27,7 +28,7 @@ mod pjmedia;
 mod pjsua;
 mod sipua;
 
-// use sipua::*;
+use sipua::*;
 
 
 // this struct for grouping gtk_object
@@ -74,9 +75,90 @@ impl TopbarWidget {
             btn_mute: gtk_builder.get_object(btn_mute_id).unwrap() 
         }
     }
+
+
+    pub fn init(&mut self) {
+        // adjust slider 
+        self.sldr_level.set_range(0.0, 100.0);
+        self.sldr_level.set_value(100.0);
+        self.sldr_level.set_increments(1.0, 5.0);
+        self.sldr_level.set_slider_size_fixed(true);
+        self.sldr_level.set_round_digits(0);
+        self.sldr_level.set_digits(0);
+
+        self.btn_level_dec.connect_clicked(
+          clone!( @weak self.sldr_level as sldr => move |_| {
+              sldr.set_value(sldr.get_value() - 1.0);
+          }));
+
+        self.btn_level_inc.connect_clicked(
+          clone!( @weak self.sldr_level as sldr => move |_| {
+              sldr.set_value(sldr.get_value() + 1.0);
+          }));
+    }
 }
 
+pub struct MaintabWidget {
+   btnbox: gtk::ButtonBox,
+   stack: gtk::Stack,
+   btn_sip: gtk::Button,
+   btn_account: gtk::Button,
+   btn_settings: gtk::Button,
+   btn_codec: gtk::Button,
+   btn_about: gtk::Button 
+}
 
+impl MaintabWidget {
+  
+    pub fn new(gtk_builder: &gtk::Builder,
+          btnbox_id: &str,
+          stack_id: &str,
+          btn_sip_id: &str,
+          btn_account_id: &str,
+          btn_settings_id: &str,
+          btn_codec_id: &str,
+          btn_about_id: &str
+      ) -> MaintabWidget {
+        MaintabWidget {
+            btnbox: gtk_builder.get_object(btnbox_id).unwrap(),
+            stack: gtk_builder.get_object(stack_id).unwrap(),
+            btn_sip: gtk_builder.get_object(btn_sip_id).unwrap(),
+            btn_account: gtk_builder.get_object(btn_account_id).unwrap(),
+            btn_settings: gtk_builder.get_object(btn_settings_id).unwrap(),
+            btn_codec: gtk_builder.get_object(btn_codec_id).unwrap(),
+            btn_about: gtk_builder.get_object(btn_about_id).unwrap()
+        }
+    }
+
+    pub fn init(&mut self) {
+
+        self.btn_sip.connect_clicked(
+          clone!( @weak self.stack as stk => move |_| {
+              stk.set_visible_child_name("page0");
+        }));
+
+        self.btn_account.connect_clicked(
+          clone!( @weak self.stack as stk => move |_| {
+              stk.set_visible_child_name("page1");
+        }));
+
+        self.btn_settings.connect_clicked(
+          clone!( @weak self.stack as stk => move |_| {
+              stk.set_visible_child_name("page2");
+        }));
+
+        self.btn_codec.connect_clicked(
+          clone!( @weak self.stack as stk => move |_| {
+              stk.set_visible_child_name("page3");
+        }));
+
+        self.btn_about.connect_clicked(
+          clone!( @weak self.stack as stk => move |_| {
+              stk.set_visible_child_name("page4");
+        }));
+    }
+
+}
 
 fn main() {
     gtk::init()
@@ -87,6 +169,9 @@ fn main() {
         gio::ApplicationFlags::FLAGS_NONE
     ).expect("GTK app fail to initialize.");
 
+    let sipua = SIPUserAgent::new(); 
+    sipua.start();
+
     // builder
     let main_src = include_str!("../glade/main_ui.glade");
     let builder: Builder = Builder::from_string(main_src);
@@ -94,7 +179,7 @@ fn main() {
     let main_window: gtk::ApplicationWindow = builder.get_object("main_ui").unwrap();
     
     // create input widget
-    let input_widget: TopbarWidget = TopbarWidget::new(&builder,
+    let mut input_widget: TopbarWidget = TopbarWidget::new(&builder,
          "lbl_topbar_input",
          "lbl_input_level_l",
          "lbl_input_level_r",
@@ -106,10 +191,11 @@ fn main() {
          "lbl_input_device",
          "cmb_input_device",
          "btn_input_mute"
-      ); 
+      );
+    input_widget.init();
     
     // create output widget
-    let output_widget: TopbarWidget = TopbarWidget::new(&builder,
+    let mut output_widget: TopbarWidget = TopbarWidget::new(&builder,
          "lbl_topbar_output",
          "lbl_output_level_l",
          "lbl_output_level_r",
@@ -121,9 +207,20 @@ fn main() {
          "lbl_output_device",
          "cmb_output_device",
          "btn_output_mute"
-      ); 
+      );
+    output_widget.init();
 
-
+    let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder,
+          "btnbox_main",
+          "stack_main",
+          "btn_main_sip",
+          "btn_main_account",
+          "btn_main_settings",
+          "btn_main_codec",
+          "btn_main_about"
+      );
+    maintab_widget.init();
+       
     // init application
     application.connect_activate(move |app| {
         // input
