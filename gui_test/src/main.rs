@@ -61,7 +61,7 @@ fn main() {
     let btn_output_mute: gtk::ToggleButton = builder.get_object("btn_output_mute").unwrap();
 
     // main function button
-    let btn_main_call: gtk::Button = builder.get_object("btn_main_call").unwrap();
+    let btn_main_call: gtk::Button = builder.get_object("btn_main_sip").unwrap();
     let btn_main_account: gtk::Button = builder.get_object("btn_main_account").unwrap();
     let btn_main_settings: gtk::Button = builder.get_object("btn_main_settings").unwrap();
     let btn_main_codec: gtk::Button = builder.get_object("btn_main_codec").unwrap();
@@ -83,6 +83,7 @@ fn main() {
     sldr_input_level.set_round_digits(0);
     sldr_input_level.set_digits(0);
 
+    // input slider change
     sldr_input_level.connect_value_changed(| sldr| {
         println!("sldr_input_level value: {}", sldr.get_value());
     });
@@ -95,6 +96,7 @@ fn main() {
     sldr_output_level.set_round_digits(0);
     sldr_output_level.set_digits(0);
 
+    // output slider change
     sldr_output_level.connect_value_changed(| sldr | {
         println!("sldr_output_level value: {}", sldr.get_value());
     });
@@ -127,13 +129,14 @@ fn main() {
         sldr.set_value(sldr.get_value() + 1.0);
     }));
 
+    // output mute
     btn_output_mute.connect_clicked(|btn| {
         println!("btn_output_mute active: {}", btn.get_active());
     });
 
     // main function button
     btn_main_call.connect_clicked(|_| {
-        println!("btn_main_call");
+        println!("btn_main_sip");
     });
 
     btn_main_account.connect_clicked(|_| {
