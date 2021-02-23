@@ -12,12 +12,14 @@ use super::pjdefault::AutoCreate;
 use super::pjlib::PjTimerEntry;
 use super::pjsip::PjsipModuleCallback;
 use super::pjsua::PjsuaCallback;
+
 use super::pjlib::*;
 use super::pjmedia::*;
 use super::pjsip::*;
 use super::pjsua::*;
 
 use std::ffi::CString;
+use std::ffi::CStr;
 use std::fmt::format;
 use std::mem;
 use std::ops::Drop;
@@ -150,29 +152,6 @@ impl SIPPresence {
 }
 
 pub struct SIPIMessages {}
-
-pub struct SIPAudio {
-    capture_id: i32,
-    playback_id: i32,
-}
-
-impl SIPAudio {
-    pub fn new() -> SIPAudio {
-        SIPAudio {
-            capture_id: -1,
-            playback_id: -1,
-        }
-    }
-
-    pub fn init(&self) {
-        unsafe {
-            let status = pjsua_set_snd_dev(self.capture_id, self.playback_id);
-            if status != pj_constants__PJ_SUCCESS as i32 {
-                panic!("Panic cant initialize SIPAudio");
-            }
-        }
-    }
-}
 
 pub struct SIPWavPlayer {
     id: pjsua_player_id,
@@ -352,10 +331,10 @@ impl SIPTones {
             assert_ne!(self.port.is_null(), true);
             assert_ne!(self.slot, -1);
 
-            println!(
-                "SIPTones init slot {}, freq {} and {}",
-                self.slot, freq1, freq2
-            );
+            // println!(
+            //     "SIPTones init slot {}, freq {} and {}",
+            //     self.slot, freq1, freq2
+            // );
         }
     }
 }
@@ -422,7 +401,7 @@ impl SIPRingback {
 
             assert_ne!(self.port.is_null(), true);
             assert_ne!(self.slot, -1);
-            println!("SIPRingback init with slot {}", self.slot);
+            // println!("SIPRingback init with slot {}", self.slot);
         }
     }
 }
@@ -516,17 +495,22 @@ impl Drop for SIPRingtone {
     }
 }
 
+// Media Implementation
 pub struct SIPMedia {
     ctx: pjsua_media_config,
-    
+    capture_dev: i32,
+    playback_dev: i32
 }
 
 impl SIPMedia {
+
     pub fn new() -> SIPMedia {
         let mut cfg = SIPMedia {
-            ctx: pjsua_media_config::new()
+            ctx: pjsua_media_config::new(),
+            capture_dev: -1,
+            playback_dev: -2
         };
-      
+
         // spesific tune for AudioIpCodec
         cfg.ctx.clock_rate = 48000;
         cfg.ctx.snd_clock_rate = 48000;
@@ -534,29 +518,83 @@ impl SIPMedia {
 
         // media encoding and decoding quality
         cfg.ctx.quality = 10;
-        
+
         // disable voice activity detection
         cfg.ctx.no_vad = pj_constants__PJ_TRUE as pj_bool_t;
-        
+
         // disable echo cancelar
         cfg.ctx.ec_tail_len = 0;
         cfg.ctx.ec_options = 0;
 
         cfg
-
     }
 
-    pub fn init() {
-        let status: pj_status_t;
-        
+    pub fn init(&self) {
+        unsafe {
+            let status = pjsua_set_snd_dev(self.capture_dev, self.playback_dev);
+            if status != pj_constants__PJ_SUCCESS as pj_status_t {
+                panic!("cant set audio device");
+            }
+        }
+    }
+
+    pub fn get_input_device_list(&self) -> Vec<String> {
+        unsafe{
+            let dev_count = pjmedia_aud_dev_count();
+            let mut result: Vec<String> = Vec::new();
+
+            for idx in 0..dev_count {
+                let mut info = pjmedia_aud_dev_info::new();
+
+                let status = pjmedia_aud_dev_get_info(idx as i32,
+                    &mut info as *mut _);
+                if status != pj_constants__PJ_SUCCESS as pj_status_t {
+                    panic!("can't enumerate input audio device");
+                }
+
+                let dev_name = format!("{} (in:{}, out:{})",
+                    CStr::from_ptr(info.name.as_ptr()).to_owned().into_string().expect("error"),
+                    info.input_count, info.output_count);
+
+                result.push(dev_name);
+            }
+
+            result
+        }
+    }
+
+    pub fn get_output_device_list(&self) -> Vec<String> {
+        unsafe{
+            let dev_count = pjmedia_aud_dev_count();
+            let mut result: Vec<String> = Vec::new();
+
+            for idx in 0..dev_count {
+                let mut info: pjmedia_aud_dev_info = pjmedia_aud_dev_info::new();
+
+                let status = pjmedia_aud_dev_get_info(idx as i32,
+                    &mut info as *mut _);
+                if status != pj_constants__PJ_SUCCESS as pj_status_t {
+                    panic!("can't enumerate output audio device");
+                }
+
+                let dev_name = format!("{} (in:{},out:{})",
+                    CStr::from_ptr(info.name.as_ptr()).to_owned().into_string().expect("error"),
+                    info.input_count, info.output_count);
+
+                result.push(dev_name);
+            }
+
+            result
+        }
+
     }
 
     pub fn media_list () {
-
     }
 
 }
 
+// Transport wrapper
 pub struct SIPTransport {
     id: i32,
     acc_id: i32,
@@ -756,6 +794,7 @@ impl SIPCall {
 }
 
 impl PjTimerEntry for SIPCall {
+
     unsafe extern "C" fn pj_timer_heap_callback(
         timer_heap: *mut pj_timer_heap_t,
         entry: *mut pj_timer_entry,
@@ -802,7 +841,7 @@ pub struct SIPCore {
     pool: *mut pj_pool_t,
     app_config: pjsua_config,
     log_config: pjsua_logging_config,
-    media_config: pjsua_media_config,
+    media_config: SIPMedia,
     no_udp: bool,
     no_tcp: bool,
     use_ipv6: bool,
@@ -813,7 +852,6 @@ pub struct SIPCore {
     tones: Vec<SIPTones>,
     ringback: SIPRingback,
     ringtone: SIPRingtone,
-    audio_device: SIPAudio,
     wav_player: Option<SIPWavPlayer>,
     wav_recorder: Option<SIPWavRecorder>,
     default_handler: pjsip_module,
@@ -844,7 +882,7 @@ impl SIPCore {
             pool: ptr::null_mut(),
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
-            media_config: pjsua_media_config::new(),
+            media_config: SIPMedia::new(),
             no_udp: false,
             no_tcp: false,
             use_ipv6: false,
@@ -855,7 +893,6 @@ impl SIPCore {
             tones: Vec::new(),
             ringback: SIPRingback::new(),
             ringtone: SIPRingtone::new(),
-            audio_device: SIPAudio::new(),
             wav_player: None,
             wav_recorder: None,
             default_handler: pjsip_module::new(),
@@ -912,7 +949,7 @@ impl SIPCore {
             pjsua_init(
                 &mut self.app_config as *mut _,
                 &mut self.log_config as *mut _,
-                &mut self.media_config as *mut _,
+                &mut self.media_config.ctx as *mut _,
             );
 
             // pjsip endpoint for unhadled error
@@ -930,10 +967,10 @@ impl SIPCore {
             }
 
             // init ringback
-            self.ringback.init(self.pool, self.media_config);
+            self.ringback.init(self.pool, self.media_config.ctx);
 
             // init ringtone
-            self.ringtone.init(self.pool, self.media_config);
+            self.ringtone.init(self.pool, self.media_config.ctx);
 
             // Initialize UDP Transport
             if !self.no_udp {
@@ -955,8 +992,7 @@ impl SIPCore {
                 }
             }
 
-            // init audio device
-            self.audio_device.init();
+            self.media_config.init();
         }
     }
 
@@ -1419,6 +1455,29 @@ impl SIPUserAgent {
             }
         }
     }
+
+    pub fn get_output_device_list(&self) -> Vec<String> {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipcore) => {
+                    sipcore.media_config.get_output_device_list()
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn get_input_device_list(&self) -> Vec<String> {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipcore ) => {
+                    sipcore.media_config.get_input_device_list()
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
 }
 
 impl Drop for SIPUserAgent {

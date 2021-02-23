@@ -12,12 +12,13 @@ extern crate gtk;
 extern crate gio;
 extern crate glib;
 
-use gtk::prelude::*;
+use gtk::{HeaderBar, prelude::*};
 use gio::prelude::*;
 
 use std::env;
 use std::include_str;
-use gtk::{Application, ApplicationWindow, Button, Builder, Scale};
+use gtk::{Application, ApplicationWindow, Statusbar, Button, Builder, Scale};
+use gtk::ComboBoxText;
 use glib::clone;
 
 
@@ -34,7 +35,7 @@ use sipua::*;
 // this struct for grouping gtk_object
 pub struct TopbarWidget {
     lbl_topbar: gtk::Label,
-    lbl_level_l: gtk::Label, 
+    lbl_level_l: gtk::Label,
     lbl_level_r: gtk::Label,
     lvl_l: gtk::LevelBar,
     lvl_r: gtk::LevelBar,
@@ -42,12 +43,12 @@ pub struct TopbarWidget {
     btn_level_inc: gtk::Button,
     sldr_level: gtk::Scale,
     lbl_device: gtk::Label,
-    cmb_device: gtk::ComboBox,
+    cmb_device: gtk::ComboBoxText,
     btn_mute: gtk::ToggleButton
 }
 
 impl TopbarWidget {
-    
+
     fn new(gtk_builder: &gtk::Builder,
         lbl_topbar_id: &str,
         lbl_level_l_id: &str,
@@ -63,7 +64,7 @@ impl TopbarWidget {
       ) -> TopbarWidget {
         TopbarWidget{
             lbl_topbar: gtk_builder.get_object(lbl_topbar_id).unwrap(),
-            lbl_level_l: gtk_builder.get_object(lbl_level_l_id).unwrap(), 
+            lbl_level_l: gtk_builder.get_object(lbl_level_l_id).unwrap(),
             lbl_level_r: gtk_builder.get_object(lbl_level_r_id).unwrap(),
             lvl_l: gtk_builder.get_object(lvl_l_id).unwrap(),
             lvl_r: gtk_builder.get_object(lvl_r_id).unwrap(),
@@ -72,13 +73,12 @@ impl TopbarWidget {
             sldr_level: gtk_builder.get_object(sldr_level_id).unwrap(),
             lbl_device: gtk_builder.get_object(lbl_device_id).unwrap(),
             cmb_device: gtk_builder.get_object(cmb_device_id).unwrap(),
-            btn_mute: gtk_builder.get_object(btn_mute_id).unwrap() 
+            btn_mute: gtk_builder.get_object(btn_mute_id).unwrap()
         }
     }
 
-
     pub fn init(&mut self) {
-        // adjust slider 
+        // adjust slider
         self.sldr_level.set_range(0.0, 100.0);
         self.sldr_level.set_value(100.0);
         self.sldr_level.set_increments(1.0, 5.0);
@@ -94,22 +94,33 @@ impl TopbarWidget {
         self.btn_level_inc.connect_clicked(
           clone!( @weak self.sldr_level as sldr => move |_| {
               sldr.set_value(sldr.get_value() + 1.0);
-          }));
+        }));
+
+        self.cmb_device.remove_all();
+
+    }
+
+    // add device
+    pub fn add_device_text(&mut self, name: &str){
+        self.cmb_device.append_text(name);
+    }
+
+    pub fn clear_device_text(&mut self) {
+        self.cmb_device.remove_all();
     }
 }
 
 pub struct MaintabWidget {
    btnbox: gtk::ButtonBox,
-   stack: gtk::Stack,
-   btn_sip: gtk::Button,
+   stack: gtk::Stack, btn_sip: gtk::Button,
    btn_account: gtk::Button,
    btn_settings: gtk::Button,
    btn_codec: gtk::Button,
-   btn_about: gtk::Button 
+   btn_about: gtk::Button
 }
 
 impl MaintabWidget {
-  
+
     pub fn new(gtk_builder: &gtk::Builder,
           btnbox_id: &str,
           stack_id: &str,
@@ -160,6 +171,35 @@ impl MaintabWidget {
 
 }
 
+pub struct StatusbarWidget {
+    statusbar: gtk::Statusbar,
+    lbl_status: gtk::Label
+}
+
+impl StatusbarWidget {
+
+    pub fn new(gtk_builder: &gtk::Builder, statusbar_id: &str, lbl_status_id: &str) -> StatusbarWidget {
+        StatusbarWidget {
+            statusbar: gtk_builder.get_object(statusbar_id).unwrap(),
+            lbl_status: gtk_builder.get_object(lbl_status_id).unwrap()
+        }
+    }
+}
+
+pub struct HeaderbarWidget{
+    cpu_lvl: gtk::LevelBar
+}
+
+impl HeaderbarWidget {
+    pub fn new(gtk_builder: &gtk::Builder, cpu_lvl_id: &str) -> HeaderbarWidget {
+        HeaderbarWidget {
+            cpu_lvl: gtk_builder.get_object(cpu_lvl_id).unwrap()
+        }
+    }
+}
+
+
+
 fn main() {
     gtk::init()
     .expect("Cant initalize gtk");
@@ -169,7 +209,7 @@ fn main() {
         gio::ApplicationFlags::FLAGS_NONE
     ).expect("GTK app fail to initialize.");
 
-    let sipua = SIPUserAgent::new(); 
+    let sipua = SIPUserAgent::new();
     sipua.start();
 
     // builder
@@ -177,7 +217,7 @@ fn main() {
     let builder: Builder = Builder::from_string(main_src);
 
     let main_window: gtk::ApplicationWindow = builder.get_object("main_ui").unwrap();
-    
+
     // create input widget
     let mut input_widget: TopbarWidget = TopbarWidget::new(&builder,
          "lbl_topbar_input",
@@ -193,7 +233,7 @@ fn main() {
          "btn_input_mute"
       );
     input_widget.init();
-    
+
     // create output widget
     let mut output_widget: TopbarWidget = TopbarWidget::new(&builder,
          "lbl_topbar_output",
@@ -220,7 +260,23 @@ fn main() {
           "btn_main_about"
       );
     maintab_widget.init();
-       
+
+    let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder,
+      "statusbar_main", "lbl_statusbar_main");
+
+    let headerbar_widget: HeaderbarWidget = HeaderbarWidget::new(&builder, "lvl_cpu");
+
+    // input_widget.add_device("default audio device");
+    // input_widget.add_device("sblaster line in");
+
+    for dev_name in sipua.get_input_device_list().iter_mut() {
+        input_widget.add_device_text(dev_name);
+    }
+
+    for dev_name in sipua.get_output_device_list().iter_mut() {
+        output_widget.add_device_text(dev_name);
+    }
+
     // init application
     application.connect_activate(move |app| {
         // input
@@ -231,10 +287,4 @@ fn main() {
     // sub testing gui
     application.run(&env::args().collect::<Vec<_>>());
 
-
-    // let sip = SIPUserAgent::new();
-    // let mut ln = String::new();
-    // sip.start();
-    // println!("todo: main application here.");
-    // std::io::stdin().read_line(&mut ln).unwrap();
 }

@@ -192,5 +192,20 @@ impl AutoCreate<pjmedia_tone_desc> for pjmedia_tone_desc {
 }
 
 
+impl AutoCreate<pjmedia_aud_dev_info> for pjmedia_aud_dev_info {
+    fn new () -> pjmedia_aud_dev_info {
+        pjmedia_aud_dev_info {
+            name: [0; 64],
+            input_count: 0,
+            output_count: 0,
+            default_samples_per_sec: 0,
+            driver: [0; 32],
+            caps: 0,
+            routes: 0,
+            ext_fmt_cnt: 0,
+            ext_fmt: [pjmedia_format::new(); 8]
+        }
+    }
+}
 
 
