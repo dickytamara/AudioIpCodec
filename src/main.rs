@@ -27,6 +27,7 @@ use glib::clone;
 mod dialpad;
 mod audio_line;
 mod maintab;
+mod header;
 
 // sipua module
 mod pjdefault;
@@ -39,6 +40,7 @@ mod sipua;
 use dialpad::DialpadWidget;
 use audio_line::AudioLineWidget;
 use maintab::MaintabWidget;
+use header::HeaderWidget;
 
 use sipua::*;
 
@@ -62,22 +64,6 @@ impl StatusbarWidget {
     }
 }
 
-pub struct HeaderbarWidget{
-    cpu_lvl: gtk::LevelBar
-}
-
-impl HeaderbarWidget {
-
-    pub fn new(gtk_builder: &gtk::Builder) -> HeaderbarWidget {
-        HeaderbarWidget {
-            cpu_lvl: gtk_builder.get_object("lvl_cpu").unwrap()
-        }
-    }
-
-    pub fn init(&self) {
-
-    }
-}
 
 fn main() {
     gtk::init()
@@ -134,7 +120,7 @@ fn main() {
 
     let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
 
-    let headerbar_widget: HeaderbarWidget = HeaderbarWidget::new(&builder);
+    let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
 
     let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
     dialpad_widget.init();
