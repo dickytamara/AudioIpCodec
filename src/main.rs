@@ -12,6 +12,8 @@ extern crate gtk;
 extern crate gio;
 extern crate glib;
 
+extern crate systemstat;
+
 use gtk::{HeaderBar, TreeView, prelude::*};
 use gio::prelude::*;
 
@@ -103,6 +105,7 @@ fn main() {
     let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
 
     let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
+    headerbar_widget.init();
 
     let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
     dialpad_widget.init();
