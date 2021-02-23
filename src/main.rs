@@ -242,7 +242,89 @@ impl DialpadWidget {
         }
     }
 
-    pub fn init(&self) {
+    pub fn init(&mut self) {
+
+        // dialpad 1 event
+        self.btn_dial_1.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 2 event
+        self.btn_dial_2.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 3 event
+        self.btn_dial_3.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 4 event
+        self.btn_dial_4.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 5 event
+        self.btn_dial_5.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 6 event
+        self.btn_dial_6.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 7 event
+        self.btn_dial_7.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 8 event
+        self.btn_dial_8.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 9 event
+        self.btn_dial_9.connect_clicked(
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad 0 event
+        self.btn_dial_0.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad asterisk event
+        self.btn_dial_ast.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // dialpad hash event
+        self.btn_dial_hash.connect_clicked (
+            clone!( @weak self.ent_call_address as entry => move |_| {
+
+        }));
+
+        // btn dialpad call event
+        self.btn_call.connect_clicked ( |_| {
+
+        });
+
+        // btn dialpad call log clear event
+        self.btn_call_log_clear.connect_clicked ( |_| {
+
+        });
 
     }
 }
@@ -305,7 +387,7 @@ fn main() {
     let headerbar_widget: HeaderbarWidget = HeaderbarWidget::new(&builder);
 
     let dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
-    
+
     for dev_name in sipua.get_input_device_list().iter_mut() {
         input_widget.add_device_text(dev_name);
     }
