@@ -25,6 +25,7 @@ use glib::clone;
 
 // gui module
 mod dialpad;
+mod audio_line;
 
 // sipua module
 mod pjdefault;
@@ -35,86 +36,9 @@ mod pjsua;
 mod sipua;
 
 use dialpad::DialpadWidget;
+use audio_line::AudioLineWidget;
 use sipua::*;
 
-
-// this struct for grouping gtk_object
-pub struct TopbarWidget {
-    lbl_topbar: gtk::Label,
-    lbl_level_l: gtk::Label,
-    lbl_level_r: gtk::Label,
-    lvl_l: gtk::LevelBar,
-    lvl_r: gtk::LevelBar,
-    btn_level_dec: gtk::Button,
-    btn_level_inc: gtk::Button,
-    sldr_level: gtk::Scale,
-    lbl_device: gtk::Label,
-    cmb_device: gtk::ComboBoxText,
-    btn_mute: gtk::ToggleButton
-}
-
-impl TopbarWidget {
-
-    fn new(gtk_builder: &gtk::Builder,
-        lbl_topbar_id: &str,
-        lbl_level_l_id: &str,
-        lbl_level_r_id: &str,
-        lvl_l_id: &str,
-        lvl_r_id: &str,
-        btn_level_dec_id: &str,
-        btn_level_inc_id: &str,
-        sldr_level_id: &str,
-        lbl_device_id: &str,
-        cmb_device_id: &str,
-        btn_mute_id: &str
-      ) -> TopbarWidget {
-        TopbarWidget{
-            lbl_topbar: gtk_builder.get_object(lbl_topbar_id).unwrap(),
-            lbl_level_l: gtk_builder.get_object(lbl_level_l_id).unwrap(),
-            lbl_level_r: gtk_builder.get_object(lbl_level_r_id).unwrap(),
-            lvl_l: gtk_builder.get_object(lvl_l_id).unwrap(),
-            lvl_r: gtk_builder.get_object(lvl_r_id).unwrap(),
-            btn_level_dec: gtk_builder.get_object(btn_level_dec_id).unwrap(),
-            btn_level_inc: gtk_builder.get_object(btn_level_inc_id).unwrap(),
-            sldr_level: gtk_builder.get_object(sldr_level_id).unwrap(),
-            lbl_device: gtk_builder.get_object(lbl_device_id).unwrap(),
-            cmb_device: gtk_builder.get_object(cmb_device_id).unwrap(),
-            btn_mute: gtk_builder.get_object(btn_mute_id).unwrap()
-        }
-    }
-
-    pub fn init(&mut self) {
-        // adjust slider
-        self.sldr_level.set_range(0.0, 100.0);
-        self.sldr_level.set_value(100.0);
-        self.sldr_level.set_increments(1.0, 5.0);
-        self.sldr_level.set_slider_size_fixed(true);
-        self.sldr_level.set_round_digits(0);
-        self.sldr_level.set_digits(0);
-
-        self.btn_level_dec.connect_clicked(
-          clone!( @weak self.sldr_level as sldr => move |_| {
-              sldr.set_value(sldr.get_value() - 1.0);
-          }));
-
-        self.btn_level_inc.connect_clicked(
-          clone!( @weak self.sldr_level as sldr => move |_| {
-              sldr.set_value(sldr.get_value() + 1.0);
-        }));
-
-        self.cmb_device.remove_all();
-
-    }
-
-    // add device
-    pub fn add_device_text(&mut self, name: &str){
-        self.cmb_device.append_text(name);
-    }
-
-    pub fn clear_device_text(&mut self) {
-        self.cmb_device.remove_all();
-    }
-}
 
 pub struct MaintabWidget {
    btnbox: gtk::ButtonBox,
@@ -226,7 +150,7 @@ fn main() {
     let main_window: gtk::ApplicationWindow = builder.get_object("main_ui").unwrap();
 
     // create input widget
-    let mut input_widget: TopbarWidget = TopbarWidget::new(&builder,
+    let mut input_widget: AudioLineWidget = AudioLineWidget::new(&builder,
          "lbl_topbar_input",
          "lbl_input_level_l",
          "lbl_input_level_r",
@@ -242,7 +166,7 @@ fn main() {
     input_widget.init();
 
     // create output widget
-    let mut output_widget: TopbarWidget = TopbarWidget::new(&builder,
+    let mut output_widget: AudioLineWidget = AudioLineWidget::new(&builder,
          "lbl_topbar_output",
          "lbl_output_level_l",
          "lbl_output_level_r",
@@ -254,7 +178,7 @@ fn main() {
          "lbl_output_device",
          "cmb_output_device",
          "btn_output_mute"
-      );
+    );
     output_widget.init();
 
     let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
