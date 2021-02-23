@@ -16,12 +16,17 @@ use gtk::{HeaderBar, TreeView, prelude::*};
 use gio::prelude::*;
 
 use std::env;
+use std::fmt::format;
 use std::include_str;
 use gtk::{Application, ApplicationWindow, Statusbar, Button, Builder, Scale};
 use gtk::ComboBoxText;
 use glib::clone;
 
 
+// gui module
+mod dialpad;
+
+// sipua module
 mod pjdefault;
 mod pjlib;
 mod pjsip;
@@ -29,6 +34,7 @@ mod pjmedia;
 mod pjsua;
 mod sipua;
 
+use dialpad::DialpadWidget;
 use sipua::*;
 
 
@@ -201,134 +207,6 @@ impl HeaderbarWidget {
     }
 }
 
-pub struct DialpadWidget {
-    btn_dial_1: gtk::Button,
-    btn_dial_2: gtk::Button,
-    btn_dial_3: gtk::Button,
-    btn_dial_4: gtk::Button,
-    btn_dial_5: gtk::Button,
-    btn_dial_6: gtk::Button,
-    btn_dial_7: gtk::Button,
-    btn_dial_8: gtk::Button,
-    btn_dial_9: gtk::Button,
-    btn_dial_0: gtk::Button,
-    btn_dial_ast: gtk::Button,
-    btn_dial_hash: gtk::Button,
-    btn_call: gtk::Button,
-    btn_call_log_clear: gtk::Button,
-    ent_call_address: gtk::Entry,
-    tv_call_log: gtk::TreeView
-}
-
-impl DialpadWidget {
-    pub fn new (gtk_builder: &gtk::Builder) -> DialpadWidget {
-        DialpadWidget{
-            btn_dial_1: gtk_builder.get_object("btn_dial_1").unwrap(),
-            btn_dial_2: gtk_builder.get_object("btn_dial_2").unwrap(),
-            btn_dial_3: gtk_builder.get_object("btn_dial_3").unwrap(),
-            btn_dial_4: gtk_builder.get_object("btn_dial_4").unwrap(),
-            btn_dial_5: gtk_builder.get_object("btn_dial_5").unwrap(),
-            btn_dial_6: gtk_builder.get_object("btn_dial_6").unwrap(),
-            btn_dial_7: gtk_builder.get_object("btn_dial_7").unwrap(),
-            btn_dial_8: gtk_builder.get_object("btn_dial_8").unwrap(),
-            btn_dial_9: gtk_builder.get_object("btn_dial_9").unwrap(),
-            btn_dial_0: gtk_builder.get_object("btn_dial_0").unwrap(),
-            btn_dial_ast: gtk_builder.get_object("btn_dial_ast").unwrap(),
-            btn_dial_hash: gtk_builder.get_object("btn_dial_hash").unwrap(),
-            btn_call: gtk_builder.get_object("btn_call").unwrap(),
-            btn_call_log_clear: gtk_builder.get_object("btn_call_log_clear").unwrap(),
-            ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
-            tv_call_log: gtk_builder.get_object("tv_call_log").unwrap()
-        }
-    }
-
-    pub fn init(&mut self) {
-
-        // dialpad 1 event
-        self.btn_dial_1.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 2 event
-        self.btn_dial_2.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 3 event
-        self.btn_dial_3.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 4 event
-        self.btn_dial_4.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 5 event
-        self.btn_dial_5.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 6 event
-        self.btn_dial_6.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 7 event
-        self.btn_dial_7.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 8 event
-        self.btn_dial_8.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 9 event
-        self.btn_dial_9.connect_clicked(
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad 0 event
-        self.btn_dial_0.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad asterisk event
-        self.btn_dial_ast.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // dialpad hash event
-        self.btn_dial_hash.connect_clicked (
-            clone!( @weak self.ent_call_address as entry => move |_| {
-
-        }));
-
-        // btn dialpad call event
-        self.btn_call.connect_clicked ( |_| {
-
-        });
-
-        // btn dialpad call log clear event
-        self.btn_call_log_clear.connect_clicked ( |_| {
-
-        });
-
-    }
-}
-
 fn main() {
     gtk::init()
     .expect("Cant initalize gtk");
@@ -386,7 +264,8 @@ fn main() {
 
     let headerbar_widget: HeaderbarWidget = HeaderbarWidget::new(&builder);
 
-    let dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
+    let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
+    dialpad_widget.init();
 
     for dev_name in sipua.get_input_device_list().iter_mut() {
         input_widget.add_device_text(dev_name);
