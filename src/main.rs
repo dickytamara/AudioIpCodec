@@ -12,7 +12,7 @@ extern crate gtk;
 extern crate gio;
 extern crate glib;
 
-use gtk::{HeaderBar, prelude::*};
+use gtk::{HeaderBar, TreeView, prelude::*};
 use gio::prelude::*;
 
 use std::env;
@@ -121,25 +121,19 @@ pub struct MaintabWidget {
 
 impl MaintabWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder,
-          btnbox_id: &str,
-          stack_id: &str,
-          btn_sip_id: &str,
-          btn_account_id: &str,
-          btn_settings_id: &str,
-          btn_codec_id: &str,
-          btn_about_id: &str
-      ) -> MaintabWidget {
+    pub fn new(gtk_builder: &gtk::Builder) -> MaintabWidget {
+
         MaintabWidget {
-            btnbox: gtk_builder.get_object(btnbox_id).unwrap(),
-            stack: gtk_builder.get_object(stack_id).unwrap(),
-            btn_sip: gtk_builder.get_object(btn_sip_id).unwrap(),
-            btn_account: gtk_builder.get_object(btn_account_id).unwrap(),
-            btn_settings: gtk_builder.get_object(btn_settings_id).unwrap(),
-            btn_codec: gtk_builder.get_object(btn_codec_id).unwrap(),
-            btn_about: gtk_builder.get_object(btn_about_id).unwrap()
+            btnbox: gtk_builder.get_object("btnbox_main").unwrap(),
+            stack: gtk_builder.get_object("stack_main").unwrap(),
+            btn_sip: gtk_builder.get_object("btn_main_sip").unwrap(),
+            btn_account: gtk_builder.get_object("btn_main_account").unwrap(),
+            btn_settings: gtk_builder.get_object("btn_main_settings").unwrap(),
+            btn_codec: gtk_builder.get_object("btn_main_codec").unwrap(),
+            btn_about: gtk_builder.get_object("btn_main_about").unwrap()
         }
     }
+
 
     pub fn init(&mut self) {
 
@@ -178,11 +172,15 @@ pub struct StatusbarWidget {
 
 impl StatusbarWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder, statusbar_id: &str, lbl_status_id: &str) -> StatusbarWidget {
+    pub fn new(gtk_builder: &gtk::Builder) -> StatusbarWidget {
         StatusbarWidget {
-            statusbar: gtk_builder.get_object(statusbar_id).unwrap(),
-            lbl_status: gtk_builder.get_object(lbl_status_id).unwrap()
+            statusbar: gtk_builder.get_object("statusbar_main").unwrap(),
+            lbl_status: gtk_builder.get_object("lbl_statusbar_main").unwrap()
         }
+    }
+
+    pub fn init(&self) {
+
     }
 }
 
@@ -191,14 +189,63 @@ pub struct HeaderbarWidget{
 }
 
 impl HeaderbarWidget {
-    pub fn new(gtk_builder: &gtk::Builder, cpu_lvl_id: &str) -> HeaderbarWidget {
+
+    pub fn new(gtk_builder: &gtk::Builder) -> HeaderbarWidget {
         HeaderbarWidget {
-            cpu_lvl: gtk_builder.get_object(cpu_lvl_id).unwrap()
+            cpu_lvl: gtk_builder.get_object("lvl_cpu").unwrap()
         }
+    }
+
+    pub fn init(&self) {
+
     }
 }
 
+pub struct DialpadWidget {
+    btn_dial_1: gtk::Button,
+    btn_dial_2: gtk::Button,
+    btn_dial_3: gtk::Button,
+    btn_dial_4: gtk::Button,
+    btn_dial_5: gtk::Button,
+    btn_dial_6: gtk::Button,
+    btn_dial_7: gtk::Button,
+    btn_dial_8: gtk::Button,
+    btn_dial_9: gtk::Button,
+    btn_dial_0: gtk::Button,
+    btn_dial_ast: gtk::Button,
+    btn_dial_hash: gtk::Button,
+    btn_call: gtk::Button,
+    btn_call_log_clear: gtk::Button,
+    ent_call_address: gtk::Entry,
+    tv_call_log: gtk::TreeView
+}
 
+impl DialpadWidget {
+    pub fn new (gtk_builder: &gtk::Builder) -> DialpadWidget {
+        DialpadWidget{
+            btn_dial_1: gtk_builder.get_object("btn_dial_1").unwrap(),
+            btn_dial_2: gtk_builder.get_object("btn_dial_2").unwrap(),
+            btn_dial_3: gtk_builder.get_object("btn_dial_3").unwrap(),
+            btn_dial_4: gtk_builder.get_object("btn_dial_4").unwrap(),
+            btn_dial_5: gtk_builder.get_object("btn_dial_5").unwrap(),
+            btn_dial_6: gtk_builder.get_object("btn_dial_6").unwrap(),
+            btn_dial_7: gtk_builder.get_object("btn_dial_7").unwrap(),
+            btn_dial_8: gtk_builder.get_object("btn_dial_8").unwrap(),
+            btn_dial_9: gtk_builder.get_object("btn_dial_9").unwrap(),
+            btn_dial_0: gtk_builder.get_object("btn_dial_0").unwrap(),
+            btn_dial_ast: gtk_builder.get_object("btn_dial_ast").unwrap(),
+            btn_dial_hash: gtk_builder.get_object("btn_dial_hash").unwrap(),
+            btn_call: gtk_builder.get_object("btn_call").unwrap(),
+            btn_call_log_clear: gtk_builder.get_object("btn_call_log_clear").unwrap(),
+            ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
+            tv_call_log: gtk_builder.get_object("tv_call_log").unwrap()
+        }
+    }
+
+    pub fn init(&self) {
+
+    }
+}
 
 fn main() {
     gtk::init()
@@ -250,25 +297,15 @@ fn main() {
       );
     output_widget.init();
 
-    let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder,
-          "btnbox_main",
-          "stack_main",
-          "btn_main_sip",
-          "btn_main_account",
-          "btn_main_settings",
-          "btn_main_codec",
-          "btn_main_about"
-      );
+    let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
     maintab_widget.init();
 
-    let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder,
-      "statusbar_main", "lbl_statusbar_main");
+    let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
 
-    let headerbar_widget: HeaderbarWidget = HeaderbarWidget::new(&builder, "lvl_cpu");
+    let headerbar_widget: HeaderbarWidget = HeaderbarWidget::new(&builder);
 
-    // input_widget.add_device("default audio device");
-    // input_widget.add_device("sblaster line in");
-
+    let dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
+    
     for dev_name in sipua.get_input_device_list().iter_mut() {
         input_widget.add_device_text(dev_name);
     }

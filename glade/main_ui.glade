@@ -572,7 +572,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkEntry">
+                      <object class="GtkEntry" id="ent_call_address">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                       </object>
@@ -601,7 +601,7 @@
                             <property name="row-homogeneous">True</property>
                             <property name="column-homogeneous">True</property>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_1">
                                 <property name="label" translatable="yes">1</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -614,7 +614,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_2">
                                 <property name="label" translatable="yes">2</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -627,7 +627,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_3">
                                 <property name="label" translatable="yes">3</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -640,7 +640,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_4">
                                 <property name="label" translatable="yes">4</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -653,7 +653,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_5">
                                 <property name="label" translatable="yes">5</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -666,7 +666,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_6">
                                 <property name="label" translatable="yes">6</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -679,7 +679,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_7">
                                 <property name="label" translatable="yes">7</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -692,7 +692,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_8">
                                 <property name="label" translatable="yes">8</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -705,7 +705,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_9">
                                 <property name="label" translatable="yes">9</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -718,7 +718,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_ast">
                                 <property name="label" translatable="yes">*</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -731,7 +731,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_0">
                                 <property name="label" translatable="yes">0</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -744,7 +744,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_dial_hash">
                                 <property name="label" translatable="yes">#</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
@@ -771,7 +771,7 @@
                             <property name="margin-bottom">10</property>
                             <property name="orientation">vertical</property>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="btn_call">
                                 <property name="label" translatable="yes">Call
 </property>
                                 <property name="visible">True</property>
@@ -785,7 +785,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkTreeView" id="tv_log_call">
+                              <object class="GtkTreeView" id="tv_call_log">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="model">liststore1</property>
@@ -814,7 +814,7 @@
                                   <placeholder/>
                                 </child>
                                 <child>
-                                  <object class="GtkButton">
+                                  <object class="GtkButton" id="btn_call_log_clear">
                                     <property name="label" translatable="yes">Clear</property>
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
