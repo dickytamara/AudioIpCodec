@@ -19,7 +19,7 @@ impl AutoCreate<pj_str_t> for pj_str_t {
 impl AutoCreate<pj_ice_sess_options> for pj_ice_sess_options {
     fn new() -> pj_ice_sess_options {
         pj_ice_sess_options {
-            aggressive: pj_constants__PJ_FALSE as pj_bool_t,
+            aggressive: PJ_FALSE as pj_bool_t,
             nominated_check_delay: 0,
             controlled_agent_want_nom_timeout: 0,
             trickle: 0 as pj_ice_sess_trickle,
@@ -90,7 +90,7 @@ impl AutoCreate<pj_ssl_sock_param> for pj_ssl_sock_param {
             proto: 0 as pj_uint32_t,
             async_cnt: 0,
             concurrency: 0,
-            whole_data: pj_constants__PJ_FALSE as pj_bool_t,
+            whole_data: PJ_FALSE as pj_bool_t,
             send_buffer_size: 0,
             read_buffer_size: 0,
             ciphers_num: 0,
@@ -101,15 +101,15 @@ impl AutoCreate<pj_ssl_sock_param> for pj_ssl_sock_param {
             entropy_type: 0,
             entropy_path: pj_str_t::new(),
             timeout: pj_time_val::new(),
-            verify_peer: pj_constants__PJ_FALSE as pj_bool_t,
-            require_client_cert: pj_constants__PJ_FALSE as pj_bool_t,
+            verify_peer: PJ_FALSE as pj_bool_t,
+            require_client_cert: PJ_FALSE as pj_bool_t,
             server_name: pj_str_t::new(),
-            reuse_addr: pj_constants__PJ_FALSE as pj_bool_t,
+            reuse_addr: PJ_FALSE as pj_bool_t,
             qos_type: 0,
             qos_params: pj_qos_params::new(),
-            qos_ignore_error: pj_constants__PJ_FALSE as pj_bool_t,
+            qos_ignore_error: PJ_FALSE as pj_bool_t,
             sockopt_params: pj_sockopt_params::new(),
-            sockopt_ignore_error: pj_constants__PJ_FALSE as pj_bool_t,
+            sockopt_ignore_error: PJ_FALSE as pj_bool_t,
         }
     }
 }

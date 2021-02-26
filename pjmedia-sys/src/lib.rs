@@ -344,11 +344,11 @@ pub const PJMEDIA_AUD_DEFAULT_PLAYBACK_DEV: i32 = -2;
 // pub const PJMEDIA_VID_CODEC_MAX_FPS_CNT: u32 = 16;
 // pub const PJMEDIA_VID_CODEC_MGR_MAX_CODECS: u32 = 32;
 
-pub const pjmedia_type_PJMEDIA_TYPE_NONE: pjmedia_type = 0;
-pub const pjmedia_type_PJMEDIA_TYPE_AUDIO: pjmedia_type = 1;
-pub const pjmedia_type_PJMEDIA_TYPE_VIDEO: pjmedia_type = 2;
-pub const pjmedia_type_PJMEDIA_TYPE_APPLICATION: pjmedia_type = 3;
-pub const pjmedia_type_PJMEDIA_TYPE_UNKNOWN: pjmedia_type = 4;
+pub const PJMEDIA_TYPE_NONE: pjmedia_type = 0;
+pub const PJMEDIA_TYPE_AUDIO: pjmedia_type = 1;
+pub const PJMEDIA_TYPE_VIDEO: pjmedia_type = 2;
+pub const PJMEDIA_TYPE_APPLICATION: pjmedia_type = 3;
+pub const PJMEDIA_TYPE_UNKNOWN: pjmedia_type = 4;
 pub type pjmedia_type = c_uint;
 
 pub const pjmedia_tp_proto_PJMEDIA_TP_PROTO_NONE: pjmedia_tp_proto = 0;

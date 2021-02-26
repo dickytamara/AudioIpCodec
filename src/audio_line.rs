@@ -79,4 +79,11 @@ impl AudioLineWidget {
     pub fn clear_device_text(&mut self) {
         self.cmb_device.remove_all();
     }
+
+    pub fn on_scale_changed_value<F: Fn(i32) + 'static>(&self, call: F) {
+        self.sldr_level.connect_value_changed(move |s| {
+            call(s.get_value() as i32);
+        });
+    }
+
 }

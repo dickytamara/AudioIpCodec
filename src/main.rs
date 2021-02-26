@@ -17,7 +17,7 @@ extern crate systemstat;
 use gtk::{HeaderBar, TreeView, prelude::*};
 use gio::prelude::*;
 
-use std::env;
+use std::{borrow::BorrowMut, env};
 use std::fmt::format;
 use std::include_str;
 use gtk::{Application, ApplicationWindow, Statusbar, Button, Builder, Scale};
@@ -119,6 +119,18 @@ fn main() {
     maintab_widget.init();
     headerbar_widget.init();
     dialpad_widget.init();
+
+    // slider change
+    let sipua_clone = sipua.clone();
+    input_widget.on_scale_changed_value ( move |v| {
+        sipua_clone.set_input_level(v);
+    });
+
+    let sipua_clone = sipua.clone();
+    output_widget.on_scale_changed_value ( move |v| {
+        sipua_clone.set_output_level(v);
+    });
+
 
     // init application
     application.connect_activate(move |app| {
