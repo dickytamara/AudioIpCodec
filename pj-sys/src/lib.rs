@@ -301,9 +301,9 @@ pub type pj_int64_t = c_longlong;
 pub type pj_uint64_t = c_ulonglong;
 pub type size_t = c_ulong;
 
-pub const pj_constants__PJ_SUCCESS: pj_constants_ = 0;
-pub const pj_constants__PJ_TRUE: pj_constants_ = 1;
-pub const pj_constants__PJ_FALSE: pj_constants_ = 0;
+pub const PJ_SUCCESS: pj_constants_ = 0;
+pub const PJ_TRUE: pj_constants_ = 1;
+pub const PJ_FALSE: pj_constants_ = 0;
 
 pub type _bindgen_ty_1 = c_uint;
 pub type _bindgen_ty_2 = c_uint;

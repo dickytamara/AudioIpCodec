@@ -88,16 +88,16 @@ impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
             sigalgs: pj_str_t::new(),
             entropy_type: 0,
             entropy_path: pj_str_t::new(),
-            verify_server: pj_constants__PJ_FALSE as pj_bool_t,
-            verify_client: pj_constants__PJ_FALSE as pj_bool_t,
-            require_client_cert: pj_constants__PJ_FALSE as pj_bool_t,
+            verify_server: PJ_FALSE as pj_bool_t,
+            verify_client: PJ_FALSE as pj_bool_t,
+            require_client_cert: PJ_FALSE as pj_bool_t,
             timeout: pj_time_val::new(),
-            reuse_addr: pj_constants__PJ_FALSE as pj_bool_t,
+            reuse_addr: PJ_FALSE as pj_bool_t,
             qos_type: 0,
             qos_params: pj_qos_params::new(),
-            qos_ignore_error: pj_constants__PJ_FALSE as pj_bool_t,
+            qos_ignore_error: PJ_FALSE as pj_bool_t,
             sockopt_params: pj_sockopt_params::new(),
-            sockopt_ignore_error: pj_constants__PJ_FALSE as pj_bool_t,
+            sockopt_ignore_error: PJ_FALSE as pj_bool_t,
             on_accept_fail_cb: None,
         }
     }
@@ -225,7 +225,7 @@ impl AutoCreate<pjsip_tpselector> for pjsip_tpselector {
     fn new() -> pjsip_tpselector {
         pjsip_tpselector {
             type_: 0,
-            disable_connection_reuse: pj_constants__PJ_FALSE as pj_bool_t,
+            disable_connection_reuse: PJ_FALSE as pj_bool_t,
             u: pjsip_tpselector__bindgen_ty_1::new(),
         }
     }
@@ -262,7 +262,7 @@ impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
             dest_info: pjsip_tx_data__bindgen_ty_1::new(),
             tp_info: pjsip_tx_data__bindgen_ty_2::new(),
             tp_sel: pjsip_tpselector::new(),
-            auth_retry: pj_constants__PJ_FALSE as pj_bool_t,
+            auth_retry: PJ_FALSE as pj_bool_t,
             mod_data: [ptr::null_mut(); 32],
             via_addr: pjsip_host_port::new(),
             via_tp: ptr::null_mut(),
@@ -287,7 +287,7 @@ impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {
 impl AutoCreate<pjsip_pres_status__bindgen_ty_1> for pjsip_pres_status__bindgen_ty_1 {
     fn new() -> pjsip_pres_status__bindgen_ty_1 {
         pjsip_pres_status__bindgen_ty_1 {
-            basic_open: pj_constants__PJ_FALSE as pj_bool_t,
+            basic_open: PJ_FALSE as pj_bool_t,
             rpid: pjrpid_element::new(),
             id: pj_str_t::new(),
             contact: pj_str_t::new(),
@@ -301,7 +301,7 @@ impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
         pjsip_pres_status {
             info_cnt: 0,
             info: [pjsip_pres_status__bindgen_ty_1::new(); 8],
-            _is_valid: pj_constants__PJ_FALSE as pj_bool_t,
+            _is_valid: PJ_FALSE as pj_bool_t,
         }
     }
 }

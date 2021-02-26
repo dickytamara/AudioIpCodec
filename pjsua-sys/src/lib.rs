@@ -727,14 +727,15 @@ pub type pjsua_ipv6_use = c_uint;
 pub const pjsua_nat64_opt_PJSUA_NAT64_DISABLED: pjsua_nat64_opt = 0;
 pub const pjsua_nat64_opt_PJSUA_NAT64_ENABLED: pjsua_nat64_opt = 1;
 pub type pjsua_nat64_opt = c_uint;
-
 pub type pjsua_vid_win_id = c_int;
-pub const pjsua_call_media_status_PJSUA_CALL_MEDIA_NONE: pjsua_call_media_status = 0;
-pub const pjsua_call_media_status_PJSUA_CALL_MEDIA_ACTIVE: pjsua_call_media_status = 1;
-pub const pjsua_call_media_status_PJSUA_CALL_MEDIA_LOCAL_HOLD: pjsua_call_media_status = 2;
-pub const pjsua_call_media_status_PJSUA_CALL_MEDIA_REMOTE_HOLD: pjsua_call_media_status = 3;
-pub const pjsua_call_media_status_PJSUA_CALL_MEDIA_ERROR: pjsua_call_media_status = 4;
+
+pub const PJSUA_CALL_MEDIA_NONE: pjsua_call_media_status = 0;
+pub const PJSUA_CALL_MEDIA_ACTIVE: pjsua_call_media_status = 1;
+pub const PJSUA_CALL_MEDIA_LOCAL_HOLD: pjsua_call_media_status = 2;
+pub const PJSUA_CALL_MEDIA_REMOTE_HOLD: pjsua_call_media_status = 3;
+pub const PJSUA_CALL_MEDIA_ERROR: pjsua_call_media_status = 4;
 pub type pjsua_call_media_status = c_uint;
+
 pub const pjsua_vid_req_keyframe_method_PJSUA_VID_REQ_KEYFRAME_SIP_INFO: pjsua_vid_req_keyframe_method = 1;
 pub const pjsua_vid_req_keyframe_method_PJSUA_VID_REQ_KEYFRAME_RTCP_PLI: pjsua_vid_req_keyframe_method = 2;
 pub type pjsua_vid_req_keyframe_method = c_uint;

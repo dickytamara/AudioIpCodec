@@ -41,18 +41,22 @@ pub trait PjsuaCallback {
         e: *mut pjsip_event,
     ) {
     }
-    unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {}
+    unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {
+    }
+
     unsafe extern "C" fn on_call_sdp_created(
         call_id: pjsua_call_id,
         sdp: *mut pjmedia_sdp_session,
         pool: *mut pj_pool_t,
         rem_sdp: *const pjmedia_sdp_session,
     ) {
+
     }
     unsafe extern "C" fn on_stream_precreate(
         call_id: pjsua_call_id,
         param: *mut pjsua_on_stream_precreate_param,
     ) {
+
     }
 
     unsafe extern "C" fn on_stream_created(
@@ -281,6 +285,7 @@ pub trait PjsuaCallback {
         med_idx: c_uint,
         event: *mut pjmedia_event,
     ) {
+        //println!("OnCallMediaEvent");
     }
 
     unsafe extern "C" fn on_create_media_transport(
@@ -289,6 +294,7 @@ pub trait PjsuaCallback {
         base_tp: *mut pjmedia_transport,
         flags: c_uint,
     ) -> *mut pjmedia_transport {
+        //println!("OnCreateMediaTransport");
         let mut transport: pjmedia_transport = pjmedia_transport::new();
         &mut transport as *mut _
     }
@@ -377,7 +383,7 @@ impl AutoCreate<pjsua_callback> for pjsua_callback {
 impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
     fn new() -> pjsua_logging_config {
         let mut config = pjsua_logging_config {
-            msg_logging: pj_constants__PJ_FALSE as pj_bool_t,
+            msg_logging: PJ_FALSE as pj_bool_t,
             level: 0,
             console_level: 0,
             decor: 0,
@@ -408,13 +414,13 @@ impl AutoCreate<pjsua_config> for pjsua_config {
             stun_host: pj_str_t::new(),
             stun_srv_cnt: 0,
             stun_srv: [pj_str_t::new(); 8],
-            stun_try_ipv6: pj_constants__PJ_FALSE as pj_bool_t,
-            stun_ignore_failure: pj_constants__PJ_FALSE as pj_bool_t,
-            stun_map_use_stun2: pj_constants__PJ_FALSE as pj_bool_t,
+            stun_try_ipv6: PJ_FALSE as pj_bool_t,
+            stun_ignore_failure: PJ_FALSE as pj_bool_t,
+            stun_map_use_stun2: PJ_FALSE as pj_bool_t,
             nat_type_in_sdp: 0,
-            require_100rel: pj_constants__PJ_FALSE,
-            use_timer: pj_constants__PJ_FALSE,
-            enable_unsolicited_mwi: pj_constants__PJ_FALSE as pj_bool_t,
+            require_100rel: PJ_FALSE,
+            use_timer: PJ_FALSE,
+            enable_unsolicited_mwi: PJ_FALSE as pj_bool_t,
             timer_setting: pjsip_timer_setting {
                 min_se: 0,
                 sess_expires: 0,
@@ -425,9 +431,9 @@ impl AutoCreate<pjsua_config> for pjsua_config {
             user_agent: pj_str_t::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
-            srtp_optional_dup_offer: pj_constants__PJ_FALSE as pj_bool_t,
+            srtp_optional_dup_offer: PJ_FALSE as pj_bool_t,
             srtp_opt: pjsua_srtp_opt::new(),
-            hangup_forked_call: pj_constants__PJ_FALSE as pj_bool_t,
+            hangup_forked_call: PJ_FALSE as pj_bool_t,
         };
 
         // set with pjsua default
@@ -447,11 +453,11 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
             channel_count: 0,
             audio_frame_ptime: 0,
             max_media_ports: 0,
-            has_ioqueue: pj_constants__PJ_FALSE as pj_bool_t,
+            has_ioqueue: PJ_FALSE as pj_bool_t,
             thread_cnt: 0,
             quality: 0,
             ptime: 0,
-            no_vad: pj_constants__PJ_FALSE as pj_bool_t,
+            no_vad: PJ_FALSE as pj_bool_t,
             ilbc_mode: 0,
             tx_drop_pct: 0,
             rx_drop_pct: 0,
@@ -464,20 +470,20 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
             jb_max_pre: 0,
             jb_max: 0,
             jb_discard_algo: 0,
-            enable_ice: pj_constants__PJ_FALSE as pj_bool_t,
+            enable_ice: PJ_FALSE as pj_bool_t,
             ice_max_host_cands: 0,
             ice_opt: pj_ice_sess_options::new(),
-            ice_no_rtcp: pj_constants__PJ_FALSE as pj_bool_t,
-            ice_always_update: pj_constants__PJ_FALSE as pj_bool_t,
-            enable_turn: pj_constants__PJ_FALSE as pj_bool_t,
+            ice_no_rtcp: PJ_FALSE as pj_bool_t,
+            ice_always_update: PJ_FALSE as pj_bool_t,
+            enable_turn: PJ_FALSE as pj_bool_t,
             turn_server: pj_str_t::new(),
             turn_conn_type: 0 as pj_turn_tp_type,
             turn_auth_cred: pj_stun_auth_cred::new(),
             turn_tls_setting: pj_turn_sock_tls_cfg::new(),
             snd_auto_close_time: 0,
-            vid_preview_enable_native: pj_constants__PJ_FALSE as pj_bool_t,
-            no_smart_media_update: pj_constants__PJ_FALSE as pj_bool_t,
-            no_rtcp_sdes_bye: pj_constants__PJ_FALSE as pj_bool_t,
+            vid_preview_enable_native: PJ_FALSE as pj_bool_t,
+            no_smart_media_update: PJ_FALSE as pj_bool_t,
+            no_rtcp_sdes_bye: PJ_FALSE as pj_bool_t,
             on_aud_prev_play_frame: None,
             on_aud_prev_rec_frame: None,
         };
@@ -493,7 +499,7 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
 impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
     fn new() -> pjsip_publishc_opt {
         pjsip_publishc_opt {
-            queue_request: pj_constants__PJ_FALSE as pj_bool_t,
+            queue_request: PJ_FALSE as pj_bool_t,
         }
     }
 }
@@ -501,7 +507,7 @@ impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
 impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {
     fn new() -> pjsip_auth_clt_pref {
         pjsip_auth_clt_pref {
-            initial_auth: pj_constants__PJ_FALSE as pj_bool_t,
+            initial_auth: PJ_FALSE as pj_bool_t,
             algorithm: pj_str_t::new(),
         }
     }
@@ -540,11 +546,11 @@ impl AutoCreate<pjsua_transport_config> for pjsua_transport_config {
 impl AutoCreate<pjsua_ice_config> for pjsua_ice_config {
     fn new() -> pjsua_ice_config {
         pjsua_ice_config {
-            enable_ice: pj_constants__PJ_FALSE as pj_bool_t,
+            enable_ice: PJ_FALSE as pj_bool_t,
             ice_max_host_cands: 0,
             ice_opt: pj_ice_sess_options::new(),
-            ice_no_rtcp: pj_constants__PJ_FALSE as pj_bool_t,
-            ice_always_update: pj_constants__PJ_FALSE as pj_bool_t,
+            ice_no_rtcp: PJ_FALSE as pj_bool_t,
+            ice_always_update: PJ_FALSE as pj_bool_t,
         }
     }
 }
@@ -552,7 +558,7 @@ impl AutoCreate<pjsua_ice_config> for pjsua_ice_config {
 impl AutoCreate<pjsua_turn_config> for pjsua_turn_config {
     fn new() -> pjsua_turn_config {
         pjsua_turn_config {
-            enable_turn: pj_constants__PJ_FALSE as pj_bool_t,
+            enable_turn: PJ_FALSE as pj_bool_t,
             turn_server: pj_str_t::new(),
             turn_conn_type: 0,
             turn_auth_cred: pj_stun_auth_cred::new(),
@@ -564,8 +570,8 @@ impl AutoCreate<pjsua_turn_config> for pjsua_turn_config {
 impl AutoCreate<pjsua_ip_change_acc_cfg> for pjsua_ip_change_acc_cfg {
     fn new() -> pjsua_ip_change_acc_cfg {
         pjsua_ip_change_acc_cfg {
-            shutdown_tp: pj_constants__PJ_FALSE as pj_bool_t,
-            hangup_calls: pj_constants__PJ_FALSE as pj_bool_t,
+            shutdown_tp: PJ_FALSE as pj_bool_t,
+            hangup_calls: PJ_FALSE as pj_bool_t,
             reinvite_flags: 0,
         }
     }
@@ -581,9 +587,9 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             reg_hdr_list: pjsip_hdr::new(),
             reg_contact_params: pj_str_t::new(),
             sub_hdr_list: pjsip_hdr::new(),
-            mwi_enabled: pj_constants__PJ_FALSE as pj_bool_t,
+            mwi_enabled: PJ_FALSE as pj_bool_t,
             mwi_expires: 0,
-            publish_enabled: pj_constants__PJ_FALSE as pj_bool_t,
+            publish_enabled: PJ_FALSE as pj_bool_t,
             publish_opt: pjsip_publishc_opt::new(),
             unpublish_max_wait_time_msec: 0,
             auth_pref: pjsip_auth_clt_pref::new(),
@@ -603,18 +609,18 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             cred_count: 0,
             cred_info: [pjsip_cred_info::new(); 8],
             transport_id: 0,
-            allow_contact_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
+            allow_contact_rewrite: PJ_FALSE as pj_bool_t,
             contact_rewrite_method: 0,
-            contact_use_src_port: pj_constants__PJ_FALSE as pj_bool_t,
-            allow_via_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
-            allow_sdp_nat_rewrite: pj_constants__PJ_FALSE as pj_bool_t,
+            contact_use_src_port: PJ_FALSE as pj_bool_t,
+            allow_via_rewrite: PJ_FALSE as pj_bool_t,
+            allow_sdp_nat_rewrite: PJ_FALSE as pj_bool_t,
             use_rfc5626: 0,
             rfc5626_instance_id: pj_str_t::new(),
             rfc5626_reg_id: pj_str_t::new(),
             ka_interval: 0,
             ka_data: pj_str_t::new(),
-            vid_in_auto_show: pj_constants__PJ_FALSE as pj_bool_t,
-            vid_out_auto_transmit: pj_constants__PJ_FALSE as pj_bool_t,
+            vid_in_auto_show: PJ_FALSE as pj_bool_t,
+            vid_out_auto_transmit: PJ_FALSE as pj_bool_t,
             vid_wnd_flags: 0,
             vid_cap_dev: 0,
             vid_rend_dev: 0,
@@ -625,25 +631,25 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             ipv6_media_use: 0,
             sip_stun_use: 0,
             media_stun_use: 0,
-            use_loop_med_tp: pj_constants__PJ_FALSE as pj_bool_t,
-            enable_loopback: pj_constants__PJ_FALSE as pj_bool_t,
+            use_loop_med_tp: PJ_FALSE as pj_bool_t,
+            enable_loopback: PJ_FALSE as pj_bool_t,
             ice_cfg_use: 0,
             ice_cfg: pjsua_ice_config::new(),
             turn_cfg_use: 0,
             turn_cfg: pjsua_turn_config::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
-            srtp_optional_dup_offer: pj_constants__PJ_FALSE as pj_bool_t,
+            srtp_optional_dup_offer: PJ_FALSE as pj_bool_t,
             srtp_opt: pjsua_srtp_opt::new(),
             reg_retry_interval: 0,
             reg_first_retry_interval: 0,
             reg_retry_random_interval: 0,
-            drop_calls_on_reg_fail: pj_constants__PJ_FALSE as pj_bool_t,
+            drop_calls_on_reg_fail: PJ_FALSE as pj_bool_t,
             reg_use_proxy: 0,
             call_hold_type: 0,
-            register_on_acc_add: pj_constants__PJ_FALSE as pj_bool_t,
+            register_on_acc_add: PJ_FALSE as pj_bool_t,
             ip_change_cfg: pjsua_ip_change_acc_cfg::new(),
-            enable_rtcp_mux: pj_constants__PJ_FALSE as pj_bool_t,
+            enable_rtcp_mux: PJ_FALSE as pj_bool_t,
             rtcp_fb_cfg: pjmedia_rtcp_fb_setting::new(),
         };
 
@@ -659,7 +665,7 @@ impl AutoCreate<pjsua_buddy_config> for pjsua_buddy_config {
     fn new() -> pjsua_buddy_config {
         let mut config = pjsua_buddy_config {
             uri: pj_str_t::new(),
-            subscribe: pj_constants__PJ_FALSE as pj_bool_t,
+            subscribe: PJ_FALSE as pj_bool_t,
             user_data: ptr::null_mut(),
         };
 
@@ -691,14 +697,14 @@ impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
     fn new() -> pjsua_acc_info {
         pjsua_acc_info {
             id: -1,
-            is_default: pj_constants__PJ_FALSE as pj_bool_t,
+            is_default: PJ_FALSE as pj_bool_t,
             acc_uri: pj_str_t::new(),
-            has_registration: pj_constants__PJ_FALSE as pj_bool_t,
+            has_registration: PJ_FALSE as pj_bool_t,
             expires: 0,
             status: 0,
-            reg_last_err: pj_constants__PJ_FALSE as pj_status_t,
+            reg_last_err: PJ_FALSE as pj_status_t,
             status_text: pj_str_t::new(),
-            online_status: pj_constants__PJ_FALSE as pj_bool_t,
+            online_status: PJ_FALSE as pj_bool_t,
             online_status_text: pj_str_t::new(),
             rpid: pjrpid_element::new(),
             buf_: [0; 80],
@@ -708,11 +714,17 @@ impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
 
 impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
     fn new() -> pjsua_call_setting {
-        pjsua_call_setting {
-            flag: 0,
-            req_keyframe_method: 0,
-            aud_cnt: 0,
-            vid_cnt: 0,
+        unsafe {
+
+            let mut call_setting = pjsua_call_setting {
+                flag: 0,
+                req_keyframe_method: 0,
+                aud_cnt: 0,
+                vid_cnt: 0,
+            };
+
+            pjsua_call_setting_default(&mut call_setting as *mut _);
+            call_setting
         }
     }
 }
@@ -783,7 +795,7 @@ impl AutoCreate<pjsua_call_info> for pjsua_call_info {
             prov_media: [pjsua_call_media_info::new(); 16],
             connect_duration: pj_time_val::new(),
             total_duration: pj_time_val::new(),
-            rem_offerer: pj_constants__PJ_FALSE as pj_bool_t,
+            rem_offerer: PJ_FALSE as pj_bool_t,
             rem_aud_cnt: 0,
             rem_vid_cnt: 0,
             buf_: pjsua_call_info__bindgen_ty_1::new(),
@@ -799,7 +811,7 @@ impl AutoCreate<pjsua_buddy_info> for pjsua_buddy_info {
             contact: pj_str_t::new(),
             status: 0,
             status_text: pj_str_t::new(),
-            monitor_pres: pj_constants__PJ_FALSE as pj_bool_t,
+            monitor_pres: PJ_FALSE as pj_bool_t,
             sub_state: 0,
             sub_state_name: ptr::null_mut(),
             sub_term_code: 0,

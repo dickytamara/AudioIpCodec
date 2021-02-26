@@ -1933,13 +1933,13 @@ pub struct pjsip_dlg_create_uac_param {
 
 
 
-pub const pjsip_inv_state_PJSIP_INV_STATE_NULL: pjsip_inv_state = 0;
-pub const pjsip_inv_state_PJSIP_INV_STATE_CALLING: pjsip_inv_state = 1;
-pub const pjsip_inv_state_PJSIP_INV_STATE_INCOMING: pjsip_inv_state = 2;
-pub const pjsip_inv_state_PJSIP_INV_STATE_EARLY: pjsip_inv_state = 3;
-pub const pjsip_inv_state_PJSIP_INV_STATE_CONNECTING: pjsip_inv_state = 4;
-pub const pjsip_inv_state_PJSIP_INV_STATE_CONFIRMED: pjsip_inv_state = 5;
-pub const pjsip_inv_state_PJSIP_INV_STATE_DISCONNECTED: pjsip_inv_state = 6;
+pub const PJSIP_INV_STATE_NULL: pjsip_inv_state = 0;
+pub const PJSIP_INV_STATE_CALLING: pjsip_inv_state = 1;
+pub const PJSIP_INV_STATE_INCOMING: pjsip_inv_state = 2;
+pub const PJSIP_INV_STATE_EARLY: pjsip_inv_state = 3;
+pub const PJSIP_INV_STATE_CONNECTING: pjsip_inv_state = 4;
+pub const PJSIP_INV_STATE_CONFIRMED: pjsip_inv_state = 5;
+pub const PJSIP_INV_STATE_DISCONNECTED: pjsip_inv_state = 6;
 pub type pjsip_inv_state = c_uint;
 
 #[repr(C)]

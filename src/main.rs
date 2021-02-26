@@ -81,12 +81,11 @@ fn main() {
          "cmb_input_device",
          "btn_input_mute"
       );
-    input_widget.init();
 
-    // create output widget
-    let mut output_widget: AudioLineWidget = AudioLineWidget::new(&builder,
-         "lbl_topbar_output",
-         "lbl_output_level_l",
+      // create output widget
+      let mut output_widget: AudioLineWidget = AudioLineWidget::new(&builder,
+        "lbl_topbar_output",
+        "lbl_output_level_l",
          "lbl_output_level_r",
          "lvl_output_l",
          "lvl_output_r",
@@ -96,27 +95,30 @@ fn main() {
          "lbl_output_device",
          "cmb_output_device",
          "btn_output_mute"
-    );
-    output_widget.init();
+        );
 
-    let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
-    maintab_widget.init();
+        let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
 
-    let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
+        let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
 
-    let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
-    headerbar_widget.init();
+        let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
 
-    let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
-    dialpad_widget.init();
+        let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
 
-    for dev_name in sipua.get_input_device_list().iter_mut() {
-        input_widget.add_device_text(dev_name);
-    }
+        for dev_name in sipua.get_input_device_list().iter_mut() {
+            input_widget.add_device_text(dev_name);
+        }
 
-    for dev_name in sipua.get_output_device_list().iter_mut() {
+        for dev_name in sipua.get_output_device_list().iter_mut() {
         output_widget.add_device_text(dev_name);
     }
+
+    // initialize
+    input_widget.init();
+    output_widget.init();
+    maintab_widget.init();
+    headerbar_widget.init();
+    dialpad_widget.init();
 
     // init application
     application.connect_activate(move |app| {
@@ -125,6 +127,8 @@ fn main() {
         main_window.show_all();
     });
 
+
+    sipua.call("sip://@27.50.19.174:5060");
     // sub testing gui
     application.run(&env::args().collect::<Vec<_>>());
 

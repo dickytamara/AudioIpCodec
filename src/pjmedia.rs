@@ -51,7 +51,7 @@ impl AutoCreate<pjmedia_rtcp_fb_cap> for pjmedia_rtcp_fb_cap {
 impl AutoCreate<pjmedia_rtcp_fb_setting> for pjmedia_rtcp_fb_setting {
     fn new() -> pjmedia_rtcp_fb_setting {
         pjmedia_rtcp_fb_setting {
-            dont_use_avpf: pj_constants__PJ_FALSE as pj_bool_t,
+            dont_use_avpf: PJ_FALSE as pj_bool_t,
             cap_count: 0,
             caps: [pjmedia_rtcp_fb_cap::new(); 16],
         }
