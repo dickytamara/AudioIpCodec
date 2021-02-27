@@ -617,6 +617,24 @@ impl SIPMedia {
         }
     }
 
+    pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
+        // transmit/receive signal level
+        let mut tx_l: c_uint = 0;
+        let mut tx_r: c_uint = 0;
+        let mut rx_l: c_uint = 0;
+        let mut rx_r: c_uint = 0;
+
+        unsafe {
+            pjsua_conf_get_msignal_level(0,
+                &mut tx_l as *mut _,
+                &mut tx_r as *mut _,
+                &mut rx_l as *mut _,
+                &mut rx_r as *mut _
+            );
+        }
+
+        (tx_l, tx_r, rx_l, rx_r)
+    }
 }
 
 // Transport wrapper
@@ -1111,6 +1129,9 @@ impl SIPCore {
         self.media_config.set_output_level(value);
     }
 
+    pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
+        self.media_config.get_signal_level()
+    }
 
     pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 
@@ -2019,6 +2040,16 @@ impl SIPUserAgent {
         }
     }
 
+    pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref sipua) => {
+                    sipua.get_signal_level()
+                },
+                _ => (0,0,0,0)
+            }
+        }
+    }
 
 }
 

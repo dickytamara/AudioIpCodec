@@ -3,6 +3,7 @@ use super::gtk::prelude::*;
 use super::gtk::{Builder, Label, LevelBar, Button, Scale, ComboBoxText};
 use super::glib::clone;
 
+#[derive(Clone)]
 pub struct AudioLineWidget {
     lbl_topbar: gtk::Label,
     lbl_level_l: gtk::Label,
@@ -48,6 +49,13 @@ impl AudioLineWidget {
     }
 
     pub fn init(&mut self) {
+        // adjust level bar
+        self.lvl_l.set_max_value(128.0);
+        self.lvl_l.set_min_value(0.0);
+
+        self.lvl_r.set_max_value(128.0);
+        self.lvl_r.set_min_value(0.0);
+
         // adjust slider
         self.sldr_level.set_range(0.0, 100.0);
         self.sldr_level.set_value(100.0);
@@ -66,8 +74,11 @@ impl AudioLineWidget {
               sldr.set_value(sldr.get_value() + 1.0);
         }));
 
-        self.cmb_device.remove_all();
+    }
 
+    pub fn set_level_bar(&mut self, left: u32, right: u32) {
+        self.lvl_l.set_value(left as f64);
+        self.lvl_r.set_value(right as f64);
     }
 
     // add device to combobox

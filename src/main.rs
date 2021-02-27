@@ -20,6 +20,10 @@ use gio::prelude::*;
 use std::{borrow::BorrowMut, env};
 use std::fmt::format;
 use std::include_str;
+use std::thread;
+use std::time::Duration;
+use std::ptr;
+
 use gtk::{Application, ApplicationWindow, Statusbar, Button, Builder, Scale};
 use gtk::ComboBoxText;
 use glib::clone;
@@ -46,8 +50,11 @@ use maintab::MaintabWidget;
 use header::HeaderWidget;
 use status::StatusbarWidget;
 
+use pj_sys::*;
 use sipua::*;
 
+
+enum SignalLevel { Level( (u32, u32, u32, u32)) }
 
 fn main() {
     gtk::init()
@@ -68,7 +75,7 @@ fn main() {
     let main_window: gtk::ApplicationWindow = builder.get_object("main_ui").unwrap();
 
     // create input widget
-    let mut input_widget: AudioLineWidget = AudioLineWidget::new(&builder,
+    let mut tx_widget: AudioLineWidget = AudioLineWidget::new(&builder,
          "lbl_topbar_input",
          "lbl_input_level_l",
          "lbl_input_level_r",
@@ -82,8 +89,8 @@ fn main() {
          "btn_input_mute"
       );
 
-      // create output widget
-      let mut output_widget: AudioLineWidget = AudioLineWidget::new(&builder,
+    // create output widget
+    let mut rx_widget: AudioLineWidget = AudioLineWidget::new(&builder,
         "lbl_topbar_output",
         "lbl_output_level_l",
          "lbl_output_level_r",
@@ -97,46 +104,81 @@ fn main() {
          "btn_output_mute"
         );
 
-        let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
+    let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
 
-        let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
+    let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
 
-        let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
+    let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
 
-        let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
+    let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
 
-        for dev_name in sipua.get_input_device_list().iter_mut() {
-            input_widget.add_device_text(dev_name);
-        }
+    for dev_name in sipua.get_output_device_list().iter_mut() {
+        rx_widget.add_device_text(dev_name);
+    }
 
-        for dev_name in sipua.get_output_device_list().iter_mut() {
-        output_widget.add_device_text(dev_name);
+    for dev_name in sipua.get_input_device_list().iter_mut() {
+        tx_widget.add_device_text(dev_name);
     }
 
     // initialize
-    input_widget.init();
-    output_widget.init();
+    rx_widget.init();
+    tx_widget.init();
     maintab_widget.init();
     headerbar_widget.init();
     dialpad_widget.init();
 
     // slider change
     let sipua_clone = sipua.clone();
-    input_widget.on_scale_changed_value ( move |v| {
+    rx_widget.on_scale_changed_value ( move |v| {
         sipua_clone.set_input_level(v);
     });
 
     let sipua_clone = sipua.clone();
-    output_widget.on_scale_changed_value ( move |v| {
+    tx_widget.on_scale_changed_value ( move |v| {
         sipua_clone.set_output_level(v);
     });
-
 
     // init application
     application.connect_activate(move |app| {
         // input
         main_window.set_application(Some(app));
         main_window.show_all();
+    });
+
+    // test thread
+    let (sender, receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+
+    let sipua_clone = sipua.clone();
+    thread::spawn(move || {
+        unsafe {
+            let mut a_thread_desc: pj_thread_desc = [0;64usize];
+            let mut a_thread = ptr::null_mut() as *mut pj_thread_t;
+
+            if pj_thread_is_registered() == PJ_FALSE as pj_bool_t {
+                pj_thread_register(ptr::null_mut(),
+                    a_thread_desc.as_mut_ptr() as *mut _,
+                    &mut a_thread as *mut _);
+            }
+
+        loop {
+            thread::sleep(Duration::from_millis(40));
+
+            let _ = sender.send(SignalLevel::Level(sipua_clone.get_signal_level()));
+        }
+    }});
+
+    let rx_widget_clone = rx_widget.clone();
+    let tx_widget_clone = tx_widget.clone();
+
+    receiver.attach(None, move |level| {
+        match level {
+            SignalLevel::Level((tx_l,tx_r, rx_l, rx_r)) => {
+                rx_widget.set_level_bar(rx_l, rx_r);
+                tx_widget.set_level_bar(tx_l, tx_r);
+            }
+        }
+
+        glib::Continue(true)
     });
 
 

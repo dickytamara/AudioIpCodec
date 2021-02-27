@@ -1130,7 +1130,7 @@ pub type pj_atomic_value_t = c_long;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_thread_t {
-_unused: [u8; 0],
+pub _unused: [u8; 0],
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

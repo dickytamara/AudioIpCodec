@@ -14,7 +14,18 @@ use super::pjsua_sys::*;
 use std::os::raw::{c_int, c_uint, c_void};
 use std::ptr;
 
+#[link(name="pjsua")]
+extern "C" {
+    pub fn pjsua_conf_get_msignal_level(
+        slot: pjsua_conf_port_id,
+        tx_level_l: *mut c_uint,
+        tx_level_r: *mut c_uint,
+        rx_level_l: *mut c_uint,
+        rx_level_r: *mut c_uint,
+    ) -> pj_status_t;
+}
 
+// pub fn pjsua_conf_get_signal_level( slot: pjsua_conf_port_id, tx_level: *mut c_uint, rx_level: *mut c_uint, ) -> pj_status_t;
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
@@ -836,6 +847,21 @@ impl AutoCreate<pjsua_msg_data> for pjsua_msg_data {
     }
 }
 
-
-
+impl AutoCreate<pjsua_conf_port_info> for pjsua_conf_port_info {
+    fn new () -> pjsua_conf_port_info {
+        pjsua_conf_port_info {
+            slot_id: 0,
+            name: pj_str_t::new(),
+            format: pjmedia_format::new(),
+            clock_rate: 0,
+            channel_count: 0,
+            samples_per_frame: 0,
+            bits_per_sample: 0,
+            tx_level_adj: 0.0,
+            rx_level_adj: 0.0,
+            listener_cnt: 0,
+            listeners: [-1; 254usize],
+        }
+    }
+}
 
