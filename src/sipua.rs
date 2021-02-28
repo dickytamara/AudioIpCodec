@@ -530,6 +530,11 @@ impl SIPMedia {
         cfg.ctx.ec_tail_len = 0;
         cfg.ctx.ec_options = 0;
 
+        //ptime
+        cfg.ctx.ptime = 10;
+        cfg.ctx.jb_max = 3840;
+        cfg.ctx.jb_discard_algo = 0;
+
         cfg
     }
 

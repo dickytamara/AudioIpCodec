@@ -91,10 +91,58 @@ impl AudioLineWidget {
         self.cmb_device.remove_all();
     }
 
-    pub fn on_scale_changed_value<F: Fn(i32) + 'static>(&self, call: F) {
+    /// on slider level change value
+    pub fn on_scale_changed_value<F: Fn(i32) + 'static> (&self, call: F) {
         self.sldr_level.connect_value_changed(move |s| {
             call(s.get_value() as i32);
         });
     }
 
+    /// on button mute clicked
+    pub fn on_button_mute_clicked<F: Fn() +'static> (&self, callback: F) {
+        self.btn_mute.connect_clicked(move |_| {
+            callback();
+        });
+    }
+
 }
+
+/// create transmit widget
+pub fn create_transmit_widget(builder: &gtk::Builder) -> AudioLineWidget {
+    AudioLineWidget::new(&builder,
+       "lbl_topbar_tx",
+       "lbl_tx_l",
+       "lbl_tx_r",
+       "lvl_tx_l",
+       "lvl_tx_r",
+       "btn_tx_level_dec",
+       "btn_tx_level_inc",
+       "sldr_tx_level",
+       "lbl_tx_device",
+       "cmb_tx_device",
+       "btn_tx_mute"
+       )
+}
+
+/// create receive widget
+pub fn create_receive_widget(builder: &gtk::Builder) -> AudioLineWidget {
+    AudioLineWidget::new(&builder,
+        "lbl_topbar_rx",
+        "lbl_rx_l",
+        "lbl_rx_r",
+        "lvl_rx_l",
+        "lvl_rx_r",
+        "btn_rx_level_dec",
+        "btn_rx_level_inc",
+        "sldr_rx_level",
+        "lbl_rx_device",
+        "cmb_rx_device",
+        "btn_rx_mute"
+     )
+}
+
+
+
+
+
+

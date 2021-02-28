@@ -1,9 +1,12 @@
 
+use gio::ListStore;
+use gtk::{TreeModelExt, TreeViewColumn};
+
 use super::gtk::prelude::*;
-use super::gtk::{Builder, Label, Entry, Button, TreeView};
+use super::gtk::{Builder, Label, Entry, Button, TreeView, CellRendererText};
 use super::glib::clone;
 
-
+#[derive(Clone)]
 pub struct DialpadWidget {
     btn_dial_1: gtk::Button,
     btn_dial_2: gtk::Button,
@@ -22,12 +25,16 @@ pub struct DialpadWidget {
     lbl_call_address: gtk::Label,
     btn_call_address_clear: gtk::Button,
     ent_call_address: gtk::Entry,
-    tv_call_log: gtk::TreeView
+    tv_call_log: gtk::TreeView,
+    ls_call_log: gtk::ListStore
 }
 
 impl DialpadWidget {
 
     pub fn new (gtk_builder: &gtk::Builder) -> DialpadWidget {
+        // liststore types
+        let list_types = [u32::static_type(), String::static_type()];
+
         DialpadWidget{
             btn_dial_1: gtk_builder.get_object("btn_dial_1").unwrap(),
             btn_dial_2: gtk_builder.get_object("btn_dial_2").unwrap(),
@@ -46,11 +53,35 @@ impl DialpadWidget {
             lbl_call_address: gtk_builder.get_object("lbl_call_address").unwrap(),
             btn_call_address_clear: gtk_builder.get_object("btn_call_address_clear").unwrap(),
             ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
-            tv_call_log: gtk_builder.get_object("tv_call_log").unwrap()
+            tv_call_log: gtk_builder.get_object("tv_call_log").unwrap(),
+            ls_call_log: gtk::ListStore::new(&list_types)
         }
     }
 
     pub fn init(&mut self) {
+
+        // col number
+        {
+            let col = TreeViewColumn::new();
+            let cell = CellRendererText::new();
+            col.pack_start(&cell, false);
+            col.set_title("NO");
+            col.add_attribute(&cell, "text", 0);
+            self.tv_call_log.append_column(&col);
+        }
+
+        // col address
+        {
+            let col = TreeViewColumn::new();
+            let cell = CellRendererText::new();
+            col.pack_start(&cell, true);
+            col.set_title("Address");
+            col.add_attribute(&cell, "text", 1);
+            self.tv_call_log.append_column(&col);
+        }
+
+        self.tv_call_log.set_model(Some(&self.ls_call_log));
+        self.tv_call_log.set_headers_visible(true);
 
         // dialpad 1 event
         self.btn_dial_1.connect_clicked (
@@ -129,11 +160,6 @@ impl DialpadWidget {
                 entry.set_text("");
         }));
 
-        // btn dialpad call event
-        self.btn_call.connect_clicked ( |_| {
-
-        });
-
         // btn dialpad call log clear event
         self.btn_call_log_clear.connect_clicked ( |_| {
 
@@ -146,12 +172,50 @@ impl DialpadWidget {
         }));
     }
 
-    // add item to call log list
+    ///  add item to call log list
     pub fn add_call_log(&mut self, call_address: &str) {
 
+        let call_address: String = String::from(call_address);
+        let num = self.ls_call_log.iter_n_children(None) + 1;
+        let nrow: [&dyn ToValue; 2] = [
+            &num,
+            &call_address
+        ];
+
+        self.ls_call_log.set(&self.ls_call_log.append(),
+            &[0u32, 1u32],
+            &nrow
+        );
     }
 
+    /// get call adress
     pub fn get_call_address_text(&self) -> String {
         String::from(self.ent_call_address.get_text().as_str())
     }
+
+    /// event on button call clicked
+    pub fn on_button_call_clicked<F: Fn(&str) + 'static> (&self, callback: F) {
+        let wid = self.clone();
+
+        self.btn_call.connect_clicked( move |_| {
+            let sip_address = wid.get_call_address_text().clone();
+            callback(sip_address.as_str());
+        });
+    }
+
+    /// update gui to normal state
+    pub fn update_state_normal(&self) {
+
+    }
+
+    /// update gui to ringing state
+    pub fn update_state_ringing(&self) {
+
+    }
+
+    /// update gui to calling state
+    pub fn update_state_calling(&self) {
+
+    }
+
 }
