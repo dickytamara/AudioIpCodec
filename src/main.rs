@@ -11,6 +11,7 @@ extern crate pj_sys;
 extern crate gtk;
 extern crate gio;
 extern crate glib;
+extern crate gdk;
 
 extern crate systemstat;
 
@@ -35,6 +36,8 @@ mod audio_line;
 mod maintab;
 mod header;
 mod status;
+mod account;
+mod settings;
 
 // sipua module
 mod pjdefault;
@@ -49,6 +52,8 @@ use audio_line::AudioLineWidget;
 use maintab::MaintabWidget;
 use header::HeaderWidget;
 use status::StatusbarWidget;
+use account::AccountWidget;
+use settings::SettingsWidget;
 
 use pj_sys::*;
 use sipua::*;
@@ -167,12 +172,16 @@ fn main() {
 
     let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
 
+    let account_widget: AccountWidget = AccountWidget::new(&builder);
+    let settings_widget: SettingsWidget = SettingsWidget::new(&builder);
+
     // initialize
     rx_widget.init();
     tx_widget.init();
     maintab_widget.init();
     headerbar_widget.init();
     dialpad_widget.init();
+    account_widget.init();
 
     callback_audio_line_widget(&mut sipua, &mut rx_widget, &mut tx_widget);
     callback_dialpad_widget(&mut sipua, &mut dialpad_widget);

@@ -3,6 +3,7 @@ use gio::ListStore;
 use gtk::{TreeModelExt, TreeViewColumn};
 
 use super::gtk::prelude::*;
+use super::gdk::prelude::*;
 use super::gtk::{Builder, Label, Entry, Button, TreeView, CellRendererText};
 use super::glib::clone;
 
@@ -82,6 +83,11 @@ impl DialpadWidget {
 
         self.tv_call_log.set_model(Some(&self.ls_call_log));
         self.tv_call_log.set_headers_visible(true);
+
+        self.btn_call_log_clear.set_label(format!("\nClear\n").as_str());
+
+        // update to normal state
+        self.update_state_normal();
 
         // dialpad 1 event
         self.btn_dial_1.connect_clicked (
@@ -170,6 +176,9 @@ impl DialpadWidget {
             clone!( @weak self.ent_call_address as enty => move |_| {
 
         }));
+
+        // todo add GTK Entry double click event
+
     }
 
     ///  add item to call log list
@@ -205,17 +214,17 @@ impl DialpadWidget {
 
     /// update gui to normal state
     pub fn update_state_normal(&self) {
-
+        self.btn_call.set_label(format!("\nCall\n").as_str());
     }
 
     /// update gui to ringing state
     pub fn update_state_ringing(&self) {
-
+        self.btn_call.set_label(format!("\nAnswer\n").as_str());
     }
 
     /// update gui to calling state
     pub fn update_state_calling(&self) {
-
+        self.btn_call.set_label(format!("\nAbort\n").as_str());
     }
 
 }

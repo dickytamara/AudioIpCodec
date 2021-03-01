@@ -553,7 +553,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">SIP Call</property>
+                        <property name="label" translatable="yes">SIP Call
+</property>
+                        <property name="track-visited-links">False</property>
                         <attributes>
                           <attribute name="weight" value="normal"/>
                           <attribute name="size" value="18456"/>
@@ -891,13 +893,206 @@
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <placeholder/>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Account
+</property>
+                        <property name="track-visited-links">False</property>
+                        <attributes>
+                          <attribute name="style" value="normal"/>
+                          <attribute name="size" value="18432"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
-                      <placeholder/>
+                      <object class="GtkFixed">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <child>
+                          <object class="GtkEntry" id="ent_sip_url">
+                            <property name="width-request">346</property>
+                            <property name="height-request">34</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">182</property>
+                            <property name="y">31</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="ent_registrar_url">
+                            <property name="width-request">344</property>
+                            <property name="height-request">34</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">183</property>
+                            <property name="y">77</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="ent_realm">
+                            <property name="width-request">227</property>
+                            <property name="height-request">34</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">182</property>
+                            <property name="y">173</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="ent_username">
+                            <property name="width-request">225</property>
+                            <property name="height-request">34</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">182</property>
+                            <property name="y">221</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_sip_url">
+                            <property name="width-request">62</property>
+                            <property name="height-request">20</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">SIP URL :</property>
+                            <property name="single-line-mode">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">114</property>
+                            <property name="y">37</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_registrar_url">
+                            <property name="width-request">137</property>
+                            <property name="height-request">20</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">REGISTRAR SERVER :</property>
+                            <property name="single-line-mode">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">39</property>
+                            <property name="y">86</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="ent_password">
+                            <property name="width-request">222</property>
+                            <property name="height-request">34</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">182</property>
+                            <property name="y">271</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_realm">
+                            <property name="width-request">50</property>
+                            <property name="height-request">20</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Realm :</property>
+                            <property name="single-line-mode">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">126</property>
+                            <property name="y">180</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_username">
+                            <property name="width-request">75</property>
+                            <property name="height-request">20</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Username :</property>
+                            <property name="single-line-mode">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">101</property>
+                            <property name="y">227</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="lbl_password">
+                            <property name="width-request">69</property>
+                            <property name="height-request">20</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Password :</property>
+                            <property name="single-line-mode">True</property>
+                          </object>
+                          <packing>
+                            <property name="x">107</property>
+                            <property name="y">278</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                     <child>
-                      <placeholder/>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_account_save">
+                            <property name="label" translatable="yes">Save</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_account_connect">
+                            <property name="label" translatable="yes">Connect</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -912,13 +1107,405 @@
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <placeholder/>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">True</property>
+                        <property name="label" translatable="yes">Settings
+</property>
+                        <attributes>
+                          <attribute name="style" value="normal"/>
+                          <attribute name="size" value="18432"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
-                      <placeholder/>
+                      <object class="GtkNotebook">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <child>
+                          <object class="GtkFixed">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkSwitch" id="swt_autoanswer">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">25</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_autoanswer">
+                                <property name="width-request">90</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Auto Answer :</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">27</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">
+CALL
+</property>
+                            <property name="track-visited-links">False</property>
+                          </object>
+                          <packing>
+                            <property name="tab-fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkFixed">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_use_turn">
+                                <property name="width-request">105</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Use TURN relay.</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">27</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_use_turn">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">25</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_stun_server">
+                                <property name="width-request">50</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Server :</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">24</property>
+                                <property name="y">108</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_stun_username">
+                                <property name="width-request">178</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">197</property>
+                                <property name="y">191</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_stun_password">
+                                <property name="width-request">177</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">197</property>
+                                <property name="y">239</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_stun_server">
+                                <property name="width-request">437</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">194</property>
+                                <property name="y">102</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spn_stun_port">
+                                <property name="width-request">179</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">196</property>
+                                <property name="y">148</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_use_tcp">
+                                <property name="width-request">84</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Use TCP Turn</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">66</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_use_tcp">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">191</property>
+                                <property name="y">63</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_rtcp_multiplexing">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">469</property>
+                                <property name="y">66</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_rtcp_multiplexing">
+                                <property name="width-request">121</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">RTCP Multiplexing.</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">296</property>
+                                <property name="y">69</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="rdb_stun_keyring_default">
+                                <property name="label" translatable="yes">default (SDES)</property>
+                                <property name="width-request">122</property>
+                                <property name="height-request">22</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="active">True</property>
+                                <property name="draw-indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">455</property>
+                                <property name="y">183</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkRadioButton" id="rdb_stun_keyring_dtls">
+                                <property name="label" translatable="yes">DTLS</property>
+                                <property name="width-request">61</property>
+                                <property name="height-request">22</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">False</property>
+                                <property name="active">True</property>
+                                <property name="draw-indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">456</property>
+                                <property name="y">214</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="width-request">89</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">SRTP Keyring.</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">452</property>
+                                <property name="y">153</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_stun_port">
+                                <property name="width-request">30</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Port.</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">153</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_stun_password">
+                                <property name="width-request">69</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Password :</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">21</property>
+                                <property name="y">246</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_stun_username">
+                                <property name="width-request">75</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Username :</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">23</property>
+                                <property name="y">199</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">
+TURN
+</property>
+                            <property name="track-visited-links">False</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                            <property name="tab-fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkFixed">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="width-request">20</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Use ICE</property>
+                              </object>
+                              <packing>
+                                <property name="x">143</property>
+                                <property name="y">52</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">
+ICE
+</property>
+                            <property name="track-visited-links">False</property>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
+                            <property name="tab-fill">False</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                     <child>
-                      <placeholder/>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="homogeneous">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_stun_save">
+                            <property name="label" translatable="yes">Save</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_stun_reset">
+                            <property name="label" translatable="yes">Reset</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
