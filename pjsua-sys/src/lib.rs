@@ -89,13 +89,13 @@ pub const pjsua_contact_rewrite_method_PJSUA_CONTACT_REWRITE_UNREGISTER: pjsua_c
 pub const pjsua_contact_rewrite_method_PJSUA_CONTACT_REWRITE_NO_UNREG: pjsua_contact_rewrite_method = 2;
 pub const pjsua_contact_rewrite_method_PJSUA_CONTACT_REWRITE_ALWAYS_UPDATE: pjsua_contact_rewrite_method = 4;
 pub type pjsua_contact_rewrite_method = c_uint;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_NULL: pjsua_ip_change_op = 0;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_RESTART_LIS: pjsua_ip_change_op = 1;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP: pjsua_ip_change_op = 2;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT: pjsua_ip_change_op = 3;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS: pjsua_ip_change_op = 4;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS: pjsua_ip_change_op = 5;
-pub const pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_COMPLETED: pjsua_ip_change_op = 6;
+pub const PJSUA_IP_CHANGE_OP_NULL: pjsua_ip_change_op = 0;
+pub const PJSUA_IP_CHANGE_OP_RESTART_LIS: pjsua_ip_change_op = 1;
+pub const PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP: pjsua_ip_change_op = 2;
+pub const PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT: pjsua_ip_change_op = 3;
+pub const PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS: pjsua_ip_change_op = 4;
+pub const PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS: pjsua_ip_change_op = 5;
+pub const PJSUA_IP_CHANGE_OP_COMPLETED: pjsua_ip_change_op = 6;
 pub type pjsua_ip_change_op = c_uint;
 
 

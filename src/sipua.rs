@@ -972,7 +972,7 @@ impl SIPCore {
             wav_player: None,
             wav_recorder: None,
             default_handler: pjsip_module::new(),
-            redir_op: pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE,
+            redir_op: PJSIP_REDIRECT_ACCEPT_REPLACE,
             // input_level: 1.0,
             // output_level: 1.0,
             input_dev: PJSUA_INVALID_ID,
@@ -1642,30 +1642,30 @@ impl SIPCore {
 
             if status == PJ_SUCCESS as pj_status_t {
                 match op {
-                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_RESTART_LIS => {
+                    PJSUA_IP_CHANGE_OP_RESTART_LIS => {
                         pjsua_transport_get_info(
                             (*info).lis_restart.transport_id,
                             &mut tp_info as *mut _,
                         );
                         println!("restart transport.");
                     }
-                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => {
+                    PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => {
                         pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
                         println!("transport shutdown for account.");
                     }
-                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => {
+                    PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => {
                         pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
                         println!("update contact for account.");
                     }
-                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => {
+                    PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => {
                         pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
                         println!("hangup call for account.");
                     }
-                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => {
+                    PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => {
                         pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
                         println!("reinvite call for account.");
                     }
-                    pjsua_ip_change_op_PJSUA_IP_CHANGE_OP_COMPLETED => {
+                    PJSUA_IP_CHANGE_OP_COMPLETED => {
                         println!("done");
                     }
 

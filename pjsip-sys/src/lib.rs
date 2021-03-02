@@ -462,11 +462,11 @@ pub const pjsip_transport_state_PJSIP_TP_STATE_DESTROY: pjsip_transport_state = 
 pub type pjsip_transport_state = c_uint;
 pub type pjsip_tp_state_listener_key = c_void;
 
-pub const pjsip_redirect_op_PJSIP_REDIRECT_REJECT: pjsip_redirect_op = 0;
-pub const pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT: pjsip_redirect_op = 1;
-pub const pjsip_redirect_op_PJSIP_REDIRECT_ACCEPT_REPLACE: pjsip_redirect_op = 2;
-pub const pjsip_redirect_op_PJSIP_REDIRECT_PENDING: pjsip_redirect_op = 3;
-pub const pjsip_redirect_op_PJSIP_REDIRECT_STOP: pjsip_redirect_op = 4;
+pub const PJSIP_REDIRECT_REJECT: pjsip_redirect_op = 0;
+pub const PJSIP_REDIRECT_ACCEPT: pjsip_redirect_op = 1;
+pub const PJSIP_REDIRECT_ACCEPT_REPLACE: pjsip_redirect_op = 2;
+pub const PJSIP_REDIRECT_PENDING: pjsip_redirect_op = 3;
+pub const PJSIP_REDIRECT_STOP: pjsip_redirect_op = 4;
 pub type pjsip_redirect_op = c_uint;
 
 pub const PJSIP_UDP_TRANSPORT_KEEP_SOCKET: c_uint = 1;
