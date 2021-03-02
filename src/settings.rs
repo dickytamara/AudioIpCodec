@@ -58,4 +58,68 @@ impl SettingsWidget {
 
     }
 
+    pub fn set_account_autoanswer(&self, value: bool) {
+        self.swt_autoanswer.set_state(value);
+    }
+
+    pub fn get_account_autoanswer(&self) -> bool {
+        self.swt_autoanswer.get_state()
+    }
+
+    pub fn set_use_turn(&self, value: bool) {
+        self.swt_use_turn.set_state(value);
+    }
+
+    pub fn get_use_turn(&self) -> bool {
+        self.swt_use_turn.get_state()
+    }
+
+    pub fn set_turn_use_tcp(&self, value: bool) {
+        self.swt_use_tcp.set_state(value);
+    }
+
+    pub fn get_turn_use_tcp(&self) -> bool {
+        self.swt_use_tcp.get_state()
+    }
+
+    pub fn set_turn_use_rtcp_multiplexing(&self, value: bool) {
+        self.swt_rtcp_multiplexing.set_state(value);
+    }
+
+    pub fn get_turn_use_rtcp_multiplexing(&self) -> bool {
+        self.swt_rtcp_multiplexing.get_state()
+    }
+
+    pub fn get_stun_server(&self) -> String {
+        self.ent_stun_server.get_text().to_string().clone()
+    }
+
+    pub fn set_stun_server(&self, value: String) {
+        self.ent_stun_server.set_text(value.as_str());
+    }
+
+    pub fn get_stun_port(&self) -> f64 {
+        self.spn_stun_port.get_value()
+    }
+
+    pub fn set_stun_port(&self, value: f64) {
+        self.spn_stun_port.set_value(value);
+    }
+
+    pub fn set_stun_username(&self, value: String) {
+        self.ent_stun_username.set_text(value.as_str());
+    }
+
+    pub fn get_stun_username(&self) -> String {
+        self.ent_stun_username.get_text().to_string().clone()
+    }
+
+    pub fn set_stun_password(&self, value: String) {
+        self.ent_stun_password.set_text(value.as_str());
+    }
+
+    pub fn get_stun_password(&self) -> String {
+        self.ent_stun_password.get_text().to_string().clone()
+    }
+
 }
