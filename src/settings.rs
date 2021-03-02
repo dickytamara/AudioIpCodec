@@ -25,14 +25,24 @@ pub struct SettingsWidget {
     ent_stun_username: gtk::Entry,
     ent_stun_password: gtk::Entry,
     btn_stun_save: gtk::Button,
-    btn_stun_reset: gtk::Button
+    btn_stun_reset: gtk::Button,
     // ice section
+    lbl_use_ice: gtk::Label,
+    lbl_ice_use_rtcp: gtk::Label,
+    lbl_ice_reg_nomination: gtk::Label,
+    lbl_ice_trickle_method: gtk::Label,
+    lbl_ice_max_hosts: gtk::Label,
+    swt_use_ice: gtk::Switch,
+    swt_ice_use_rtcp: gtk::Switch,
+    cmb_ice_reg_nomination: gtk::ComboBox,
+    cmb_ice_trickle_method: gtk::ComboBox,
+    spn_ice_max_hosts: gtk::SpinButton
 }
 
 impl SettingsWidget {
     pub fn new(gtk_builder: &gtk::Builder) -> SettingsWidget {
         SettingsWidget {
-            swt_autoanswer:  gtk_builder.get_object("swt_autoanswer").unwrap(),
+            swt_autoanswer: gtk_builder.get_object("swt_autoanswer").unwrap(),
             lbl_autoanswer: gtk_builder.get_object("lbl_autoanswer").unwrap(),
             lbl_use_turn: gtk_builder.get_object("lbl_use_turn").unwrap(),
             lbl_use_tcp: gtk_builder.get_object("lbl_use_tcp").unwrap(),
@@ -41,15 +51,25 @@ impl SettingsWidget {
             lbl_stun_port: gtk_builder.get_object("lbl_stun_port").unwrap(),
             lbl_stun_username: gtk_builder.get_object("lbl_username").unwrap(),
             lbl_stun_password: gtk_builder.get_object("lbl_stun_password").unwrap(),
-            swt_use_turn:  gtk_builder.get_object("swt_use_turn").unwrap(),
-            swt_use_tcp:  gtk_builder.get_object("swt_use_tcp").unwrap(),
-            swt_rtcp_multiplexing:  gtk_builder.get_object("swt_rtcp_multiplexing").unwrap(),
+            swt_use_turn: gtk_builder.get_object("swt_use_turn").unwrap(),
+            swt_use_tcp: gtk_builder.get_object("swt_use_tcp").unwrap(),
+            swt_rtcp_multiplexing: gtk_builder.get_object("swt_rtcp_multiplexing").unwrap(),
             spn_stun_port: gtk_builder.get_object("spn_stun_port").unwrap(),
             ent_stun_server: gtk_builder.get_object("ent_stun_server").unwrap(),
             ent_stun_username: gtk_builder.get_object("ent_stun_username").unwrap(),
             ent_stun_password: gtk_builder.get_object("ent_stun_password").unwrap(),
-            btn_stun_save:  gtk_builder.get_object("btn_stun_save").unwrap(),
+            btn_stun_save: gtk_builder.get_object("btn_stun_save").unwrap(),
             btn_stun_reset: gtk_builder.get_object("btn_stun_reset").unwrap(),
+            lbl_use_ice: gtk_builder.get_object("lbl_use_ice").unwrap(),
+            lbl_ice_use_rtcp: gtk_builder.get_object("lbl_ice_use_rtcp").unwrap(),
+            lbl_ice_reg_nomination: gtk_builder.get_object("lbl_ice_reg_nomination").unwrap(),
+            lbl_ice_trickle_method: gtk_builder.get_object("lbl_ice_trickle_method").unwrap(),
+            lbl_ice_max_hosts: gtk_builder.get_object("lbl_ice_max_hosts").unwrap(),
+            swt_use_ice: gtk_builder.get_object("swt_use_ice").unwrap(),
+            swt_ice_use_rtcp: gtk_builder.get_object("swt_ice_use_rtcp").unwrap(),
+            cmb_ice_reg_nomination: gtk_builder.get_object("cmb_ice_reg_nomination").unwrap(),
+            cmb_ice_trickle_method: gtk_builder.get_object("cmb_ice_trickle_method").unwrap(),
+            spn_ice_max_hosts: gtk_builder.get_object("spn_ice_max_hosts").unwrap()
         }
     }
 
@@ -121,5 +141,23 @@ impl SettingsWidget {
     pub fn get_stun_password(&self) -> String {
         self.ent_stun_password.get_text().to_string().clone()
     }
+
+    pub fn set_use_ice(&self, value: bool) {
+        self.swt_use_ice.set_state(value);
+    }
+
+    pub fn get_use_ice(&self) -> bool {
+        self.swt_use_ice.get_state()
+    }
+
+    pub fn set_ice_use_rtcp(&self, value: bool) {
+        self.swt_ice_use_rtcp.set_state(value);
+    }
+
+    pub fn get_ice_use_rtcp(&self) -> bool {
+        self.swt_ice_use_rtcp.get_state()
+    }
+
+
 
 }

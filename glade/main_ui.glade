@@ -1428,16 +1428,141 @@ TURN
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
-                              <object class="GtkLabel">
-                                <property name="width-request">20</property>
+                              <object class="GtkLabel" id="lbl_use_ice">
+                                <property name="width-request">50</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">Use ICE</property>
+                                <property name="label" translatable="yes">Enable ICE</property>
+                                <property name="single-line-mode">True</property>
                               </object>
                               <packing>
-                                <property name="x">143</property>
-                                <property name="y">52</property>
+                                <property name="x">25</property>
+                                <property name="y">27</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_use_ice">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">25</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="cmb_ice_reg_nomination">
+                                <property name="width-request">178</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="active">0</property>
+                                <items>
+                                  <item id="0" translatable="yes">Aggresive</item>
+                                </items>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">113</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="cmb_ice_trickle_method">
+                                <property name="width-request">176</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="active">0</property>
+                                <items>
+                                  <item id="0" translatable="yes">Disabled</item>
+                                  <item id="1" translatable="yes">Half</item>
+                                  <item id="2" translatable="yes">Full</item>
+                                </items>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">159</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_ice_reg_nomination">
+                                <property name="width-request">161</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">ICE Regular nomination :</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">120</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_ice_trickle_method">
+                                <property name="width-request">103</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Use trickle ICE :</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">166</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spn_ice_max_hosts">
+                                <property name="width-request">176</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">208</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_ice_max_hosts">
+                                <property name="width-request">79</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">MAX Hosts :</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">214</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_ice_use_rtcp">
+                                <property name="width-request">92</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">ICE use RTCP :</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">25</property>
+                                <property name="y">69</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_ice_use_rtcp">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">190</property>
+                                <property name="y">64</property>
                               </packing>
                             </child>
                           </object>
