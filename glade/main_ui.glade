@@ -1447,7 +1447,7 @@ TURN
                                 <property name="can-focus">False</property>
                                 <property name="active">0</property>
                                 <items>
-                                  <item id="0" translatable="yes">Aggresive</item>
+                                  <item id="Aggresive" translatable="yes">Aggresive</item>
                                 </items>
                               </object>
                               <packing>
@@ -1463,9 +1463,9 @@ TURN
                                 <property name="can-focus">False</property>
                                 <property name="active">0</property>
                                 <items>
-                                  <item id="0" translatable="yes">Disabled</item>
-                                  <item id="1" translatable="yes">Half</item>
-                                  <item id="2" translatable="yes">Full</item>
+                                  <item id="Disabled" translatable="yes">Disabled</item>
+                                  <item id="Half" translatable="yes">Half</item>
+                                  <item id="Full" translatable="yes">Full</item>
                                 </items>
                               </object>
                               <packing>
@@ -1526,7 +1526,7 @@ TURN
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_ice_use_rtcp">
+                              <object class="GtkLabel" id="lbl_ice_rtcp">
                                 <property name="width-request">92</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1540,7 +1540,7 @@ TURN
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="swt_ice_use_rtcp">
+                              <object class="GtkSwitch" id="swt_ice_rtcp">
                                 <property name="width-request">50</property>
                                 <property name="height-request">26</property>
                                 <property name="visible">True</property>

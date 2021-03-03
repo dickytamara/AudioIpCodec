@@ -37,7 +37,7 @@ pub struct SettingsWidget {
     lbl_ice_trickle_method: gtk::Label,
     lbl_ice_max_hosts: gtk::Label,
     swt_use_ice: gtk::Switch,
-    swt_ice_use_rtcp: gtk::Switch,
+    swt_ice_rtcp: gtk::Switch,
     cmb_ice_reg_nomination: gtk::ComboBoxText,
     cmb_ice_trickle_method: gtk::ComboBoxText,
     spn_ice_max_hosts: gtk::SpinButton
@@ -67,14 +67,14 @@ impl SettingsWidget {
             cmb_turn_keyring: gtk_builder.get_object("cmb_turn_keyring").unwrap(),
             btn_turn_save: gtk_builder.get_object("btn_turn_save").unwrap(),
             btn_turn_reset: gtk_builder.get_object("btn_turn_reset").unwrap(),
-            lbl_use_ice: gtk_builder.get_object("lbl_use_ice").unwrap(),
             // ice section
-            lbl_ice_use_rtcp: gtk_builder.get_object("lbl_ice_use_rtcp").unwrap(),
+            lbl_use_ice: gtk_builder.get_object("lbl_use_ice").unwrap(),
+            lbl_ice_use_rtcp: gtk_builder.get_object("lbl_ice_rtcp").unwrap(),
             lbl_ice_reg_nomination: gtk_builder.get_object("lbl_ice_reg_nomination").unwrap(),
             lbl_ice_trickle_method: gtk_builder.get_object("lbl_ice_trickle_method").unwrap(),
             lbl_ice_max_hosts: gtk_builder.get_object("lbl_ice_max_hosts").unwrap(),
             swt_use_ice: gtk_builder.get_object("swt_use_ice").unwrap(),
-            swt_ice_use_rtcp: gtk_builder.get_object("swt_ice_use_rtcp").unwrap(),
+            swt_ice_rtcp: gtk_builder.get_object("swt_ice_rtcp").unwrap(),
             cmb_ice_reg_nomination: gtk_builder.get_object("cmb_ice_reg_nomination").unwrap(),
             cmb_ice_trickle_method: gtk_builder.get_object("cmb_ice_trickle_method").unwrap(),
             spn_ice_max_hosts: gtk_builder.get_object("spn_ice_max_hosts").unwrap()
@@ -88,12 +88,26 @@ impl SettingsWidget {
         self.spn_turn_port.set_range(3478_f64, 65535_f64);
         self.spn_turn_port.set_increments(1_f64, 5_f64);
 
+
+        // set spin button ice max hosts sever
+        self.spn_ice_max_hosts.set_digits(0);
+        self.spn_ice_max_hosts.set_range(-1_f64, 256_f64);
+        self.spn_ice_max_hosts.set_increments(1_f64, 5_f64);
+
         // reset widget
         self.sub_widget_turn_reset();
+        self.sub_widget_ice_reset();
 
+        // toggle use turn
         let wid = self.clone();
         self.swt_use_turn.connect_property_active_notify( move | s | {
             wid.widget_set_use_turn(s.get_state());
+        });
+
+        // toggle use ice
+        let wid = self.clone();
+        self.swt_use_ice.connect_property_active_notify(move | s | {
+            wid.widget_set_use_ice(s.get_state());
         });
 
         let wid = self.clone();
@@ -107,7 +121,6 @@ impl SettingsWidget {
         // set default value for turn properties
         self.swt_use_turn.set_state(false);
         self.swt_turn_tcp.set_state(false);
-        self.swt_ice_use_rtcp.set_state(false);
         self.swt_turn_rtcp_multiplexing.set_state(false);
 
         self.spn_turn_port.set_value(3478_f64);
@@ -118,28 +131,31 @@ impl SettingsWidget {
         self.widget_set_use_turn(false);
     }
 
+    pub fn sub_widget_ice_reset(&self) {
+        // set default value for ice properties
+        self.swt_use_ice.set_state(false);
+        self.swt_ice_rtcp.set_state(false);
+        self.cmb_ice_reg_nomination.set_active_id(Some("Agresive"));
+        self.cmb_ice_trickle_method.set_active_id(Some("Disabled"));
+        self.spn_ice_max_hosts.set_value(-1_f64);
+        self.widget_set_use_ice(false);
+    }
+
     pub fn widget_set_use_turn(&self, value: bool) {
-        if value {
-            self.swt_turn_tcp.set_sensitive(true);
-            self.swt_turn_rtcp_multiplexing.set_sensitive(true);
-            self.ent_turn_server.set_sensitive(true);
-            self.spn_turn_port.set_sensitive(true);
-            self.ent_turn_username.set_sensitive(true);
-            self.ent_turn_password.set_sensitive(true);
-            self.cmb_turn_keyring.set_sensitive(true);
-        } else {
-            self.swt_turn_tcp.set_sensitive(false);
-            self.swt_turn_rtcp_multiplexing.set_sensitive(false);
-            self.ent_turn_server.set_sensitive(false);
-            self.spn_turn_port.set_sensitive(false);
-            self.ent_turn_username.set_sensitive(false);
-            self.ent_turn_password.set_sensitive(false);
-            self.cmb_turn_keyring.set_sensitive(false);
-        }
+        self.swt_turn_tcp.set_sensitive(value);
+        self.swt_turn_rtcp_multiplexing.set_sensitive(value);
+        self.ent_turn_server.set_sensitive(value);
+        self.spn_turn_port.set_sensitive(value);
+        self.ent_turn_username.set_sensitive(value);
+        self.ent_turn_password.set_sensitive(value);
+        self.cmb_turn_keyring.set_sensitive(value);
     }
 
     pub fn widget_set_use_ice(&self, value: bool) {
-
+        self.swt_ice_rtcp.set_sensitive(value);
+        self.cmb_ice_reg_nomination.set_sensitive(value);
+        self.cmb_ice_trickle_method.set_sensitive(value);
+        self.spn_ice_max_hosts.set_sensitive(value);
     }
 
     // auto answer toggle button
@@ -216,11 +232,11 @@ impl SettingsWidget {
     }
 
     pub fn set_ice_use_rtcp(&self, value: bool) {
-        self.swt_ice_use_rtcp.set_state(value);
+        self.swt_ice_rtcp.set_state(value);
     }
 
     pub fn get_ice_use_rtcp(&self) -> bool {
-        self.swt_ice_use_rtcp.get_state()
+        self.swt_ice_rtcp.get_state()
     }
 
 
