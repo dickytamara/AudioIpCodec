@@ -2,12 +2,14 @@
 
 use super::gtk::prelude::*;
 
-use super::gtk::{Switch, Button, Entry, SpinButton, Label, Builder};
+use super::gtk::{Switch, Button, Entry, SpinButton, Label, Builder, Notebook};
 use super::glib::clone;
 
 
 #[derive(Clone)]
 pub struct SettingsWidget {
+    // gtk notebook
+    ntbk_settings: Notebook,
     // call tab section
     swt_autoanswer: gtk::Switch,
     lbl_autoanswer: gtk::Label,
@@ -46,6 +48,9 @@ pub struct SettingsWidget {
 impl SettingsWidget {
     pub fn new(gtk_builder: &gtk::Builder) -> SettingsWidget {
         SettingsWidget {
+            // gtk notebook
+            ntbk_settings: gtk_builder.get_object("ntbk_settings").unwrap(),
+            // call
             swt_autoanswer: gtk_builder.get_object("swt_autoanswer").unwrap(),
             lbl_autoanswer: gtk_builder.get_object("lbl_autoanswer").unwrap(),
             // turn section
@@ -111,8 +116,20 @@ impl SettingsWidget {
         });
 
         let wid = self.clone();
+        let notebook = self.ntbk_settings.clone();
         self.btn_turn_reset.connect_clicked(move |_| {
-            wid.sub_widget_turn_reset();
+            match notebook.get_current_page() {
+                Some(x) => {
+                    match x {
+                        0 => wid.sub_widget_call_reset(),
+                        1 => wid.sub_widget_turn_reset(),
+                        2 => wid.sub_widget_ice_reset(),
+                        _ => panic!("")
+                    }
+                }
+                _ => panic!("Setting page not have sub")
+            }
+            // wid.sub_widget_turn_reset();
         });
 
     }
@@ -139,6 +156,10 @@ impl SettingsWidget {
         self.cmb_ice_trickle_method.set_active_id(Some("Disabled"));
         self.spn_ice_max_hosts.set_value(-1_f64);
         self.widget_set_use_ice(false);
+    }
+
+    pub fn sub_widget_call_reset(&self) {
+        self.swt_autoanswer.set_state(false);
     }
 
     pub fn widget_set_use_turn(&self, value: bool) {
