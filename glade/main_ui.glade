@@ -1203,7 +1203,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_stun_server">
+                              <object class="GtkLabel" id="lbl_turn_server">
                                 <property name="width-request">50</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1217,7 +1217,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="ent_stun_username">
+                              <object class="GtkEntry" id="ent_turn_username">
                                 <property name="width-request">178</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
@@ -1229,7 +1229,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="ent_stun_password">
+                              <object class="GtkEntry" id="ent_turn_password">
                                 <property name="width-request">177</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
@@ -1241,7 +1241,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="ent_stun_server">
+                              <object class="GtkEntry" id="ent_turn_server">
                                 <property name="width-request">437</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
@@ -1253,11 +1253,12 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSpinButton" id="spn_stun_port">
+                              <object class="GtkSpinButton" id="spn_turn_port">
                                 <property name="width-request">179</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
+                                <property name="numeric">True</property>
                               </object>
                               <packing>
                                 <property name="x">196</property>
@@ -1265,7 +1266,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_use_tcp">
+                              <object class="GtkLabel" id="lbl_turn_tcp">
                                 <property name="width-request">84</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1279,7 +1280,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="swt_use_tcp">
+                              <object class="GtkSwitch" id="swt_turn_tcp">
                                 <property name="width-request">50</property>
                                 <property name="height-request">26</property>
                                 <property name="visible">True</property>
@@ -1291,7 +1292,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="swt_rtcp_multiplexing">
+                              <object class="GtkSwitch" id="swt_turn_rtcp_multiplexing">
                                 <property name="width-request">50</property>
                                 <property name="height-request">26</property>
                                 <property name="visible">True</property>
@@ -1303,7 +1304,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_rtcp_multiplexing">
+                              <object class="GtkLabel" id="lbl_turn_rtcp_multiplexing">
                                 <property name="width-request">121</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1317,39 +1318,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkRadioButton" id="rdb_stun_keyring_default">
-                                <property name="label" translatable="yes">default (SDES)</property>
-                                <property name="width-request">122</property>
-                                <property name="height-request">22</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">False</property>
-                                <property name="active">True</property>
-                                <property name="draw-indicator">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">455</property>
-                                <property name="y">183</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="rdb_stun_keyring_dtls">
-                                <property name="label" translatable="yes">DTLS</property>
-                                <property name="width-request">61</property>
-                                <property name="height-request">22</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="receives-default">False</property>
-                                <property name="active">True</property>
-                                <property name="draw-indicator">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">456</property>
-                                <property name="y">214</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
+                              <object class="GtkLabel" id="lbl_turn_keyring">
                                 <property name="width-request">89</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1363,7 +1332,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_stun_port">
+                              <object class="GtkLabel" id="lbl_turn_port">
                                 <property name="width-request">30</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1377,7 +1346,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_stun_password">
+                              <object class="GtkLabel" id="lbl_turn_password">
                                 <property name="width-request">69</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1391,7 +1360,7 @@ CALL
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_stun_username">
+                              <object class="GtkLabel" id="lbl_turn_username">
                                 <property name="width-request">75</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
@@ -1402,6 +1371,23 @@ CALL
                               <packing>
                                 <property name="x">23</property>
                                 <property name="y">199</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="cmb_turn_keyring">
+                                <property name="width-request">147</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="active">0</property>
+                                <items>
+                                  <item id="SDES" translatable="yes">SDES</item>
+                                  <item id="DTLS" translatable="yes">DTLS</item>
+                                </items>
+                              </object>
+                              <packing>
+                                <property name="x">453</property>
+                                <property name="y">175</property>
                               </packing>
                             </child>
                           </object>
@@ -1600,7 +1586,7 @@ ICE
                           <placeholder/>
                         </child>
                         <child>
-                          <object class="GtkButton" id="btn_stun_save">
+                          <object class="GtkButton" id="btn_turn_save">
                             <property name="label" translatable="yes">Save</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -1613,7 +1599,7 @@ ICE
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="btn_stun_reset">
+                          <object class="GtkButton" id="btn_turn_reset">
                             <property name="label" translatable="yes">Reset</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>

@@ -182,6 +182,7 @@ fn main() {
     headerbar_widget.init();
     dialpad_widget.init();
     account_widget.init();
+    settings_widget.init();
 
     callback_audio_line_widget(&mut sipua, &mut rx_widget, &mut tx_widget);
     callback_dialpad_widget(&mut sipua, &mut dialpad_widget);
