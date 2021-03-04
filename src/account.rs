@@ -84,6 +84,20 @@ impl AccountWidget {
         self.ent_username.get_text().to_string().clone()
     }
 
+    // event on btn save clicked pass closure
+    // at outer level
+    pub fn on_btn_save_clicked<F: Fn() +'static> (&self, callback: F) {
+        self.btn_save.connect_clicked(move |_| {
+            callback();
+        });
+    }
+
+    pub fn on_btn_connect_clicked<F: Fn() +'static> (&self, callback: F) {
+        self.btn_connect.connect_clicked( move |_| {
+            callback();
+        });
+    }
+
 }
 
 
