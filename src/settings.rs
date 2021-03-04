@@ -93,13 +93,13 @@ impl SettingsWidget {
         self.spn_turn_port.set_range(3478_f64, 65535_f64);
         self.spn_turn_port.set_increments(1_f64, 5_f64);
 
-
         // set spin button ice max hosts sever
         self.spn_ice_max_hosts.set_digits(0);
         self.spn_ice_max_hosts.set_range(-1_f64, 256_f64);
         self.spn_ice_max_hosts.set_increments(1_f64, 5_f64);
 
         // reset widget
+        self.sub_widget_call_reset();
         self.sub_widget_turn_reset();
         self.sub_widget_ice_reset();
 
@@ -111,7 +111,7 @@ impl SettingsWidget {
 
         // toggle use ice
         let wid = self.clone();
-        self.swt_use_ice.connect_property_active_notify(move | s | {
+        self.swt_use_ice.connect_property_active_notify( move | s | {
             wid.widget_set_use_ice(s.get_state());
         });
 
@@ -129,9 +129,7 @@ impl SettingsWidget {
                 }
                 _ => panic!("Setting page not have sub")
             }
-            // wid.sub_widget_turn_reset();
         });
-
     }
 
     pub fn sub_widget_turn_reset(&self) {

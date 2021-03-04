@@ -8,6 +8,7 @@ use super::gtk::{Label, Entry, Button, Builder};
 use super::glib::clone;
 
 
+#[derive(Clone)]
 pub struct AccountWidget {
     lbl_sip_url: gtk::Label,
     lbl_registrar_url: gtk::Label,
@@ -20,7 +21,8 @@ pub struct AccountWidget {
     ent_username: gtk::Entry,
     ent_password: gtk::Entry,
     btn_connect: gtk::Button,
-    btn_save: gtk::Button
+    btn_save: gtk::Button,
+    btn_reset: gtk::Button
 }
 
 
@@ -39,14 +41,27 @@ impl AccountWidget {
             ent_username: gtk_builder.get_object("ent_username").unwrap(),
             ent_password: gtk_builder.get_object("ent_password").unwrap(),
             btn_connect:  gtk_builder.get_object("btn_account_connect").unwrap(),
-            btn_save: gtk_builder.get_object("btn_account_save").unwrap()
+            btn_save: gtk_builder.get_object("btn_account_save").unwrap(),
+            btn_reset: gtk_builder.get_object("btn_account_reset").unwrap()
         }
     }
-
 
     pub fn init(&self) {
         // initialize default event
 
+        let wid = self.clone();
+        self.btn_reset.connect_clicked(move |_| {
+            wid.reset()
+        });
+    }
+
+    pub fn reset(&self) {
+        // reset value
+        self.ent_sip_url.set_text("");
+        self.ent_registrar_url.set_text("");
+        self.ent_realm.set_text("");
+        self.ent_username.set_text("");
+        self.ent_password.set_text("");
     }
 
     pub fn get_sip_url (&self) -> String {

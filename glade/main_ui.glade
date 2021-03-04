@@ -1059,11 +1059,21 @@
                         <property name="can-focus">False</property>
                         <property name="homogeneous">True</property>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
                           <object class="GtkButton" id="btn_account_save">
                             <property name="label" translatable="yes">Save</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="btn_account_reset">
+                            <property name="label" translatable="yes">Reset</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
@@ -1126,7 +1136,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkNotebook">
+                      <object class="GtkNotebook" id="ntbk_settings">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <child>
