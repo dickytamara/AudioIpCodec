@@ -7,6 +7,9 @@ use super::gdk::prelude::*;
 use super::gtk::{Builder, Label, Entry, Button, TreeView, CellRendererText};
 use super::glib::clone;
 
+
+use super::gdk::*;
+
 #[derive(Clone)]
 pub struct DialpadWidget {
     btn_dial_1: gtk::Button,
@@ -177,8 +180,7 @@ impl DialpadWidget {
 
         }));
 
-        // todo add GTK Entry double click event
-
+        self.ent_call_address.set_events(EventMask::BUTTON2_MOTION_MASK);
     }
 
     ///  add item to call log list
@@ -200,6 +202,11 @@ impl DialpadWidget {
     /// get call adress
     pub fn get_call_address_text(&self) -> String {
         String::from(self.ent_call_address.get_text().as_str())
+    }
+
+    /// set call addres
+    pub fn set_call_address_text(&self, call_address: String) {
+        self.ent_call_address.set_text(call_address.as_str());
     }
 
     /// event on button call clicked

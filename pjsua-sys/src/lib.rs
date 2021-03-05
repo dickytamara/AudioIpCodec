@@ -89,6 +89,7 @@ pub const pjsua_contact_rewrite_method_PJSUA_CONTACT_REWRITE_UNREGISTER: pjsua_c
 pub const pjsua_contact_rewrite_method_PJSUA_CONTACT_REWRITE_NO_UNREG: pjsua_contact_rewrite_method = 2;
 pub const pjsua_contact_rewrite_method_PJSUA_CONTACT_REWRITE_ALWAYS_UPDATE: pjsua_contact_rewrite_method = 4;
 pub type pjsua_contact_rewrite_method = c_uint;
+
 pub const PJSUA_IP_CHANGE_OP_NULL: pjsua_ip_change_op = 0;
 pub const PJSUA_IP_CHANGE_OP_RESTART_LIS: pjsua_ip_change_op = 1;
 pub const PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP: pjsua_ip_change_op = 2;

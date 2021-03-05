@@ -3,8 +3,10 @@
 #![allow(non_upper_case_globals)]
 
 use super::pjdefault::AutoCreate;
+use super::pjdefault::ToString;
 use super::pj_sys::*;
 
+use std::ffi::CStr;
 use std::ptr;
 
 impl AutoCreate<pj_str_t> for pj_str_t {
@@ -13,6 +15,24 @@ impl AutoCreate<pj_str_t> for pj_str_t {
             ptr: ptr::null_mut(),
             slen: 0,
         }
+    }
+}
+
+impl ToString for pj_str_t {
+    fn to_string(&self) -> String {
+
+        let mut tmp: Vec<i8> = Vec::new();
+
+        let ret: String = String::new();
+
+        unsafe {
+            let pointer = self.ptr;
+            for i in 0..self.slen {
+                tmp.push(*pointer.offset(i as isize).clone());
+            }
+            let ret = CStr::from_ptr(tmp.as_ptr()).to_str().expect("error").clone().to_string();
+        }
+        ret
     }
 }
 

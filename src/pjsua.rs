@@ -406,6 +406,8 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
         unsafe {
             pjsua_logging_config_default(&mut config as *mut _);
         }
+        config.level = 0;
+        config.console_level= 0;
 
         config
     }

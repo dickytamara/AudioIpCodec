@@ -455,10 +455,10 @@ pub const pjsip_transport_dir_PJSIP_TP_DIR_OUTGOING: pjsip_transport_dir = 1;
 pub const pjsip_transport_dir_PJSIP_TP_DIR_INCOMING: pjsip_transport_dir = 2;
 pub type pjsip_transport_dir = c_uint;
 
-pub const pjsip_transport_state_PJSIP_TP_STATE_CONNECTED: pjsip_transport_state = 0;
-pub const pjsip_transport_state_PJSIP_TP_STATE_DISCONNECTED: pjsip_transport_state = 1;
-pub const pjsip_transport_state_PJSIP_TP_STATE_SHUTDOWN: pjsip_transport_state = 2;
-pub const pjsip_transport_state_PJSIP_TP_STATE_DESTROY: pjsip_transport_state = 3;
+pub const PJSIP_TP_STATE_CONNECTED: pjsip_transport_state = 0;
+pub const PJSIP_TP_STATE_DISCONNECTED: pjsip_transport_state = 1;
+pub const PJSIP_TP_STATE_SHUTDOWN: pjsip_transport_state = 2;
+pub const PJSIP_TP_STATE_DESTROY: pjsip_transport_state = 3;
 pub type pjsip_transport_state = c_uint;
 pub type pjsip_tp_state_listener_key = c_void;
 

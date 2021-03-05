@@ -8,7 +8,7 @@ use super::pjsip_simple_sys::*;
 use super::pjsua_sys::*;
 
 
-use super::pjdefault::AutoCreate;
+use super::pjdefault::{AutoCreate, ToString};
 use super::pjlib::PjTimerEntry;
 use super::pjsip::PjsipModuleCallback;
 use super::pjsua::PjsuaCallback;
@@ -1514,12 +1514,35 @@ impl SIPCore {
     }
 
     pub fn callback_on_nat_detect(&self, res: *const pj_stun_nat_detect_result) {
+        // logging nat detect result this only for trouble shooting
         unsafe {
-            if (*res).status != PJ_SUCCESS as pj_status_t {
-                println!("NAT detection failed.");
+
+            let nat_result = *res;
+            let status_str;
+            let status_text;
+            let nat_type_name;
+
+            if nat_result.status == PJ_SUCCESS as pj_status_t {
+                status_str = String::from("SUCCESS");
             } else {
-                println!("NAT detected");
+                status_str = String::from("FAILED");
             }
+
+            // get status text from nat result
+            status_text = CStr::from_ptr(nat_result.status_text)
+                .to_owned()
+                .into_string()
+                .expect("nat status_text fail");
+
+            // get nat_type_name from nat result
+            nat_type_name = CStr::from_ptr(nat_result.nat_type_name)
+                .to_owned()
+                .into_string()
+                .expect("nat_type_name fail");
+
+            println!("NAT detected result: [{}], status [{}], type: [{}]",
+                status_str, status_text, nat_type_name
+            );
         }
     }
 
@@ -1550,36 +1573,36 @@ impl SIPCore {
         state: pjsip_transport_state,
         info: *const pjsip_transport_state_info,
     ) {
-        println!("OnTransportState");
-        // unsafe {
-        //     match state {
-        //         pjsip_transport_state_PJSIP_TP_STATE_CONNECTED => {
-        //             println!(
-        //                 "SIP {} transport is connected to {}:{}",
-        //                 CString::from_raw((*tp).type_name)
-        //                     .into_string()
-        //                     .expect("error"),
-        //                 CString::from_raw((*tp).remote_name.host.ptr)
-        //                     .into_string()
-        //                     .expect("0.0.0.0"),
-        //                 (*tp).remote_name.port
-        //             );
-        //         }
-        //         pjsip_transport_state_PJSIP_TP_STATE_DISCONNECTED => {
-        //             println!(
-        //                 "SIP {} transport is disconnected form {}:{}",
-        //                 CString::from_raw((*tp).type_name)
-        //                     .into_string()
-        //                     .expect("error"),
-        //                 CString::from_raw((*tp).remote_name.host.ptr)
-        //                     .into_string()
-        //                     .expect("0.0.0.0"),
-        //                 (*tp).remote_name.port
-        //             );
-        //         }
-        //         _ => println!("check c code"),
-        //     }
-        // }
+        unsafe {
+            // transport
+            let tp = *tp;
+            // transport type name TCP or UDP
+            let type_name = CStr::from_ptr(tp.type_name)
+                    .to_owned()
+                    .into_string()
+                    .expect("tp.transport null info");
+
+            // remote address name it can be server or ptp client
+            let remote_name = CStr::from_ptr(tp.remote_name.host.ptr)
+                    .to_owned()
+                    .into_string()
+                    .expect("remote_name null info");
+
+            // remote port
+            let remote_port = tp.remote_name.port;
+
+            let op_name: String = match state {
+                PJSIP_TP_STATE_CONNECTED => String::from("connected"),
+                PJSIP_TP_STATE_DISCONNECTED => String::from("disconnected"),
+                PJSIP_TP_STATE_SHUTDOWN => String::from("shutdown"),
+                PJSIP_TP_STATE_DESTROY => String::from("destroy"),
+                _ => String::from("unknown")
+            };
+
+            println!("SIP [{}] transport is {} to {}:{}",
+                type_name, op_name, remote_name, remote_port
+            );
+        }
     }
 
     pub fn callback_on_ice_transport_error(
@@ -1589,28 +1612,48 @@ impl SIPCore {
         status: pj_status_t,
         param: *mut c_void,
     ) {
-        println!("ICE keep alive failure for transport {}", index);
+        let ice_trans_op_text: String;
+        let ice_status_text: String;
+
+        if status == PJ_SUCCESS as pj_status_t {
+            ice_status_text = String::from("SUCCESS");
+        } else {
+            ice_status_text = String::from("FAILURE");
+        }
+
+        match op {
+            PJ_ICE_STRANS_OP_INIT => ice_trans_op_text = String::from("INIT"),
+            PJ_ICE_STRANS_OP_NEGOTIATION => ice_trans_op_text = String::from("NEGOTIATION"),
+            PJ_ICE_STRANS_OP_KEEP_ALIVE => ice_trans_op_text = String::from("KEEPALIVE"),
+            PJ_ICE_STRANS_OP_ADDR_CHANGE => ice_trans_op_text = String::from("ADDRCHANGE"),
+            _ => ice_trans_op_text = String::from("UNKNOWN OP")
+        }
+
+        println!("ICE [{}] status [{}], operation [{}]",
+            index, ice_status_text, ice_trans_op_text,
+        );
     }
 
     pub fn callback_on_snd_dev_operation(&self, operation: c_int) -> pj_status_t {
-        println!("OnSndDevOperation");
+        // println!("OnSndDevOperation");
+        let mut cap_dev = -1;
+        let mut play_dev = -1;
+        let op: String;
+
         unsafe {
-            let mut cap_dev = -1;
-            let mut play_dev = -1;
-            let op: String;
-
-            if operation > 0 {
-                op = String::from("ON");
-            } else {
-                op = String::from("OFF");
-            }
-
             pjsua_get_snd_dev(&mut cap_dev as *mut _, &mut play_dev as *mut _);
-            println!(
-                "Turning sound device input {} output {} : {}",
-                cap_dev, play_dev, op
-            );
         }
+
+        if operation > 0 {
+            op = String::from("ON");
+        } else {
+            op = String::from("OFF");
+        }
+
+        println!( "Turning sound device input {} output {} : {}",
+            cap_dev, play_dev, op
+        );
+
         PJ_SUCCESS as pj_status_t
     }
 
@@ -1620,10 +1663,7 @@ impl SIPCore {
         med_idx: c_uint,
         event: *mut pjmedia_event)
     {
-        // unsafe {
-        // let mut event_name: [c_char; 5] = [0; 5];
 
-        // let fourcc_name = pjmedia_fourcc_name((*event).type_, &mut event_name as *mut _);
 
         println!("Event {}", "skip");
         // }
@@ -1635,45 +1675,92 @@ impl SIPCore {
         status: pj_status_t,
         info: *const pjsua_ip_change_op_info,
     ) {
-        println!("OnIpChangeProgress");
         unsafe {
             let mut acc_info: pjsua_acc_info = pjsua_acc_info::new();
             let mut tp_info: pjsua_transport_info = pjsua_transport_info::new();
 
-            if status == PJ_SUCCESS as pj_status_t {
-                match op {
-                    PJSUA_IP_CHANGE_OP_RESTART_LIS => {
-                        pjsua_transport_get_info(
-                            (*info).lis_restart.transport_id,
-                            &mut tp_info as *mut _,
-                        );
-                        println!("restart transport.");
-                    }
-                    PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => {
-                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
-                        println!("transport shutdown for account.");
-                    }
-                    PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => {
-                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
-                        println!("update contact for account.");
-                    }
-                    PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => {
-                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
-                        println!("hangup call for account.");
-                    }
-                    PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => {
-                        pjsua_acc_get_info((*info).acc_shutdown_tp.acc_id, &mut acc_info as *mut _);
-                        println!("reinvite call for account.");
-                    }
-                    PJSUA_IP_CHANGE_OP_COMPLETED => {
-                        println!("done");
-                    }
 
-                    _ => println!("warn validate c code."),
-                }
-            } else {
-                println!("IP change progress fail.");
+            let status_text: String = match status as u32 {
+                PJ_SUCCESS => String::from("SUCCESS"),
+                _ => String::from("FAILURE")
+            };
+
+            if !info.is_null() {
+                let info = *info;
+                pjsua_transport_get_info(info.lis_restart.transport_id,
+                    &mut tp_info as *mut _
+                );
+
+                pjsua_acc_get_info(info.acc_shutdown_tp.acc_id,
+                    &mut acc_info as *mut _
+                );
             }
+
+
+            let op_text = match op {
+                PJSUA_IP_CHANGE_OP_NULL => String::from("NULL"),
+                PJSUA_IP_CHANGE_OP_RESTART_LIS => String::from("RESTART_LISTENER"),
+                PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP => String::from("ACC_SHUTDOWN_TP"),
+                PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT => String::from("ACC_UPDATE_CONTACT"),
+                PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS => String::from("ACC_HANGUP_CALLS"),
+                PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS => String::from("ACC_REINVITE_CALLS"),
+                PJSUA_IP_CHANGE_OP_COMPLETED => String::from("COMPLETED"),
+                _ => String::from("UNKNOWN")
+            };
+
+            let base_str = format!("IPCHANGE [{}] op: [{}]",
+                status_text, op_text
+            );
+
+            let mut log_str: String = String::new();
+
+            if op == PJSUA_IP_CHANGE_OP_RESTART_LIS {
+                log_str = format!("{} : restart transport {}", base_str, tp_info.info.to_string());
+            }
+
+            if op == PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP {
+                log_str = format!("{} : transport shutdown for account {}",
+                    base_str,
+                    acc_info.acc_uri.to_string()
+                );
+            }
+
+            if op == PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT {
+                if (*info).acc_update_contact.code != 0 {
+                    log_str = format!("{} : update contact for account {} code: [{}]",
+                        base_str,
+                        acc_info.acc_uri.to_string(),
+                        (*info).acc_update_contact.code
+                    );
+                } else {
+                    log_str = format!("{} : update contact for account {}",
+                        base_str,
+                        acc_info.acc_uri.to_string(),
+                    );
+                }
+            }
+
+            if op == PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS {
+                log_str = format!("{} : hangup call for account {}, call_id[{}]",
+                    base_str,
+                    acc_info.acc_uri.to_string(),
+                    (*info).acc_hangup_calls.call_id
+                );
+            }
+
+            if op == PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS {
+                log_str = format!("{} : reinvite call for account {}, call_id[{}]",
+                    base_str,
+                    acc_info.acc_uri.to_string(),
+                    (*info).acc_reinvite_calls.call_id
+                );
+            }
+
+            if op == PJSUA_IP_CHANGE_OP_COMPLETED {
+                log_str = format!("{} : done", base_str);
+            }
+
+            println!("{}", log_str);
         }
     }
 }
@@ -1937,8 +2024,6 @@ impl PjsuaCallback for SIPCore {
 // SIPUserAgent
 #[derive(Clone)]
 pub struct SIPUserAgent {}
-
-//type SIPConfig = pjsua_config;
 
 pub const PJSUA_INVALID_ID: i32 = -1;
 

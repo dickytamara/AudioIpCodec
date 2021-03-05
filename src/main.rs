@@ -58,6 +58,9 @@ use settings::SettingsWidget;
 use pj_sys::*;
 use sipua::*;
 
+use std::ffi::{CString, CStr};
+use pjdefault::ToString;
+
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
 
 /// update receive transmit level bar
@@ -188,6 +191,7 @@ fn main() {
     callback_dialpad_widget(&mut sipua, &mut dialpad_widget);
 
     // test call data
+    dialpad_widget.set_call_address_text(String::from("sip://@27.50.19.174"));
     dialpad_widget.add_call_log("sip://@27.50.19.174");
     dialpad_widget.add_call_log("*888#");
     dialpad_widget.add_call_log("*363#");

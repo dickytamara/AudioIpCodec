@@ -7,3 +7,7 @@
 pub trait AutoCreate<T> {
     fn new() -> T;
 }
+
+pub trait ToString {
+    fn to_string(&self) -> String;
+}
