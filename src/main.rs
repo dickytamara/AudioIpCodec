@@ -40,11 +40,7 @@ mod account;
 mod settings;
 
 // sipua module
-mod pjdefault;
-mod pjlib;
-mod pjsip;
-mod pjmedia;
-mod pjsua;
+mod pjproject;
 mod sipua;
 
 use dialpad::DialpadWidget;
@@ -59,7 +55,7 @@ use pj_sys::*;
 use sipua::*;
 
 use std::ffi::{CString, CStr};
-use pjdefault::ToString;
+use pjproject::pjdefault::ToString;
 
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
 

@@ -14,6 +14,8 @@ use super::pjsua_sys::*;
 use std::os::raw::{c_int, c_uint, c_void};
 use std::ptr;
 
+pub const PJSUA_INVALID_ID: i32 = -1;
+
 #[link(name="pjsua")]
 extern "C" {
     pub fn pjsua_conf_get_msignal_level(
