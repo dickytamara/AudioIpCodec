@@ -18,6 +18,7 @@ use super::sip_tones::*;
 use super::sip_transport::*;
 use super::sip_wav::*;
 
+use super::pjsua;
 use std::ptr;
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_int, c_void, c_uint, c_char};
@@ -141,11 +142,13 @@ impl SIPCore {
 
     pub fn start(&mut self) {
         unsafe {
-            self.pool = pjsua_pool_create(
-                CString::new("ipcodec").expect("error").into_raw(),
-                1000,
-                1000,
-            );
+            // self.pool = pjsua_pool_create(
+            //     CString::new("ipcodec").expect("error").into_raw(),
+            //     1000,
+            //     1000,
+            // );
+
+            self.pool = pjsua::pool_create("ipcodec");
 
             assert_ne!(self.pool.is_null(), true);
 
@@ -227,6 +230,9 @@ impl SIPCore {
 
             // we don't need add account for this state
             // so we create dynamicaly in addition
+            self.accounts.set_rtp_config(self.transports.get_rtp_config());
+            self.accounts.set_reg_retry_interval(300);
+            self.accounts.set_reg_first_retry_interval(60);
 
             let status = pjsua_start();
             if status != PJ_SUCCESS as pj_status_t {
@@ -239,7 +245,8 @@ impl SIPCore {
 
     pub fn deinit(&mut self) {
         unsafe {
-            pj_pool_safe_release(&mut self.pool as *mut _);
+            // pj_pool_safe_release(&mut self.pool as *mut _);
+            pjsua::pool_release(self.pool);
             pjsua_destroy();
         }
     }

@@ -4,9 +4,11 @@
 
 use super::pjdefault::AutoCreate;
 use super::pjdefault::ToString;
+use super::pjdefault::FromString;
 use super::pj_sys::*;
 
 use std::ffi::CStr;
+use std::ffi::CString;
 use std::ptr;
 
 impl AutoCreate<pj_str_t> for pj_str_t {
@@ -14,6 +16,18 @@ impl AutoCreate<pj_str_t> for pj_str_t {
         pj_str_t {
             ptr: ptr::null_mut(),
             slen: 0,
+        }
+    }
+}
+
+impl FromString<pj_str_t> for pj_str_t {
+    fn from_string(value: String) -> pj_str_t {
+        unsafe {
+            pj_str(
+                CString::new(value.as_str())
+                .expect("invalid string")
+                .into_raw() as *mut _
+            )
         }
     }
 }

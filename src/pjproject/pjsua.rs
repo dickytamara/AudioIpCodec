@@ -4,6 +4,7 @@
 #![allow(dead_code)]
 
 use super::pjdefault::AutoCreate;
+use super::pjdefault::FromString;
 
 use super::pj_sys::*;
 use super::pjmedia_sys::*;
@@ -12,6 +13,7 @@ use super::pjsip_simple_sys::*;
 use super::pjsua_sys::*;
 
 use std::os::raw::{c_int, c_uint, c_void};
+use std::ffi::CString;
 use std::ptr;
 
 pub const PJSUA_INVALID_ID: i32 = -1;
@@ -677,6 +679,11 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
         }
 
         config.cred_count = 1;
+        config.reg_retry_interval = 300;
+        config.reg_first_retry_interval = 60;
+        config.cred_info[0].data_type = 0;
+        config.cred_info[0].scheme = pj_str_t::from_string(String::from("Digest"));
+
         config
     }
 }
@@ -874,3 +881,28 @@ impl AutoCreate<pjsua_conf_port_info> for pjsua_conf_port_info {
     }
 }
 
+
+// function helper
+pub fn pool_create(pool_name: &str) -> *mut pj_pool_t {
+    unsafe {
+        pjsua_pool_create(
+            CString::new(pool_name)
+            .expect("String error create pool_name")
+            .into_raw(),
+            1000,
+            1000
+        )
+    }
+}
+
+pub fn pool_release(pool: *mut pj_pool_t) {
+    unsafe {
+        pj_pool_release(pool);
+    }
+}
+
+pub fn pool_safe_release(ppool: *mut *mut pj_pool_t) {
+    unsafe {
+        pj_pool_safe_release(ppool);
+    }
+}

@@ -11,3 +11,7 @@ pub trait AutoCreate<T> {
 pub trait ToString {
     fn to_string(&self) -> String;
 }
+
+pub trait FromString<T> {
+    fn from_string(value: String) -> T;
+}
