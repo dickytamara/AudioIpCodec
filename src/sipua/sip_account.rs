@@ -27,30 +27,35 @@ impl SIPAccount {
         }
     }
 
+    // set sip id for account
     pub fn set_id(&mut self, value: String) {
 
         self.ctx.id = pj_str_t::from_string(value);
 
     }
 
+    // set registrar uri
     pub fn set_reg_uri(&mut self, value: String) {
 
         self.ctx.reg_uri = pj_str_t::from_string(value);
 
     }
 
+    // set realm for account
     pub fn set_realm(&mut self, value: String) {
 
         self.ctx.cred_info[0].realm = pj_str_t::from_string(value);
 
     }
 
+    // set username
     pub fn set_username(&mut self, value: String) {
 
         self.ctx.cred_info[0].username = pj_str_t::from_string(value);
 
     }
 
+    // set password
     pub fn set_password(&mut self, value: String) {
 
         self.ctx.cred_info[0].data = pj_str_t::from_string(value);
@@ -80,7 +85,7 @@ impl SIPAccount {
         }
     }
 
-
+    // add account to internal pjsua
     pub fn add(&mut self, is_default: bool) {
 
         let mut default = PJ_FALSE as pj_bool_t;
@@ -90,6 +95,7 @@ impl SIPAccount {
         }
 
         unsafe {
+
             let result = pjsua_acc_add(
                     &mut self.ctx as *const _,
                     default,
@@ -102,6 +108,7 @@ impl SIPAccount {
         }
     }
 
+    // remove account from internal pjsua
     pub fn del(&self) {
         unsafe{
             let result = pjsua_acc_del(self.id);
@@ -138,6 +145,109 @@ impl SIPAccount {
         }
     }
 
+    // modify acoount config
+    pub fn modify(&self, acc_config: &mut pjsua_acc_config) {
+        unsafe {
+            let result = pjsua_acc_modify(
+                    self.id,
+                    acc_config as *mut _
+                );
+
+            if result != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant modify account config");
+            }
+        }
+    }
+
+    // set online or ofline status
+    pub fn set_online_status(&self, is_online: bool) {
+
+        let mut online = PJ_FALSE;
+
+        if is_online {
+            online = PJ_TRUE;
+        }
+
+        unsafe {
+
+            let status = pjsua_acc_set_online_status(
+                self.id,
+                online as pj_bool_t
+            );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant set online or offline account");
+            }
+        }
+    }
+
+    // this online status more like presence state for account
+    pub fn set_online_status2(&self, is_online: bool, pr: &mut pjrpid_element) {
+
+        let mut online = PJ_FALSE;
+
+        if is_online {
+            online = PJ_TRUE;
+        }
+
+        unsafe {
+
+            let status = pjsua_acc_set_online_status2(
+                    self.id,
+                    online as pj_bool_t,
+                    pr as *const _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant set account presence.");
+            }
+        }
+    }
+
+    // set registration process
+    pub fn set_registration(&self, renew: bool) {
+
+        let mut new = PJ_FALSE;
+
+        if renew {
+            new = PJ_TRUE
+        }
+
+        unsafe {
+
+            let status = pjsua_acc_set_registration(
+                    self.id,
+                    new as pj_bool_t
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant set registration status.");
+            }
+        }
+    }
+
+    // get inner account info
+    pub fn get_info(&self) -> Result<pjsua_acc_info, i32> {
+
+        let mut info = pjsua_acc_info::new();
+
+        unsafe {
+
+            let status = pjsua_acc_get_info(
+                    self.id,
+                    &mut info as *mut _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant get account info");
+                Err(status)
+            } else {
+                Ok(info)
+            }
+        }
+
+    }
+
 }
 
 // true interface for managing accounts
@@ -151,12 +261,14 @@ pub struct SIPAccounts {
 // pjproject.
 impl SIPAccounts {
 
+    // create new accounts
     pub fn new() -> SIPAccounts {
         SIPAccounts {
             acc_list: [SIPAccount::new(); PJSUA_MAX_ACC as usize],
         }
     }
 
+    // get default account
     pub fn get_default(&self) -> pjsua_acc_id {
         unsafe {
             pjsua_acc_get_default()
@@ -184,9 +296,69 @@ impl SIPAccounts {
         }
     }
 
+    // get number of registered to pjsua library
     pub fn get_count(&self) -> u32 {
         unsafe {
             pjsua_acc_get_count()
         }
     }
+
+    // enumerate current registered account id
+    pub fn enum_accs_id(&self) -> Vec<pjsua_acc_id> {
+
+        let mut ret: Vec<pjsua_acc_id> = Vec::new();
+
+        unsafe {
+
+            let mut acc_id: [pjsua_acc_id; PJSUA_MAX_ACC as usize] = [-1; PJSUA_MAX_ACC as usize];
+            let mut count = 0u32;
+
+            let status = pjsua_enum_accs(
+                    acc_id.as_mut_ptr(),
+                    &mut count as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+
+                for i in 0..count as usize {
+                    ret.push(acc_id[i]);
+                }
+
+            } else {
+                println!("ERR cant enumerate accounts id.");
+            }
+        }
+
+        ret
+    }
+
+    // enumerate current registered account info
+    pub fn enum_info(&self) -> Vec<pjsua_acc_info> {
+
+        let mut ret: Vec<pjsua_acc_info> = Vec::new();
+
+        unsafe {
+
+            let mut acc_info: [pjsua_acc_info; PJSUA_MAX_ACC as usize] = [pjsua_acc_info::new(); PJSUA_MAX_ACC as usize];
+            let mut count = 0u32;
+
+            let status = pjsua_acc_enum_info(
+                    acc_info.as_mut_ptr(),
+                    &mut count as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+
+                for i in 0..count as usize {
+                    ret.push(acc_info[i]);
+                }
+
+            } else {
+                println!("ERR cant enumerate account info.");
+            }
+        }
+
+        ret
+    }
+
 }
