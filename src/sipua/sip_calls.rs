@@ -32,7 +32,7 @@ impl SIPCall {
 pub struct SIPCalls {
     id_list: [pjsua_call_id; 32],
     call_data: [SIPCall; 32],
-    pub call_opt: pjsua_call_setting,
+    call_opt: pjsua_call_setting,
     ringback_on: bool,
     ring_on: bool,
 }
@@ -51,6 +51,10 @@ impl SIPCalls {
 
     pub fn set_audio_count(&mut self, value: u32) {
         self.call_opt.aud_cnt = value;
+    }
+
+    pub fn get_call_opt(&self) -> pjsua_call_setting {
+        self.call_opt.clone()
     }
 }
 

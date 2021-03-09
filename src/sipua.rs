@@ -75,6 +75,7 @@ impl SIPUserAgent {
         SIPUserAgent {}
     }
 
+    /// start user agent
     pub fn start(&self) {
         unsafe {
             match SIP_CORE {
@@ -84,6 +85,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// get output device list
     pub fn get_output_device_list(&self) -> Vec<String> {
         unsafe {
             match SIP_CORE {
@@ -94,6 +96,7 @@ impl SIPUserAgent {
             }
         }
     }
+
 
     pub fn get_input_device_list(&self) -> Vec<String> {
         unsafe {
@@ -106,6 +109,7 @@ impl SIPUserAgent {
         }
     }
 
+
     pub fn call(&self, call_addr: &str){
         unsafe {
             match SIP_CORE {
@@ -117,6 +121,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {
         unsafe {
             match SIP_CORE {
@@ -128,6 +133,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// get output port 0 level
     pub fn get_output_level(&self) -> i32 {
         unsafe {
             match SIP_CORE {
@@ -139,6 +145,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// set input port 0 level
     pub fn set_input_level(&self, value: i32) {
         unsafe {
             match SIP_CORE {
@@ -150,6 +157,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// set ouput port 0 level
     pub fn set_output_level(&self, value: i32) {
         unsafe {
             match SIP_CORE {
@@ -161,6 +169,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// port 0 signal level
     pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
         unsafe {
             match SIP_CORE {
@@ -172,7 +181,96 @@ impl SIPUserAgent {
         }
     }
 
+    pub fn connect_invite_calling<F: Fn() + 'static> (&mut self, f: F){
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_calling(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_incoming<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_incoming(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_early<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_early(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_connecting<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_connecting(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_confirmed<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_confirmed(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_disconnected<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_disconnected(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_null<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_null(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_invite_failure<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_invite_failure(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
 }
+
 
 impl Drop for SIPUserAgent {
     fn drop(&mut self) {

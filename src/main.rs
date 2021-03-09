@@ -139,8 +139,48 @@ fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &mut DialpadWidget
         sip.call(sip_address);
     });
 
+    // callback inv state
+    let dialpad = dialpad.clone();
+    sipua.connect_invite_calling(|| {
+
+    });
+
+    sipua.connect_invite_incoming(|| {
+
+    });
+
+    sipua.connect_invite_early(|| {
+
+    });
+
+    sipua.connect_invite_connecting(|| {
+
+    });
+
+    sipua.connect_invite_confirmed(|| {
+
+    });
+
+    sipua.connect_invite_disconnected(|| {
+
+    });
+
+    sipua.connect_invite_null(|| {
+
+    });
+
+    sipua.connect_invite_failure(|| {
+
+    });
+
 }
 
+// callback account widget
+fn callback_account_widget(sipua: &mut SIPUserAgent, account: &mut AccountWidget) {
+
+
+
+}
 
 fn main() {
     gtk::init()
@@ -171,7 +211,7 @@ fn main() {
 
     let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
 
-    let account_widget: AccountWidget = AccountWidget::new(&builder);
+    let mut account_widget: AccountWidget = AccountWidget::new(&builder);
     let settings_widget: SettingsWidget = SettingsWidget::new(&builder);
 
     // initialize
@@ -185,6 +225,7 @@ fn main() {
 
     callback_audio_line_widget(&mut sipua, &mut rx_widget, &mut tx_widget);
     callback_dialpad_widget(&mut sipua, &mut dialpad_widget);
+    callback_account_widget(&mut sipua, &mut account_widget);
 
     // test call data
     dialpad_widget.set_call_address_text(String::from("sip://@27.50.19.174"));

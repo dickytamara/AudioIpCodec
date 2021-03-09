@@ -13,7 +13,7 @@ use std::ffi::CStr;
 
 // Media Implementation
 pub struct SIPMedia {
-    pub ctx: pjsua_media_config,
+    ctx: pjsua_media_config,
     capture_dev: i32,
     playback_dev: i32,
     input_level: i32,
@@ -112,6 +112,10 @@ impl SIPMedia {
             result
         }
 
+    }
+
+    pub fn get_context(&self) -> pjsua_media_config {
+        self.ctx.clone()
     }
 
     pub fn media_list () { }

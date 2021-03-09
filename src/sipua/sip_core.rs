@@ -114,7 +114,7 @@ impl SIPCore {
             no_tcp: false,
             use_ipv6: false,
             transports: SIPTransports::new(),
-            accounts: SIPAccounts::new(),
+            accounts: SIPAccounts::new(), // only reg acc not local
             presence: SIPPresence::new(),
             calls: SIPCalls::new(),
             tones: Vec::new(),
@@ -175,7 +175,7 @@ impl SIPCore {
             pjsua_init(
                 &mut self.app_config as *mut _,
                 &mut self.log_config as *mut _,
-                &mut self.media_config.ctx as *mut _,
+                &mut self.media_config.get_context() as *mut _,
             );
 
             // pjsip endpoint for unhadled error
@@ -197,10 +197,10 @@ impl SIPCore {
             }
 
             // init ringback
-            self.ringback.init(self.pool, self.media_config.ctx);
+            self.ringback.init(self.pool, self.media_config.get_context());
 
             // init ringtone
-            self.ringtone.init(self.pool, self.media_config.ctx);
+            self.ringtone.init(self.pool, self.media_config.get_context());
 
             // Initialize UDP Transport
             if !self.no_udp {
@@ -224,6 +224,9 @@ impl SIPCore {
 
             self.media_config.init();
             self.calls.set_audio_count(self.aud_cnt);
+
+            // we don't need add account for this state
+            // so we create dynamicaly in addition
 
             let status = pjsua_start();
             if status != PJ_SUCCESS as pj_status_t {
@@ -253,7 +256,7 @@ impl SIPCore {
             let status = pjsua_call_make_call(
                         default_acc,
                         &mut call_addr as *const _,
-                        &mut self.calls.call_opt as *mut _,
+                        &mut self.calls.get_call_opt() as *mut _,
                         // ptr::null_mut(),
                         // &mut msg_data as *mut _,
                         // self.current_call as *mut _
@@ -694,10 +697,10 @@ impl SIPCore {
             let remote_port = tp.remote_name.port;
 
             let op_name: String = match state {
-                PJSIP_TP_STATE_CONNECTED => String::from("connected"),
-                PJSIP_TP_STATE_DISCONNECTED => String::from("disconnected"),
-                PJSIP_TP_STATE_SHUTDOWN => String::from("shutdown"),
-                PJSIP_TP_STATE_DESTROY => String::from("destroy"),
+                PJSIP_TP_STATE_CONNECTED => String::from("CONNECTED"),
+                PJSIP_TP_STATE_DISCONNECTED => String::from("DISCONNECTED"),
+                PJSIP_TP_STATE_SHUTDOWN => String::from("SHUTDOWN"),
+                PJSIP_TP_STATE_DESTROY => String::from("DESTROY"),
                 _ => String::from("unknown")
             };
 
@@ -797,7 +800,6 @@ impl SIPCore {
                     &mut acc_info as *mut _
                 );
             }
-
 
             let op_text = match op {
                 PJSUA_IP_CHANGE_OP_NULL => String::from("NULL"),

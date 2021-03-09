@@ -117,7 +117,9 @@ pub struct SIPTransports {
 }
 
 impl SIPTransports {
+
     pub fn new() -> SIPTransports {
+
         let mut sip_transports = SIPTransports {
             transport_list: Vec::<SIPTransport>::new(),
             udp_cfg: pjsua_transport_config::new(),
@@ -138,6 +140,10 @@ impl SIPTransports {
             &mut self.rtp_cfg as *const _,
         );
         self.transport_list.push(transport);
+    }
+
+    pub fn get_rtp_config(&self) -> pjsua_transport_config {
+        self.rtp_cfg
     }
 
     pub fn delete(&mut self, transport_id: i32) {
@@ -190,5 +196,6 @@ impl SIPTransports {
         self.udp_cfg.tls_setting.verify_client = val;
         self.udp_cfg.tls_setting.require_client_cert = val;
     }
+
 }
 

@@ -394,7 +394,9 @@ impl AutoCreate<pjsua_callback> for pjsua_callback {
 }
 
 impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
+
     fn new() -> pjsua_logging_config {
+
         let mut config = pjsua_logging_config {
             msg_logging: PJ_FALSE as pj_bool_t,
             level: 0,
@@ -408,15 +410,17 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
         unsafe {
             pjsua_logging_config_default(&mut config as *mut _);
         }
-        config.level = 0;
-        config.console_level= 0;
+        // config.level = 0;
+        // config.console_level= 0;
 
         config
     }
 }
 
 impl AutoCreate<pjsua_config> for pjsua_config {
+
     fn new() -> pjsua_config {
+
         let mut config = pjsua_config {
             max_calls: 0,
             thread_cnt: 0,
@@ -672,6 +676,7 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             pjsua_acc_config_default(&mut config as *mut _);
         }
 
+        config.cred_count = 1;
         config
     }
 }
