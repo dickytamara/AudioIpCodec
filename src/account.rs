@@ -47,12 +47,13 @@ impl AccountWidget {
     }
 
     pub fn init(&self) {
-        // initialize default event
 
+        // initialize default event
         let wid = self.clone();
         self.btn_reset.connect_clicked(move |_| {
             wid.reset()
         });
+
     }
 
     pub fn reset(&self) {
@@ -92,6 +93,7 @@ impl AccountWidget {
         });
     }
 
+    // event on btn connect clicked to pass closure at outer level
     pub fn on_btn_connect_clicked<F: Fn() +'static> (&self, callback: F) {
         self.btn_connect.connect_clicked( move |_| {
             callback();
