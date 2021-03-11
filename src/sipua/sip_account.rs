@@ -1,5 +1,6 @@
 
 use super::pj_sys::*;
+use super::pjsip_sys::*;
 use super::pjsua_sys::*;
 
 use super::pjdefault::*;
@@ -248,6 +249,99 @@ impl SIPAccount {
 
     }
 
+    // Create arbitrary requests using the account.
+    // Application should only use this function to create auxiliary requests outside dialog,
+    // such as OPTIONS, and use the call or presence API to create dialog related requests.
+    pub fn create_request(&self, method: &mut pjsip_method, target: String) -> Result<pjsip_tx_data, i32> {
+
+        let mut rdata = pjsip_tx_data::new();
+        let mut rtarget = pj_str_t::from_string(target);
+        unsafe {
+
+            let status = pjsua_acc_create_request(
+                    self.id,
+                    method as *const _,
+                    &mut rtarget as *const _,
+                    (&mut rdata as *mut _) as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+                println!("ERR cant create request for account");
+                Ok(rdata)
+            } else {
+                Err(status)
+            }
+        }
+    }
+
+    // Create a suitable Contact header value,
+    // based on the specified target URI for the specified account.
+    pub fn create_uac_contact(&self, contact: String, uri: String) {
+
+        let pool = pjsua::pool_create("tmp-pool");
+        let mut acontact = pj_str_t::from_string(contact);
+        let mut auri = pj_str_t::from_string(uri);
+
+        unsafe {
+
+            let status = pjsua_acc_create_uac_contact(
+                    pool,
+                    &mut acontact as *mut _,
+                    self.id,
+                    &mut auri as *mut _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant create uac contact for account.");
+            }
+        }
+
+        pjsua::pool_release(pool);
+
+    }
+
+    // Create a suitable Contact header value, based on the information in the incoming request.
+    pub fn create_uas_contact(&self, contact: String, rdata: &mut pjsip_rx_data) {
+
+        let pool = pjsua::pool_create("tmp-pool");
+        let mut acontact = pj_str_t::from_string(contact);
+
+        unsafe {
+
+            let status = pjsua_acc_create_uas_contact(
+                    pool,
+                    &mut acontact as *mut _,
+                    self.id,
+                    rdata as *mut _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+
+                println!("ERR cant create uas contact for account")
+
+            }
+
+        }
+
+        pjsua::pool_release(pool)
+    }
+
+    // set transport by given id transport id for account
+    pub fn set_transport(&self, tp_id: pjsua_transport_id) {
+
+        unsafe {
+
+            let status = pjsua_acc_set_transport(
+                    self.id,
+                    tp_id
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant set trasport for account.");
+            }
+        }
+    }
+
 }
 
 // true interface for managing accounts
@@ -360,5 +454,21 @@ impl SIPAccounts {
 
         ret
     }
+
+    // This is an internal function to find the most appropriate account to used to reach to the specified URL.
+    pub fn find_for_outgoing(&self, value: String) -> pjsua_acc_id {
+        unsafe {
+            pjsua_acc_find_for_outgoing(&mut pj_str_t::from_string(value) as *const _)
+        }
+    }
+
+    // This is an internal function to find the most appropriate account to be used to handle incoming calls.
+    pub fn on_acc_find_for_incoming (&self, rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
+        unsafe {
+            pjsua_acc_find_for_incoming(rdata as *mut _)
+        }
+    }
+
+
 
 }
