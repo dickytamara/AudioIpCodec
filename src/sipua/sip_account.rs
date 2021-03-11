@@ -337,7 +337,7 @@ impl SIPAccount {
                 );
 
             if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR cant set trasport for account.");
+                println!("ERR cant set transport for account.");
             }
         }
     }
