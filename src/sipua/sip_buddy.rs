@@ -133,26 +133,6 @@ impl SIPBuddy {
         }
     }
 
-    // pj_status_t pjsua_pres_notify 	( 	pjsua_acc_id  	acc_id,
-	// 	pjsua_srv_pres *  	srv_pres,
-	// 	pjsip_evsub_state  	state,
-	// 	const pj_str_t *  	state_str,
-	// 	const pj_str_t *  	reason,
-	// 	pj_bool_t  	with_body,
-	// 	const pjsua_msg_data *  	msg_data
-	// )
-
-    pub fn pres_notify (&self,
-        srv_pres: pjsua_srv_pres,
-        state: pjsip_evsub_state,
-        state_str: String,
-        reason: String,
-        with_body: bool,
-        msg_data: pjsua_msg_data
-    ) {
-
-    }
-
 }
 
 pub struct SIPBuddys {
