@@ -1077,19 +1077,6 @@ pub struct pjmedia_aud_param {
     pub vad_enabled: pj_bool_t,
 }
 
-pub type pj_highprec_t = f64;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_math_stat {
-    pub n: c_int,
-    pub max: c_int,
-    pub min: c_int,
-    pub last: c_int,
-    pub mean: c_int,
-    pub fmean_: f32,
-    pub m2_: pj_highprec_t,
-}
-
 #[repr(C, packed)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_rtcp_xr_rb_header {

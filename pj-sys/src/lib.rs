@@ -990,7 +990,7 @@ pub type __builtin_va_list = [__va_list_tag; 1usize];
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct __BindgenBitfieldUnit<Storage> {
-storage: Storage,
+pub storage: Storage,
 }
 impl<Storage> __BindgenBitfieldUnit<Storage> {
 #[inline]
@@ -3517,6 +3517,19 @@ pub type_: pjrpid_element_type,
 pub id: pj_str_t,
 pub activity: pjrpid_activity,
 pub note: pj_str_t,
+}
+
+pub type pj_highprec_t = f64;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pj_math_stat {
+    pub n: c_int,
+    pub max: c_int,
+    pub min: c_int,
+    pub last: c_int,
+    pub mean: c_int,
+    pub fmean_: f32,
+    pub m2_: pj_highprec_t,
 }
 
 #[link(name = "pj")]

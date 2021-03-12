@@ -6,6 +6,8 @@ use super::pjdefault::AutoCreate;
 use super::pj_sys::*;
 use super::pjmedia_sys::*;
 
+use super::pjlib::*;
+
 use std::ptr;
 
 
@@ -177,7 +179,6 @@ impl AutoCreate<pjmedia_transport> for pjmedia_transport {
     }
 }
 
-
 impl AutoCreate<pjmedia_tone_desc> for pjmedia_tone_desc {
     fn new () -> pjmedia_tone_desc {
         pjmedia_tone_desc {
@@ -190,7 +191,6 @@ impl AutoCreate<pjmedia_tone_desc> for pjmedia_tone_desc {
         }
     }
 }
-
 
 impl AutoCreate<pjmedia_aud_dev_info> for pjmedia_aud_dev_info {
     fn new () -> pjmedia_aud_dev_info {
@@ -208,4 +208,184 @@ impl AutoCreate<pjmedia_aud_dev_info> for pjmedia_aud_dev_info {
     }
 }
 
+impl AutoCreate<pjmedia_rtcp_fb_info> for pjmedia_rtcp_fb_info {
+
+    fn new () -> pjmedia_rtcp_fb_info {
+        pjmedia_rtcp_fb_info {
+            cap_count: 0,
+            caps: [pjmedia_rtcp_fb_cap::new(); 16usize],
+        }
+    }
+
+}
+
+impl AutoCreate<pjmedia_codec_info> for pjmedia_codec_info {
+
+    fn new () -> pjmedia_codec_info {
+            pjmedia_codec_info {
+            type_: 0,
+            pt: 0,
+            encoding_name: pj_str_t::new(),
+            clock_rate: 0,
+            channel_cnt: 0,
+        }
+    }
+
+}
+
+impl AutoCreate<pjmedia_stream_info> for pjmedia_stream_info {
+    fn new () -> pjmedia_stream_info {
+        pjmedia_stream_info {
+            type_: 0,
+            proto: 0,
+            dir: 0,
+            rem_addr: pj_sockaddr::new(),
+            rem_rtcp: pj_sockaddr::new(),
+            rtcp_mux: PJ_FALSE as pj_bool_t,
+            loc_rtcp_fb: pjmedia_rtcp_fb_info::new(),
+            rem_rtcp_fb: pjmedia_rtcp_fb_info::new(),
+            fmt: pjmedia_codec_info::new(),
+            param: ptr::null_mut(),
+            tx_pt: 0,
+            rx_pt: 0,
+            tx_maxptime: 0,
+            tx_event_pt: -1,
+            rx_event_pt: -1,
+            ssrc: 0,
+            cname: pj_str_t::new(),
+            has_rem_ssrc: PJ_FALSE as pj_bool_t,
+            rem_ssrc: 0,
+            rem_cname: pj_str_t::new(),
+            rtp_ts: 0,
+            rtp_seq: 0,
+            rtp_seq_ts_set: 0,
+            jb_init: -1,
+            jb_min_pre: -1,
+            jb_max_pre: -1,
+            jb_max: -1,
+            jb_discard_algo: 0,
+            rtcp_sdes_bye_disabled: PJ_TRUE as pj_bool_t,
+        }
+    }
+}
+
+impl AutoCreate<__BindgenBitfieldUnit<[u8;1usize]>> for __BindgenBitfieldUnit<[u8;1usize]> {
+    fn new () -> __BindgenBitfieldUnit<[u8;1usize]> {
+        __BindgenBitfieldUnit {
+            storage: [0; 1usize]
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_rtcp_stream_stat__bindgen_ty_1> for pjmedia_rtcp_stream_stat__bindgen_ty_1 {
+    fn new () -> pjmedia_rtcp_stream_stat__bindgen_ty_1 {
+        pjmedia_rtcp_stream_stat__bindgen_ty_1 {
+            _bitfield_align_1: [0; 0],
+            _bitfield_1: __BindgenBitfieldUnit::new([0; 1usize]),
+            __bindgen_padding_0: [0; 3usize],
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_rtcp_sdes> for pjmedia_rtcp_sdes {
+    fn new () -> pjmedia_rtcp_sdes {
+        pjmedia_rtcp_sdes {
+            cname: pj_str_t::new(),
+            name: pj_str_t::new(),
+            email: pj_str_t::new(),
+            phone: pj_str_t::new(),
+            loc: pj_str_t::new(),
+            tool: pj_str_t::new(),
+            note: pj_str_t::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_rtcp_stream_stat> for pjmedia_rtcp_stream_stat {
+    fn new () -> pjmedia_rtcp_stream_stat {
+        pjmedia_rtcp_stream_stat {
+            update: pj_time_val::new(),
+            update_cnt: 0,
+            pkt: 0,
+            bytes: 0,
+            discard: 0,
+            loss: 0,
+            reorder: 0,
+            dup: 0,
+            loss_period: pj_math_stat::new(),
+            loss_type: pjmedia_rtcp_stream_stat__bindgen_ty_1::new(),
+            jitter: pj_math_stat::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_rtcp_stat> for pjmedia_rtcp_stat {
+    fn new () -> pjmedia_rtcp_stat {
+        pjmedia_rtcp_stat {
+            start: pj_time_val::new(),
+            tx: pjmedia_rtcp_stream_stat::new(),
+            rx: pjmedia_rtcp_stream_stat::new(),
+            rtt: pj_math_stat::new(),
+            rtp_tx_last_ts: 0,
+            rtp_tx_last_seq: 0,
+            peer_sdes: pjmedia_rtcp_sdes::new(),
+            peer_sdes_buf_: [0; 64usize]
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_jb_state> for pjmedia_jb_state {
+    fn new () -> pjmedia_jb_state {
+        pjmedia_jb_state {
+            frame_size: 0,
+            min_prefetch: 0,
+            max_prefetch: 0,
+            max_count: 0,
+            burst: 0,
+            prefetch: 0,
+            size: 0,
+            avg_delay: 0,
+            min_delay: 0,
+            max_delay: 0,
+            dev_delay: 0,
+            avg_burst: 0,
+            lost: 0,
+            discard: 0,
+            empty: 0,
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_sock_info> for pjmedia_sock_info {
+    fn new () -> pjmedia_sock_info {
+        pjmedia_sock_info {
+            rtp_sock: 0,
+            rtp_addr_name: pj_sockaddr::new(),
+            rtcp_sock: 0,
+            rtcp_addr_name: pj_sockaddr::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_transport_specific_info> for pjmedia_transport_specific_info {
+    fn new () -> pjmedia_transport_specific_info {
+        pjmedia_transport_specific_info {
+            type_: 0,
+            cbsize: -1,
+            buffer: [0; 288usize],
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_transport_info> for pjmedia_transport_info {
+    fn new () -> pjmedia_transport_info {
+        pjmedia_transport_info {
+            sock_info: pjmedia_sock_info::new(),
+            src_rtp_name: pj_sockaddr::new(),
+            src_rtcp_name: pj_sockaddr::new(),
+            specific_info_cnt: 0,
+            spc_info: [pjmedia_transport_specific_info::new(); 4usize],
+        }
+    }
+}
 

@@ -164,8 +164,7 @@ impl AutoCreate<pj_turn_sock_tls_cfg> for pj_turn_sock_tls_cfg {
     }
 }
 
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>
-    for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1
+impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1
 {
     fn new() -> pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
         pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
@@ -178,8 +177,7 @@ impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>
     }
 }
 
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2>
-    for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2
+impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2
 {
     fn new() -> pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
         pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
@@ -259,6 +257,21 @@ impl AutoCreate<pj_timer_entry> for pj_timer_entry {
         }
     }
 }
+
+impl AutoCreate<pj_math_stat> for pj_math_stat {
+    fn new () -> pj_math_stat {
+        pj_math_stat {
+            n: -1,
+            max: -1,
+            min: -1,
+            last: -1,
+            mean: -1,
+            fmean_: 0.0,
+            m2_: 0.0,
+        }
+    }
+}
+
 
 pub trait PjTimerEntry {
     unsafe extern "C" fn pj_timer_heap_callback(

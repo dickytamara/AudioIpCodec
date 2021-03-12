@@ -324,12 +324,6 @@ impl SIPCall {
 
     }
 
-    // pj_status_t pjsua_call_xfer_replaces 	( 	pjsua_call_id  	call_id,
-	// 	pjsua_call_id  	dest_call_id,
-	// 	unsigned  	options,
-	// 	const pjsua_msg_data *  	msg_data
-	// )
-
     pub fn xfer_replaces(&self,
         dest_call_id: pjsua_call_id,
         options: u32,
@@ -351,6 +345,166 @@ impl SIPCall {
         }
 
     }
+
+    pub fn dial_dtmf(&self, digit: String) {
+
+        unsafe {
+
+            let status = pjsua_call_dial_dtmf(
+                self.id,
+                &mut pj_str_t::from_string(digit) as *const _
+            );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR can't dial DTMF.");
+            }
+        }
+    }
+
+    pub fn send_dtmf(&self, param: &mut pjsua_call_send_dtmf_param) {
+
+        unsafe {
+
+            let status = pjsua_call_send_dtmf(
+                    self.id,
+                    param as *const _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR can't send DTMF.");
+            }
+        }
+    }
+
+    pub fn send_im(&self,
+        mime_type: String,
+        content: String,
+        msg_data: &mut pjsua_msg_data,
+    ) {
+
+        unsafe {
+
+            let status = pjsua_call_send_im(
+                self.id,
+                &mut pj_str_t::from_string(mime_type) as *const _,
+                &mut pj_str_t::from_string(content) as *const _,
+                msg_data as *const _,
+                ptr::null_mut()
+            );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR can't send im for this call.");
+            }
+        }
+    }
+
+    pub fn send_typing_ind(&self,
+        is_typing: bool,
+        msg_data: &mut pjsua_msg_data
+    ) {
+
+        let mut atyping = PJ_FALSE as pj_bool_t;
+
+        if is_typing {
+            atyping = PJ_TRUE as pj_bool_t;
+        }
+
+        unsafe {
+
+            let status = pjsua_call_send_typing_ind(
+                    self.id,
+                    atyping,
+                    msg_data as *const _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR can't send typing indication.");
+            }
+        }
+
+    }
+
+    pub fn send_request(&self, method: String, msg_data: &mut pjsua_msg_data) {
+
+        unsafe {
+
+            let status = pjsua_call_send_request(
+                    self.id,
+                    &mut pj_str_t::from_string(method) as *const _,
+                    msg_data as *const _
+                );
+
+            if status != PJ_SUCCESS as pj_status_t {
+                println!("ERR can't send request for this call.");
+            }
+        }
+
+    }
+
+    pub fn get_stream_info(&self, med_idx: u32) -> Result<pjsua_stream_info, i32> {
+
+        let mut info = pjsua_stream_info::new();
+
+        unsafe {
+
+            let status = pjsua_call_get_stream_info (
+                    self.id,
+                    med_idx,
+                    &mut info as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+                Ok(info)
+            } else {
+                println!("ERR can't get stream info for call.");
+                Err(status)
+            }
+        }
+    }
+
+    pub fn get_stream_stat(&self, med_idx: u32) -> Result<pjsua_stream_stat, i32> {
+
+        let mut stat = pjsua_stream_stat::new();
+
+        unsafe {
+
+            let status = pjsua_call_get_stream_stat(
+                    self.id,
+                    med_idx,
+                    &mut stat as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+                Ok(stat)
+            } else {
+                println!("ERR can't get stream status for call.");
+                Err(status)
+            }
+        }
+
+    }
+
+    pub fn get_med_transport_info(&self, med_idx: u32) -> Result<pjmedia_transport_info, i32> {
+
+        let mut info = pjmedia_transport_info::new();
+
+        unsafe {
+
+            let status = pjsua_call_get_med_transport_info (
+                    self.id,
+                    med_idx,
+                    &mut info as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+                Ok(info)
+            } else {
+                println!("ERR can't get media transport info for call");
+                Err(status)
+            }
+        }
+    }
+
 
 
 }
@@ -392,15 +546,21 @@ impl SIPCalls {
     }
 
 
-    pub fn call_get_max_count(&self) -> u32 {
+    pub fn get_max_count(&self) -> u32 {
         unsafe {
             pjsua_call_get_max_count()
         }
     }
 
-    pub fn call_get_count(&self) -> u32 {
+    pub fn get_count(&self) -> u32 {
         unsafe {
             pjsua_call_get_count()
+        }
+    }
+
+    pub fn hangup_all(&self) {
+        unsafe {
+            pjsua_call_hangup_all();
         }
     }
 

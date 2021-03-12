@@ -881,6 +881,33 @@ impl AutoCreate<pjsua_conf_port_info> for pjsua_conf_port_info {
     }
 }
 
+impl AutoCreate<pjsua_stream_info__bindgen_ty_1> for pjsua_stream_info__bindgen_ty_1 {
+    fn new() -> pjsua_stream_info__bindgen_ty_1 {
+        pjsua_stream_info__bindgen_ty_1 {
+            aud: pjmedia_stream_info::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjsua_stream_info> for pjsua_stream_info {
+
+    fn new() -> pjsua_stream_info {
+        pjsua_stream_info {
+            type_: 0,
+            info: pjsua_stream_info__bindgen_ty_1::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjsua_stream_stat> for pjsua_stream_stat {
+    fn new () -> pjsua_stream_stat {
+        pjsua_stream_stat {
+            rtcp: pjmedia_rtcp_stat::new(),
+            jbuf: pjmedia_jb_state::new(),
+        }
+    }
+}
+
 
 // function helper
 pub fn pool_create(pool_name: &str) -> *mut pj_pool_t {
