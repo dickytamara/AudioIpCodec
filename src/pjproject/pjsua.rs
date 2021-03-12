@@ -29,7 +29,6 @@ extern "C" {
     ) -> pj_status_t;
 }
 
-// pub fn pjsua_conf_get_signal_level( slot: pjsua_conf_port_id, tx_level: *mut c_uint, rx_level: *mut c_uint, ) -> pj_status_t;
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
@@ -933,3 +932,112 @@ pub fn pool_safe_release(ppool: *mut *mut pj_pool_t) {
         pj_pool_safe_release(ppool);
     }
 }
+
+// void 	pjsua_logging_config_default (pjsua_logging_config *cfg)
+pub fn logging_config_default(cfg: &mut pjsua_logging_config) {
+    unsafe { pjsua_logging_config_default(cfg as *mut _); }
+}
+
+// void 	pjsua_config_default (pjsua_config *cfg)
+pub fn config_derfault(cfg: &mut pjsua_config) {
+    unsafe { pjsua_config_default(cfg as *mut _); }
+}
+
+// pj_status_t 	pjsua_create (void)
+pub fn create () -> pj_status_t {
+    unsafe { pjsua_create() }
+}
+
+// pj_status_t 	pjsua_init (const pjsua_config *ua_cfg, const pjsua_logging_config *log_cfg, const pjsua_media_config *media_cfg)
+pub fn init (ua_cfg: &mut pjsua_config, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) -> pj_status_t {
+    unsafe { pjsua_init(
+        ua_cfg as *const _,
+        log_cfg as *const _,
+        media_cfg as *const _
+    ) }
+}
+
+// pj_status_t 	pjsua_start (void)
+pub fn start () -> pj_status_t {
+    unsafe { pjsua_start() }
+}
+
+// pj_status_t 	pjsua_destroy (void)
+pub fn destroy () -> pj_status_t {
+    unsafe { pjsua_destroy() }
+}
+
+// pjsua_state 	pjsua_get_state (void)
+pub fn get_state () -> pjsua_state {
+    unsafe { pjsua_get_state() }
+}
+
+// pj_status_t 	pjsua_destroy2 (unsigned flags)
+pub fn destroy2 (flags: u32) -> pj_status_t {
+    unsafe { pjsua_destroy2(flags) }
+}
+
+// void 	pjsua_logging_config_dup (pj_pool_t *pool, pjsua_logging_config *dst, const pjsua_logging_config *src)
+pub fn logging_config_dup (dst: &mut pjsua_logging_config, src: &mut pjsua_logging_config) {
+    unsafe {
+
+        let pool = pool_create("tmp-pool");
+
+        pjsua_logging_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        );
+
+        pool_release(pool)
+    }
+}
+
+// void 	pjsua_config_dup (pj_pool_t *pool, pjsua_config *dst, const pjsua_config *src)
+pub fn config_dup (dst: &mut pjsua_config, src: &mut pjsua_config) {
+    unsafe {
+
+        let pool = pool_create("tmp-pool");
+
+        pjsua_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        );
+
+        pool_release(pool);
+    }
+}
+
+// void 	pjsua_msg_data_init (pjsua_msg_data *msg_data)
+pub fn msg_data_init(msg_data: &mut pjsua_msg_data) {
+    unsafe { pjsua_msg_data_init(msg_data as *mut _); }
+}
+
+// deprecated
+// pjsua_msg_data * 	pjsua_msg_data_clone (pj_pool_t *pool, const pjsua_msg_data *rhs)
+
+
+
+// int 	pjsua_handle_events (unsigned msec_timeout)
+// void 	pjsua_stop_worker_threads (void)
+// pj_pool_t * 	pjsua_pool_create (const char *name, pj_size_t init_size, pj_size_t increment)
+// pj_status_t 	pjsua_reconfigure_logging (const pjsua_logging_config *c)
+// pjsip_endpoint * 	pjsua_get_pjsip_endpt (void)
+// pjmedia_endpt * 	pjsua_get_pjmedia_endpt (void)
+// pj_pool_factory * 	pjsua_get_pool_factory (void)
+// void 	pjsua_ip_change_param_default (pjsua_ip_change_param *param)
+// pj_status_t 	pjsua_detect_nat_type (void)
+// pj_status_t 	pjsua_get_nat_type (pj_stun_nat_type *type)
+// pj_status_t 	pjsua_update_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait)
+// pj_status_t 	pjsua_resolve_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait, void *token, pj_stun_resolve_cb cb)
+// pj_status_t 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
+// pj_status_t 	pjsua_verify_sip_url (const char *url)
+// pj_status_t 	pjsua_verify_url (const char *url)
+// pj_status_t 	pjsua_schedule_timer (pj_timer_entry *entry, const pj_time_val *delay)
+// pj_status_t 	pjsua_schedule_timer2 (void(*cb)(void *user_data), void *user_data, unsigned msec_delay)
+// void 	pjsua_cancel_timer (pj_timer_entry *entry)
+// void 	pjsua_perror (const char *sender, const char *title, pj_status_t status)
+// void 	pjsua_dump (pj_bool_t detail)
+// pj_status_t 	pjsua_handle_ip_change (const pjsua_ip_change_param *param)
+
