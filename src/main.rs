@@ -136,6 +136,7 @@ fn callback_audio_line_widget(sipua: &mut SIPUserAgent, rx_widget: &mut AudioLin
 
 // callback dialpad widget
 fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &mut DialpadWidget) {
+
     // button call clicked
     let sip = sipua.clone();
     dialpad.on_button_call_clicked(move |sip_address| {
