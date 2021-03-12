@@ -61,10 +61,10 @@ enum SignalLevel { Level( (u32, u32, u32, u32)) }
 
 /// update receive transmit level bar
 fn thread_update_level_bar(sipua_clone: SIPUserAgent, mut rx_widget_clone: AudioLineWidget, mut tx_widget_clone: AudioLineWidget) {
+
     // sender, receiver more clear to read
     let (sender, receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
-    // let sip = sipua.clone();
     thread::spawn(move || {
         unsafe {
             let mut a_thread_desc: pj_thread_desc = [0;64usize];
@@ -83,6 +83,10 @@ fn thread_update_level_bar(sipua_clone: SIPUserAgent, mut rx_widget_clone: Audio
         }
     }});
 
+    // todo fix the late destroy of
+    // thread. this segmentation fault
+    // trigered when receiver destroyed
+    // before sender.
     receiver.attach(None, move |level| {
         match level {
             SignalLevel::Level((tx_l,tx_r, rx_l, rx_r)) => {

@@ -13,6 +13,7 @@ use std::ffi::CString;
 
 #[derive(Copy, Clone)]
 pub struct SIPCall {
+    id: pjsua_call_id,
     timer: pj_timer_entry,
     ringback_on: bool,
     ring_on: bool
@@ -21,27 +22,97 @@ pub struct SIPCall {
 impl SIPCall {
     pub fn new() -> SIPCall {
         SIPCall {
+            id: -1,
             timer: pj_timer_entry::new(),
             ringback_on: false,
             ring_on: false
         }
     }
+
+    // skiped procedure
+    // this was for video call
+    // pjsua_vid_win_id pjsua_call_get_vid_win 	( pjsua_call_id call_id	)
+    // pjsua_conf_port_id pjsua_call_get_vid_conf_port 	( pjsua_call_id call_id, pjmedia_dir dir)
+
+    pub fn is_active(&self) -> bool {
+        unsafe {
+
+            let result = pjsua_call_is_active(self.id);
+
+            if result == PJ_TRUE as pj_bool_t {
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    pub fn call_has_media(&self) -> bool {
+        unsafe {
+            let result = pjsua_call_has_media(self.id);
+
+            if result == PJ_TRUE as pj_bool_t {
+                true
+            } else {
+                false
+            }
+        }
+
+    }
+
+    pub fn call_get_conf_port(&self) -> i32 {
+        unsafe {
+            pjsua_call_get_conf_port(self.id)
+        }
+    }
+
+    pub fn call_get_info(&self) -> Result<pjsua_call_info, i32> {
+
+        let mut info = pjsua_call_info::new();
+
+        unsafe {
+
+            let status = pjsua_call_get_info(
+                    self.id,
+                    &mut info as *mut _
+                );
+
+            if status == PJ_SUCCESS as pj_status_t {
+                Ok(info)
+            } else {
+                println!("ERR cant get call info");
+                Err(status)
+            }
+        }
+
+    }
+
+
+
 }
 
+#[derive(Clone, Copy)]
 pub struct SIPCalls {
-    id_list: [pjsua_call_id; 32],
-    call_data: [SIPCall; 32],
+    id_list: [pjsua_call_id; PJSUA_MAX_CALLS as usize],
+    call_data: [SIPCall; PJSUA_MAX_CALLS as usize],
     call_opt: pjsua_call_setting,
     ringback_on: bool,
     ring_on: bool,
 }
 
+// skiped procedure
+// void 	pjsua_call_setting_default (pjsua_call_setting *opt)
+// void 	pjsua_call_vid_strm_op_param_default (pjsua_call_vid_strm_op_param *param)
+// void 	pjsua_call_send_dtmf_param_default (pjsua_call_send_dtmf_param *param)
+// pj_status_t pjsua_call_make_call 	( 	pjsua_acc_id  	acc_id,
+
+
 impl SIPCalls {
 
     pub fn new() -> SIPCalls {
         SIPCalls {
-            id_list: [0;32],
-            call_data: [SIPCall::new(); 32],
+            id_list: [0; PJSUA_MAX_CALLS as usize],
+            call_data: [SIPCall::new(); PJSUA_MAX_CALLS as usize],
             call_opt: pjsua_call_setting::new(),
             ringback_on: false,
             ring_on: false,
@@ -55,6 +126,22 @@ impl SIPCalls {
     pub fn get_call_opt(&self) -> pjsua_call_setting {
         self.call_opt.clone()
     }
+
+
+    pub fn call_get_max_count(&self) -> u32 {
+        unsafe {
+            pjsua_call_get_max_count()
+        }
+    }
+
+    pub fn call_get_count(&self) -> u32 {
+        unsafe {
+            pjsua_call_get_count()
+        }
+    }
+
+
+
 }
 
 
@@ -67,12 +154,8 @@ impl PjTimerEntry for SIPCalls {
         let call_id: pjsua_call_id = (*entry).id;
         let mut msg_data_: pjsua_msg_data = pjsua_msg_data::new();
         let mut warn: pjsip_generic_string_hdr = pjsip_generic_string_hdr::new();
-        let mut hname = pj_str(CString::new("Warning").expect("Error").into_raw());
-        let mut hvalue = pj_str(
-            CString::new("339 \" Call duration exceeded \"")
-                .expect("Error")
-                .into_raw(),
-        );
+        let mut hname = pj_str_t::from_string(String::from("Warning"));
+        let mut hvalue = pj_str_t::from_string(String::from("339 \" Call duration exceeded \""));
 
         if call_id == PJSUA_INVALID_ID {
             println!("Invalid call ED intimer callback");

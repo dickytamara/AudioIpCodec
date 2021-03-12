@@ -433,7 +433,6 @@ pub struct SIPAccounts {
     acc_list: [SIPAccount; PJSUA_MAX_ACC as usize]
 }
 
-
 // please remember default pjsua account
 // was 8 see pjsua sample application at
 // pjproject.
@@ -552,7 +551,6 @@ impl SIPAccounts {
             pjsua_acc_find_for_incoming(rdata as *mut _)
         }
     }
-
 
 
 }

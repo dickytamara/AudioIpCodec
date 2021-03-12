@@ -307,7 +307,7 @@ impl SIPCore {
     pub fn find_next_call(&self) {}
 
     pub fn on_call_generic_media_state(&self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
-        // println!("OnCallGenericMediaState");
+
         let status_name: [&str; 5] = [
             "None",
             "Active",
@@ -368,13 +368,17 @@ impl SIPCore {
                 pjsua_conf_connect(0, call_conf_slot);
             }
         }
+
     }
 
     pub fn callback_on_call_state(&mut self, call_id: pjsua_call_id, e: *mut pjsip_event) {
         unsafe {
+
+
             let mut call_info: pjsua_call_info = pjsua_call_info::new();
 
             let status = pjsua_call_get_info(call_id, &mut call_info as *mut _);
+
             if status != PJ_SUCCESS as pj_status_t {
                 panic!("OnCallState : pjsua_call_get_info fail.");
             }
@@ -778,7 +782,7 @@ impl SIPCore {
 
 
         println!("Event {}", "skip");
-        // }
+
     }
 
     pub fn callback_on_ip_change_progress(
@@ -787,6 +791,7 @@ impl SIPCore {
         status: pj_status_t,
         info: *const pjsua_ip_change_op_info,
     ) {
+
         unsafe {
             let mut acc_info: pjsua_acc_info = pjsua_acc_info::new();
             let mut tp_info: pjsua_transport_info = pjsua_transport_info::new();
