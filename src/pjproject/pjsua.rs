@@ -1017,11 +1017,29 @@ pub fn msg_data_init(msg_data: &mut pjsua_msg_data) {
     unsafe { pjsua_msg_data_init(msg_data as *mut _); }
 }
 
-// deprecated
 // pjsua_msg_data * 	pjsua_msg_data_clone (pj_pool_t *pool, const pjsua_msg_data *rhs)
-// int 	pjsua_handle_events (unsigned msec_timeout)
-// void 	pjsua_stop_worker_threads (void)
+pub fn msg_data_clone (rhs: &mut pjsua_msg_data) -> *mut pjsua_msg_data {
+    unsafe {
 
+        let pool = pool_create("tmp-pool");
+
+        let ret = pjsua_msg_data_clone(pool, rhs as *const _ );
+
+        pool_release(pool);
+
+        ret
+    }
+}
+
+// int 	pjsua_handle_events (unsigned msec_timeout)
+pub fn handle_events(msec_timeout: u32) -> i32 {
+    unsafe { pjsua_handle_events(msec_timeout) }
+}
+
+// void 	pjsua_stop_worker_threads (void)
+pub fn stop_worker_threads() {
+    unsafe { pjsua_stop_worker_threads() }
+}
 
 // pj_status_t 	pjsua_reconfigure_logging (const pjsua_logging_config *c)
 pub fn reconfigure_logging (c: &mut pjsua_logging_config) -> pj_status_t {
@@ -1031,9 +1049,24 @@ pub fn reconfigure_logging (c: &mut pjsua_logging_config) -> pj_status_t {
 }
 
 // pjsip_endpoint * 	pjsua_get_pjsip_endpt (void)
+pub fn get_pjsip_endpt() -> *mut pjsip_endpoint {
+    unsafe { pjsua_get_pjsip_endpt() }
+}
+
 // pjmedia_endpt * 	pjsua_get_pjmedia_endpt (void)
+pub fn get_pjmedia_endpt() -> *mut pjmedia_endpt {
+    unsafe { pjsua_get_pjmedia_endpt() }
+}
+
 // pj_pool_factory * 	pjsua_get_pool_factory (void)
+pub fn get_pool_factory() -> *mut pj_pool_factory {
+    unsafe { pjsua_get_pool_factory() }
+}
+
 // void 	pjsua_ip_change_param_default (pjsua_ip_change_param *param)
+pub fn ip_change_param_default(param: &mut pjsua_ip_change_param) {
+    unsafe { pjsua_ip_change_param_default(param as *mut _) }
+}
 
 // pj_status_t 	pjsua_detect_nat_type (void)
 pub fn detect_nat_type () -> pj_status_t {
