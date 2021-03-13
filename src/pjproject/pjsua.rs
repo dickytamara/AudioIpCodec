@@ -1098,7 +1098,14 @@ pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> 
 }
 
 // pj_status_t 	pjsua_resolve_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait, void *token, pj_stun_resolve_cb cb)
+pub fn resolve_stun_servers (
+    count: u32,
+    srv: &mut [pj_str_t; 8],
+    wait: bool, ) {
 
+}
+
+// this function mosly unsued
 // pj_status_t 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
 
 // pj_status_t 	pjsua_verify_sip_url (const char *url)
@@ -1120,10 +1127,49 @@ pub fn verify_url (url: String) -> pj_status_t {
 }
 
 // pj_status_t 	pjsua_schedule_timer (pj_timer_entry *entry, const pj_time_val *delay)
+pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> pj_status_t {
+    unsafe {
+        // because we use debug pjsua
+        // will provide timer with debug suport
+        pjsua_schedule_timer_dbg(
+            entry as *mut _,
+            delay as *const _,
+            ptr::null_mut(),
+            0
+        )
+     }
+}
 // pj_status_t 	pjsua_schedule_timer2 (void(*cb)(void *user_data), void *user_data, unsigned msec_delay)
 
 // void 	pjsua_cancel_timer (pj_timer_entry *entry)
-// void 	pjsua_perror (const char *sender, const char *title, pj_status_t status)
-// void 	pjsua_dump (pj_bool_t detail)
-// pj_status_t 	pjsua_handle_ip_change (const pjsua_ip_change_param *param)
+pub fn cancel_timer(entry: &mut pj_timer_entry) {
+    unsafe { pjsua_cancel_timer(entry as *mut _) }
+}
 
+// void 	pjsua_perror (const char *sender, const char *title, pj_status_t status)
+pub fn perror(sender: String, title: String, status: pj_status_t) {
+    unsafe {
+        pjsua_perror(
+                &mut pj_str_t::from_string(sender) as *const _,
+                &mut pj_str_t::from_string(title) as *const _,
+                status
+            );
+    }
+}
+
+// void 	pjsua_dump (pj_bool_t detail)
+pub fn dump(detail: bool) {
+
+    let mut adetail = PJ_FALSE as pj_bool_t;
+
+    if detail {
+        adetail = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe { pjsua_dump(adetail); }
+}
+
+// pj_status_t 	pjsua_handle_ip_change (const pjsua_ip_change_param *param)
+pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> pj_status_t {
+    unsafe { pjsua_handle_ip_change( param as *const _ ) }
+}
