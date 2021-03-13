@@ -14,6 +14,7 @@ use super::pjsua_sys::*;
 
 use std::os::raw::{c_int, c_uint, c_void};
 use std::ffi::CString;
+use std::ffi::CStr;
 use std::ptr;
 
 pub const PJSUA_INVALID_ID: i32 = -1;
@@ -909,6 +910,8 @@ impl AutoCreate<pjsua_stream_stat> for pjsua_stream_stat {
 
 
 // function helper
+
+// pj_pool_t * 	pjsua_pool_create (const char *name, pj_size_t init_size, pj_size_t increment)
 pub fn pool_create(pool_name: &str) -> *mut pj_pool_t {
     unsafe {
         pjsua_pool_create(
@@ -1016,26 +1019,76 @@ pub fn msg_data_init(msg_data: &mut pjsua_msg_data) {
 
 // deprecated
 // pjsua_msg_data * 	pjsua_msg_data_clone (pj_pool_t *pool, const pjsua_msg_data *rhs)
-
-
-
 // int 	pjsua_handle_events (unsigned msec_timeout)
 // void 	pjsua_stop_worker_threads (void)
-// pj_pool_t * 	pjsua_pool_create (const char *name, pj_size_t init_size, pj_size_t increment)
+
+
 // pj_status_t 	pjsua_reconfigure_logging (const pjsua_logging_config *c)
+pub fn reconfigure_logging (c: &mut pjsua_logging_config) -> pj_status_t {
+    unsafe {
+        pjsua_reconfigure_logging(c as *const _)
+    }
+}
+
 // pjsip_endpoint * 	pjsua_get_pjsip_endpt (void)
 // pjmedia_endpt * 	pjsua_get_pjmedia_endpt (void)
 // pj_pool_factory * 	pjsua_get_pool_factory (void)
 // void 	pjsua_ip_change_param_default (pjsua_ip_change_param *param)
+
 // pj_status_t 	pjsua_detect_nat_type (void)
+pub fn detect_nat_type () -> pj_status_t {
+    unsafe { pjsua_detect_nat_type() }
+}
+
 // pj_status_t 	pjsua_get_nat_type (pj_stun_nat_type *type)
+pub fn get_nat_type(type_: &mut pj_stun_nat_type) -> pj_status_t {
+    unsafe { pjsua_get_nat_type(type_ as *mut _) }
+}
+
 // pj_status_t 	pjsua_update_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait)
+pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> pj_status_t {
+    unsafe {
+        let mut a_wait = PJ_FALSE as pj_bool_t;
+
+        if wait {
+            a_wait = PJ_TRUE as pj_bool_t;
+        }
+
+        // todo fix this and compare result with c code.
+        pjsua_update_stun_servers(
+                count,
+                srv.as_mut_ptr(),
+                a_wait
+            )
+
+    }
+}
+
 // pj_status_t 	pjsua_resolve_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait, void *token, pj_stun_resolve_cb cb)
+
 // pj_status_t 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
+
 // pj_status_t 	pjsua_verify_sip_url (const char *url)
+pub fn verify_sip_url(url: String) -> pj_status_t {
+    unsafe {
+        pjsua_verify_sip_url(
+            CString::new(url).expect("error url").into_raw()
+        )
+    }
+}
+
 // pj_status_t 	pjsua_verify_url (const char *url)
+pub fn verify_url (url: String) -> pj_status_t {
+    unsafe {
+        pjsua_verify_url (
+            CString::new(url).expect("error url").into_raw()
+        )
+    }
+}
+
 // pj_status_t 	pjsua_schedule_timer (pj_timer_entry *entry, const pj_time_val *delay)
 // pj_status_t 	pjsua_schedule_timer2 (void(*cb)(void *user_data), void *user_data, unsigned msec_delay)
+
 // void 	pjsua_cancel_timer (pj_timer_entry *entry)
 // void 	pjsua_perror (const char *sender, const char *title, pj_status_t status)
 // void 	pjsua_dump (pj_bool_t detail)
