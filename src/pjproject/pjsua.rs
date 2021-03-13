@@ -1139,6 +1139,7 @@ pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> p
         )
      }
 }
+
 // pj_status_t 	pjsua_schedule_timer2 (void(*cb)(void *user_data), void *user_data, unsigned msec_delay)
 
 // void 	pjsua_cancel_timer (pj_timer_entry *entry)
@@ -1150,8 +1151,8 @@ pub fn cancel_timer(entry: &mut pj_timer_entry) {
 pub fn perror(sender: String, title: String, status: pj_status_t) {
     unsafe {
         pjsua_perror(
-                &mut pj_str_t::from_string(sender) as *const _,
-                &mut pj_str_t::from_string(title) as *const _,
+                CString::new(sender).expect("error sender string").into_raw() as *const _,
+                CString::new(title).expect("error title string").into_raw() as *const _,
                 status
             );
     }
