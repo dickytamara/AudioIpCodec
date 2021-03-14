@@ -914,13 +914,17 @@ impl AutoCreate<pjsua_stream_stat> for pjsua_stream_stat {
 // pj_pool_t * 	pjsua_pool_create (const char *name, pj_size_t init_size, pj_size_t increment)
 pub fn pool_create(pool_name: &str) -> *mut pj_pool_t {
     unsafe {
-        pjsua_pool_create(
+
+        let ret = pjsua_pool_create(
             CString::new(pool_name)
             .expect("String error create pool_name")
             .into_raw(),
             1000,
             1000
-        )
+        );
+
+        assert_ne!(ret.is_null(), true);
+        ret
     }
 }
 
@@ -1102,7 +1106,7 @@ pub fn resolve_stun_servers (
     count: u32,
     srv: &mut [pj_str_t; 8],
     wait: bool, ) {
-
+        // todo
 }
 
 // this function mosly unsued
@@ -1148,7 +1152,7 @@ pub fn cancel_timer(entry: &mut pj_timer_entry) {
 }
 
 // void 	pjsua_perror (const char *sender, const char *title, pj_status_t status)
-pub fn perror(sender: String, title: String, status: pj_status_t) {
+pub fn perror(sender: &str, title: &str, status: pj_status_t) {
     unsafe {
         pjsua_perror(
                 CString::new(sender).expect("error sender string").into_raw() as *const _,

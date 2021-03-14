@@ -27,6 +27,12 @@ use std::os::raw::{c_int, c_void, c_uint, c_char};
 pub static mut SIP_CORE: Option<SIPCore> = None;
 pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 
+// todo create tune parameter for codec
+// because default pjsua only support mono channels
+// so we need create opus tune parameter.
+// opus have bad inbandfec (forward error correction)
+// fix with disable inbandfec
+
 pub struct SIPCore {
     pool: *mut pj_pool_t,
     app_config: pjsua_config,
@@ -141,125 +147,115 @@ impl SIPCore {
     }
 
     pub fn start(&mut self) {
+
+        self.pool = pjsua::pool_create("ipcodec");
+
+        self.app_config.cb.on_call_state = Some(SIPCore::on_call_state);
+        self.app_config.cb.on_stream_destroyed = Some(SIPCore::on_stream_destroyed);
+        self.app_config.cb.on_call_media_state = Some(SIPCore::on_call_media_state);
+        self.app_config.cb.on_incoming_call = Some(SIPCore::on_incoming_call);
+        self.app_config.cb.on_dtmf_digit2 = Some(SIPCore::on_dtmf_digit2);
+        self.app_config.cb.on_call_redirected = Some(SIPCore::on_call_redirected);
+        self.app_config.cb.on_reg_state = Some(SIPCore::on_reg_state);
+        self.app_config.cb.on_incoming_subscribe = Some(SIPCore::on_incoming_subscribe);
+        self.app_config.cb.on_buddy_state = Some(SIPCore::on_buddy_state);
+        self.app_config.cb.on_buddy_evsub_state = Some(SIPCore::on_buddy_evsub_state);
+        self.app_config.cb.on_pager = Some(SIPCore::on_pager);
+        self.app_config.cb.on_typing = Some(SIPCore::on_typing);
+        self.app_config.cb.on_call_transfer_status = Some(SIPCore::on_call_transfer_status);
+        self.app_config.cb.on_call_replaced = Some(SIPCore::on_call_replaced);
+        self.app_config.cb.on_nat_detect = Some(SIPCore::on_nat_detect);
+        self.app_config.cb.on_mwi_info = Some(SIPCore::on_mwi_info);
+        self.app_config.cb.on_transport_state = Some(SIPCore::on_transport_state);
+        self.app_config.cb.on_ice_transport_error = Some(SIPCore::on_ice_transport_error);
+        self.app_config.cb.on_snd_dev_operation = Some(SIPCore::on_snd_dev_operation);
+        self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
+        self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
+
+        // init pjsua
+        pjsua::init(
+            &mut self.app_config,
+            &mut self.log_config,
+            &mut self.media_config.get_context()
+        );
+
+        // pjsip endpoint for unhadled error
+        self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
         unsafe {
-            // self.pool = pjsua_pool_create(
-            //     CString::new("ipcodec").expect("error").into_raw(),
-            //     1000,
-            //     1000,
-            // );
-
-            self.pool = pjsua::pool_create("ipcodec");
-
-            assert_ne!(self.pool.is_null(), true);
-
-            self.app_config.cb.on_call_state = Some(SIPCore::on_call_state);
-            self.app_config.cb.on_stream_destroyed = Some(SIPCore::on_stream_destroyed);
-            self.app_config.cb.on_call_media_state = Some(SIPCore::on_call_media_state);
-            self.app_config.cb.on_incoming_call = Some(SIPCore::on_incoming_call);
-            self.app_config.cb.on_dtmf_digit2 = Some(SIPCore::on_dtmf_digit2);
-            self.app_config.cb.on_call_redirected = Some(SIPCore::on_call_redirected);
-            self.app_config.cb.on_reg_state = Some(SIPCore::on_reg_state);
-            self.app_config.cb.on_incoming_subscribe = Some(SIPCore::on_incoming_subscribe);
-            self.app_config.cb.on_buddy_state = Some(SIPCore::on_buddy_state);
-            self.app_config.cb.on_buddy_evsub_state = Some(SIPCore::on_buddy_evsub_state);
-            self.app_config.cb.on_pager = Some(SIPCore::on_pager);
-            self.app_config.cb.on_typing = Some(SIPCore::on_typing);
-            self.app_config.cb.on_call_transfer_status = Some(SIPCore::on_call_transfer_status);
-            self.app_config.cb.on_call_replaced = Some(SIPCore::on_call_replaced);
-            self.app_config.cb.on_nat_detect = Some(SIPCore::on_nat_detect);
-            self.app_config.cb.on_mwi_info = Some(SIPCore::on_mwi_info);
-            self.app_config.cb.on_transport_state = Some(SIPCore::on_transport_state);
-            self.app_config.cb.on_ice_transport_error = Some(SIPCore::on_ice_transport_error);
-            self.app_config.cb.on_snd_dev_operation = Some(SIPCore::on_snd_dev_operation);
-            self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
-            self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
-
-            // init pjsua
-            pjsua_init(
-                &mut self.app_config as *mut _,
-                &mut self.log_config as *mut _,
-                &mut self.media_config.get_context() as *mut _,
-            );
-
-            // pjsip endpoint for unhadled error
-            self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
             let status = pjsip_endpt_register_module(
-                pjsua_get_pjsip_endpt(),
+                pjsua::get_pjsip_endpt(),
                 &mut self.default_handler as *mut _,
             );
-
             if status != 0 {
                 panic!("cant register module");
             }
+        }
 
-            // add optional tones
-            for _ in 0..32 {
-                let mut tones = SIPTones::new();
-                tones.init(self.pool, 440, 480);
-                self.tones.push(tones);
-            }
 
-            // init ringback
-            self.ringback.init(self.pool, self.media_config.get_context());
+        // add optional tones
+        for _ in 0..32 {
+            let mut tones = SIPTones::new();
+            tones.init(self.pool, 440, 480);
+            self.tones.push(tones);
+        }
 
-            // init ringtone
-            self.ringtone.init(self.pool, self.media_config.get_context());
+        // init ringback
+        self.ringback.init(self.pool, self.media_config.get_context());
 
-            // Initialize UDP Transport
-            if !self.no_udp {
+        // init ringtone
+        self.ringtone.init(self.pool, self.media_config.get_context());
+
+        // Initialize UDP Transport
+        if !self.no_udp {
+            self.transports
+                .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
+            if self.use_ipv6 == true {
                 self.transports
-                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
-                if self.use_ipv6 == true {
-                    self.transports
-                        .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6);
-                }
+                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6);
             }
+        }
 
-            // initialize TCP transport
-            if !self.no_tcp {
+        // initialize TCP transport
+        if !self.no_tcp {
+            self.transports
+                .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP);
+            if self.use_ipv6 {
                 self.transports
-                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP);
-                if self.use_ipv6 {
-                    self.transports
-                        .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6);
-                }
+                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6);
             }
+        }
 
-            self.media_config.init();
-            self.calls.set_audio_count(self.aud_cnt);
+        self.media_config.init();
+        self.calls.set_audio_count(self.aud_cnt);
 
-            // we don't need add account for this state
-            // so we create dynamicaly in addition
-            self.accounts.set_rtp_config(self.transports.get_rtp_config());
-            self.accounts.set_reg_retry_interval(300);
-            self.accounts.set_reg_first_retry_interval(60);
+        // we don't need add account for this state
+        // so we create dynamicaly in addition
+        self.accounts.set_rtp_config(self.transports.get_rtp_config());
+        self.accounts.set_reg_retry_interval(300);
+        self.accounts.set_reg_first_retry_interval(60);
 
-            let status = pjsua_start();
-            if status != PJ_SUCCESS as pj_status_t {
-                pjsua_perror(CString::new("cant start").expect("error").into_raw() as *const _,
-                 CString::new("cant start").expect("error").into_raw() as *const _, status);
-            }
-
+        let status = pjsua::start();
+        if status != PJ_SUCCESS as pj_status_t {
+            pjsua::perror("sip_core.rs", "can't start pjsua.", status );
         }
     }
 
     pub fn deinit(&mut self) {
-        unsafe {
-            // pj_pool_safe_release(&mut self.pool as *mut _);
-            pjsua::pool_release(self.pool);
-            pjsua_destroy();
-        }
+        pjsua::pool_release(self.pool);
+        pjsua::destroy();
     }
 
     pub fn call(&mut self, call_addr: &str) {
         unsafe{
 
             let mut msg_data = pjsua_msg_data::new();
-            pjsua_msg_data_init(&mut msg_data as *mut _);
+            pjsua::msg_data_init(&mut msg_data);
 
-            let default_acc = pjsua_acc_get_default();
+            let default_acc = self.accounts.get_default();
             println!("default accid : {}", default_acc);
+
             let mut call_addr = pj_str(CString::new(call_addr).expect("error").into_raw() as *mut _);
+
             let status = pjsua_call_make_call(
                         default_acc,
                         &mut call_addr as *const _,
