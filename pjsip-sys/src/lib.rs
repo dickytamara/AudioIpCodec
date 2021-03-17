@@ -433,11 +433,11 @@ pub const pjsip_event_id_e_PJSIP_EVENT_TSX_STATE: pjsip_event_id_e = 5;
 pub const pjsip_event_id_e_PJSIP_EVENT_USER: pjsip_event_id_e = 6;
 pub type pjsip_event_id_e = c_uint;
 
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TRANSPORT_LAYER: pjsip_module_priority = 8;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_TSX_LAYER: pjsip_module_priority = 16;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_UA_PROXY_LAYER: pjsip_module_priority = 32;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
-pub const pjsip_module_priority_PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
+pub const PJSIP_MOD_PRIORITY_TRANSPORT_LAYER: pjsip_module_priority = 8;
+pub const PJSIP_MOD_PRIORITY_TSX_LAYER: pjsip_module_priority = 16;
+pub const PJSIP_MOD_PRIORITY_UA_PROXY_LAYER: pjsip_module_priority = 32;
+pub const PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
+pub const PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
 pub type pjsip_module_priority = c_uint;
 
 pub const pjsip_transport_flags_e_PJSIP_TRANSPORT_RELIABLE: pjsip_transport_flags_e = 1;
@@ -2262,12 +2262,14 @@ extern "C" {
     pub fn pjsip_other_uri_create(pool: *mut pj_pool_t) -> *mut pjsip_other_uri;
     pub fn pjsip_tel_uri_create(pool: *mut pj_pool_t) -> *mut pjsip_tel_uri;
     pub fn pjsip_tel_nb_cmp(nb1: *const pj_str_t, nb2: *const pj_str_t) -> c_int;
+
     pub static pjsip_invite_method: pjsip_method;
     pub static pjsip_cancel_method: pjsip_method;
     pub static pjsip_ack_method: pjsip_method;
     pub static pjsip_bye_method: pjsip_method;
     pub static pjsip_register_method: pjsip_method;
     pub static pjsip_options_method: pjsip_method;
+
     pub fn pjsip_get_invite_method() -> *const pjsip_method;
     pub fn pjsip_get_cancel_method() -> *const pjsip_method;
     pub fn pjsip_get_ack_method() -> *const pjsip_method;

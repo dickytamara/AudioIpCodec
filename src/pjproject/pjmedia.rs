@@ -9,6 +9,7 @@ use super::pjmedia_sys::*;
 use super::pjlib::*;
 
 use std::ptr;
+use std::ffi::CStr;
 
 
 impl AutoCreate<pjmedia_srtp_crypto> for pjmedia_srtp_crypto {
@@ -389,3 +390,11 @@ impl AutoCreate<pjmedia_transport_info> for pjmedia_transport_info {
     }
 }
 
+pub fn type_name(media_type: pjmedia_type) -> String {
+    unsafe {
+        String::from(CStr::from_ptr(
+            pjmedia_type_name(media_type)
+        ).to_str()
+        .expect("Error string media type"))
+    }
+}

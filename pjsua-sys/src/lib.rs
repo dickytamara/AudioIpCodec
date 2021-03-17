@@ -689,8 +689,8 @@ pub struct pjsua_turn_config {
     pub turn_tls_setting: pj_turn_sock_tls_cfg,
 }
 
-pub const pjsua_dtmf_method_PJSUA_DTMF_METHOD_RFC2833: pjsua_dtmf_method = 0;
-pub const pjsua_dtmf_method_PJSUA_DTMF_METHOD_SIP_INFO: pjsua_dtmf_method = 1;
+pub const PJSUA_DTMF_METHOD_RFC2833: pjsua_dtmf_method = 0;
+pub const PJSUA_DTMF_METHOD_SIP_INFO: pjsua_dtmf_method = 1;
 pub type pjsua_dtmf_method = c_uint;
 
 pub const pjsua_sip_timer_use_PJSUA_SIP_TIMER_INACTIVE: pjsua_sip_timer_use = 0;

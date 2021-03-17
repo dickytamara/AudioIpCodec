@@ -6,15 +6,15 @@ extern crate pjsip_simple_sys;
 extern crate pjsip_sys;
 extern crate pjsua_sys;
 
-mod sip_account;
-mod sip_buddy;
-mod sip_calls;
-mod sip_core;
-mod sip_media;
-mod sip_presence;
-mod sip_tones;
-mod sip_transport;
-mod sip_wav;
+pub mod sip_account;
+pub mod sip_buddy;
+pub mod sip_calls;
+pub mod sip_core;
+pub mod sip_media;
+pub mod sip_presence;
+pub mod sip_tones;
+pub mod sip_transport;
+pub mod sip_wav;
 
 use super::pj_sys::*;
 use super::pjmedia_sys::*;
@@ -263,6 +263,17 @@ impl SIPUserAgent {
             match SIP_CORE {
                 Some(ref mut sipua) => {
                     sipua.connect_invite_failure(f)
+                },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn connect_incoming_call<F: Fn() + 'static> (&mut self, f: F) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.connect_incoming_call(f)
                 },
                 _ => panic!("")
             }

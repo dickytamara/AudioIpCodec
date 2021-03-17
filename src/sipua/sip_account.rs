@@ -17,16 +17,50 @@ use std::os::raw::c_uint;
 #[derive(Clone, Copy)]
 pub struct SIPAccount {
     id: i32,
+    info: pjsua_acc_info,
     ctx: pjsua_acc_config,
 }
 
 impl SIPAccount {
 
-    fn new() -> SIPAccount {
+    pub fn new() -> SIPAccount {
         SIPAccount {
             id: -1,
+            info: pjsua_acc_info::new(),
             ctx: pjsua_acc_config::new(),
         }
+    }
+
+    pub fn from(acc_id: pjsua_acc_id) -> Result<SIPAccount, i32> {
+        let mut ret = SIPAccount {
+            id: acc_id,
+            info: pjsua_acc_info::new(),
+            ctx: pjsua_acc_config::new()
+        };
+
+        let status = pjsua::acc_get_info(ret.id, &mut ret.info);
+        if status != PJ_SUCCESS as pj_status_t {
+            return Err(status);
+        }
+
+        let status = pjsua::acc_get_config(acc_id, &mut ret.ctx);
+        if status != PJ_SUCCESS as pj_status_t {
+            return Err(status);
+        }
+
+        Ok(ret)
+    }
+
+    // configure for default setting.
+    pub fn config_default(&mut self) {
+
+        pjsua::acc_config_default(&mut self.ctx);
+
+        self.ctx.cred_count = 1;
+        self.ctx.reg_retry_interval = 300;
+        self.ctx.reg_first_retry_interval = 60;
+        self.ctx.cred_info[0].data_type = 0;
+        self.ctx.cred_info[0].scheme = pj_str_t::from_string(String::from("Digest"));
     }
 
     // set sip id for account
@@ -77,13 +111,11 @@ impl SIPAccount {
 
     // set this account to be default
     pub fn set_default(&self) {
-        unsafe {
-            let result = pjsua_acc_set_default(self.id);
+        let result = pjsua::acc_set_default(self.id);
 
-            if result != PJ_SUCCESS as pj_status_t {
-                println!("ERR cant set acc id={} to be default account.",
-                self.id)
-            }
+        if result != PJ_SUCCESS as pj_status_t {
+            println!("ERR cant set acc id={} to be default account.",
+            self.id)
         }
     }
 
@@ -107,6 +139,13 @@ impl SIPAccount {
             if result != PJ_SUCCESS as pj_status_t {
                 println!("ERR cant add account to pjsua.");
             }
+
+            // update account info
+            let result = pjsua::acc_get_info(self.id, &mut self.info);
+            if result != PJ_SUCCESS as pj_status_t {
+                println!("ERR cant update account info.");
+            }
+
         }
     }
 
@@ -426,14 +465,14 @@ impl SIPAccount {
         }
     }
 
-
+    pub fn set_rtp_config(&mut self, rtp_config: pjsua_transport_config) {
+        self.ctx.rtp_cfg = rtp_config;
+    }
 
 }
 
 // true interface for managing accounts
-pub struct SIPAccounts {
-    acc_list: [SIPAccount; PJSUA_MAX_ACC as usize]
-}
+pub struct SIPAccounts {  }
 
 // please remember default pjsua account
 // was 8 see pjsua sample application at
@@ -443,7 +482,7 @@ impl SIPAccounts {
     // create new accounts
     pub fn new() -> SIPAccounts {
         SIPAccounts {
-            acc_list: [SIPAccount::new(); PJSUA_MAX_ACC as usize],
+            // acc_list: [SIPAccount::new(); PJSUA_MAX_ACC as usize],
         }
     }
 
@@ -455,24 +494,57 @@ impl SIPAccounts {
     }
 
     // set default rtp config
-    pub fn set_rtp_config(&mut self, rtp_config: pjsua_transport_config) {
-        for acc in self.acc_list.iter_mut() {
-            acc.ctx.rtp_cfg = rtp_config;
-        }
+    pub fn set_rtp_config(&self, rtp_config: pjsua_transport_config) {
+
+        let ids = self.enum_accs_id();
+
+        ids.iter().for_each(|acc_id| {
+
+            let mut acc = SIPAccount::from(acc_id.clone());
+
+            match acc {
+                Ok(ref mut sipacc) => {
+                    sipacc.set_rtp_config(rtp_config);
+                },
+                Err(err) => println!("print error ={}", err)
+            }
+        });
     }
 
     // set register retry interval
-    pub fn set_reg_retry_interval(&mut self, value: u32) {
-        for acc in self.acc_list.iter_mut() {
-            acc.ctx.reg_retry_interval = value;
-        }
+    pub fn set_reg_retry_interval(&self, value: u32) {
+
+        let ids = self.enum_accs_id();
+
+        ids.iter().for_each(|acc_id| {
+
+            let mut acc = SIPAccount::from(acc_id.clone());
+
+            match acc {
+                Ok(ref mut sipacc) => {
+                    sipacc.ctx.reg_retry_interval = value;
+                },
+                Err(err) => println!("print error ={}", err)
+            }
+        });
     }
 
     // set first register retry interval
-    pub fn set_reg_first_retry_interval(&mut self, value: u32) {
-        for acc in self.acc_list.iter_mut() {
-            acc.ctx.reg_first_retry_interval = value;
-        }
+    pub fn set_reg_first_retry_interval(&self, value: u32) {
+
+        let ids = self.enum_accs_id();
+
+        ids.iter().for_each(|acc_id| {
+
+            let mut acc = SIPAccount::from(acc_id.clone());
+
+            match acc {
+                Ok(ref mut sipacc) => {
+                    sipacc.ctx.reg_first_retry_interval = value;
+                },
+                Err(err) => println!("print error ={}", err)
+            }
+        });
     }
 
     // get number of registered to pjsua library
@@ -490,7 +562,7 @@ impl SIPAccounts {
         unsafe {
 
             let mut acc_id: [pjsua_acc_id; PJSUA_MAX_ACC as usize] = [-1; PJSUA_MAX_ACC as usize];
-            let mut count = 0u32;
+            let mut count = 8u32;
 
             let status = pjsua_enum_accs(
                     acc_id.as_mut_ptr(),

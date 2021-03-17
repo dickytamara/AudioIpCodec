@@ -19,6 +19,8 @@ use super::sip_transport::*;
 use super::sip_wav::*;
 
 use super::pjsua;
+use super::pjmedia;
+use super::pjsip;
 use std::ptr;
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_int, c_void, c_uint, c_char};
@@ -52,8 +54,6 @@ pub struct SIPCore {
     wav_recorder: Option<SIPWavRecorder>,
     default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
-    // input_level: f32,
-    // output_level: f32,
     input_dev: i32,
     output_dev: i32,
     input_latency: u32,
@@ -63,37 +63,39 @@ pub struct SIPCore {
     current_call: i32,
     aud_cnt: u32,
     auto_answer: u32,
-    invite_event: SIPCoreInviteEvents
+    events: SIPCoreEvents
 }
 // struct to hold invite event function
-struct SIPCoreInviteEvents {
-    calling: Box<dyn FnMut()>,
-    incoming: Box<dyn Fn()>,
-    early: Box<dyn Fn()>,
-    connecting: Box<dyn Fn()>,
-    confirmed: Box<dyn Fn()>,
-    disconnected: Box<dyn Fn()>,
-    null: Box<dyn Fn()>,
-    failure: Box<dyn Fn()>,
+struct SIPCoreEvents {
+    invite_calling: Box<dyn Fn()>,
+    invite_incoming: Box<dyn Fn()>,
+    invite_early: Box<dyn Fn()>,
+    invite_connecting: Box<dyn Fn()>,
+    invite_confirmed: Box<dyn Fn()>,
+    invite_disconnected: Box<dyn Fn()>,
+    invite_null: Box<dyn Fn()>,
+    invite_failure: Box<dyn Fn()>,
+    incoming_call: Box<dyn Fn()>
 
 }
 
-impl SIPCoreInviteEvents {
-    fn new() -> SIPCoreInviteEvents {
-        SIPCoreInviteEvents {
-            calling: Box::new(|| {}),
-            incoming: Box::new(|| {}),
-            early: Box::new(|| {}),
-            connecting: Box::new(|| {}),
-            confirmed: Box::new(|| {}),
-            disconnected: Box::new(|| {}),
-            null: Box::new(|| {}),
-            failure: Box::new(|| {}),
+impl SIPCoreEvents {
+    fn new() -> SIPCoreEvents {
+        SIPCoreEvents {
+            invite_calling: Box::new(|| {}),
+            invite_incoming: Box::new(|| {}),
+            invite_early: Box::new(|| {}),
+            invite_connecting: Box::new(|| {}),
+            invite_confirmed: Box::new(|| {}),
+            invite_disconnected: Box::new(|| {}),
+            invite_null: Box::new(|| {}),
+            invite_failure: Box::new(|| {}),
+            incoming_call: Box::new(|| {})
         }
     }
 }
 
-pub trait SIPCoreInviteExt {
+pub trait SIPCoreEventsExt {
     fn connect_invite_calling<F: Fn() + 'static> (&mut self, f: F);
     fn connect_invite_incoming<F: Fn() + 'static> (&mut self, f: F);
     fn connect_invite_early<F: Fn() + 'static> (&mut self, f: F);
@@ -102,6 +104,7 @@ pub trait SIPCoreInviteExt {
     fn connect_invite_disconnected<F: Fn() + 'static> (&mut self, f: F);
     fn connect_invite_null<F: Fn() + 'static> (&mut self, f: F);
     fn connect_invite_failure<F: Fn() + 'static> (&mut self, f: F);
+    fn connect_incoming_call<F: Fn() + 'static> (&mut self, f: F);
 }
 
 impl SIPCore {
@@ -138,9 +141,9 @@ impl SIPCore {
             auto_play_hangup: false,
             duration: 0,
             current_call: -1,
-            aud_cnt: 1,
+            aud_cnt: 2,
             auto_answer: 0,
-            invite_event: SIPCoreInviteEvents::new()
+            events: SIPCoreEvents::new()
         };
 
         sip_core
@@ -180,6 +183,8 @@ impl SIPCore {
         );
 
         // pjsip endpoint for unhadled error
+        self.default_handler.priority = (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32;
+        self.default_handler.name = pj_str_t::from_string(String::from("mod-default-handler"));
         self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
         unsafe {
             let status = pjsip_endpt_register_module(
@@ -190,7 +195,6 @@ impl SIPCore {
                 panic!("cant register module");
             }
         }
-
 
         // add optional tones
         for _ in 0..32 {
@@ -228,16 +232,18 @@ impl SIPCore {
         self.media_config.init();
         self.calls.set_audio_count(self.aud_cnt);
 
-        // we don't need add account for this state
-        // so we create dynamicaly in addition
-        self.accounts.set_rtp_config(self.transports.get_rtp_config());
-        self.accounts.set_reg_retry_interval(300);
-        self.accounts.set_reg_first_retry_interval(60);
+
 
         let status = pjsua::start();
         if status != PJ_SUCCESS as pj_status_t {
             pjsua::perror("sip_core.rs", "can't start pjsua.", status );
         }
+
+        // we don't need add account for this state
+        // so we create dynamicaly in addition
+        self.accounts.set_rtp_config(self.transports.get_rtp_config());
+        self.accounts.set_reg_retry_interval(300);
+        self.accounts.set_reg_first_retry_interval(60);
     }
 
     pub fn deinit(&mut self) {
@@ -296,36 +302,22 @@ impl SIPCore {
 
     pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 
-    pub fn ring_stop(&self, call_id: &pjsua_call_id) {}
+    pub fn ring_stop(&self, call_id: &pjsua_call_id) {
 
-    pub fn ring_start(&self, call_id: pjsua_call_id) {}
+        // ring stop on incomming call
+
+    }
+
+    pub fn ring_start(&self, call_id: pjsua_call_id) {
+
+        // ring start on incomming call
+
+    }
 
     pub fn find_next_call(&self) {}
 
-    pub fn on_call_generic_media_state(&self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
-
-        let status_name: [&str; 5] = [
-            "None",
-            "Active",
-            "Local hold",
-            "Remote hold",
-            "Error"
-        ];
-
-        unsafe {
-            let media_type = CStr::from_ptr(
-                pjmedia_type_name(ci.media[mi as usize].type_)
-            ).to_str().expect("Error string media type");
-
-            println!("sipua.rs Call {} media {} [type={}], status is {}",
-                ci.id,
-                mi,
-                media_type,
-                status_name[ci.media[mi as usize].status as usize]
-            );
-        }
-
-    }
+    // pub fn on_call_generic_media_state(&self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
+    // }
 
     pub fn on_call_audio_state(&mut self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
 
@@ -338,131 +330,105 @@ impl SIPCore {
             unsafe {
 
                 call_conf_slot = media.stream.aud.conf_slot;
-
-                let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
-                let mut call_cnt = 32u32;
-
-                pjsua_enum_calls(call_ids.as_mut_ptr(),
-                    &mut call_cnt as *mut _);
-
-                for idx in 0..call_cnt as usize {
-                    if call_ids[idx] == ci.id { continue; }
-                    if  pjsua_call_has_media(call_ids[idx].clone()) == PJ_FALSE as pj_bool_t { continue; }
-
-                    // connect rx
-                    pjsua_conf_connect(call_conf_slot,
-                        pjsua_call_get_conf_port(call_ids[idx])
-                    );
-
-                    // connect tx
-                    pjsua_conf_connect(pjsua_call_get_conf_port(call_ids[idx]),
-                        call_conf_slot
-                    );
-                }
-
-                pjsua_conf_connect(call_conf_slot, 0);
-                pjsua_conf_connect(0, call_conf_slot);
             }
+                // let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
+                // let mut call_cnt = 32u32;
+
+                // pjsua_enum_calls(call_ids.as_mut_ptr(),
+                //     &mut call_cnt as *mut _);
+
+                // for idx in 0..call_cnt as usize {
+                //     if call_ids[idx] == ci.id { continue; }
+                //     if  pjsua_call_has_media(call_ids[idx].clone()) == PJ_FALSE as pj_bool_t { continue; }
+
+                //     // connect rx
+                //     pjsua_conf_connect(call_conf_slot,
+                //         pjsua_call_get_conf_port(call_ids[idx])
+                //     );
+
+                //     // connect tx
+                //     pjsua_conf_connect(pjsua_call_get_conf_port(call_ids[idx]),
+                //         call_conf_slot
+                //     );
+                // }
+
+            pjsua::conf_connect(call_conf_slot, 0);
+            pjsua::conf_connect(0, call_conf_slot);
+
         }
 
     }
 
-    pub fn callback_on_call_state(&mut self, call_id: pjsua_call_id, e: *mut pjsip_event) {
-        unsafe {
+    pub fn callback_on_call_state(&self, call_id: pjsua_call_id, e: *mut pjsip_event) {
 
+        let call = SIPCall::from(call_id);
+        let call_info = call.get_info().unwrap();
 
-            let mut call_info: pjsua_call_info = pjsua_call_info::new();
+        let state_message: String = match call_info.state {
+            PJSIP_INV_STATE_NULL => String::from("NULL"),
+            PJSIP_INV_STATE_CALLING => String::from("CALLING"),
+            PJSIP_INV_STATE_INCOMING => String::from("INCOMING"),
+            PJSIP_INV_STATE_EARLY => String::from("EARLY"),
+            PJSIP_INV_STATE_CONNECTING => String::from("CONNECTING"),
+            PJSIP_INV_STATE_CONFIRMED => String::from("CONFIRMED"),
+            PJSIP_INV_STATE_DISCONNECTED => String::from("DISCONNECTED"),
+            _ => String::from("FAILURE")
+        };
 
-            let status = pjsua_call_get_info(call_id, &mut call_info as *mut _);
+        println!("INVSTATE [{}]", state_message);
+        // todo ringing mecanism
 
-            if status != PJ_SUCCESS as pj_status_t {
-                panic!("OnCallState : pjsua_call_get_info fail.");
-            }
-
-            let state_message: String = match call_info.state {
-                PJSIP_INV_STATE_NULL => String::from("NULL"),
-                PJSIP_INV_STATE_CALLING => String::from("CALLING"),
-                PJSIP_INV_STATE_INCOMING => String::from("INCOMING"),
-                PJSIP_INV_STATE_EARLY => String::from("EARLY"),
-                PJSIP_INV_STATE_CONNECTING => String::from("CONNECTING"),
-                PJSIP_INV_STATE_CONFIRMED => String::from("CONFIRMED"),
-                PJSIP_INV_STATE_DISCONNECTED => String::from("DISCONNECTED"),
-                _ => String::from("FAILURE")
-            };
-
-            println!("INVSTATE [{}]", state_message);
-            // todo ringing mecanism
-
-            // call event for non internal
-            match call_info.state {
-                PJSIP_INV_STATE_NULL => (self.invite_event.null)(),
-                PJSIP_INV_STATE_CALLING => (self.invite_event.calling)(),
-                PJSIP_INV_STATE_INCOMING => (self.invite_event.incoming)(),
-                PJSIP_INV_STATE_EARLY => (self.invite_event.early)(),
-                PJSIP_INV_STATE_CONNECTING => (self.invite_event.early)(),
-                PJSIP_INV_STATE_CONFIRMED => (self.invite_event.confirmed)(),
-                PJSIP_INV_STATE_DISCONNECTED => (self.invite_event.disconnected)(),
-                _ => (self.invite_event.failure)()
-            }
-
+        // call event for non internal
+        match call_info.state {
+            PJSIP_INV_STATE_NULL => (self.events.invite_null)(),
+            PJSIP_INV_STATE_CALLING => (self.events.invite_calling)(),
+            PJSIP_INV_STATE_INCOMING => (self.events.invite_incoming)(),
+            PJSIP_INV_STATE_EARLY => (self.events.invite_early)(),
+            PJSIP_INV_STATE_CONNECTING => (self.events.invite_early)(),
+            PJSIP_INV_STATE_CONFIRMED => (self.events.invite_confirmed)(),
+            PJSIP_INV_STATE_DISCONNECTED => (self.events.invite_disconnected)(),
+            _ => (self.events.invite_failure)()
         }
     }
 
     pub fn callback_on_call_media_state(&mut self, call_id: pjsua_call_id) {
         println!("OnCallMediaState");
-        unsafe {
 
-            let mut call_info: pjsua_call_info = pjsua_call_info::new();
-            let mut has_error = false;
-            let mut media_type: &str = "Unknown";
+        let mut has_error = false;
 
-            pjsua_call_get_info(call_id, &mut call_info as *mut _);
+        let call = SIPCall::from(call_id);
+        let call_info = call.get_info().unwrap();
 
-            for mi in 0..call_info.media_cnt {
+        for mi in 0..call_info.media_cnt {
 
-                self.on_call_generic_media_state(&call_info, mi, &mut has_error);
+            let call_media_info = call_info.media[mi as usize];
+            let media_type = pjmedia::type_name(call_media_info.type_);
 
-                media_type = match call_info.media[mi as usize].type_ {
+            let status_name = match call_media_info.status {
+                PJSUA_CALL_MEDIA_NONE => "None",
+                PJSUA_CALL_MEDIA_ACTIVE => "Active",
+                PJSUA_CALL_MEDIA_LOCAL_HOLD => "Local hold",
+                PJSUA_CALL_MEDIA_REMOTE_HOLD => "Remote hold",
+                PJSUA_CALL_MEDIA_ERROR => "Error",
+                _ => "Error"
+            };
 
-                    PJMEDIA_TYPE_NONE => {
-                        has_error = true;
-                        "None"
-                    },
-                    PJMEDIA_TYPE_AUDIO => {
-                        self.on_call_audio_state(&call_info, mi, &mut has_error);
-                        "Audio"
-                    },
-
-                    PJMEDIA_TYPE_VIDEO => {
-                        has_error = true;
-                        "Video"
-                    },
-
-                    PJMEDIA_TYPE_APPLICATION => {
-                        has_error = true;
-                        "Application"
-                    },
-
-                    PJMEDIA_TYPE_UNKNOWN => {
-                        has_error = true;
-                        "Unknown"
-                    }
-                    _ => {
-                        has_error = true;
-                        "Unsuported"
-                    }
-                };
+            match call_media_info.type_ {
+                PJMEDIA_TYPE_NONE |
+                PJMEDIA_TYPE_VIDEO |
+                PJMEDIA_TYPE_APPLICATION |
+                PJMEDIA_TYPE_UNKNOWN => has_error = true ,
+                PJMEDIA_TYPE_AUDIO => self.on_call_audio_state(&call_info, mi, &mut has_error) ,
+                _ => has_error = true
             }
 
-            if has_error {
-                let reason = CString::new(format!("Media failed : {}", media_type)).expect("cant create str");
-                pjsua_call_hangup(
-                    call_id,
-                    500,
-                    &pj_str(reason.as_ptr() as *mut _) as *const _,
-                    ptr::null(),
-                );
-            }
+            println!("sipua.rs Call {} media {} [type={}], status is {}",
+                call_info.id, mi, media_type, status_name);
+        }
+
+        if has_error {
+            let reason = format!("Media failed");
+            call.hangup(500, Some(reason), None);
         }
     }
 
@@ -472,42 +438,31 @@ impl SIPCore {
         call_id: pjsua_call_id,
         rdata: *mut pjsip_rx_data,
     ) {
-        unsafe {
-            let mut call_info: pjsua_call_info = pjsua_call_info::new();
 
-            pjsua_call_get_info(call_id, &mut call_info as *mut _);
+        let sip_account = SIPAccount::from(acc_id);
+        let call = SIPCall::from(call_id);
 
-            self.current_call = call_id;
+        self.current_call = call_id;
 
-            self.ring_start(call_id);
+        let mut opt = self.calls.get_call_opt();
+        opt.aud_cnt = self.aud_cnt;
 
-            let mut opt: pjsua_call_setting = pjsua_call_setting::new();
-            pjsua_call_setting_default(&mut opt as *mut _);
-            opt.aud_cnt = self.aud_cnt;
+        // outer level
+        (self.events.incoming_call)();
 
-            pjsua_call_answer2(
-                call_id,
-                &opt as *const _,
-                self.auto_answer,
-                ptr::null_mut(),
-                ptr::null_mut(),
-            );
+        if self.auto_answer > 0 {
+            call.answer2(&mut opt, 200, None, None);
         }
     }
 
     pub fn callback_on_dtmf_digit2(&self, call_id: pjsua_call_id, info: *const pjsua_dtmf_info) {
         unsafe {
-            let mut dtmf: &str = "None";
-
-            match (*info).method {
-                pjsua_dtmf_method_PJSUA_DTMF_METHOD_RFC2833 => {
-                    dtmf = "RFC2833";
-                }
-                pjsua_dtmf_method_PJSUA_DTMF_METHOD_SIP_INFO => {
-                    dtmf = "SIP INFO";
-                }
-                _ => println!("Unknown dtmf method"),
-            }
+            let info = info.as_ref().unwrap();
+            let dtmf = match info.method {
+                PJSUA_DTMF_METHOD_RFC2833 => "RFC2833",
+                PJSUA_DTMF_METHOD_SIP_INFO => "SIP INFO",
+                _ => "Unknown dtmf method",
+            };
 
             println!("Incomming DTMF on call using method {}", dtmf);
         }
@@ -539,6 +494,7 @@ impl SIPCore {
         msg_data: *mut pjsua_msg_data)
     {
         // Todo
+        println!("On_incomming_subscribe")
     }
 
     pub fn callback_on_buddy_state(&self, buddy_id: pjsua_buddy_id) {
@@ -695,10 +651,7 @@ impl SIPCore {
                     .expect("tp.transport null info");
 
             // remote address name it can be server or ptp client
-            let remote_name = CStr::from_ptr(tp.remote_name.host.ptr)
-                    .to_owned()
-                    .into_string()
-                    .expect("remote_name null info");
+            let remote_name = tp.remote_name.host.to_string();
 
             // remote port
             let remote_port = tp.remote_name.port;
@@ -875,14 +828,16 @@ impl SIPCore {
             println!("{}", log_str);
         }
     }
+
 }
 
 impl PjsuaCallback for SIPCore {
+
     // Call status event
     unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
         // call info data
         match SIP_CORE {
-            Some(ref mut sipcore) => {
+            Some(ref sipcore) => {
                 sipcore.callback_on_call_state(call_id, e);
             }
             _ => panic!("Panic OnCallState"),
@@ -898,12 +853,28 @@ impl PjsuaCallback for SIPCore {
         println!("Call stream destroyed");
     }
 
+    // On Incoming call
+    unsafe extern "C" fn on_incoming_call(
+        acc_id: pjsua_acc_id,
+        call_id: pjsua_call_id,
+        rdata: *mut pjsip_rx_data,
+    ) {
+
+        match SIP_CORE {
+            Some(ref mut sipcore) => {
+                sipcore.callback_on_incomming_call(acc_id, call_id, rdata);
+            },
+            _ => panic!("Panic OnIncomingCall")
+        }
+
+    }
+
     // Call media satate
     unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {
         match SIP_CORE {
             Some(ref mut sipcore) => {
                 sipcore.callback_on_call_media_state(call_id);
-            }
+            },
             _ => panic!("Panic OnCallMediaState"),
         }
     }
@@ -1132,43 +1103,48 @@ impl PjsuaCallback for SIPCore {
     }
 }
 
-impl SIPCoreInviteExt for SIPCore {
+impl SIPCoreEventsExt for SIPCore {
 
     fn connect_invite_calling <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.calling = Box::new(f);
+        self.events.invite_calling = Box::new(f);
     }
 
     fn connect_invite_incoming <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.incoming = Box::new(f);
+        self.events.invite_incoming = Box::new(f);
     }
 
     fn connect_invite_early <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.early = Box::new(f);
+        self.events.invite_early = Box::new(f);
     }
 
     fn connect_invite_connecting <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.connecting = Box::new(f);
+        self.events.invite_connecting = Box::new(f);
     }
 
     fn connect_invite_confirmed <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.confirmed = Box::new(f);
+        self.events.invite_confirmed = Box::new(f);
     }
 
     fn connect_invite_disconnected <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.disconnected = Box::new(f);
+        self.events.invite_disconnected = Box::new(f);
     }
 
     fn connect_invite_null <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.null = Box::new(f);
+        self.events.invite_null = Box::new(f);
     }
 
     fn connect_invite_failure <F: Fn() + 'static> (&mut self, f: F) {
-        self.invite_event.failure = Box::new(f);
+        self.events.invite_failure = Box::new(f);
+    }
+
+    fn connect_incoming_call <F: Fn() + 'static> (&mut self, f: F) {
+        self.events.incoming_call = Box::new(f);
     }
 }
 
 
 fn simple_registrar(rdata: *mut pjsip_rx_data) {
+    println!("ON Simple Registrar");
     unsafe {
         let tdata: *const pjsip_tx_data = ptr::null();
         let str_null: *const pj_str_t = ptr::null();
@@ -1234,7 +1210,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
         pj_list_insert_before((*tdata).msg as *mut _, srv as *mut _);
         let cb: pjsip_send_callback = None;
         pjsip_endpt_send_response2(
-            pjsua_get_pjsip_endpt(),
+            pjsua::get_pjsip_endpt(),
             rdata,
             tdata as *mut _,
             ptr::null_mut(),
@@ -1249,83 +1225,83 @@ impl PjsipModuleCallback for SIPCore {
     unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
         println!("OnRxRequest");
         // base rx request handle undefined state.
-        let tdata: *const pjsip_tx_data = ptr::null();
+        let mut tdata: *mut pjsip_tx_data = &mut pjsip_tx_data::new() as *mut _;
         let status_code: pjsip_status_code;
         let status: pj_status_t;
 
-        let mut rdata = *rdata;
-        let msg = *rdata.msg_info.msg;
-        let mut method = msg.line.req.method;
-        // let msg_info = method.msg_info;
-        if pjsip_method_cmp(&mut method as *const _, &pjsip_ack_method as *const _) == 0 {
+        // let mut rdata = rdata;
+        let msg = (*rdata).msg_info.msg;
+        let method = (*msg).line.req.method;
+
+        if pjsip::method_cmp(&method, &pjsip_ack_method) == 0 {
             return PJ_TRUE as pj_status_t;
         }
 
-        if pjsip_method_cmp(&mut method as *const _, &pjsip_register_method as *const _) == 0 {
+        if pjsip::method_cmp(&method , &pjsip_register_method) == 0 {
             // call simple registrar pjsip_tx_data
-            simple_registrar(&mut rdata as *mut _);
+            simple_registrar(rdata as *mut _);
             return PJ_TRUE as pj_status_t;
         }
 
-        if pjsip_method_cmp(&mut method as *const _, &pjsip_notify_method as *const _) == 0 {
-            status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST as pjsip_status_code;
+        let mmethod = pjsip_notify_method;
+        if pjsip::method_cmp(&method, &mmethod) == 0 {
+            status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST;
         } else {
             status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
         }
 
         status = pjsip_endpt_create_response(
             pjsua_get_pjsip_endpt(),
-            &mut rdata as *const _,
+            rdata,
             status_code as c_int,
-            ptr::null() as *const _,
-            tdata as *mut *mut _,
+            ptr::null_mut() as *const _,
+            &mut tdata as *mut _,
         );
 
-        if status != (PJ_SUCCESS as pj_status_t) {
+        if status != PJ_SUCCESS as pj_status_t {
             return PJ_TRUE as pj_status_t;
         }
 
-        if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
-            #[allow(unused_assignments)]
-            let mut cap_hdr: *const pjsip_hdr = ptr::null();
+        let msg = (*tdata).msg;
+        let ahdr: *mut pjsip_hdr = &mut (*msg).hdr as *mut _;
 
-            cap_hdr = pjsip_endpt_get_capability(
+        if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
+
+
+            let cap_hdr = pjsip_endpt_get_capability(
                 pjsua_get_pjsip_endpt(),
                 pjsip_hdr_e_PJSIP_H_ALLOW as i32,
                 ptr::null() as *const _,
             );
 
             if !cap_hdr.is_null() {
-                //pjsip_msg_add_hdr(msg, pjsip_hdr_clone(tdata.pool, cap_hdr));
+                let hdr_clone = pjsip_hdr_clone((*tdata).pool, cap_hdr as *const _) as *const pjsip_hdr;
+
                 pj_list_insert_before(
-                    (*tdata).msg as *mut _,
-                    pjsip_hdr_clone((*tdata).pool as *mut _, cap_hdr as *const _),
+                    ahdr as *mut _ ,
+                    hdr_clone as *mut _,
                 );
             }
         }
 
         // add user-agent header
-        #[allow(unused_assignments)]
-        let mut h: *const pjsip_hdr = ptr::null();
+        let mut ua = pj_str_t::from_string(String::from("User-Agent"));
+        let mut agent = pj_str_t::from_string(String::from("IpCodec"));
 
-        let ua_str = CString::new("User-Agent").expect("cant create str User-Agent.");
-        let mut ua: pj_str_t = pj_str_t {
-            ptr: ua_str.as_ptr() as *mut _,
-            slen: 10,
-        };
-        let agent_str = CString::new("AudioIP 0.1").expect("cant create str AudioIP 0.1");
-        let mut agent = pj_str_t {
-            ptr: agent_str.as_ptr() as *mut _,
-            slen: 11,
-        };
+        let h = pjsip_generic_string_hdr_create(
+            (*tdata).pool,
+            &mut ua as *const _,
+            &mut agent as *const _,
+        ) as *mut pjsip_hdr;
 
-        h = pjsip_generic_string_hdr_create(
-            (*tdata).pool as *mut _,
-            &mut ua as _,
-            &mut agent as *mut _,
-        ) as *mut _;
+        pj_list_insert_before(ahdr as *mut _, h as *mut _);
 
-        pj_list_insert_before((*tdata).msg as *mut _, h as *mut _);
+        pjsip_endpt_send_response2(pjsua::get_pjsip_endpt(),
+            rdata,
+            tdata,
+            ptr::null_mut(),
+            None
+        );
 
         PJ_TRUE as pj_status_t
     }

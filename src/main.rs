@@ -51,10 +51,14 @@ use status::StatusbarWidget;
 use account::AccountWidget;
 use settings::SettingsWidget;
 
+use sipua::sip_account::SIPAccount;
+use pjproject::pjdefault::AutoCreate;
+
 use pj_sys::*;
 use sipua::*;
 
 use std::ffi::{CString, CStr};
+use std::rc::Rc;
 use pjproject::pjdefault::ToString;
 
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
@@ -145,45 +149,96 @@ fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &mut DialpadWidget
     });
 
     // callback inv state
-    let dialpad = dialpad.clone();
-    sipua.connect_invite_calling(|| {
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_invite_calling (
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_outgoing();
+        })
+    );
 
-    });
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_invite_incoming(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_incoming();
+        })
+    );
 
-    sipua.connect_invite_incoming(|| {
+    let dialpad_clone= Rc::new(dialpad.clone());
+    sipua.connect_invite_early(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_normal();
+        })
+    );
 
-    });
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_invite_connecting(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_normal();
+        })
+    );
 
-    sipua.connect_invite_early(|| {
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_invite_confirmed(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_outgoing();
+        })
+    );
 
-    });
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_invite_disconnected(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_normal();
+        })
+    );
 
-    sipua.connect_invite_connecting(|| {
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_invite_null(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_normal();
+        })
+    );
 
-    });
+    let dialpad_clone= Rc::new(dialpad.clone());
+    sipua.connect_invite_failure(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_normal();
+        })
+    );
 
-    sipua.connect_invite_confirmed(|| {
+    // let mut wid = dialpad.clone();
+    let dialpad_clone = Rc::new(dialpad.clone());
+    sipua.connect_incoming_call(
+        clone!(@strong dialpad_clone as wid => move || {
+            wid.update_state_incoming();
+            println!("connect incoming call outer");
+        })
+    );
 
-    });
-
-    sipua.connect_invite_disconnected(|| {
-
-    });
-
-    sipua.connect_invite_null(|| {
-
-    });
-
-    sipua.connect_invite_failure(|| {
-
-    });
 
 }
 
 // callback account widget
 fn callback_account_widget(sipua: &mut SIPUserAgent, account: &mut AccountWidget) {
 
+    let wid = account.clone();
+    //let ua = sipua.clone();
+    account.on_btn_connect_clicked(move || {
 
+        let mut sipacc = SIPAccount::new();
+
+        sipacc.config_default();
+        let mut transport = pjsua_sys::pjsua_transport_config::new();
+        transport.port = 4000;
+        sipacc.set_rtp_config(transport);
+
+        sipacc.set_id(wid.get_sip_url());
+        sipacc.set_reg_uri(wid.get_registrar_url());
+        sipacc.set_realm(wid.get_realm());
+        sipacc.set_username(wid.get_username());
+        sipacc.set_password(wid.get_password());
+
+        sipacc.add(true);
+    });
 
 }
 
@@ -237,6 +292,13 @@ fn main() {
     dialpad_widget.add_call_log("sip://@27.50.19.174");
     dialpad_widget.add_call_log("*888#");
     dialpad_widget.add_call_log("*363#");
+
+    // account test
+    account_widget.set_sip_url("sip:ipcodec01@27.50.19.174");
+    account_widget.set_registrar_url("sip:27.50.19.174");
+    account_widget.set_realm("asterisk");
+    account_widget.set_username("ipcodec01");
+    account_widget.set_password("12345678");
 
     // init application
     application.connect_activate(move |app| {

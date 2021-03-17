@@ -11,11 +11,11 @@ use super::pjdefault::*;
 
 use std::ptr;
 use std::ffi::CString;
+use super::pjsua;
 
 #[derive(Copy, Clone)]
 pub struct SIPCall {
     id: pjsua_call_id,
-    timer: pj_timer_entry,
     ringback_on: bool,
     ring_on: bool
 }
@@ -25,7 +25,14 @@ impl SIPCall {
     pub fn new() -> SIPCall {
         SIPCall {
             id: -1,
-            timer: pj_timer_entry::new(),
+            ringback_on: false,
+            ring_on: false
+        }
+    }
+
+    pub fn from(call_id: pjsua_call_id) -> SIPCall {
+        SIPCall {
+            id: call_id,
             ringback_on: false,
             ring_on: false
         }
@@ -138,23 +145,20 @@ impl SIPCall {
     pub fn answer2(&self,
         opt: &mut pjsua_call_setting,
         code: u32,
-        reason: String,
-        msg_data: &mut pjsua_msg_data
+        reason: Option<String>,
+        msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        unsafe {
+        let status = pjsua::call_answer2(
+                self.id,
+                opt,
+                code,
+                reason,
+                msg_data
+            );
 
-            let status = pjsua_call_answer2(
-                    self.id,
-                    opt as *const _,
-                    code,
-                    &mut pj_str_t::from_string(reason) as *const _,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't answer2 call");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't answer2 call");
         }
 
     }
@@ -184,19 +188,17 @@ impl SIPCall {
         }
     }
 
-    pub fn hangup(&self, code: u32, reason: String, msg_data: &mut pjsua_msg_data) {
-        unsafe {
+    pub fn hangup(&self, code: u32, reason: Option<String>, msg_data: Option<&mut pjsua_msg_data>) {
 
-            let status = pjsua_call_hangup (
-                    self.id,
-                    code,
-                    &mut pj_str_t::from_string(reason) as *const _,
-                    msg_data as *const _
-                );
+        let status = pjsua::call_hangup (
+                self.id,
+                code,
+                reason,
+                msg_data
+            );
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't hangup calls");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't hangup calls");
         }
     }
 
@@ -506,7 +508,6 @@ impl SIPCall {
     }
 
 
-
 }
 
 #[derive(Clone, Copy)]
@@ -545,6 +546,11 @@ impl SIPCalls {
         self.call_opt.clone()
     }
 
+    pub fn setting_default(&self, opt: &mut pjsua_call_setting) {
+        unsafe {
+            pjsua_call_setting_default(opt as *mut _);
+        }
+    }
 
     pub fn get_max_count(&self) -> u32 {
         unsafe {

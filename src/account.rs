@@ -69,20 +69,40 @@ impl AccountWidget {
         self.ent_sip_url.get_text().to_string().clone()
     }
 
+    pub fn set_sip_url (&self, value: &str) {
+        self.ent_sip_url.set_text(value)
+    }
+
     pub fn get_registrar_url (&self) -> String {
         self.ent_registrar_url.get_text().to_string().clone()
+    }
+
+    pub fn set_registrar_url (&self, value: &str) {
+        self.ent_registrar_url.set_text(value);
     }
 
     pub fn get_realm (&self) -> String {
         self.ent_realm.get_text().to_string().clone()
     }
 
+    pub fn set_realm (&self, value: &str) {
+        self.ent_realm.set_text(value);
+    }
+
     pub fn get_username (&self) -> String {
         self.ent_username.get_text().to_string().clone()
     }
 
+    pub fn set_username (&self, value: &str) {
+        self.ent_username.set_text(value);
+    }
+
     pub fn get_password (&self) -> String {
-        self.ent_username.get_text().to_string().clone()
+        self.ent_password.get_text().to_string().clone()
+    }
+
+    pub fn set_password(&self, value: &str) {
+        self.ent_password.set_text(value);
     }
 
     // event on btn save clicked pass closure

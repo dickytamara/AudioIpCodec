@@ -412,8 +412,8 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
         unsafe {
             pjsua_logging_config_default(&mut config as *mut _);
         }
-        // config.level = 0;
-        // config.console_level= 0;
+        config.level = 0;
+        config.console_level= 0;
 
         config
     }
@@ -676,7 +676,7 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
 
         unsafe {
             pjsua_acc_config_default(&mut config as *mut _);
-        }
+
 
         config.cred_count = 1;
         config.reg_retry_interval = 300;
@@ -685,6 +685,8 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
         config.cred_info[0].scheme = pj_str_t::from_string(String::from("Digest"));
 
         config
+
+        }
     }
 }
 
@@ -769,9 +771,7 @@ impl AutoCreate<pjsua_call_info__bindgen_ty_1> for pjsua_call_info__bindgen_ty_1
     }
 }
 
-impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>
-    for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1
-{
+impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
     fn new() -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
         pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 { conf_slot: 0 }
     }
@@ -1178,3 +1178,94 @@ pub fn dump(detail: bool) {
 pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> pj_status_t {
     unsafe { pjsua_handle_ip_change( param as *const _ ) }
 }
+
+
+// conference helper
+pub fn conf_connect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> pj_status_t {
+    unsafe {
+        pjsua_conf_connect(source, sink)
+    }
+}
+
+
+
+// account helper function
+pub fn acc_get_info(acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> pj_status_t {
+    unsafe {
+        pjsua_acc_get_info(acc_id, info as *mut _)
+    }
+}
+
+pub fn acc_get_config(acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> pj_status_t {
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let status = pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
+
+        pool_release(pool);
+
+        status
+    }
+}
+
+pub fn acc_config_default(cfg: &mut pjsua_acc_config) {
+    unsafe { pjsua_acc_config_default(cfg as *mut _); }
+}
+
+pub fn acc_set_default(acc_id: pjsua_acc_id) -> pj_status_t {
+    unsafe { pjsua_acc_set_default(acc_id) }
+}
+
+
+// call helper function
+pub fn call_answer2(
+    call_id: pjsua_call_id,
+    opt: &mut pjsua_call_setting,
+    code: c_uint,
+    reason: Option<String>,
+    msg_data: Option<&mut pjsua_msg_data>
+) -> pj_status_t {
+
+    let reason: *const pj_str_t = match reason {
+        Some(value) => &mut pj_str_t::from_string(value) as *const _ ,
+        None => ptr::null_mut()
+    };
+
+    let msg_data: *const pjsua_msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_answer2(
+            call_id,
+            opt,
+            code,
+            reason,
+            msg_data
+        )
+    }
+}
+
+pub fn call_hangup(
+    call_id: pjsua_call_id,
+    code: c_uint,
+    reason: Option<String>,
+    msg_data: Option<&mut pjsua_msg_data>
+) -> pj_status_t {
+
+    let reason: *const pj_str_t = match reason {
+        Some(value) => &mut pj_str_t::from_string(value) as *const _,
+        None => ptr::null_mut()
+    };
+
+    let msg_data: *const pjsua_msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_hangup(call_id, code, reason, msg_data)
+    }
+}
+

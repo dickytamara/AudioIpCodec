@@ -134,8 +134,8 @@ impl AutoCreate<pjsip_module> for pjsip_module {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             name: pj_str_t::new(),
-            id: 0,
-            priority: 0,
+            id: -1,
+            priority: (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32,
             load: None,
             start: None,
             stop: None,
@@ -338,5 +338,34 @@ impl AutoCreate<pjsip_media_type> for pjsip_media_type {
     }
 }
 
+
+
+// function helper
+// const pjsip_method * 	pjsip_get_invite_method (void)
+
+// const pjsip_method * 	pjsip_get_cancel_method (void)
+
+// const pjsip_method * 	pjsip_get_ack_method (void)
+
+// const pjsip_method * 	pjsip_get_bye_method (void)
+
+// const pjsip_method * 	pjsip_get_register_method (void)
+
+// const pjsip_method * 	pjsip_get_options_method (void)
+
+// void 	pjsip_method_init (pjsip_method *m, pj_pool_t *pool, const pj_str_t *str)
+
+// void 	pjsip_method_init_np (pjsip_method *m, pj_str_t *str)
+
+// void 	pjsip_method_set (pjsip_method *m, pjsip_method_e id)
+
+// void 	pjsip_method_copy (pj_pool_t *pool, pjsip_method *method, const pjsip_method *rhs)
+
+// int 	pjsip_method_cmp (const pjsip_method *m1, const pjsip_method *m2)
+pub fn method_cmp(m1: &pjsip_method, m2: &pjsip_method) -> i32 {
+    unsafe {
+        pjsip_method_cmp(m1 as *const _, m2 as *const _)
+    }
+}
 
 

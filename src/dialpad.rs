@@ -169,18 +169,18 @@ impl DialpadWidget {
                 entry.set_text("");
         }));
 
-        // btn dialpad call log clear event
-        self.btn_call_log_clear.connect_clicked ( |_| {
+        // // btn dialpad call log clear event
+        // self.btn_call_log_clear.connect_clicked ( |_| {
 
-        });
+        // });
 
         // main button event for calling
-        self.btn_call_address_clear.connect_clicked(
-            clone!( @weak self.ent_call_address as enty => move |_| {
+        // self.btn_call_address_clear.connect_clicked(
+        //     clone!( @weak self.ent_call_address as ent => move |_| {
 
-        }));
+        // }));
 
-        self.ent_call_address.set_events(EventMask::BUTTON2_MOTION_MASK);
+        //self.ent_call_address.set_events(EventMask::BUTTON2_MOTION_MASK);
     }
 
     ///  add item to call log list
@@ -225,13 +225,18 @@ impl DialpadWidget {
     }
 
     /// update gui to ringing state
-    pub fn update_state_ringing(&self) {
+    pub fn update_state_incoming(&self) {
         self.btn_call.set_label(format!("\nAnswer\n").as_str());
     }
 
     /// update gui to calling state
-    pub fn update_state_calling(&self) {
+    pub fn update_state_outgoing(&self) {
         self.btn_call.set_label(format!("\nAbort\n").as_str());
+    }
+
+    /// update gui to confirmed call state
+    pub fn update_state_oncall(&self) {
+        self.btn_call.set_label(format!("\nHangup\n").as_str());
     }
 
 }
