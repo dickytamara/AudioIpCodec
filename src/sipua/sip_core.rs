@@ -24,6 +24,7 @@ use super::pjsip;
 use std::ptr;
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_int, c_void, c_uint, c_char};
+use super::SIPInviteState;
 
 
 pub static mut SIP_CORE: Option<SIPCore> = None;
@@ -67,43 +68,22 @@ pub struct SIPCore {
 }
 // struct to hold invite event function
 struct SIPCoreEvents {
-    invite_calling: Box<dyn Fn()>,
-    invite_incoming: Box<dyn Fn()>,
-    invite_early: Box<dyn Fn()>,
-    invite_connecting: Box<dyn Fn()>,
-    invite_confirmed: Box<dyn Fn()>,
-    invite_disconnected: Box<dyn Fn()>,
-    invite_null: Box<dyn Fn()>,
-    invite_failure: Box<dyn Fn()>,
-    incoming_call: Box<dyn Fn()>
+    invite: Box<dyn FnMut(SIPInviteState)>,
+    incoming_call: Box<dyn FnMut()>
 
 }
 
 impl SIPCoreEvents {
     fn new() -> SIPCoreEvents {
         SIPCoreEvents {
-            invite_calling: Box::new(|| {}),
-            invite_incoming: Box::new(|| {}),
-            invite_early: Box::new(|| {}),
-            invite_connecting: Box::new(|| {}),
-            invite_confirmed: Box::new(|| {}),
-            invite_disconnected: Box::new(|| {}),
-            invite_null: Box::new(|| {}),
-            invite_failure: Box::new(|| {}),
+            invite: Box::new(|s| {}),
             incoming_call: Box::new(|| {})
         }
     }
 }
 
 pub trait SIPCoreEventsExt {
-    fn connect_invite_calling<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_incoming<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_early<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_connecting<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_confirmed<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_disconnected<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_null<F: Fn() + 'static> (&mut self, f: F);
-    fn connect_invite_failure<F: Fn() + 'static> (&mut self, f: F);
+    fn connect_invite<F: FnMut(SIPInviteState) + 'static> (&mut self, f: F);
     fn connect_incoming_call<F: Fn() + 'static> (&mut self, f: F);
 }
 
@@ -111,9 +91,7 @@ impl SIPCore {
 
     pub fn new() -> SIPCore {
         // create default data
-        unsafe {
-            pjsua_create();
-        }
+        pjsua::create();
 
         let sip_core = SIPCore {
             pool: ptr::null_mut(),
@@ -141,7 +119,7 @@ impl SIPCore {
             auto_play_hangup: false,
             duration: 0,
             current_call: -1,
-            aud_cnt: 2,
+            aud_cnt: 1,
             auto_answer: 0,
             events: SIPCoreEvents::new()
         };
@@ -330,28 +308,28 @@ impl SIPCore {
             unsafe {
 
                 call_conf_slot = media.stream.aud.conf_slot;
+
+                let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
+                let mut call_cnt = 32u32;
+
+                pjsua_enum_calls(call_ids.as_mut_ptr(),
+                    &mut call_cnt as *mut _);
+
+                for idx in 0..call_cnt as usize {
+                    if call_ids[idx] == ci.id { continue; }
+                    if  pjsua_call_has_media(call_ids[idx].clone()) == PJ_FALSE as pj_bool_t { continue; }
+
+                    // connect rx
+                    pjsua_conf_connect(call_conf_slot,
+                        pjsua_call_get_conf_port(call_ids[idx])
+                    );
+
+                    // connect tx
+                    pjsua_conf_connect(pjsua_call_get_conf_port(call_ids[idx]),
+                        call_conf_slot
+                    );
+                }
             }
-                // let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
-                // let mut call_cnt = 32u32;
-
-                // pjsua_enum_calls(call_ids.as_mut_ptr(),
-                //     &mut call_cnt as *mut _);
-
-                // for idx in 0..call_cnt as usize {
-                //     if call_ids[idx] == ci.id { continue; }
-                //     if  pjsua_call_has_media(call_ids[idx].clone()) == PJ_FALSE as pj_bool_t { continue; }
-
-                //     // connect rx
-                //     pjsua_conf_connect(call_conf_slot,
-                //         pjsua_call_get_conf_port(call_ids[idx])
-                //     );
-
-                //     // connect tx
-                //     pjsua_conf_connect(pjsua_call_get_conf_port(call_ids[idx]),
-                //         call_conf_slot
-                //     );
-                // }
-
             pjsua::conf_connect(call_conf_slot, 0);
             pjsua::conf_connect(0, call_conf_slot);
 
@@ -359,7 +337,7 @@ impl SIPCore {
 
     }
 
-    pub fn callback_on_call_state(&self, call_id: pjsua_call_id, e: *mut pjsip_event) {
+    pub fn callback_on_call_state(&mut self, call_id: pjsua_call_id, e: *mut pjsip_event) {
 
         let call = SIPCall::from(call_id);
         let call_info = call.get_info().unwrap();
@@ -380,14 +358,14 @@ impl SIPCore {
 
         // call event for non internal
         match call_info.state {
-            PJSIP_INV_STATE_NULL => (self.events.invite_null)(),
-            PJSIP_INV_STATE_CALLING => (self.events.invite_calling)(),
-            PJSIP_INV_STATE_INCOMING => (self.events.invite_incoming)(),
-            PJSIP_INV_STATE_EARLY => (self.events.invite_early)(),
-            PJSIP_INV_STATE_CONNECTING => (self.events.invite_early)(),
-            PJSIP_INV_STATE_CONFIRMED => (self.events.invite_confirmed)(),
-            PJSIP_INV_STATE_DISCONNECTED => (self.events.invite_disconnected)(),
-            _ => (self.events.invite_failure)()
+            PJSIP_INV_STATE_NULL => (self.events.invite)(SIPInviteState::Null),
+            PJSIP_INV_STATE_CALLING => (self.events.invite)(SIPInviteState::Calling),
+            PJSIP_INV_STATE_INCOMING => (self.events.invite)(SIPInviteState::Incoming),
+            PJSIP_INV_STATE_EARLY => (self.events.invite)(SIPInviteState::Early),
+            PJSIP_INV_STATE_CONNECTING => (self.events.invite)(SIPInviteState::Connecting),
+            PJSIP_INV_STATE_CONFIRMED => (self.events.invite)(SIPInviteState::Confirmed),
+            PJSIP_INV_STATE_DISCONNECTED => (self.events.invite)(SIPInviteState::Disconnected),
+            _ => (self.events.invite)(SIPInviteState::Unknown)
         }
     }
 
@@ -448,7 +426,7 @@ impl SIPCore {
         opt.aud_cnt = self.aud_cnt;
 
         // outer level
-        (self.events.incoming_call)();
+        (self.events.invite)(SIPInviteState::Incoming);
 
         if self.auto_answer > 0 {
             call.answer2(&mut opt, 200, None, None);
@@ -837,7 +815,7 @@ impl PjsuaCallback for SIPCore {
     unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
         // call info data
         match SIP_CORE {
-            Some(ref sipcore) => {
+            Some(ref mut sipcore) => {
                 sipcore.callback_on_call_state(call_id, e);
             }
             _ => panic!("Panic OnCallState"),
@@ -1105,39 +1083,11 @@ impl PjsuaCallback for SIPCore {
 
 impl SIPCoreEventsExt for SIPCore {
 
-    fn connect_invite_calling <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_calling = Box::new(f);
+    fn connect_invite <F: FnMut(SIPInviteState) + 'static> (&mut self, f: F) {
+        self.events.invite = Box::new(f);
     }
 
-    fn connect_invite_incoming <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_incoming = Box::new(f);
-    }
-
-    fn connect_invite_early <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_early = Box::new(f);
-    }
-
-    fn connect_invite_connecting <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_connecting = Box::new(f);
-    }
-
-    fn connect_invite_confirmed <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_confirmed = Box::new(f);
-    }
-
-    fn connect_invite_disconnected <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_disconnected = Box::new(f);
-    }
-
-    fn connect_invite_null <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_null = Box::new(f);
-    }
-
-    fn connect_invite_failure <F: Fn() + 'static> (&mut self, f: F) {
-        self.events.invite_failure = Box::new(f);
-    }
-
-    fn connect_incoming_call <F: Fn() + 'static> (&mut self, f: F) {
+    fn connect_incoming_call <F: FnMut() + 'static> (&mut self, f: F) {
         self.events.incoming_call = Box::new(f);
     }
 }

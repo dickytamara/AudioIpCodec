@@ -46,10 +46,18 @@ use std::ops::Drop;
 use std::os::raw::{c_char, c_int, c_uint, c_void};
 use std::ptr;
 
-pub struct SIPIMessages {}
 
-
-
+#[derive(Clone, Copy)]
+pub enum SIPInviteState {
+    Null,
+    Calling,
+    Incoming,
+    Early,
+    Connecting,
+    Confirmed,
+    Disconnected,
+    Unknown
+}
 
 
 // SIPUserAgent
@@ -181,95 +189,18 @@ impl SIPUserAgent {
         }
     }
 
-    pub fn connect_invite_calling<F: Fn() + 'static> (&mut self, f: F){
+    pub fn connect_invite<F: FnMut(SIPInviteState) + 'static> (&self, f: F){
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
-                    sipua.connect_invite_calling(f)
+                    sipua.connect_invite(f)
                 },
                 _ => panic!("")
             }
         }
     }
 
-    pub fn connect_invite_incoming<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_incoming(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_invite_early<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_early(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_invite_connecting<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_connecting(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_invite_confirmed<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_confirmed(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_invite_disconnected<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_disconnected(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_invite_null<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_null(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_invite_failure<F: Fn() + 'static> (&mut self, f: F) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.connect_invite_failure(f)
-                },
-                _ => panic!("")
-            }
-        }
-    }
-
-    pub fn connect_incoming_call<F: Fn() + 'static> (&mut self, f: F) {
+    pub fn connect_incoming_call<F: Fn() + 'static> (&self, f: F) {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {

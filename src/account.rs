@@ -7,9 +7,11 @@ use super::gio::prelude::*;
 use super::gtk::{Label, Entry, Button, Builder};
 use super::glib::clone;
 
+use std::cell::RefCell;
+
 
 #[derive(Clone)]
-pub struct AccountWidget {
+pub struct AccountStorage {
     lbl_sip_url: gtk::Label,
     lbl_registrar_url: gtk::Label,
     lbl_realm: gtk::Label,
@@ -25,11 +27,9 @@ pub struct AccountWidget {
     btn_reset: gtk::Button
 }
 
-
-impl AccountWidget {
-
-    pub fn new (gtk_builder: &gtk::Builder) -> AccountWidget {
-        AccountWidget {
+impl AccountStorage {
+    pub fn new (gtk_builder: &gtk::Builder) -> AccountStorage {
+        AccountStorage {
             lbl_sip_url: gtk_builder.get_object("lbl_sip_url").unwrap(),
             lbl_registrar_url: gtk_builder.get_object("lbl_registrar_url").unwrap(),
             lbl_realm: gtk_builder.get_object("lbl_realm").unwrap(),
@@ -45,77 +45,93 @@ impl AccountWidget {
             btn_reset: gtk_builder.get_object("btn_account_reset").unwrap()
         }
     }
+}
+
+#[derive(Clone)]
+pub struct AccountWidget {
+    ctx: RefCell<AccountStorage>
+}
+
+impl AccountWidget {
+
+    pub fn new (gtk_builder: &gtk::Builder) -> AccountWidget {
+        AccountWidget {
+            ctx: RefCell::new(AccountStorage::new(gtk_builder))
+        }
+    }
 
     pub fn init(&self) {
 
         // initialize default event
-        let wid = self.clone();
-        self.btn_reset.connect_clicked(move |_| {
-            wid.reset()
+        let this  = self.ctx.borrow();
+
+        let widget = self.clone();
+        this.btn_reset.connect_clicked( move |_| {
+            widget.reset();
         });
 
     }
 
     pub fn reset(&self) {
         // reset value
-        self.ent_sip_url.set_text("");
-        self.ent_registrar_url.set_text("");
-        self.ent_realm.set_text("");
-        self.ent_username.set_text("");
-        self.ent_password.set_text("");
+        self.ctx.borrow().ent_sip_url.set_text("");
+        self.ctx.borrow().ent_registrar_url.set_text("");
+        self.ctx.borrow().ent_realm.set_text("");
+        self.ctx.borrow().ent_username.set_text("");
+        self.ctx.borrow().ent_password.set_text("");
     }
 
     pub fn get_sip_url (&self) -> String {
-        self.ent_sip_url.get_text().to_string().clone()
+        self.ctx.borrow().ent_sip_url.get_text().to_string().clone()
     }
 
     pub fn set_sip_url (&self, value: &str) {
-        self.ent_sip_url.set_text(value)
+        self.ctx.borrow().ent_sip_url.set_text(value)
     }
 
     pub fn get_registrar_url (&self) -> String {
-        self.ent_registrar_url.get_text().to_string().clone()
+        self.ctx.borrow().ent_registrar_url.get_text().to_string().clone()
     }
 
     pub fn set_registrar_url (&self, value: &str) {
-        self.ent_registrar_url.set_text(value);
+        self.ctx.borrow().ent_registrar_url.set_text(value);
     }
 
     pub fn get_realm (&self) -> String {
-        self.ent_realm.get_text().to_string().clone()
+        self.ctx.borrow().ent_realm.get_text().to_string().clone()
     }
 
     pub fn set_realm (&self, value: &str) {
-        self.ent_realm.set_text(value);
+        self.ctx.borrow().ent_realm.set_text(value);
     }
 
     pub fn get_username (&self) -> String {
-        self.ent_username.get_text().to_string().clone()
+        self.ctx.borrow().ent_username.get_text().to_string().clone()
     }
 
     pub fn set_username (&self, value: &str) {
-        self.ent_username.set_text(value);
+        self.ctx.borrow().ent_username.set_text(value);
     }
 
     pub fn get_password (&self) -> String {
-        self.ent_password.get_text().to_string().clone()
+        self.ctx.borrow().ent_password.get_text().to_string().clone()
     }
 
     pub fn set_password(&self, value: &str) {
-        self.ent_password.set_text(value);
+        self.ctx.borrow().ent_password.set_text(value);
     }
 
     // event on btn save clicked pass closure
     // at outer level
     pub fn on_btn_save_clicked<F: Fn() +'static> (&self, callback: F) {
-        self.btn_save.connect_clicked(move |_| {
+        self.ctx.borrow().btn_save.connect_clicked( move |_| {
             callback();
         });
     }
 
     // event on btn connect clicked to pass closure at outer level
     pub fn on_btn_connect_clicked<F: Fn() +'static> (&self, callback: F) {
-        self.btn_connect.connect_clicked( move |_| {
+        self.ctx.borrow().btn_connect.connect_clicked( move |_| {
             callback();
         });
     }

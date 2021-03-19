@@ -52,6 +52,7 @@ use account::AccountWidget;
 use settings::SettingsWidget;
 
 use sipua::sip_account::SIPAccount;
+use sipua::SIPInviteState;
 use pjproject::pjdefault::AutoCreate;
 
 use pj_sys::*;
@@ -59,12 +60,14 @@ use sipua::*;
 
 use std::ffi::{CString, CStr};
 use std::rc::Rc;
+use std::cell::RefCell;
 use pjproject::pjdefault::ToString;
 
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
 
+
 /// update receive transmit level bar
-fn thread_update_level_bar(sipua_clone: SIPUserAgent, mut rx_widget_clone: AudioLineWidget, mut tx_widget_clone: AudioLineWidget) {
+fn thread_update_level_bar(sipua_clone: SIPUserAgent, rx_widget_clone: AudioLineWidget, tx_widget_clone: AudioLineWidget) {
 
     // sender, receiver more clear to read
     let (sender, receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
@@ -104,7 +107,7 @@ fn thread_update_level_bar(sipua_clone: SIPUserAgent, mut rx_widget_clone: Audio
 }
 
 // calback audio line transmit receive
-fn callback_audio_line_widget(sipua: &mut SIPUserAgent, rx_widget: &mut AudioLineWidget, tx_widget: &mut AudioLineWidget) {
+fn callback_audio_line_widget(sipua: &mut SIPUserAgent, rx_widget: &AudioLineWidget, tx_widget: &AudioLineWidget) {
 
     // update device list
     for dev_name in sipua.get_output_device_list().iter_mut() {
@@ -139,7 +142,7 @@ fn callback_audio_line_widget(sipua: &mut SIPUserAgent, rx_widget: &mut AudioLin
 }
 
 // callback dialpad widget
-fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &mut DialpadWidget) {
+fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &DialpadWidget) {
 
     // button call clicked
     let sip = sipua.clone();
@@ -149,76 +152,29 @@ fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &mut DialpadWidget
     });
 
     // callback inv state
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_invite_calling (
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_outgoing();
-        })
-    );
+    let dialpad = dialpad.clone();
+    sipua.connect_invite ( move | state | {
+        let dialpad = dialpad.clone();
+        glib::source::idle_add( move || {
+            match state {
+                SIPInviteState::Null => dialpad.update_state_normal(),
+                SIPInviteState::Calling => dialpad.update_state_outgoing(),
+                SIPInviteState::Incoming => dialpad.update_state_incoming(),
+                SIPInviteState::Early => dialpad.update_state_normal(),
+                SIPInviteState::Connecting => dialpad.update_state_normal(),
+                SIPInviteState::Confirmed => dialpad.update_state_oncall(),
+                SIPInviteState::Disconnected => dialpad.update_state_normal(),
+                SIPInviteState::Unknown => dialpad.update_state_normal()
+            }
 
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_invite_incoming(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_incoming();
-        })
-    );
+            glib::Continue(false)
+        });
 
-    let dialpad_clone= Rc::new(dialpad.clone());
-    sipua.connect_invite_early(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_normal();
-        })
-    );
-
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_invite_connecting(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_normal();
-        })
-    );
-
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_invite_confirmed(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_outgoing();
-        })
-    );
-
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_invite_disconnected(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_normal();
-        })
-    );
-
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_invite_null(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_normal();
-        })
-    );
-
-    let dialpad_clone= Rc::new(dialpad.clone());
-    sipua.connect_invite_failure(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_normal();
-        })
-    );
-
-    // let mut wid = dialpad.clone();
-    let dialpad_clone = Rc::new(dialpad.clone());
-    sipua.connect_incoming_call(
-        clone!(@strong dialpad_clone as wid => move || {
-            wid.update_state_incoming();
-            println!("connect incoming call outer");
-        })
-    );
-
-
+    });
 }
 
 // callback account widget
-fn callback_account_widget(sipua: &mut SIPUserAgent, account: &mut AccountWidget) {
+fn callback_account_widget(sipua: &mut SIPUserAgent, account: &AccountWidget) {
 
     let wid = account.clone();
     //let ua = sipua.clone();
@@ -260,18 +216,18 @@ fn main() {
 
     let main_window: gtk::ApplicationWindow = builder.get_object("main_ui").unwrap();
 
-    let mut rx_widget = audio_line::create_transmit_widget(&builder);
-    let mut tx_widget = audio_line::create_receive_widget(&builder);
+    let rx_widget = audio_line::create_transmit_widget(&builder);
+    let tx_widget = audio_line::create_receive_widget(&builder);
 
-    let mut maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
+    let maintab_widget: MaintabWidget = MaintabWidget::new(&builder);
 
     let statusbar_widget: StatusbarWidget = StatusbarWidget::new(&builder);
 
     let headerbar_widget: HeaderWidget = HeaderWidget::new(&builder);
 
-    let mut dialpad_widget: DialpadWidget = DialpadWidget::new(&builder);
+    let dialpad_widget = DialpadWidget::new(&builder);
 
-    let mut account_widget: AccountWidget = AccountWidget::new(&builder);
+    let account_widget: AccountWidget = AccountWidget::new(&builder);
     let settings_widget: SettingsWidget = SettingsWidget::new(&builder);
 
     // initialize
@@ -283,9 +239,9 @@ fn main() {
     account_widget.init();
     settings_widget.init();
 
-    callback_audio_line_widget(&mut sipua, &mut rx_widget, &mut tx_widget);
-    callback_dialpad_widget(&mut sipua, &mut dialpad_widget);
-    callback_account_widget(&mut sipua, &mut account_widget);
+    callback_audio_line_widget(&mut sipua, &rx_widget, &tx_widget);
+    callback_dialpad_widget(&mut sipua, &dialpad_widget);
+    callback_account_widget(&mut sipua, &account_widget);
 
     // test call data
     dialpad_widget.set_call_address_text(String::from("sip://@27.50.19.174"));
