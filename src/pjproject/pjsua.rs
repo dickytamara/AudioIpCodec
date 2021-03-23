@@ -1235,47 +1235,115 @@ pub fn call_get_max_count () -> u32 {
 }
 
 // unsigned 	pjsua_call_get_count (void)
+pub fn call_get_count() -> u32 {
+    unsafe { pjsua_call_get_count() }
+}
+
 // pj_status_t 	pjsua_enum_calls (pjsua_call_id ids[], unsigned *count)
+pub fn enum_calls(ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &mut u32) -> pj_status_t {
+    unsafe {
+        pjsua_enum_calls(
+            ids.as_mut_ptr(),
+            count as *mut _
+        )
+    }
+}
+
 // pj_status_t 	pjsua_call_make_call (pjsua_acc_id acc_id, const pj_str_t *dst_uri, const pjsua_call_setting *opt, void *user_data, const pjsua_msg_data *msg_data, pjsua_call_id *p_call_id)
+
 // pj_bool_t 	pjsua_call_is_active (pjsua_call_id call_id)
+pub fn call_is_active(call_id: pjsua_call_id) -> bool {
+    unsafe {
+        let result = pjsua_call_is_active(call_id);
+
+        if result == PJ_TRUE as pj_bool_t {
+            true
+        } else {
+            false
+        }
+    }
+}
+
 // pj_bool_t 	pjsua_call_has_media (pjsua_call_id call_id)
+pub fn call_has_media(call_id: pjsua_call_id) -> bool {
+    unsafe {
+        let result = pjsua_call_has_media(call_id);
+        if result == PJ_TRUE as pj_bool_t {
+            true
+        } else {
+            false
+        }
+    }
+}
+
 // pjsua_conf_port_id 	pjsua_call_get_conf_port (pjsua_call_id call_id)
+pub fn conf_port_id (call_id: pjsua_call_id) -> pjsua_conf_port_id {
+    unsafe { pjsua_call_get_conf_port(call_id) }
+}
+
 // pj_status_t 	pjsua_call_get_info (pjsua_call_id call_id, pjsua_call_info *info)
+pub fn call_get_info(call_id: pjsua_call_id, info: &mut pjsua_call_info) -> pj_status_t {
+    unsafe {
+        pjsua_call_get_info (
+            call_id,
+            info as *mut _
+        )
+    }
+}
+
 // pjsip_dialog_cap_status 	pjsua_call_remote_has_cap (pjsua_call_id call_id, int htype, const pj_str_t *hname, const pj_str_t *token)
+pub fn call_remote_has_cap(call_id: pjsua_call_id, htype: i32, hname: String, token: String) -> pjsip_dialog_cap_status {
+    let mut hname = pj_str_t::from_string(hname);
+    let mut token = pj_str_t::from_string(token);
+
+    unsafe {
+        pjsua_call_remote_has_cap(
+            call_id,
+            htype,
+            &mut hname as *const _,
+            &mut token as *const _
+        )
+    }
+}
+
+// unused function
 // pj_status_t 	pjsua_call_set_user_data (pjsua_call_id call_id, void *user_data)
 // void * 	pjsua_call_get_user_data (pjsua_call_id call_id)
+
 // pj_status_t 	pjsua_call_get_rem_nat_type (pjsua_call_id call_id, pj_stun_nat_type *p_type)
+pub fn call_get_rem_nat_type(call_id: pjsua_call_id, p_type: &mut pj_stun_nat_type) -> pj_status_t {
+    unsafe {
+        pjsua_call_get_rem_nat_type (
+            call_id,
+            p_type as *mut _
+        ) 
+    }
+}
+
 // pj_status_t 	pjsua_call_answer (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+pub fn call_answer(call_id: pjsua_call_id, code: u32, reason: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let reason = match reason {
+        Some(value) => &mut pj_str_t::from_string(value) as *const pj_str_t,
+        None => ptr::null_mut(),
+    };
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_answer(
+            call_id,
+            code,
+            reason,
+            msg_data
+        )
+    }
+}
+
 // pj_status_t 	pjsua_call_answer2 (pjsua_call_id call_id, const pjsua_call_setting *opt, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_answer_with_sdp (pjsua_call_id call_id, const pjmedia_sdp_session *sdp, const pjsua_call_setting *opt, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_hangup (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_process_redirect (pjsua_call_id call_id, pjsip_redirect_op cmd)
-// pj_status_t 	pjsua_call_set_hold (pjsua_call_id call_id, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_set_hold2 (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_reinvite (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_reinvite2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_update (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_update2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_xfer (pjsua_call_id call_id, const pj_str_t *dest, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_xfer_replaces (pjsua_call_id call_id, pjsua_call_id dest_call_id, unsigned options, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_dial_dtmf (pjsua_call_id call_id, const pj_str_t *digits)
-// pj_status_t 	pjsua_call_send_dtmf (pjsua_call_id call_id, const pjsua_call_send_dtmf_param *param)
-// pj_status_t 	pjsua_call_send_im (pjsua_call_id call_id, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
-// pj_status_t 	pjsua_call_send_typing_ind (pjsua_call_id call_id, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
-// pj_status_t 	pjsua_call_send_request (pjsua_call_id call_id, const pj_str_t *method, const pjsua_msg_data *msg_data)
-// void 	pjsua_call_hangup_all (void)
-// pj_status_t 	pjsua_call_dump (pjsua_call_id call_id, pj_bool_t with_media, char *buffer, unsigned maxlen, const char *indent)
-// int 	pjsua_call_get_vid_stream_idx (pjsua_call_id call_id)
-// pj_status_t 	pjsua_call_get_stream_info (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_info *psi)
-// pj_status_t 	pjsua_call_get_stream_stat (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_stat *stat)
-// pj_status_t 	pjsua_call_get_med_transport_info (pjsua_call_id call_id, unsigned med_idx, pjmedia_transport_info *t)
-
-// void 	pjsua_call_vid_strm_op_param_default (pjsua_call_vid_strm_op_param *param)
-// pjsua_vid_win_id 	pjsua_call_get_vid_win (pjsua_call_id call_id)
-// pjsua_conf_port_id 	pjsua_call_get_vid_conf_port (pjsua_call_id call_id, pjmedia_dir dir)
-// pj_bool_t 	pjsua_call_vid_stream_is_running (pjsua_call_id call_id, int med_idx, pjmedia_dir dir)
-// pj_status_t 	pjsua_call_set_vid_strm (pjsua_call_id call_id, pjsua_call_vid_strm_op op, const pjsua_call_vid_strm_op_param *param)
-
 pub fn call_answer2(
     call_id: pjsua_call_id,
     opt: &mut pjsua_call_setting,
@@ -1284,7 +1352,7 @@ pub fn call_answer2(
     msg_data: Option<&mut pjsua_msg_data>
 ) -> pj_status_t {
 
-    let reason: *const pj_str_t = match reason {
+    let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const _ ,
         None => ptr::null_mut()
     };
@@ -1305,6 +1373,9 @@ pub fn call_answer2(
     }
 }
 
+// pj_status_t 	pjsua_call_answer_with_sdp (pjsua_call_id call_id, const pjmedia_sdp_session *sdp, const pjsua_call_setting *opt, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+
+// pj_status_t 	pjsua_call_hangup (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
 pub fn call_hangup(
     call_id: pjsua_call_id,
     code: c_uint,
@@ -1312,12 +1383,12 @@ pub fn call_hangup(
     msg_data: Option<&mut pjsua_msg_data>
 ) -> pj_status_t {
 
-    let reason: *const pj_str_t = match reason {
+    let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const _,
         None => ptr::null_mut()
     };
 
-    let msg_data: *const pjsua_msg_data = match msg_data {
+    let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
@@ -1326,4 +1397,276 @@ pub fn call_hangup(
         pjsua_call_hangup(call_id, code, reason, msg_data)
     }
 }
+
+// pj_status_t 	pjsua_call_process_redirect (pjsua_call_id call_id, pjsip_redirect_op cmd)
+pub fn call_process_redirect(call_id: pjsua_call_id, cmd: pjsip_redirect_op) -> pj_status_t {
+    unsafe { pjsua_call_process_redirect(call_id, cmd) }
+}
+
+// pj_status_t 	pjsua_call_set_hold (pjsua_call_id call_id, const pjsua_msg_data *msg_data)
+pub fn call_set_hold(call_id: pjsua_call_id, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_set_hold(
+            call_id,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_set_hold2 (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
+pub fn call_set_hold2 (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_set_hold2(
+            call_id,
+            options,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_reinvite (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
+pub fn call_reinvite(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_reinvite(
+            call_id,
+            options,
+            msg_data
+        )
+    }
+
+}
+
+// pj_status_t 	pjsua_call_reinvite2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
+pub fn call_reinvite2(call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data> ) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_reinvite2(
+            call_id,
+            opt as *const _,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_update (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
+pub fn call_update(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_update(
+            call_id,
+            options,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_update2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
+pub fn call_update2(call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_update2(
+            call_id,
+            opt as *const _,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_xfer (pjsua_call_id call_id, const pj_str_t *dest, const pjsua_msg_data *msg_data)
+pub fn call_xfer(call_id: pjsua_call_id, dest: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let dest = match dest {
+        Some(value) => &mut pj_str_t::from_string(value) as *const _,
+        None => ptr::null_mut()
+    };
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_xfer(
+            call_id,
+            dest,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_xfer_replaces (pjsua_call_id call_id, pjsua_call_id dest_call_id, unsigned options, const pjsua_msg_data *msg_data)
+pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_xfer_replaces (
+            call_id,
+            dest_call_id,
+            options,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_dial_dtmf (pjsua_call_id call_id, const pj_str_t *digits)
+pub fn call_dial_dtmf(call_id: pjsua_call_id, digits: Option<String>) -> pj_status_t {
+
+    let digits = match digits {
+        Some(value) => &mut pj_str_t::from_string(value) as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_dial_dtmf(
+            call_id,
+            digits
+        )
+    }
+
+}
+
+// pj_status_t 	pjsua_call_send_dtmf (pjsua_call_id call_id, const pjsua_call_send_dtmf_param *param)
+pub fn call_send_dtmf(call_id: pjsua_call_id, param: &mut pjsua_call_send_dtmf_param) -> pj_status_t {
+    unsafe {
+        pjsua_call_send_dtmf (
+            call_id,
+            param as *const _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_send_im (pjsua_call_id call_id, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
+
+// pj_status_t 	pjsua_call_send_typing_ind (pjsua_call_id call_id, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
+pub fn call_send_typing_ind(call_id: pjsua_call_id, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let mut a_typing = PJ_FALSE as pj_bool_t;
+
+    if is_typing {
+        a_typing = PJ_TRUE as pj_bool_t;
+    }
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_send_typing_ind(
+            call_id,
+            a_typing,
+            msg_data
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_send_request (pjsua_call_id call_id, const pj_str_t *method, const pjsua_msg_data *msg_data)
+pub fn call_send_request(call_id: pjsua_call_id, method: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let method = match method {
+        Some(value) => &mut pj_str_t::from_string(value) as *const _,
+        None => ptr::null_mut()
+    };
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_send_request (
+            call_id,
+            method,
+            msg_data
+        )
+    }
+}
+
+// void 	pjsua_call_hangup_all (void)
+pub fn call_hangup_all() {
+    unsafe { pjsua_call_hangup_all() }
+}
+
+// pj_status_t 	pjsua_call_dump (pjsua_call_id call_id, pj_bool_t with_media, char *buffer, unsigned maxlen, const char *indent)
+
+// pj_status_t 	pjsua_call_get_stream_info (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_info *psi)
+pub fn call_get_stream_info (call_id: pjsua_call_id, med_idx: u32, psi: &mut pjsua_stream_info) -> pj_status_t {
+    unsafe {
+        pjsua_call_get_stream_info (
+            call_id,
+            med_idx,
+            psi as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_get_stream_stat (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_stat *stat)
+pub fn call_get_stream_stat (call_id: pjsua_call_id, med_idx: u32, stat: &mut pjsua_stream_stat) -> pj_status_t {
+    unsafe {
+        pjsua_call_get_stream_stat(
+            call_id,
+            med_idx,
+            stat as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_call_get_med_transport_info (pjsua_call_id call_id, unsigned med_idx, pjmedia_transport_info *t)
+pub fn call_get_med_transport_info( call_id: pjsua_call_id, med_idx: u32, t: &mut pjmedia_transport_info) -> pj_status_t {
+    unsafe {
+        pjsua_call_get_med_transport_info(
+            call_id,
+            med_idx,
+            t as *mut _
+        )
+    }
+}
+
+// void 	pjsua_call_vid_strm_op_param_default (pjsua_call_vid_strm_op_param *param)
+// pjsua_vid_win_id 	pjsua_call_get_vid_win (pjsua_call_id call_id)
+// pjsua_conf_port_id 	pjsua_call_get_vid_conf_port (pjsua_call_id call_id, pjmedia_dir dir)
+// pj_bool_t 	pjsua_call_vid_stream_is_running (pjsua_call_id call_id, int med_idx, pjmedia_dir dir)
+// pj_status_t 	pjsua_call_set_vid_strm (pjsua_call_id call_id, pjsua_call_vid_strm_op op, const pjsua_call_vid_strm_op_param *param)
+// int 	pjsua_call_get_vid_stream_idx (pjsua_call_id call_id)
+
+
+
+
 
