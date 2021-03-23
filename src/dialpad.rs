@@ -13,6 +13,14 @@ use super::glib::clone;
 use super::gdk::*;
 
 
+pub enum CallButtonState {
+    Call,
+    Answer,
+    Abort,
+    Hangup,
+    None
+}
+
 
 #[derive(Clone)]
 pub struct DialpadStorage {
@@ -36,6 +44,41 @@ pub struct DialpadStorage {
     tv_call_log: gtk::TreeView,
     ls_call_log: gtk::ListStore
 }
+
+impl DialpadStorage {
+
+    pub fn new (gtk_builder: &gtk::Builder) -> DialpadStorage {
+        // liststore types
+        let list_types = [u32::static_type(), String::static_type()];
+
+        DialpadStorage{
+            btn_dial_1: gtk_builder.get_object("btn_dial_1").unwrap(),
+            btn_dial_2: gtk_builder.get_object("btn_dial_2").unwrap(),
+            btn_dial_3: gtk_builder.get_object("btn_dial_3").unwrap(),
+            btn_dial_4: gtk_builder.get_object("btn_dial_4").unwrap(),
+            btn_dial_5: gtk_builder.get_object("btn_dial_5").unwrap(),
+            btn_dial_6: gtk_builder.get_object("btn_dial_6").unwrap(),
+            btn_dial_7: gtk_builder.get_object("btn_dial_7").unwrap(),
+            btn_dial_8: gtk_builder.get_object("btn_dial_8").unwrap(),
+            btn_dial_9: gtk_builder.get_object("btn_dial_9").unwrap(),
+            btn_dial_0: gtk_builder.get_object("btn_dial_0").unwrap(),
+            btn_dial_ast: gtk_builder.get_object("btn_dial_ast").unwrap(),
+            btn_dial_hash: gtk_builder.get_object("btn_dial_hash").unwrap(),
+            btn_call: gtk_builder.get_object("btn_call").unwrap(),
+            btn_call_log_clear: gtk_builder.get_object("btn_call_log_clear").unwrap(),
+            lbl_call_address: gtk_builder.get_object("lbl_call_address").unwrap(),
+            btn_call_address_clear: gtk_builder.get_object("btn_call_address_clear").unwrap(),
+            ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
+            tv_call_log: gtk_builder.get_object("tv_call_log").unwrap(),
+            ls_call_log: gtk::ListStore::new(&list_types)
+        }
+    }
+
+
+
+}
+
+unsafe impl Send for DialpadWidget {}
 
 #[derive(Clone)]
 pub struct DialpadWidget {
@@ -193,83 +236,53 @@ impl DialpadWidget {
 
     /// get call adress
     pub fn get_call_address_text(&self) -> String {
-        let widget = self.ctx.borrow();
-        String::from(widget.ent_call_address.get_text().as_str())
+        String::from(self.ctx.borrow().ent_call_address.get_text().as_str())
     }
 
-    /// set call addres
+    /// set call address
     pub fn set_call_address_text(&self, call_address: String) {
-        let widget = self.ctx.borrow();
-        widget.ent_call_address.set_text(call_address.as_str());
+        self.ctx.borrow().ent_call_address.set_text(call_address.as_str());
     }
 
     /// event on button call clicked
-    pub fn on_button_call_clicked<F: Fn(&str) + 'static> (&self, callback: F) {
-        let widget = self.ctx.borrow();
+    pub fn on_button_call_clicked<F: Fn(&str, CallButtonState) + 'static> (&self, callback: F) {
         let wid = self.clone();
-
-        widget.btn_call.connect_clicked( move |_| {
+        self.ctx.borrow().btn_call.connect_clicked( move | b | {
+            
             let sip_address = wid.get_call_address_text().clone();
-            callback(sip_address.as_str());
+            let b_str = b.get_label().unwrap().to_string();
+
+            let state = match b_str.as_str() {
+                "\nCall\n" => CallButtonState::Call,
+                "\nAnswer\n" => CallButtonState::Answer,
+                "\nAbort\n" => CallButtonState::Abort,
+                "\nHangup\n" => CallButtonState::Hangup,
+                _ => CallButtonState::None
+
+            };
+
+            callback(sip_address.as_str(), state);
         });
     }
 
     /// update gui to normal state
     pub fn update_state_normal(&self) {
-        let widget = self.ctx.borrow();
-        widget.btn_call.set_label(format!("\nCall\n").as_str());
+        self.ctx.borrow().btn_call.set_label(format!("\nCall\n").as_str());
     }
 
     /// update gui to ringing state
     pub fn update_state_incoming(&self) {
-        let widget = self.ctx.borrow();
-        widget.btn_call.set_label(format!("\nAnswer\n").as_str());
+        self.ctx.borrow().btn_call.set_label(format!("\nAnswer\n").as_str());
     }
 
     /// update gui to calling state
     pub fn update_state_outgoing(&self) {
-        let widget = self.ctx.borrow();
-        widget.btn_call.set_label(format!("\nAbort\n").as_str());
+        self.ctx.borrow().btn_call.set_label(format!("\nAbort\n").as_str());
     }
 
     /// update gui to confirmed call state
     pub fn update_state_oncall(&self) {
-        let widget = self.ctx.borrow();
-        widget.btn_call.set_label(format!("\nHangup\n").as_str());
+        self.ctx.borrow().btn_call.set_label(format!("\nHangup\n").as_str());
     }
 }
 
-impl DialpadStorage {
-
-    pub fn new (gtk_builder: &gtk::Builder) -> DialpadStorage {
-        // liststore types
-        let list_types = [u32::static_type(), String::static_type()];
-
-        DialpadStorage{
-            btn_dial_1: gtk_builder.get_object("btn_dial_1").unwrap(),
-            btn_dial_2: gtk_builder.get_object("btn_dial_2").unwrap(),
-            btn_dial_3: gtk_builder.get_object("btn_dial_3").unwrap(),
-            btn_dial_4: gtk_builder.get_object("btn_dial_4").unwrap(),
-            btn_dial_5: gtk_builder.get_object("btn_dial_5").unwrap(),
-            btn_dial_6: gtk_builder.get_object("btn_dial_6").unwrap(),
-            btn_dial_7: gtk_builder.get_object("btn_dial_7").unwrap(),
-            btn_dial_8: gtk_builder.get_object("btn_dial_8").unwrap(),
-            btn_dial_9: gtk_builder.get_object("btn_dial_9").unwrap(),
-            btn_dial_0: gtk_builder.get_object("btn_dial_0").unwrap(),
-            btn_dial_ast: gtk_builder.get_object("btn_dial_ast").unwrap(),
-            btn_dial_hash: gtk_builder.get_object("btn_dial_hash").unwrap(),
-            btn_call: gtk_builder.get_object("btn_call").unwrap(),
-            btn_call_log_clear: gtk_builder.get_object("btn_call_log_clear").unwrap(),
-            lbl_call_address: gtk_builder.get_object("lbl_call_address").unwrap(),
-            btn_call_address_clear: gtk_builder.get_object("btn_call_address_clear").unwrap(),
-            ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
-            tv_call_log: gtk_builder.get_object("tv_call_log").unwrap(),
-            ls_call_log: gtk::ListStore::new(&list_types)
-        }
-    }
-
-
-
-}
-
-unsafe impl Send for DialpadWidget {}

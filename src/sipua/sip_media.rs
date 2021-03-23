@@ -7,6 +7,7 @@ use super::pjsua_sys::*;
 use super::pjsua::*;
 use super::pjdefault::*;
 
+use super::pjmedia;
 use std::os::raw::c_uint;
 use std::ffi::CStr;
 
@@ -21,7 +22,7 @@ pub struct SIPMedia {
 }
 
 impl SIPMedia {
-
+    // Create new SIP Media.
     pub fn new() -> SIPMedia {
         let mut cfg = SIPMedia {
             ctx: pjsua_media_config::new(),
@@ -65,7 +66,7 @@ impl SIPMedia {
 
     pub fn get_input_device_list(&self) -> Vec<String> {
         unsafe{
-            let dev_count = pjmedia_aud_dev_count();
+            let dev_count = pjmedia::aud_dev_count();
             let mut result: Vec<String> = Vec::new();
 
             for idx in 0..dev_count {
@@ -90,7 +91,7 @@ impl SIPMedia {
 
     pub fn get_output_device_list(&self) -> Vec<String> {
         unsafe{
-            let dev_count = pjmedia_aud_dev_count();
+            let dev_count = pjmedia::aud_dev_count();
             let mut result: Vec<String> = Vec::new();
 
             for idx in 0..dev_count {

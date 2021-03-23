@@ -121,9 +121,16 @@ impl SIPUserAgent {
     pub fn call(&self, call_addr: &str){
         unsafe {
             match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.call(call_addr);
-                },
+                Some(ref sipua) => sipua.call(call_addr),
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn hangup(&self) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref sipua) => sipua.hangup(),
                 _ => panic!("")
             }
         }

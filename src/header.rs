@@ -8,21 +8,34 @@ use super::glib::MainContext;
 
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
+use std::cell::RefCell;
 use super::systemstat::{System, Platform, saturating_sub_bytes};
 
 enum SystemLoadAverage {
     UpdateCpuAverage(f32)
 }
 
-pub struct HeaderWidget{
+pub struct HeaderStorage{
     cpu_lvl: gtk::LevelBar,
+}
+
+impl HeaderStorage {
+    pub fn new (gtk_builder: &gtk::Builder) -> HeaderStorage {
+        HeaderStorage {
+            cpu_lvl: gtk_builder.get_object("lvl_cpu").unwrap(),
+        }
+    }
+}
+
+pub struct HeaderWidget {
+    ctx: RefCell<HeaderStorage>
 }
 
 impl HeaderWidget {
 
     pub fn new(gtk_builder: &gtk::Builder) -> HeaderWidget {
         HeaderWidget {
-            cpu_lvl: gtk_builder.get_object("lvl_cpu").unwrap(),
+            ctx: RefCell::new(HeaderStorage::new(gtk_builder))
         }
     }
 
@@ -55,7 +68,7 @@ impl HeaderWidget {
             }
         });
 
-        let cpu_level = self.cpu_lvl.clone();
+        let cpu_level = self.ctx.borrow().cpu_lvl.clone();
             receiver.attach(None, move |msg| {
                 match msg {
                     SystemLoadAverage::UpdateCpuAverage(x) => {

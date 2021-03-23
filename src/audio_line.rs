@@ -89,6 +89,7 @@ impl AudioLineWidget {
         }
     }
 
+    // init audio line widget
     pub fn init(&self) {
         // adjust level bar
         self.ctx.borrow().lvl_l.set_max_value(128.0);
@@ -119,6 +120,7 @@ impl AudioLineWidget {
 
     }
 
+    // set audio level status
     pub fn set_level_bar(&self, left: u32, right: u32) {
         self.ctx.borrow().lvl_l.set_value(left as f64);
         self.ctx.borrow().lvl_r.set_value(right as f64);

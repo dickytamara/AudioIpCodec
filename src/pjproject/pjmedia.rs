@@ -10,6 +10,7 @@ use super::pjlib::*;
 
 use std::ptr;
 use std::ffi::CStr;
+use std::ffi::CString;
 
 
 impl AutoCreate<pjmedia_srtp_crypto> for pjmedia_srtp_crypto {
@@ -398,3 +399,126 @@ pub fn type_name(media_type: pjmedia_type) -> String {
         .expect("Error string media type"))
     }
 }
+
+// function helper to reduce unsafe block
+
+
+// Audio device API
+
+// pjmedia_aud_subsys * 	pjmedia_get_aud_subsys (void)
+pub fn get_aud_subsys() -> *mut pjmedia_aud_subsys {
+    unsafe { pjmedia_get_aud_subsys() }
+}
+
+// pj_status_t 	pjmedia_aud_driver_init (unsigned drv_idx, pj_bool_t refresh)
+pub fn aud_driver_init(drv_idx: u32, refresh: bool) -> pj_status_t {
+    let mut arefresh = PJ_FALSE as pj_bool_t;
+
+    if refresh {
+        arefresh = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjmedia_aud_driver_init(
+            drv_idx,
+            arefresh
+        )
+    }
+}
+
+// void 	pjmedia_aud_driver_deinit (unsigned drv_idx)
+pub fn aud_driver_deinit(drv_idx: u32) {
+    unsafe { pjmedia_aud_driver_deinit(drv_idx) }
+}
+
+// const char * 	pjmedia_aud_dev_cap_name (pjmedia_aud_dev_cap cap, const char **p_desc)
+// pj_status_t 	pjmedia_aud_param_set_cap (pjmedia_aud_param *param, pjmedia_aud_dev_cap cap, const void *pval)
+// pj_status_t 	pjmedia_aud_param_get_cap (const pjmedia_aud_param *param, pjmedia_aud_dev_cap cap, void *pval)
+
+// pj_status_t 	pjmedia_aud_dev_refresh (void)
+pub fn aud_dev_refresh() -> pj_status_t {
+    unsafe { pjmedia_aud_dev_refresh() }
+}
+
+// unsigned 	pjmedia_aud_dev_count (void)
+pub fn aud_dev_count() -> u32 {
+    unsafe { pjmedia_aud_dev_count() }
+}
+
+// pj_status_t 	pjmedia_aud_dev_get_info (pjmedia_aud_dev_index id, pjmedia_aud_dev_info *info)
+pub fn aud_dev_get_info(id: pjmedia_aud_dev_index, info: &mut pjmedia_aud_dev_info) -> pj_status_t {
+    unsafe { pjmedia_aud_dev_get_info(id, info as *mut _) }
+}
+
+// pj_status_t 	pjmedia_aud_dev_lookup (const char *drv_name, const char *dev_name, pjmedia_aud_dev_index *id)
+pub fn aud_dev_lookup (drv_name: String, dev_name: String, id: &mut pjmedia_aud_dev_index) -> pj_status_t {
+    let drv_name = CString::new(drv_name.as_str()).expect("error drv_name").into_raw();
+    let dev_name = CString::new(dev_name.as_str()).expect("error dev_name").into_raw();
+
+    unsafe {
+        pjmedia_aud_dev_lookup(
+            drv_name as *const _,
+            dev_name as *const _,
+            id as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjmedia_aud_dev_default_param (pjmedia_aud_dev_index id, pjmedia_aud_param *param)
+pub fn aud_dev_default_param(id: pjmedia_aud_dev_index, param: &mut pjmedia_aud_param) -> pj_status_t {
+    unsafe {
+        pjmedia_aud_dev_default_param(
+            id,
+            param as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjmedia_aud_stream_create (const pjmedia_aud_param *param, pjmedia_aud_rec_cb rec_cb, pjmedia_aud_play_cb play_cb, void *user_data, pjmedia_aud_stream **p_strm)
+
+// pj_status_t 	pjmedia_aud_stream_get_param (pjmedia_aud_stream *strm, pjmedia_aud_param *param)
+pub fn aud_stream_get_param (strm: &mut pjmedia_aud_stream, param: &mut pjmedia_aud_param) -> pj_status_t {
+    unsafe {
+        pjmedia_aud_stream_get_param(
+            strm as *mut _,
+            param as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjmedia_aud_stream_get_cap (pjmedia_aud_stream *strm, pjmedia_aud_dev_cap cap, void *value)
+// pj_status_t 	pjmedia_aud_stream_set_cap (pjmedia_aud_stream *strm, pjmedia_aud_dev_cap cap, const void *value)
+
+// pj_status_t 	pjmedia_aud_stream_start (pjmedia_aud_stream *strm)
+pub fn aud_stream_start(strm: &mut pjmedia_aud_stream) -> pj_status_t {
+    unsafe { pjmedia_aud_stream_start(strm as *mut _) }
+}
+
+// pj_status_t 	pjmedia_aud_stream_stop (pjmedia_aud_stream *strm)
+pub fn aud_stream_stop(strm: &mut pjmedia_aud_stream) -> pj_status_t {
+    unsafe { pjmedia_aud_stream_stop(strm as *mut _) }
+}
+
+// pj_status_t 	pjmedia_aud_stream_destroy (pjmedia_aud_stream *strm)
+pub fn aud_stream_destroy (strm: &mut pjmedia_aud_stream) -> pj_status_t {
+    unsafe { pjmedia_aud_stream_destroy(strm as *mut _) }
+}
+
+// pj_status_t 	pjmedia_aud_subsys_init (pj_pool_factory *pf)
+pub fn aud_subsys_init(pf: *mut pj_pool_factory) -> pj_status_t {
+    unsafe { pjmedia_aud_subsys_init(pf) }
+}
+
+// pj_pool_factory * 	pjmedia_aud_subsys_get_pool_factory (void)
+pub fn aud_subsys_get_pool_factory() -> *mut pj_pool_factory {
+    unsafe { pjmedia_aud_subsys_get_pool_factory() }
+}
+
+// pj_status_t 	pjmedia_aud_subsys_shutdown (void)
+pub fn aud_subsys_shutdown() -> pj_status_t {
+    unsafe { pjmedia_aud_subsys_shutdown() }
+}
+
+// pj_status_t 	pjmedia_aud_register_factory (pjmedia_aud_dev_factory_create_func_ptr adf)
+// pj_status_t 	pjmedia_aud_unregister_factory (pjmedia_aud_dev_factory_create_func_ptr adf)
+//

@@ -42,35 +42,33 @@ pub struct MaintabStorage {
 
      }
 
- 
      pub fn init(&self) {
 
-        let widget = self.ctx.borrow();
+        let this = self.ctx.borrow();
 
-         widget.btn_sip.connect_clicked(
-           clone!( @weak widget.stack as stk => move |_| {
+         self.ctx.borrow().btn_sip.connect_clicked(
+           clone!( @weak this.stack as stk => move |_| {
                stk.set_visible_child_name("page0");
          }));
- 
-        widget.btn_account.connect_clicked(
-           clone!( @weak widget.stack as stk => move |_| {
+
+        self.ctx.borrow().btn_account.connect_clicked(
+           clone!( @weak this.stack as stk => move |_| {
                stk.set_visible_child_name("page1");
          }));
 
-         widget.btn_settings.connect_clicked(
-           clone!( @weak widget.stack as stk => move |_| {
+         self.ctx.borrow().btn_settings.connect_clicked(
+           clone!( @weak this.stack as stk => move |_| {
                stk.set_visible_child_name("page2");
          }));
 
-         widget.btn_codec.connect_clicked(
-           clone!( @weak widget.stack as stk => move |_| {
+         self.ctx.borrow().btn_codec.connect_clicked(
+           clone!( @weak this.stack as stk => move |_| {
                stk.set_visible_child_name("page3");
          }));
 
-         widget.btn_about.connect_clicked(
-           clone!( @weak widget.stack as stk => move |_| {
+         self.ctx.borrow().btn_about.connect_clicked(
+           clone!( @weak this.stack as stk => move |_| {
                stk.set_visible_child_name("page4");
          }));
      }
- 
  }
