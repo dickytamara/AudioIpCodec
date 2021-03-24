@@ -8,6 +8,7 @@ use super::pjsua::*;
 use super::pjdefault::*;
 
 use super::pjmedia;
+use super::pjsua;
 use std::os::raw::c_uint;
 use std::ffi::CStr;
 
@@ -22,6 +23,7 @@ pub struct SIPMedia {
 }
 
 impl SIPMedia {
+
     // Create new SIP Media.
     pub fn new() -> SIPMedia {
         let mut cfg = SIPMedia {
@@ -56,11 +58,9 @@ impl SIPMedia {
     }
 
     pub fn init(&self) {
-        unsafe {
-            let status = pjsua_set_snd_dev(self.capture_dev, self.playback_dev);
-            if status != PJ_SUCCESS as pj_status_t {
-                panic!("cant set audio device");
-            }
+        let status = pjsua::set_snd_dev(self.capture_dev, self.playback_dev);
+        if status != PJ_SUCCESS as pj_status_t {
+            panic!("cant set audio device");
         }
     }
 

@@ -60,7 +60,7 @@ impl SIPWavPlayer {
                 );
 
                 if status != PJ_SUCCESS as i32 {
-                    panic!("Panic set pjmedia_wav_player_set_eof_cb2");
+                    panic!("panic set pjmedia_wav_player_set_eof_cb2");
                 }
 
                 pj_timer_entry_init(
