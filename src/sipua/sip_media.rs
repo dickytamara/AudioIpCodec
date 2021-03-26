@@ -90,29 +90,27 @@ impl SIPMedia {
     }
 
     pub fn get_output_device_list(&self) -> Vec<String> {
-        unsafe{
-            let dev_count = pjmedia::aud_dev_count();
-            let mut result: Vec<String> = Vec::new();
+        let dev_count = pjmedia::aud_dev_count();
+        let mut result: Vec<String> = Vec::new();
 
-            for idx in 0..dev_count {
-                let mut info: pjmedia_aud_dev_info = pjmedia_aud_dev_info::new();
+        for idx in 0..dev_count {
+            let mut info: pjmedia_aud_dev_info = pjmedia_aud_dev_info::new();
 
-                let status = pjmedia_aud_dev_get_info(idx as i32,
-                    &mut info as *mut _);
-                if status != PJ_SUCCESS as pj_status_t {
-                    panic!("can't enumerate output audio device");
-                }
+            let status = pjmedia::aud_dev_get_info(idx as i32, &mut info);
+            if status != PJ_SUCCESS as pj_status_t {
+                panic!("can't enumerate output audio device");
+            }
 
+            unsafe {
                 let dev_name = format!("{} (in:{},out:{})",
                     CStr::from_ptr(info.name.as_ptr()).to_owned().into_string().expect("error"),
                     info.input_count, info.output_count);
 
-                result.push(dev_name);
+                    result.push(dev_name);
             }
-
-            result
         }
 
+        result
     }
 
     pub fn get_context(&self) -> pjsua_media_config {
@@ -131,16 +129,12 @@ impl SIPMedia {
 
     pub fn set_input_level(&mut self, value: i32) {
         self.input_level = value;
-        unsafe {
-            pjsua_conf_adjust_rx_level(0, (self.input_level as f32 / 100.0) as f32);
-        }
+        pjsua::conf_adjust_rx_level(0, (self.input_level as f32 / 100.0) as f32);
     }
 
     pub fn set_output_level(&mut self, value: i32) {
         self.output_level = value;
-        unsafe {
-            pjsua_conf_adjust_tx_level(0, (self.output_level as f32 / 100.0) as f32);
-        }
+        pjsua::conf_adjust_tx_level(0, (self.output_level as f32 / 100.0) as f32);
     }
 
     pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {

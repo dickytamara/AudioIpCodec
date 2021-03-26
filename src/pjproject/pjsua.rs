@@ -1180,34 +1180,6 @@ pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> pj_status_t {
 }
 
 
-// account helper function
-pub fn acc_get_info (acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> pj_status_t {
-    unsafe {
-        pjsua_acc_get_info(acc_id, info as *mut _)
-    }
-}
-
-pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> pj_status_t {
-    unsafe {
-        let pool = pool_create("tmp-pool");
-
-        let status = pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
-
-        pool_release(pool);
-
-        status
-    }
-}
-
-pub fn acc_config_default (cfg: &mut pjsua_acc_config) {
-    unsafe { pjsua_acc_config_default(cfg as *mut _); }
-}
-
-pub fn acc_set_default (acc_id: pjsua_acc_id) -> pj_status_t {
-    unsafe { pjsua_acc_set_default(acc_id) }
-}
-
-
 // call helper function
 
 // void 	pjsua_call_setting_default (pjsua_call_setting *opt)
@@ -1980,3 +1952,370 @@ pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> pj_
 }
 
 
+// pjsua account helper
+
+// void 	pjsua_ice_config_from_media_config (pj_pool_t *pool, pjsua_ice_config *dst, const pjsua_media_config *src)
+pub fn ice_config_from_media_config(dst: &mut pjsua_ice_config, src: &mut pjsua_media_config) {
+
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_ice_config_from_media_config(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
+    }
+
+    pool_release(pool);
+}
+
+// void 	pjsua_ice_config_dup (pj_pool_t *pool, pjsua_ice_config *dst, const pjsua_ice_config *src)
+pub fn ice_config_dup(dst: &mut pjsua_ice_config, src: &mut pjsua_ice_config) {
+
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_ice_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
+    }
+
+    pool_release(pool);
+}
+
+// void 	pjsua_turn_config_from_media_config (pj_pool_t *pool, pjsua_turn_config *dst, const pjsua_media_config *src)
+pub fn turn_config_from_media_config(dst: &mut pjsua_turn_config, src: &mut pjsua_media_config) {
+
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_turn_config_from_media_config(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
+    }
+
+    pool_release(pool);
+}
+
+// void 	pjsua_turn_config_dup (pj_pool_t *pool, pjsua_turn_config *dst, const pjsua_turn_config *src)
+pub fn turn_config_dup(dst: &mut pjsua_turn_config, src: &mut pjsua_turn_config) {
+
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_turn_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
+    }
+
+    pool_release(pool);
+}
+
+// void 	pjsua_srtp_opt_default (pjsua_srtp_opt *cfg)
+pub fn srtp_opt_default(cfg: &mut pjsua_srtp_opt) {
+    unsafe {
+        pjsua_srtp_opt_default(
+            cfg as *mut _
+        )
+    }
+}
+
+// void 	pjsua_srtp_opt_dup (pj_pool_t *pool, pjsua_srtp_opt *dst, const pjsua_srtp_opt *src, pj_bool_t check_str)
+pub fn srtp_opt_dup(dst: &mut pjsua_srtp_opt, src: &mut pjsua_srtp_opt, check_str: bool) {
+
+    let mut check = PJ_FALSE as pj_bool_t;
+
+    if check_str {
+        check = PJ_TRUE as pj_bool_t;
+    }
+
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_srtp_opt_dup(
+            pool,
+            dst as *mut _,
+            src as *const _,
+            check
+        )
+    }
+
+    pool_release(pool);
+}
+
+// void 	pjsua_acc_config_default (pjsua_acc_config *cfg)
+pub fn acc_config_default (cfg: &mut pjsua_acc_config) {
+    unsafe { pjsua_acc_config_default(cfg as *mut _); }
+}
+
+// void 	pjsua_acc_config_dup (pj_pool_t *pool, pjsua_acc_config *dst, const pjsua_acc_config *src)
+
+// unsigned 	pjsua_acc_get_count (void)
+pub fn acc_get_count() -> u32 {
+    unsafe { pjsua_acc_get_count() }
+}
+
+// pj_bool_t 	pjsua_acc_is_valid (pjsua_acc_id acc_id)
+pub fn acc_is_valid(acc_id: pjsua_acc_id) -> bool {
+    unsafe {
+        if pjsua_acc_is_valid(acc_id) == PJ_TRUE as pj_bool_t {
+            true
+        } else {
+            false
+        }
+    }
+}
+
+// pj_status_t 	pjsua_acc_set_default (pjsua_acc_id acc_id)
+pub fn acc_set_default(acc_id: pjsua_acc_id) -> pj_status_t {
+    unsafe { pjsua_acc_set_default(acc_id) }
+}
+
+// pjsua_acc_id 	pjsua_acc_get_default (void)
+pub fn acc_get_default() -> pjsua_acc_id {
+    unsafe { pjsua_acc_get_default() }
+}
+
+// pj_status_t 	pjsua_acc_add (const pjsua_acc_config *acc_cfg, pj_bool_t is_default, pjsua_acc_id *p_acc_id)
+pub fn acc_add(acc_cfg: &mut pjsua_acc_config, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> pj_status_t {
+
+    let default: pj_bool_t = PJ_FALSE as pj_bool_t;
+
+    if is_default {
+        let is_default = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_acc_add(
+            acc_cfg as *const _,
+            default,
+            p_acc_id as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_add_local (pjsua_transport_id tid, pj_bool_t is_default, pjsua_acc_id *p_acc_id)
+pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> pj_status_t {
+
+    let mut default = PJ_FALSE as pj_bool_t;
+
+    if is_default {
+        default = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_acc_add_local(
+            tid,
+            default,
+            p_acc_id as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_set_user_data (pjsua_acc_id acc_id, void *user_data)
+// void * 	pjsua_acc_get_user_data (pjsua_acc_id acc_id)
+
+// pj_status_t 	pjsua_acc_del (pjsua_acc_id acc_id)
+pub fn acc_del(acc_id: pjsua_acc_id) -> pj_status_t {
+    unsafe { pjsua_acc_del(acc_id) }
+}
+
+// pj_status_t 	pjsua_acc_get_config (pjsua_acc_id acc_id, pj_pool_t *pool, pjsua_acc_config *acc_cfg)
+pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> pj_status_t {
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let status = pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
+
+        pool_release(pool);
+
+        status
+    }
+}
+
+// pj_status_t 	pjsua_acc_modify (pjsua_acc_id acc_id, const pjsua_acc_config *acc_cfg)
+pub fn acc_modify(acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> pj_status_t {
+    unsafe {
+        pjsua_acc_modify(
+            acc_id,
+            acc_cfg as *const _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_set_online_status (pjsua_acc_id acc_id, pj_bool_t is_online)
+pub fn acc_set_online_status(acc_id: pjsua_acc_id, is_online: bool) -> pj_status_t {
+
+    let mut online = PJ_FALSE as pj_bool_t;
+
+    if is_online {
+        online = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_acc_set_online_status(
+            acc_id,
+            online
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_set_online_status2 (pjsua_acc_id acc_id, pj_bool_t is_online, const pjrpid_element *pr)
+pub fn acc_set_online_status2(acc_id: pjsua_acc_id, is_online: bool, pr: &mut  pjrpid_element) -> pj_status_t {
+
+    let mut online = PJ_FALSE as pj_bool_t;
+
+    if is_online {
+        online = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_acc_set_online_status2(
+            acc_id,
+            online,
+            pr as *const _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_set_registration (pjsua_acc_id acc_id, pj_bool_t renew)
+pub fn acc_set_registration(acc_id: pjsua_acc_id, renew: bool) -> pj_status_t {
+
+    let mut arenew = PJ_FALSE as pj_bool_t;
+
+    if renew {
+        arenew = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_acc_set_registration(
+            acc_id,
+            arenew
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_get_info (pjsua_acc_id acc_id, pjsua_acc_info *info)
+pub fn acc_get_info (acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> pj_status_t {
+    unsafe {
+        pjsua_acc_get_info(acc_id, info as *mut _)
+    }
+}
+
+// pj_status_t 	pjsua_enum_accs (pjsua_acc_id ids[], unsigned *count)
+pub fn enum_accs(ids: &mut [pjsua_acc_id; PJSUA_MAX_ACC as usize], count: &mut u32) -> pj_status_t {
+    unsafe {
+        pjsua_enum_accs(
+            ids.as_mut_ptr(),
+            count as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_enum_info (pjsua_acc_info info[], unsigned *count)
+pub fn acc_enum_info(info: &mut [pjsua_acc_info; PJSUA_MAX_ACC as usize], count: &mut u32) -> pj_status_t {
+    unsafe {
+        pjsua_acc_enum_info(
+            info.as_mut_ptr(),
+            count as *mut _
+        )
+    }
+}
+
+// pjsua_acc_id 	pjsua_acc_find_for_outgoing (const pj_str_t *url)
+pub fn acc_find_for_outgoing(url: String) -> pjsua_acc_id {
+
+    let mut url = pj_str_t::from_string(url);
+
+    unsafe {
+        pjsua_acc_find_for_outgoing(
+            &mut url as *const _
+        )
+    }
+
+}
+
+// pjsua_acc_id 	pjsua_acc_find_for_incoming (pjsip_rx_data *rdata)
+pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
+
+    unsafe {
+        pjsua_acc_find_for_incoming(
+            rdata as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_create_request (pjsua_acc_id acc_id, const pjsip_method *method, const pj_str_t *target, pjsip_tx_data **p_tdata)
+pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> pj_status_t {
+
+    let mut target = pj_str_t::from_string(target);
+
+    unsafe {
+        pjsua_acc_create_request(
+            acc_id,
+            method as *const _,
+            &mut target as *const _,
+            (p_tdata as *mut _) as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_acc_create_uac_contact (pj_pool_t *pool, pj_str_t *contact, pjsua_acc_id acc_id, const pj_str_t *uri)
+pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String) -> pj_status_t {
+
+    let mut contact = pj_str_t::from_string(contact);
+    let mut uri = pj_str_t::from_string(uri);
+
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let result = pjsua_acc_create_uac_contact(
+            pool,
+            &mut contact as *mut _,
+            acc_id,
+            &mut uri as *mut _
+        );
+
+        pool_release(pool);
+
+        result
+    }
+}
+
+// pj_status_t 	pjsua_acc_create_uas_contact (pj_pool_t *pool, pj_str_t *contact, pjsua_acc_id acc_id, pjsip_rx_data *rdata)
+pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut pjsip_rx_data) -> pj_status_t {
+
+    let mut contact = pj_str_t::from_string(contact);
+
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let result = pjsua_acc_create_uas_contact(
+            pool,
+            &mut contact as *mut _,
+            acc_id,
+            rdata as *mut _
+        );
+
+        pool_release(pool);
+
+        result
+    }
+}
+
+// pj_status_t 	pjsua_acc_set_transport (pjsua_acc_id acc_id, pjsua_transport_id tp_id)
+pub fn acc_set_transport(acc_id: pjsua_acc_id, tp_id: pjsua_transport_id) -> pj_status_t {
+    unsafe {
+        pjsua_acc_set_transport(
+            acc_id,
+            tp_id
+        )
+    }
+}

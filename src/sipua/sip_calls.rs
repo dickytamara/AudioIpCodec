@@ -547,27 +547,19 @@ impl SIPCalls {
     }
 
     pub fn setting_default(&self, opt: &mut pjsua_call_setting) {
-        unsafe {
-            pjsua_call_setting_default(opt as *mut _);
-        }
+        pjsua::call_setting_default(opt);
     }
 
     pub fn get_max_count(&self) -> u32 {
-        unsafe {
-            pjsua_call_get_max_count()
-        }
+        pjsua::call_get_max_count()
     }
 
     pub fn get_count(&self) -> u32 {
-        unsafe {
-            pjsua_call_get_count()
-        }
+        pjsua::call_get_count()
     }
 
     pub fn hangup_all(&self) {
-        unsafe {
-            pjsua_call_hangup_all();
-        }
+        pjsua::call_hangup_all();
     }
 
 
@@ -597,6 +589,7 @@ impl PjTimerEntry for SIPCalls {
             &mut hname as *mut _,
             &mut hvalue as *mut _,
         );
+
         pj_list_insert_before(
             (&mut msg_data_.hdr_list as *mut _) as *mut _,
             (&mut warn as *mut _) as *mut _,

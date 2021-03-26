@@ -9,6 +9,7 @@ use super::pjdefault::*;
 use std::ptr;
 use std::ffi::CString;
 use std::os::raw::c_void;
+use super::pjsua;
 
 
 pub struct SIPWavPlayer {
@@ -76,7 +77,7 @@ impl SIPWavPlayer {
     }
 
     pub fn get_conf_port(&self) -> i32 {
-        unsafe { pjsua_player_get_conf_port(self.id) }
+        pjsua::player_get_conf_port(self.id)
     }
 }
 
@@ -98,9 +99,7 @@ impl Drop for SIPWavPlayer {
     fn drop(&mut self) {
         // destroy player
         // TODO event
-        unsafe {
-            pjsua_player_destroy(self.id);
-        }
+        pjsua::player_destroy(self.id);
     }
 }
 
