@@ -1240,7 +1240,7 @@ pub fn call_has_media (call_id: pjsua_call_id) -> bool {
 }
 
 // pjsua_conf_port_id 	pjsua_call_get_conf_port (pjsua_call_id call_id)
-pub fn conf_port_id (call_id: pjsua_call_id) -> pjsua_conf_port_id {
+pub fn call_get_conf_port (call_id: pjsua_call_id) -> pjsua_conf_port_id {
     unsafe { pjsua_call_get_conf_port(call_id) }
 }
 
@@ -1337,6 +1337,36 @@ pub fn call_answer2 (
 }
 
 // pj_status_t 	pjsua_call_answer_with_sdp (pjsua_call_id call_id, const pjmedia_sdp_session *sdp, const pjsua_call_setting *opt, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+pub fn call_answer_with_sdp(
+    call_id: pjsua_call_id,
+    sdp: &mut pjmedia_sdp_session,
+    opt: &mut pjsua_call_setting,
+    code: u32,
+    reason: Option<String>,
+    msg_data: Option<&mut pjsua_msg_data>
+) -> pj_status_t {
+
+    let reason = match reason {
+        Some(value) => &mut pj_str_t::from_string(value),
+        None => ptr::null_mut()
+    };
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_answer_with_sdp(
+            call_id,
+            sdp as *const _,
+            opt as *const _,
+            code,
+            reason,
+            msg_data
+        )
+    }
+}
 
 // pj_status_t 	pjsua_call_hangup (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
 pub fn call_hangup(
@@ -1469,12 +1499,9 @@ pub fn call_update2 (call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_d
 }
 
 // pj_status_t 	pjsua_call_xfer (pjsua_call_id call_id, const pj_str_t *dest, const pjsua_msg_data *msg_data)
-pub fn call_xfer (call_id: pjsua_call_id, dest: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_xfer (call_id: pjsua_call_id, dest: String, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
 
-    let dest = match dest {
-        Some(value) => &mut pj_str_t::from_string(value) as *const _,
-        None => ptr::null_mut()
-    };
+    let mut dest = pj_str_t::from_string(dest);
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1484,7 +1511,7 @@ pub fn call_xfer (call_id: pjsua_call_id, dest: Option<String>, msg_data: Option
     unsafe {
         pjsua_call_xfer(
             call_id,
-            dest,
+            &mut dest as *const _,
             msg_data
         )
     }
@@ -1509,17 +1536,14 @@ pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, 
 }
 
 // pj_status_t 	pjsua_call_dial_dtmf (pjsua_call_id call_id, const pj_str_t *digits)
-pub fn call_dial_dtmf (call_id: pjsua_call_id, digits: Option<String>) -> pj_status_t {
+pub fn call_dial_dtmf (call_id: pjsua_call_id, digits: String) -> pj_status_t {
 
-    let digits = match digits {
-        Some(value) => &mut pj_str_t::from_string(value) as *const _,
-        None => ptr::null_mut()
-    };
+    let mut digits = pj_str_t::from_string(digits);
 
     unsafe {
         pjsua_call_dial_dtmf(
             call_id,
-            digits
+            &mut digits as *const _
         )
     }
 
@@ -1536,6 +1560,26 @@ pub fn call_send_dtmf (call_id: pjsua_call_id, param: &mut pjsua_call_send_dtmf_
 }
 
 // pj_status_t 	pjsua_call_send_im (pjsua_call_id call_id, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
+pub fn call_send_im(call_id: pjsua_call_id, mime_type: String, content: String, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+
+    let mut mime_type = pj_str_t::from_string(mime_type);
+    let mut content = pj_str_t::from_string(content);
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_call_send_im(
+            call_id,
+            &mut mime_type as *const _,
+            &mut content as *const _,
+            msg_data,
+            ptr::null_mut()
+        )
+    }
+}
 
 // pj_status_t 	pjsua_call_send_typing_ind (pjsua_call_id call_id, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
 pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
@@ -1561,12 +1605,9 @@ pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: 
 }
 
 // pj_status_t 	pjsua_call_send_request (pjsua_call_id call_id, const pj_str_t *method, const pjsua_msg_data *msg_data)
-pub fn call_send_request (call_id: pjsua_call_id, method: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_send_request (call_id: pjsua_call_id, method: String, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
 
-    let method = match method {
-        Some(value) => &mut pj_str_t::from_string(value) as *const _,
-        None => ptr::null_mut()
-    };
+    let mut method = pj_str_t::from_string(method);
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1576,7 +1617,7 @@ pub fn call_send_request (call_id: pjsua_call_id, method: Option<String>, msg_da
     unsafe {
         pjsua_call_send_request (
             call_id,
-            method,
+            &mut method as *const _,
             msg_data
         )
     }
@@ -2318,4 +2359,214 @@ pub fn acc_set_transport(acc_id: pjsua_acc_id, tp_id: pjsua_transport_id) -> pj_
             tp_id
         )
     }
+}
+
+
+// JSUA-API Buddy, Presence, and Instant Messaging
+
+// void 	pjsua_buddy_config_default (pjsua_buddy_config *cfg)
+pub fn buddy_config_default(cfg: &mut pjsua_buddy_config) {
+    unsafe {
+        pjsua_buddy_config_default(
+            cfg as *mut _
+        )
+    }
+}
+
+// unsigned 	pjsua_get_buddy_count (void)
+pub fn get_buddy_count() -> u32 {
+    unsafe { pjsua_get_buddy_count() }
+}
+
+// pj_bool_t 	pjsua_buddy_is_valid (pjsua_buddy_id buddy_id)
+pub fn buddy_is_valid(buddy_id: pjsua_buddy_id) -> pj_bool_t {
+    unsafe { pjsua_buddy_is_valid(buddy_id) }
+}
+
+// pj_status_t 	pjsua_enum_buddies (pjsua_buddy_id ids[], unsigned *count)
+pub fn enum_buddies(ids: &mut [pjsua_buddy_id; PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> pj_status_t {
+    unsafe {
+        pjsua_enum_buddies(
+            ids.as_mut_ptr(),
+            count as *mut _
+        )
+    }
+}
+
+// pjsua_buddy_id 	pjsua_buddy_find (const pj_str_t *uri)
+pub fn buddy_find(uri: String) -> pjsua_buddy_id {
+
+    let mut uri = pj_str_t::from_string(uri);
+
+    unsafe {
+        pjsua_buddy_find(
+            &mut uri as *const _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_buddy_get_info (pjsua_buddy_id buddy_id, pjsua_buddy_info *info)
+pub fn buddy_get_info(buddy_id: pjsua_buddy_id, info: &mut pjsua_buddy_info) -> pj_status_t {
+    unsafe {
+        pjsua_buddy_get_info(
+            buddy_id,
+            info as *mut _
+        )
+    }
+}
+
+// skiped function this mosly for trasfer data
+// pj_status_t 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
+// void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
+
+// pj_status_t 	pjsua_buddy_add (const pjsua_buddy_config *buddy_cfg, pjsua_buddy_id *p_buddy_id)
+pub fn buddy_add(buddy_cfg: &mut pjsua_buddy_config, p_buddy_id: *mut pjsua_buddy_id) -> pj_status_t {
+    unsafe {
+        pjsua_buddy_add (
+            buddy_cfg as *const _,
+            p_buddy_id as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_buddy_del (pjsua_buddy_id buddy_id)
+pub fn buddy_del(buddy_id: pjsua_buddy_id) -> pj_status_t {
+    unsafe { pjsua_buddy_del(buddy_id) }
+}
+
+// pj_status_t 	pjsua_buddy_subscribe_pres (pjsua_buddy_id buddy_id, pj_bool_t subscribe)
+pub fn buddy_subscribe_pres(buddy_id: pjsua_buddy_id, subscribe: bool) -> pj_status_t {
+
+    let mut asubscribe = PJ_FALSE as pj_bool_t;
+
+    if subscribe {
+        asubscribe = PJ_TRUE as pj_bool_t
+    }
+
+    unsafe {
+        pjsua_buddy_subscribe_pres(
+            buddy_id,
+            asubscribe
+        )
+    }
+}
+
+// pj_status_t 	pjsua_buddy_update_pres (pjsua_buddy_id buddy_id)
+pub fn buddy_update_pres(buddy_id: pjsua_buddy_id) -> pj_status_t {
+    unsafe { pjsua_buddy_update_pres(buddy_id) }
+}
+
+// pj_status_t 	pjsua_pres_notify (pjsua_acc_id acc_id, pjsua_srv_pres *srv_pres, pjsip_evsub_state state, const pj_str_t *state_str, const pj_str_t *reason, pj_bool_t with_body, const pjsua_msg_data *msg_data)
+pub fn pres_notify(
+    acc_id: pjsua_acc_id,
+    srv_pres: &mut pjsua_srv_pres,
+    state: pjsip_evsub_state,
+    state_str: String,
+    reason: String,
+    with_body: bool,
+    msg_data: Option<&mut pjsua_msg_data>
+) -> pj_status_t {
+
+    let mut state_str = pj_str_t::from_string(state_str);
+    let mut reason = pj_str_t::from_string(reason);
+
+    let mut abody = PJ_FALSE as pj_bool_t;
+
+    if with_body {
+        abody = PJ_TRUE as pj_bool_t;
+    }
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_pres_notify(
+            acc_id,
+            srv_pres,
+            state,
+            &mut state_str as *const _,
+            &mut reason as *const _,
+            abody,
+            msg_data
+        )
+    }
+}
+
+// void 	pjsua_pres_dump (pj_bool_t verbose)
+pub fn pres_dump(verbose: bool) {
+
+    let mut averbose = PJ_FALSE as pj_bool_t;
+
+    if verbose {
+        averbose = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_pres_dump ( averbose )
+    }
+}
+
+// pj_status_t 	pjsua_im_send (pjsua_acc_id acc_id, const pj_str_t *to, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
+pub fn im_send(
+    acc_id: pjsua_acc_id,
+    to: String,
+    mime_type: String,
+    content: String,
+    msg_data: Option<&mut pjsua_msg_data>
+) -> pj_status_t {
+
+    let mut to = pj_str_t::from_string(to);
+    let mut mime_type = pj_str_t::from_string(mime_type);
+    let mut content = pj_str_t::from_string(content);
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_im_send(
+            acc_id,
+            &mut to as *const _,
+            &mut mime_type as *const _,
+            &mut content as *const _,
+            msg_data,
+            ptr::null_mut()
+        )
+    }
+
+}
+
+// pj_status_t 	pjsua_im_typing (pjsua_acc_id acc_id, const pj_str_t *to, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
+pub fn im_typing(
+    acc_id: pjsua_acc_id,
+    to:String,
+    is_typing: bool,
+    msg_data: Option<&mut pjsua_msg_data>
+) -> pj_status_t {
+
+    let mut to = pj_str_t::from_string(to);
+
+    let mut istyping = PJ_FALSE as pj_bool_t;
+
+    if is_typing {
+        istyping = PJ_TRUE as pj_bool_t;
+    }
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_im_typing(
+            acc_id,
+            &mut to as *const _,
+            istyping,
+            msg_data
+        )
+    }
+
 }

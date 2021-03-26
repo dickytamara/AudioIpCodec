@@ -297,30 +297,20 @@ impl SIPAccount {
         state_str: String,
         reason: String,
         with_body: bool,
-        msg_data: &mut pjsua_msg_data
+        msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        let mut awith_body = PJ_FALSE as pj_bool_t;
+        let status = pjsua::pres_notify(
+            self.id,
+            srv_pres,
+            state,
+            state_str,
+            reason,
+            with_body,
+            msg_data);
 
-        if with_body {
-            awith_body = PJ_TRUE as pj_bool_t;
-        }
-
-        unsafe {
-
-            let status = pjsua_pres_notify(
-                self.id,
-                srv_pres as *mut _,
-                state,
-                &mut pj_str_t::from_string(state_str) as *const _,
-                &mut pj_str_t::from_string(reason) as *const _,
-                awith_body,
-                msg_data as *const _
-            );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR cant nofify presents for account.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR cant nofify presents for account.");
         }
     }
 
@@ -329,45 +319,34 @@ impl SIPAccount {
         to: String,
         mime_type: String,
         content: String,
-        msg_data: &mut pjsua_msg_data
+        msg_data: Option<&mut pjsua_msg_data>
     ) {
-        // we not intended to support file transfer
-        // so user_data will set to null
-        unsafe {
 
-            let status = pjsua_im_send(
-                self.id,
-                &mut pj_str_t::from_string(to) as *const _,
-                &mut pj_str_t::from_string(mime_type) as *const _,
-                &mut pj_str_t::from_string(content) as *const _,
-                msg_data as *const _,
-                ptr::null_mut()
-            );
+        let status = pjsua::im_send(
+            self.id,
+            to,
+            mime_type,
+            content,
+            msg_data
+        );
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR cant send im for account");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR cant send im for account");
         }
     }
 
     // Send typing indication outside dialog.
-    pub fn im_typing(&self, to: String, is_typing: bool, msg_data: &mut pjsua_msg_data) {
+    pub fn im_typing(&self, to: String, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) {
 
-        let ais_typing = PJ_FALSE as pj_bool_t;
+        let status = pjsua::im_typing(
+            self.id,
+            to,
+            is_typing,
+            msg_data
+        );
 
-        unsafe {
-
-            let status = pjsua_im_typing(
-                self.id,
-                &mut pj_str_t::from_string(to) as *const _,
-                ais_typing as pj_bool_t,
-                msg_data as *const _
-            );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR cant im typing indication for account")
-            }
-
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR cant im typing indication for account")
         }
     }
 

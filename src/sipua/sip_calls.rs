@@ -49,96 +49,66 @@ impl SIPCall {
     // call_get_user_data()
 
     pub fn is_active(&self) -> bool {
-        unsafe {
-
-            let result = pjsua_call_is_active(self.id);
-
-            if result == PJ_TRUE as pj_bool_t {
-                true
-            } else {
-                false
-            }
-        }
+        pjsua::call_is_active(self.id)
     }
 
     pub fn has_media(&self) -> bool {
-        unsafe {
-            let result = pjsua_call_has_media(self.id);
-
-            if result == PJ_TRUE as pj_bool_t {
-                true
-            } else {
-                false
-            }
-        }
-
+        pjsua::call_has_media(self.id)
     }
 
     pub fn get_conf_port(&self) -> i32 {
-        unsafe {
-            pjsua_call_get_conf_port(self.id)
-        }
+        pjsua::call_get_conf_port(self.id)
     }
 
     pub fn get_info(&self) -> Result<pjsua_call_info, i32> {
 
         let mut info = pjsua_call_info::new();
 
-        unsafe {
+        let status = pjsua::call_get_info(
+            self.id,
+            &mut info
+        );
 
-            let status = pjsua_call_get_info(
-                    self.id,
-                    &mut info as *mut _
-                );
-
-            if status == PJ_SUCCESS as pj_status_t {
-                Ok(info)
-            } else {
-                println!("ERR cant get call info");
-                Err(status)
-            }
+        if status == PJ_SUCCESS as pj_status_t {
+            Ok(info)
+        } else {
+            println!("ERR cant get call info");
+            Err(status)
         }
-
     }
 
     pub fn remote_has_cap(&self, htype: i32, hname: String, token: String) -> pjsip_dialog_cap_status {
-         unsafe {
-            pjsua_call_remote_has_cap(
-                self.id,
-                htype,
-                &mut pj_str_t::from_string(hname) as *mut _,
-                &mut pj_str_t::from_string(token) as *mut _
-            )
-        }
+
+        pjsua::call_remote_has_cap(
+            self.id,
+            htype,
+            hname,
+            token
+        )
     }
 
     pub fn get_rem_nat_type(&self, p_type: &mut pj_stun_nat_type) {
 
-        unsafe {
-            let status = pjsua_call_get_rem_nat_type(
-                    self.id,
-                    p_type as *mut _
-                );
+        let status = pjsua::call_get_rem_nat_type(
+                self.id,
+                p_type
+            );
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR cant get remote nat type.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR cant get remote nat type.");
         }
     }
 
-    pub fn answer(&self, code: u32, reason: String, msg_data: &mut pjsua_msg_data) {
-        unsafe {
-            let status = pjsua_call_answer (
-                    self.id,
-                    code,
-                    &mut pj_str_t::from_string(reason) as *const _,
-                    msg_data as *const _
+    pub fn answer(&self, code: u32, reason: Option<String>, msg_data: Option<&mut pjsua_msg_data>) {
 
-                );
+        let status = pjsua::call_answer(
+            self.id,
+            code,
+            reason,
+            msg_data);
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't answer call");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't answer call");
         }
     }
 
@@ -167,24 +137,21 @@ impl SIPCall {
         sdp: &mut pjmedia_sdp_session,
         opt: &mut pjsua_call_setting,
         code: u32,
-        reason: String,
-        msg_data: &mut pjsua_msg_data
+        reason: Option<String>,
+        msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        unsafe {
+        let status = pjsua::call_answer_with_sdp(
+            self.id,
+            sdp,
+            opt,
+            code,
+            reason,
+            msg_data
+        );
 
-            let status = pjsua_call_answer_with_sdp(
-                    self.id,
-                    sdp as *const _,
-                    opt as *const _,
-                    code,
-                    &mut pj_str_t::from_string(reason) as *const _,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't answer call with sdp.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't answer call with sdp.");
         }
     }
 
@@ -203,264 +170,212 @@ impl SIPCall {
     }
 
     pub fn process_redirect(&self, cmd: pjsip_redirect_op) {
-        unsafe {
 
-            let status = pjsua_call_process_redirect(
-                    self.id,
-                    cmd
-                );
+        let status = pjsua::call_process_redirect(
+                self.id,
+                cmd
+            );
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't process redirect.")
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't process redirect.")
         }
     }
 
-    pub fn set_hold(&self, msg_data: &mut pjsua_msg_data) {
-        unsafe {
+    pub fn set_hold(&self, msg_data: Option<&mut pjsua_msg_data>) {
 
-            let status = pjsua_call_set_hold(
-                    self.id,
-                    msg_data as *const _
-                );
+        let status = pjsua::call_set_hold(
+                self.id,
+                msg_data
+            );
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't set hold a call.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't set hold a call.");
         }
     }
 
-    pub fn set_hold2(&self, options: u32, msg_data: &mut pjsua_msg_data) {
-        unsafe {
+    pub fn set_hold2(&self, options: u32, msg_data: Option<&mut pjsua_msg_data>) {
 
-            let status = pjsua_call_set_hold2(
-                    self.id,
-                    options,
-                    msg_data as *const _
-                );
+        let status = pjsua::call_set_hold2(
+            self.id,
+            options,
+            msg_data
+        );
 
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't set hold2 a call");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't set hold2 a call");
         }
     }
 
-    pub fn reinvite(&self, options: u32, msg_data: &mut pjsua_msg_data) {
+    pub fn reinvite(&self, options: u32, msg_data: Option<&mut pjsua_msg_data>) {
 
-        unsafe {
+        let status = pjsua::call_reinvite(
+            self.id,
+            options,
+            msg_data
+        );
 
-            let status = pjsua_call_reinvite(
-                    self.id,
-                    options,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't reinvite call.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't reinvite call.");
         }
     }
 
-    pub fn reinvite2(&self, opt: &mut pjsua_call_setting, msg_data: &mut pjsua_msg_data) {
+    pub fn reinvite2(&self, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data>) {
 
-        unsafe {
+        let status = pjsua::call_reinvite2(
+            self.id,
+            opt,
+            msg_data
+        );
 
-            let status = pjsua_call_reinvite2 (
-                    self.id,
-                    opt as *const _,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't reinvite2 a call.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't reinvite2 a call.");
         }
     }
 
-    pub fn update(&self, options: u32, msg_data: &mut pjsua_msg_data) {
+    pub fn update(&self, options: u32, msg_data: Option<&mut pjsua_msg_data>) {
 
-        unsafe {
+        let status = pjsua::call_update(
+            self.id,
+            options,
+            msg_data
+        );
 
-            let status = pjsua_call_update(
-                    self.id,
-                    options,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't update calls.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't update calls.");
         }
     }
 
-    pub fn update2(&self, opt: &mut pjsua_call_setting, msg_data: &mut pjsua_msg_data) {
+    pub fn update2(&self, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data>) {
 
-        unsafe {
+        let status = pjsua::call_update2(
+            self.id,
+            opt,
+            msg_data
+        );
 
-            let status = pjsua_call_update2(
-                    self.id,
-                    opt as *const _,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't update2 calls.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't update2 calls.");
         }
     }
 
-    pub fn xfer(&self, dest: String, msg_data: &mut pjsua_msg_data) {
+    pub fn xfer(&self, dest: String, msg_data: Option<&mut pjsua_msg_data>) {
 
-        unsafe {
+        let status = pjsua::call_xfer(
+            self.id,
+            dest,
+            msg_data
+        );
 
-            let status = pjsua_call_xfer(
-                    self.id,
-                    &mut pj_str_t::from_string(dest) as *const _,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't xfer for call.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't xfer for call.");
         }
-
     }
 
     pub fn xfer_replaces(&self,
         dest_call_id: pjsua_call_id,
         options: u32,
-        msg_data: &mut pjsua_msg_data
+        msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        unsafe {
+        let status = pjsua::call_xfer_replaces(
+            self.id,
+            dest_call_id,
+            options,
+            msg_data
+        );
 
-            let status = pjsua_call_xfer_replaces(
-                    self.id,
-                    dest_call_id,
-                    options,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't replaces xfer.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't replaces xfer.");
         }
-
     }
 
-    pub fn dial_dtmf(&self, digit: String) {
+    pub fn dial_dtmf(&self, digits: String) {
 
-        unsafe {
+        let status = pjsua::call_dial_dtmf(
+            self.id,
+            digits
+        );
 
-            let status = pjsua_call_dial_dtmf(
-                self.id,
-                &mut pj_str_t::from_string(digit) as *const _
-            );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't dial DTMF.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't dial DTMF.");
         }
     }
 
     pub fn send_dtmf(&self, param: &mut pjsua_call_send_dtmf_param) {
 
-        unsafe {
+        let status = pjsua::call_send_dtmf(
+            self.id,
+            param
+        );
 
-            let status = pjsua_call_send_dtmf(
-                    self.id,
-                    param as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't send DTMF.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't send DTMF.");
         }
     }
 
     pub fn send_im(&self,
         mime_type: String,
         content: String,
-        msg_data: &mut pjsua_msg_data,
+        msg_data: Option<&mut pjsua_msg_data>,
     ) {
 
-        unsafe {
+        let status = pjsua::call_send_im(
+            self.id,
+            mime_type,
+            content,
+            msg_data
+        );
 
-            let status = pjsua_call_send_im(
-                self.id,
-                &mut pj_str_t::from_string(mime_type) as *const _,
-                &mut pj_str_t::from_string(content) as *const _,
-                msg_data as *const _,
-                ptr::null_mut()
-            );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't send im for this call.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't send im for this call.");
         }
     }
 
     pub fn send_typing_ind(&self,
         is_typing: bool,
-        msg_data: &mut pjsua_msg_data
+        msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        let mut atyping = PJ_FALSE as pj_bool_t;
+        let status = pjsua::call_send_typing_ind(
+            self.id,
+            is_typing,
+            msg_data
+        );
 
-        if is_typing {
-            atyping = PJ_TRUE as pj_bool_t;
-        }
-
-        unsafe {
-
-            let status = pjsua_call_send_typing_ind(
-                    self.id,
-                    atyping,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't send typing indication.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't send typing indication.");
         }
 
     }
 
-    pub fn send_request(&self, method: String, msg_data: &mut pjsua_msg_data) {
+    pub fn send_request(&self, method: String, msg_data: Option<&mut pjsua_msg_data>) {
 
-        unsafe {
+        let status = pjsua::call_send_request(
+            self.id,
+            method,
+            msg_data
+        );
 
-            let status = pjsua_call_send_request(
-                    self.id,
-                    &mut pj_str_t::from_string(method) as *const _,
-                    msg_data as *const _
-                );
-
-            if status != PJ_SUCCESS as pj_status_t {
-                println!("ERR can't send request for this call.");
-            }
+        if status != PJ_SUCCESS as pj_status_t {
+            println!("ERR can't send request for this call.");
         }
-
     }
 
     pub fn get_stream_info(&self, med_idx: u32) -> Result<pjsua_stream_info, i32> {
 
         let mut info = pjsua_stream_info::new();
 
-        unsafe {
+        let status = pjsua::call_get_stream_info(
+            self.id,
+            med_idx,
+            &mut info
+        );
 
-            let status = pjsua_call_get_stream_info (
-                    self.id,
-                    med_idx,
-                    &mut info as *mut _
-                );
-
-            if status == PJ_SUCCESS as pj_status_t {
-                Ok(info)
-            } else {
-                println!("ERR can't get stream info for call.");
-                Err(status)
-            }
+        if status == PJ_SUCCESS as pj_status_t {
+            Ok(info)
+        } else {
+            println!("ERR can't get stream info for call.");
+            Err(status)
         }
     }
 
@@ -468,42 +383,36 @@ impl SIPCall {
 
         let mut stat = pjsua_stream_stat::new();
 
-        unsafe {
+        let status = pjsua::call_get_stream_stat(
+            self.id,
+            med_idx,
+            &mut stat
+        );
 
-            let status = pjsua_call_get_stream_stat(
-                    self.id,
-                    med_idx,
-                    &mut stat as *mut _
-                );
-
-            if status == PJ_SUCCESS as pj_status_t {
-                Ok(stat)
-            } else {
-                println!("ERR can't get stream status for call.");
-                Err(status)
-            }
+        if status == PJ_SUCCESS as pj_status_t {
+            Ok(stat)
+        } else {
+            println!("ERR can't get stream status for call.");
+            Err(status)
         }
-
     }
 
     pub fn get_med_transport_info(&self, med_idx: u32) -> Result<pjmedia_transport_info, i32> {
 
         let mut info = pjmedia_transport_info::new();
 
-        unsafe {
 
-            let status = pjsua_call_get_med_transport_info (
-                    self.id,
-                    med_idx,
-                    &mut info as *mut _
-                );
+        let status = pjsua::call_get_med_transport_info(
+            self.id,
+            med_idx,
+            &mut info
+        );
 
-            if status == PJ_SUCCESS as pj_status_t {
-                Ok(info)
-            } else {
-                println!("ERR can't get media transport info for call");
-                Err(status)
-            }
+        if status == PJ_SUCCESS as pj_status_t {
+            Ok(info)
+        } else {
+            println!("ERR can't get media transport info for call");
+            Err(status)
         }
     }
 
