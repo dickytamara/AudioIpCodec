@@ -30,6 +30,28 @@ extern "C" {
     ) -> pj_status_t;
 }
 
+pub fn conf_get_msignal_level(
+    slot: pjsua_conf_port_id,
+    tx_level_l: &mut u32,
+    tx_level_r: &mut u32,
+    rx_level_l: &mut u32,
+    rx_level_r: &mut u32
+) -> pj_status_t {
+
+    unsafe {
+        pjsua_conf_get_msignal_level(
+            slot,
+            tx_level_l as *mut _,
+            tx_level_r as *mut _,
+            rx_level_l as *mut _,
+            rx_level_r as *mut _
+        )
+    }
+
+}
+
+
+
 
 impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
@@ -2570,3 +2592,140 @@ pub fn im_typing(
     }
 
 }
+
+// PJSUA-API Signaling Transport
+
+// void 	pjsua_transport_config_default (pjsua_transport_config *cfg)
+pub fn transport_config_default(cfg: &mut pjsua_transport_config) {
+    unsafe { pjsua_transport_config_default(cfg as *mut _) }
+}
+
+// void 	pjsua_transport_config_dup (pj_pool_t *pool, pjsua_transport_config *dst, const pjsua_transport_config *src)
+pub fn transport_config_dup(dst: &mut pjsua_transport_config, src: &mut pjsua_transport_config) {
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_transport_config_dup(
+            pool,
+            dst as *mut _,
+            src as *mut _
+        );
+    }
+
+    pool_release(pool)
+}
+
+// pj_status_t 	pjsua_transport_create (pjsip_transport_type_e type, const pjsua_transport_config *cfg, pjsua_transport_id *p_id)
+pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport_config, p_id: Option<&mut pjsua_transport_id>) -> pj_status_t {
+
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_transport_create(
+            type_,
+            cfg as *const _,
+            p_id
+        )
+    }
+}
+
+// pj_status_t 	pjsua_transport_register (pjsip_transport *tp, pjsua_transport_id *p_id)
+pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut pjsua_transport_id>) -> pj_status_t {
+
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_transport_register(
+            tp as *mut _,
+            p_id
+        )
+    }
+}
+
+// pj_status_t 	pjsua_tpfactory_register (pjsip_tpfactory *tf, pjsua_transport_id *p_id)
+pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut pjsua_transport_id>) -> pj_status_t {
+
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        pjsua_tpfactory_register(
+            tf as *mut _,
+            p_id
+        )
+    }
+}
+
+// pj_status_t 	pjsua_enum_transports (pjsua_transport_id id[], unsigned *count)
+pub fn enum_transports(id: &mut [pjsua_transport_id; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> pj_status_t {
+
+    unsafe {
+        pjsua_enum_transports(
+            id.as_mut_ptr(),
+            count as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_transport_get_info (pjsua_transport_id id, pjsua_transport_info *info)
+pub fn transport_get_info(id: pjsua_transport_id, info: &mut pjsua_transport_info) -> pj_status_t {
+    unsafe {
+        pjsua_transport_get_info (
+            id,
+            info as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjsua_transport_set_enable (pjsua_transport_id id, pj_bool_t enabled)
+pub fn transport_set_enable(id: pjsua_transport_id, enabled: bool) -> pj_status_t {
+
+    let mut aenabled = PJ_FALSE as pj_bool_t;
+
+    if enabled {
+        aenabled = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_transport_set_enable(
+            id,
+            aenabled
+        )
+    }
+}
+
+// pj_status_t 	pjsua_transport_close (pjsua_transport_id id, pj_bool_t force)
+pub fn transport_close (id: pjsua_transport_id, force: bool) -> pj_status_t {
+
+    let mut aforce = PJ_FALSE as pj_bool_t;
+
+    if force {
+        aforce = PJ_TRUE as pj_bool_t;
+    }
+
+    unsafe {
+        pjsua_transport_close (
+            id,
+            aforce
+        )
+    }
+}
+
+// pj_status_t 	pjsua_transport_lis_start (pjsua_transport_id id, const pjsua_transport_config *cfg)
+pub fn transport_lis_start(id: pjsua_transport_id, cfg: &mut pjsua_transport_config) -> pj_status_t {
+    unsafe {
+        pjsua_transport_lis_start(
+            id,
+            cfg as *const _
+        )
+    }
+}
+

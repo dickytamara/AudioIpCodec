@@ -9,6 +9,7 @@ use super::pjdefault::*;
 
 use super::pjmedia;
 use super::pjsua;
+
 use std::os::raw::c_uint;
 use std::ffi::CStr;
 
@@ -65,28 +66,27 @@ impl SIPMedia {
     }
 
     pub fn get_input_device_list(&self) -> Vec<String> {
-        unsafe{
-            let dev_count = pjmedia::aud_dev_count();
-            let mut result: Vec<String> = Vec::new();
+        let dev_count = pjmedia::aud_dev_count();
+        let mut result: Vec<String> = Vec::new();
 
-            for idx in 0..dev_count {
-                let mut info = pjmedia_aud_dev_info::new();
+        for idx in 0..dev_count {
+            let mut info = pjmedia_aud_dev_info::new();
 
-                let status = pjmedia_aud_dev_get_info(idx as i32,
-                    &mut info as *mut _);
-                if status != PJ_SUCCESS as pj_status_t {
-                    panic!("can't enumerate input audio device");
-                }
+            let status = pjmedia::aud_dev_get_info(idx as i32, &mut info);
+            if status != PJ_SUCCESS as pj_status_t {
+                panic!("can't enumerate input audio device");
+            }
 
+            unsafe {
                 let dev_name = format!("{} (in:{}, out:{})",
                     CStr::from_ptr(info.name.as_ptr()).to_owned().into_string().expect("error"),
                     info.input_count, info.output_count);
 
                 result.push(dev_name);
             }
-
-            result
         }
+
+        result
     }
 
     pub fn get_output_device_list(&self) -> Vec<String> {
@@ -144,14 +144,13 @@ impl SIPMedia {
         let mut rx_l: c_uint = 0;
         let mut rx_r: c_uint = 0;
 
-        unsafe {
-            pjsua_conf_get_msignal_level(0,
-                &mut tx_l as *mut _,
-                &mut tx_r as *mut _,
-                &mut rx_l as *mut _,
-                &mut rx_r as *mut _
-            );
-        }
+        pjsua::conf_get_msignal_level(
+            0,
+            &mut tx_l,
+            &mut tx_r,
+            &mut rx_l,
+            &mut rx_r
+        );
 
         (tx_l, tx_r, rx_l, rx_r)
     }

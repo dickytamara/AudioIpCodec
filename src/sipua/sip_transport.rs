@@ -6,6 +6,7 @@ use super::pjsua_sys::*;
 
 use super::pjdefault::*;
 
+use super::pjsua;
 use std::ptr;
 use std::ffi::CString;
 
@@ -25,52 +26,43 @@ impl SIPTransport {
     pub fn init(
         &mut self,
         type_: pjsip_transport_type_e,
-        config: *const pjsua_transport_config,
+        config: &mut pjsua_transport_config,
         rtp_config: *const pjsua_transport_config,
     ) {
+
+        let mut status = pjsua::transport_create(type_, config, Some(&mut self.id));
+        if status != PJ_SUCCESS as i32 {
+            panic!("cant create transport.")
+        }
+
+        assert_ne!(self.id, -1);
+
+        status = pjsua::acc_add_local(
+            self.id,
+            true,
+            &mut self.acc_id,
+        );
+
+        if status != PJ_SUCCESS as i32 {
+            panic!("cant init transport");
+        }
+
+        assert_ne!(self.acc_id, -1);
+
+        let mut acc_cfg = pjsua_acc_config::new();
+        pjsua::acc_get_config(self.acc_id, &mut acc_cfg);
+
         unsafe {
-            assert_ne!(config.is_null(), true);
-
-            let mut status = pjsua_transport_create(type_, config, &mut self.id as &mut _);
-
-            if status != PJ_SUCCESS as i32 {
-                panic!("cant create transport.")
-            }
-
-            assert_ne!(self.id, -1);
-
-            status = pjsua_acc_add_local(
-                self.id,
-                PJ_TRUE as i32,
-                &mut self.acc_id as *mut _,
-            );
-
-            if status != PJ_SUCCESS as i32 {
-                panic!("cant init transport");
-            }
-
-            assert_ne!(self.acc_id, -1);
-
-            let pool = pjsua_pool_create(
-                CString::new("tmp-pool").expect("error").into_raw(),
-                1000,
-                1000,
-            );
-
-            let mut acc_cfg = pjsua_acc_config::new();
-            pjsua_acc_get_config(self.acc_id, pool, &mut acc_cfg as *mut _);
-
             acc_cfg.rtp_cfg = *rtp_config;
             if type_ == pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6
                 || type_ == pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6
             {
                 acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
             }
-
-            pjsua_acc_modify(self.acc_id, &mut acc_cfg as *const _);
-            pj_pool_release(pool);
-            pjsua_acc_set_online_status(pjsua_acc_get_default(), self.acc_id);
         }
+
+        pjsua::acc_modify(self.acc_id, &mut acc_cfg);
+        pjsua::acc_set_online_status(pjsua::acc_get_default(), true);
     }
 
     pub fn get_info(&self) -> Result<*const pjsua_transport_info, i32> {
@@ -136,7 +128,7 @@ impl SIPTransports {
         let mut transport = SIPTransport::new();
         transport.init(
             transport_type,
-            &mut self.udp_cfg as *const _,
+            &mut self.udp_cfg,
             &mut self.rtp_cfg as *const _,
         );
         self.transport_list.push(transport);
