@@ -1743,6 +1743,30 @@ pub fn conf_get_port_info (port_id: pjsua_conf_port_id, info: &mut pjsua_conf_po
 }
 
 // pj_status_t 	pjsua_conf_add_port (pj_pool_t *pool, pjmedia_port *port, pjsua_conf_port_id *p_id)
+pub fn conf_add_port(port: &mut Box<*mut pjmedia_port>, p_id: Option<&mut pjsua_conf_port_id>) -> pj_status_t {
+
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        // let aport = port.as_mut().as_ptr();
+        let result = pjsua_conf_add_port(
+            pool,
+            *(port.as_mut()) as *mut _,
+            p_id
+        );
+
+        pool_release(pool);
+
+        result
+    }
+}
+
 
 // pj_status_t 	pjsua_conf_remove_port (pjsua_conf_port_id port_id)
 pub fn conf_remove_port (port_id: pjsua_conf_port_id) -> pj_status_t {
@@ -2728,4 +2752,62 @@ pub fn transport_lis_start(id: pjsua_transport_id, cfg: &mut pjsua_transport_con
         )
     }
 }
+
+
+
+
+// void 	pjsua_media_config_default (pjsua_media_config *cfg)
+// void 	pjsua_snd_dev_param_default (pjsua_snd_dev_param *prm)
+// void 	pjsua_conf_connect_param_default (pjsua_conf_connect_param *prm)
+
+// unsigned 	pjsua_conf_get_max_ports (void)
+
+
+
+// unsigned 	pjsua_conf_get_active_ports (void)
+// pj_status_t 	pjsua_enum_conf_ports (pjsua_conf_port_id id[], unsigned *count)
+// pj_status_t 	pjsua_conf_get_port_info (pjsua_conf_port_id port_id, pjsua_conf_port_info *info)
+// pj_status_t 	pjsua_conf_add_port (pj_pool_t *pool, pjmedia_port *port, pjsua_conf_port_id *p_id)
+// pj_status_t 	pjsua_conf_remove_port (pjsua_conf_port_id port_id)
+// pj_status_t 	pjsua_conf_connect (pjsua_conf_port_id source, pjsua_conf_port_id sink)
+// pj_status_t 	pjsua_conf_connect2 (pjsua_conf_port_id source, pjsua_conf_port_id sink, const pjsua_conf_connect_param *prm)
+// pj_status_t 	pjsua_conf_disconnect (pjsua_conf_port_id source, pjsua_conf_port_id sink)
+// pj_status_t 	pjsua_conf_adjust_tx_level (pjsua_conf_port_id slot, float level)
+// pj_status_t 	pjsua_conf_adjust_rx_level (pjsua_conf_port_id slot, float level)
+// pj_status_t 	pjsua_conf_get_signal_level (pjsua_conf_port_id slot, unsigned *tx_level, unsigned *rx_level)
+// pj_status_t 	pjsua_player_create (const pj_str_t *filename, unsigned options, pjsua_player_id *p_id)
+// pj_status_t 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label, unsigned options, pjsua_player_id *p_id)
+// pjsua_conf_port_id 	pjsua_player_get_conf_port (pjsua_player_id id)
+// pj_status_t 	pjsua_player_get_port (pjsua_player_id id, pjmedia_port **p_port)
+// pj_status_t 	pjsua_player_get_info (pjsua_player_id id, pjmedia_wav_player_info *info)
+// pj_ssize_t 	pjsua_player_get_pos (pjsua_player_id id)
+// pj_status_t 	pjsua_player_set_pos (pjsua_player_id id, pj_uint32_t samples)
+// pj_status_t 	pjsua_player_destroy (pjsua_player_id id)
+// pj_status_t 	pjsua_recorder_create (const pj_str_t *filename, unsigned enc_type, void *enc_param, pj_ssize_t max_size, unsigned options, pjsua_recorder_id *p_id)
+// pjsua_conf_port_id 	pjsua_recorder_get_conf_port (pjsua_recorder_id id)
+// pj_status_t 	pjsua_recorder_get_port (pjsua_recorder_id id, pjmedia_port **p_port)
+// pj_status_t 	pjsua_recorder_destroy (pjsua_recorder_id id)
+// pj_status_t 	pjsua_enum_aud_devs (pjmedia_aud_dev_info info[], unsigned *count)
+// pj_status_t 	pjsua_enum_snd_devs (pjmedia_snd_dev_info info[], unsigned *count)
+// pj_status_t 	pjsua_get_snd_dev (int *capture_dev, int *playback_dev)
+// pj_status_t 	pjsua_set_snd_dev (int capture_dev, int playback_dev)
+// pj_status_t 	pjsua_set_snd_dev2 (pjsua_snd_dev_param *snd_param)
+// pj_status_t 	pjsua_set_null_snd_dev (void)
+// pjmedia_port * 	pjsua_set_no_snd_dev (void)
+// pj_status_t 	pjsua_set_ec (unsigned tail_ms, unsigned options)
+// pj_status_t 	pjsua_get_ec_tail (unsigned *p_tail_ms)
+// pj_status_t 	pjsua_get_ec_stat (pjmedia_echo_stat *p_stat)
+// pj_bool_t 	pjsua_snd_is_active (void)
+// pj_status_t 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
+// pj_status_t 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
+// pj_status_t 	pjsua_ext_snd_dev_create (pjmedia_snd_port_param *param, pjsua_ext_snd_dev **p_snd)
+// pj_status_t 	pjsua_ext_snd_dev_destroy (pjsua_ext_snd_dev *snd)
+// pjmedia_snd_port * 	pjsua_ext_snd_dev_get_snd_port (pjsua_ext_snd_dev *snd)
+// pjsua_conf_port_id 	pjsua_ext_snd_dev_get_conf_port (pjsua_ext_snd_dev *snd)
+// pj_status_t 	pjsua_enum_codecs (pjsua_codec_info id[], unsigned *count)
+// pj_status_t 	pjsua_codec_set_priority (const pj_str_t *codec_id, pj_uint8_t priority)
+// pj_status_t 	pjsua_codec_get_param (const pj_str_t *codec_id, pjmedia_codec_param *param)
+// pj_status_t 	pjsua_codec_set_param (const pj_str_t *codec_id, const pjmedia_codec_param *param)
+
+
 

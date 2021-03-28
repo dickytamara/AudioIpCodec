@@ -2,11 +2,12 @@
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 
-use super::pjdefault::AutoCreate;
+use super::pjdefault::{AutoCreate, FromString};
 use super::pj_sys::*;
 use super::pjmedia_sys::*;
 
 use super::pjlib::*;
+use super::pjsua;
 
 use std::ptr;
 use std::ffi::CStr;
@@ -522,3 +523,93 @@ pub fn aud_subsys_shutdown() -> pj_status_t {
 // pj_status_t 	pjmedia_aud_register_factory (pjmedia_aud_dev_factory_create_func_ptr adf)
 // pj_status_t 	pjmedia_aud_unregister_factory (pjmedia_aud_dev_factory_create_func_ptr adf)
 //
+
+
+
+// pj_status_t 	pjmedia_tonegen_create (pj_pool_t *pool, unsigned clock_rate, unsigned channel_count, unsigned samples_per_frame, unsigned bits_per_sample, unsigned options, pjmedia_port **p_port)
+
+// pj_status_t 	pjmedia_tonegen_create2 (pj_pool_t *pool, const pj_str_t *name, unsigned clock_rate, unsigned channel_count, unsigned samples_per_frame, unsigned bits_per_sample, unsigned options, pjmedia_port **p_port)
+pub fn tonegen_create2(
+    pool: *mut pj_pool_t,
+    name: String,
+    clock_rate: u32,
+    channel_count: u32,
+    samples_per_frame: u32,
+    bits_per_sample: u32,
+    options: u32,
+    p_port: &mut Box<*mut pjmedia_port>
+) -> pj_status_t {
+    unsafe {
+
+        let mut name = pj_str_t::from_string(name);
+
+        let result = pjmedia_tonegen_create2(
+            pool,
+            &mut name as *const _,
+            clock_rate,
+            channel_count,
+            samples_per_frame,
+            bits_per_sample,
+            options,
+            p_port.as_mut() as *mut _
+        );
+
+        result
+    }
+}
+
+// pj_bool_t 	pjmedia_tonegen_is_busy (pjmedia_port *tonegen)
+pub fn tonegen_is_busy(tonegen: &mut pjmedia_port) -> bool {
+    unsafe {
+
+        let result = pjmedia_tonegen_is_busy(
+            tonegen  as *mut _
+        );
+
+        if result == PJ_TRUE as pj_bool_t {
+            true
+        } else {
+            false
+        }
+    }
+}
+
+// pj_status_t 	pjmedia_tonegen_stop (pjmedia_port *tonegen)
+pub fn tonegen_stop(tonegen: &mut Box<*mut pjmedia_port>) -> pj_status_t {
+    unsafe {
+        pjmedia_tonegen_stop(
+            *tonegen.as_mut() as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjmedia_tonegen_rewind (pjmedia_port *tonegen)
+pub fn tonegen_rewind(tonegen: &mut pjmedia_port) -> pj_status_t {
+    unsafe {
+        pjmedia_tonegen_rewind(
+            tonegen as *mut _
+        )
+    }
+}
+
+// pj_status_t 	pjmedia_tonegen_play (pjmedia_port *tonegen, unsigned count, const pjmedia_tone_desc tones[], unsigned options)
+// PJMEDIA_TONEGEN_MAX_DIGITS 32
+pub fn tonegen_play(
+    tonegen: &mut Box<*mut pjmedia_port>,
+    count: u32,
+    tones: &mut [pjmedia_tone_desc; 32usize],
+    options: u32
+) -> pj_status_t {
+    unsafe {
+        pjmedia_tonegen_play(
+            *tonegen.as_mut() as *mut _,
+            count,
+            tones.as_ptr(),
+            options
+        )
+    }
+}
+
+// pj_status_t 	pjmedia_tonegen_play_digits (pjmedia_port *tonegen, unsigned count, const pjmedia_tone_digit digits[], unsigned options)
+// pj_status_t 	pjmedia_tonegen_get_digit_map (pjmedia_port *tonegen, const pjmedia_tone_digit_map **m)
+// pj_status_t 	pjmedia_tonegen_set_digit_map (pjmedia_port *tonegen, pjmedia_tone_digit_map *m)
