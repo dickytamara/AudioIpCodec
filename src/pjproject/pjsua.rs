@@ -2100,12 +2100,6 @@ pub fn srtp_opt_default(cfg: &mut pjsua_srtp_opt) {
 // void 	pjsua_srtp_opt_dup (pj_pool_t *pool, pjsua_srtp_opt *dst, const pjsua_srtp_opt *src, pj_bool_t check_str)
 pub fn srtp_opt_dup(dst: &mut pjsua_srtp_opt, src: &mut pjsua_srtp_opt, check_str: bool) {
 
-    let mut check = PJ_FALSE as pj_bool_t;
-
-    if check_str {
-        check = PJ_TRUE as pj_bool_t;
-    }
-
     let pool = pool_create("tmp-pool");
 
     unsafe {
@@ -2113,7 +2107,7 @@ pub fn srtp_opt_dup(dst: &mut pjsua_srtp_opt, src: &mut pjsua_srtp_opt, check_st
             pool,
             dst as *mut _,
             src as *const _,
-            check
+            boolean_to_pjbool(check_str)
         )
     }
 
@@ -2169,19 +2163,14 @@ pub fn acc_add(acc_cfg: &mut pjsua_acc_config, is_default: bool, p_acc_id: &mut 
 
 // pj_status_t 	pjsua_acc_add_local (pjsua_transport_id tid, pj_bool_t is_default, pjsua_acc_id *p_acc_id)
 pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> Result<(), pj_status_t> {
-
-    let mut default = PJ_FALSE as pj_bool_t;
-
-    if is_default {
-        default = PJ_TRUE as pj_bool_t;
-    }
-
     unsafe {
+
         let status = pjsua_acc_add_local(
             tid,
-            default,
+            boolean_to_pjbool(is_default),
             p_acc_id as *mut _
         );
+
         check_status(status)
     }
 }
@@ -2506,15 +2495,8 @@ pub fn pres_notify(
 
 // void 	pjsua_pres_dump (pj_bool_t verbose)
 pub fn pres_dump(verbose: bool) {
-
-    let mut averbose = PJ_FALSE as pj_bool_t;
-
-    if verbose {
-        averbose = PJ_TRUE as pj_bool_t;
-    }
-
     unsafe {
-        pjsua_pres_dump ( averbose )
+        pjsua_pres_dump ( boolean_to_pjbool(verbose) )
     }
 }
 
@@ -2673,16 +2655,10 @@ pub fn transport_get_info(id: pjsua_transport_id, info: &mut pjsua_transport_inf
 // pj_status_t 	pjsua_transport_set_enable (pjsua_transport_id id, pj_bool_t enabled)
 pub fn transport_set_enable(id: pjsua_transport_id, enabled: bool) -> pj_status_t {
 
-    let mut aenabled = PJ_FALSE as pj_bool_t;
-
-    if enabled {
-        aenabled = PJ_TRUE as pj_bool_t;
-    }
-
     unsafe {
         pjsua_transport_set_enable(
             id,
-            aenabled
+            boolean_to_pjbool(enabled)
         )
     }
 }
@@ -2690,16 +2666,10 @@ pub fn transport_set_enable(id: pjsua_transport_id, enabled: bool) -> pj_status_
 // pj_status_t 	pjsua_transport_close (pjsua_transport_id id, pj_bool_t force)
 pub fn transport_close (id: pjsua_transport_id, force: bool) -> pj_status_t {
 
-    let mut aforce = PJ_FALSE as pj_bool_t;
-
-    if force {
-        aforce = PJ_TRUE as pj_bool_t;
-    }
-
     unsafe {
         pjsua_transport_close (
             id,
-            aforce
+            boolean_to_pjbool(force)
         )
     }
 }
