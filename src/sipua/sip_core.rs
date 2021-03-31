@@ -212,9 +212,8 @@ impl SIPCore {
 
 
 
-        let status = pjsua::start();
-        if status != PJ_SUCCESS as pj_status_t {
-            pjsua::perror("sip_core.rs", "can't start pjsua.", status );
+        if let Err(e) = pjsua::start() {
+            pjsua::perror("sip_core.rs", "can't start pjsua.", e);
         }
 
         // we don't need add account for this state

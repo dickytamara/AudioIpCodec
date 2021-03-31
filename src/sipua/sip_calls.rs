@@ -265,18 +265,12 @@ impl SIPCall {
         let mut info = pjmedia_transport_info::new();
 
 
-        let status = pjsua::call_get_med_transport_info(
-            self.id,
-            med_idx,
-            &mut info
-        );
-
-        if status == PJ_SUCCESS as pj_status_t {
-            Ok(info)
-        } else {
+        if let Err(e) = pjsua::call_get_med_transport_info(self.id, med_idx, &mut info) {
             println!("ERR can't get media transport info for call");
-            Err(status)
+            return Err(e);
         }
+
+        Ok(info)
     }
 
 

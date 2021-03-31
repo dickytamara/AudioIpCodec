@@ -64,9 +64,9 @@ impl SIPWavPlayer {
                 //     Some(SIPWavPlayer::eof),
                 // );
 
-                if status != PJ_SUCCESS as i32 {
-                    panic!("panic set pjmedia_wav_player_set_eof_cb2");
-                }
+                // if status != PJ_SUCCESS as i32 {
+                //     panic!("panic set pjmedia_wav_player_set_eof_cb2");
+                // }
 
                 // pj_timer_entry_init(
                 //     player.port as *mut _,

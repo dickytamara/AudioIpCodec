@@ -59,8 +59,7 @@ impl SIPMedia {
     }
 
     pub fn init(&self) {
-        let status = pjsua::set_snd_dev(self.capture_dev, self.playback_dev);
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::set_snd_dev(self.capture_dev, self.playback_dev) {
             panic!("cant set audio device");
         }
     }
@@ -72,8 +71,7 @@ impl SIPMedia {
         for idx in 0..dev_count {
             let mut info = pjmedia_aud_dev_info::new();
 
-            let status = pjmedia::aud_dev_get_info(idx as i32, &mut info);
-            if status != PJ_SUCCESS as pj_status_t {
+            if let Err(_) = pjmedia::aud_dev_get_info(idx as i32, &mut info) {
                 panic!("can't enumerate input audio device");
             }
 
@@ -96,8 +94,7 @@ impl SIPMedia {
         for idx in 0..dev_count {
             let mut info: pjmedia_aud_dev_info = pjmedia_aud_dev_info::new();
 
-            let status = pjmedia::aud_dev_get_info(idx as i32, &mut info);
-            if status != PJ_SUCCESS as pj_status_t {
+            if let Err(_) = pjmedia::aud_dev_get_info(idx as i32, &mut info) {
                 panic!("can't enumerate output audio device");
             }
 
