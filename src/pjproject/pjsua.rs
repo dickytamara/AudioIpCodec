@@ -2277,22 +2277,22 @@ pub fn acc_get_info (acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> Result<
 }
 
 // pj_status_t 	pjsua_enum_accs (pjsua_acc_id ids[], unsigned *count)
-pub fn enum_accs(ids: &mut [pjsua_acc_id; PJSUA_MAX_ACC as usize], count: &mut u32) -> pj_status_t {
+pub fn enum_accs(ids: &mut [pjsua_acc_id; PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_enum_accs(
-            ids.as_mut_ptr(),
-            count as *mut _
-        )
+        let status = pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _);
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_enum_info (pjsua_acc_info info[], unsigned *count)
-pub fn acc_enum_info(info: &mut [pjsua_acc_info; PJSUA_MAX_ACC as usize], count: &mut u32) -> pj_status_t {
+pub fn acc_enum_info(info: &mut [pjsua_acc_info; PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_enum_info(
+        let status = pjsua_acc_enum_info(
             info.as_mut_ptr(),
             count as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 

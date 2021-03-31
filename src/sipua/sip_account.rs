@@ -371,17 +371,11 @@ impl SIPAccounts {
         let mut acc_id: [pjsua_acc_id; PJSUA_MAX_ACC as usize] = [-1; PJSUA_MAX_ACC as usize];
         let mut count = 8u32;
 
-        let status = pjsua::enum_accs(
-                &mut acc_id,
-                &mut count
-            );
-
-        if status == PJ_SUCCESS as pj_status_t {
+        if let Ok(_)= pjsua::enum_accs(&mut acc_id, &mut count) {
 
             for i in 0..count as usize {
                 ret.push(acc_id[i]);
             }
-
         } else {
             println!("ERR cant enumerate accounts id.");
         }
@@ -397,12 +391,7 @@ impl SIPAccounts {
         let mut acc_info: [pjsua_acc_info; PJSUA_MAX_ACC as usize] = [pjsua_acc_info::new(); PJSUA_MAX_ACC as usize];
         let mut count = 0u32;
 
-        let status = pjsua::acc_enum_info(
-                &mut acc_info,
-                &mut count
-            );
-
-        if status == PJ_SUCCESS as pj_status_t {
+        if let Ok(_) = pjsua::acc_enum_info( &mut acc_info, &mut count) {
 
             for i in 0..count as usize {
                 ret.push(acc_info[i]);
