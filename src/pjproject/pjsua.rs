@@ -1240,12 +1240,7 @@ pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &
 pub fn call_is_active (call_id: pjsua_call_id) -> bool {
     unsafe {
         let result = pjsua_call_is_active(call_id);
-
-        if result == PJ_TRUE as pj_bool_t {
-            true
-        } else {
-            false
-        }
+        check_boolean(result)
     }
 }
 
@@ -1253,11 +1248,7 @@ pub fn call_is_active (call_id: pjsua_call_id) -> bool {
 pub fn call_has_media (call_id: pjsua_call_id) -> bool {
     unsafe {
         let result = pjsua_call_has_media(call_id);
-        if result == PJ_TRUE as pj_bool_t {
-            true
-        } else {
-            false
-        }
+        check_boolean(result)
     }
 }
 
@@ -1267,12 +1258,10 @@ pub fn call_get_conf_port (call_id: pjsua_call_id) -> pjsua_conf_port_id {
 }
 
 // pj_status_t 	pjsua_call_get_info (pjsua_call_id call_id, pjsua_call_info *info)
-pub fn call_get_info (call_id: pjsua_call_id, info: &mut pjsua_call_info) -> pj_status_t {
+pub fn call_get_info (call_id: pjsua_call_id, info: &mut pjsua_call_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_call_get_info (
-            call_id,
-            info as *mut _
-        )
+        let status = pjsua_call_get_info (call_id, info as *mut _);
+        check_status(status)
     }
 }
 
@@ -1296,17 +1285,18 @@ pub fn call_remote_has_cap (call_id: pjsua_call_id, htype: i32, hname: String, t
 // void * 	pjsua_call_get_user_data (pjsua_call_id call_id)
 
 // pj_status_t 	pjsua_call_get_rem_nat_type (pjsua_call_id call_id, pj_stun_nat_type *p_type)
-pub fn call_get_rem_nat_type (call_id: pjsua_call_id, p_type: &mut pj_stun_nat_type) -> pj_status_t {
+pub fn call_get_rem_nat_type (call_id: pjsua_call_id, p_type: &mut pj_stun_nat_type) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_call_get_rem_nat_type (
+        let status = pjsua_call_get_rem_nat_type (
             call_id,
             p_type as *mut _
-        ) 
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_answer (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
-pub fn call_answer (call_id: pjsua_call_id, code: u32, reason: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_answer (call_id: pjsua_call_id, code: u32, reason: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const pj_str_t,
@@ -1319,12 +1309,14 @@ pub fn call_answer (call_id: pjsua_call_id, code: u32, reason: Option<String>, m
     };
 
     unsafe {
-        pjsua_call_answer(
+        let status = pjsua_call_answer(
             call_id,
             code,
             reason,
             msg_data
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1335,7 +1327,7 @@ pub fn call_answer2 (
     code: c_uint,
     reason: Option<String>,
     msg_data: Option<&mut pjsua_msg_data>
-) -> pj_status_t {
+) -> Result<(), pj_status_t> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const _ ,
@@ -1348,13 +1340,8 @@ pub fn call_answer2 (
     };
 
     unsafe {
-        pjsua_call_answer2(
-            call_id,
-            opt,
-            code,
-            reason,
-            msg_data
-        )
+        let status = pjsua_call_answer2(call_id, opt, code, reason, msg_data);
+        check_status(status)
     }
 }
 
@@ -1366,7 +1353,7 @@ pub fn call_answer_with_sdp(
     code: u32,
     reason: Option<String>,
     msg_data: Option<&mut pjsua_msg_data>
-) -> pj_status_t {
+) -> Result<(), pj_status_t> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value),
@@ -1379,14 +1366,9 @@ pub fn call_answer_with_sdp(
     };
 
     unsafe {
-        pjsua_call_answer_with_sdp(
-            call_id,
-            sdp as *const _,
-            opt as *const _,
-            code,
-            reason,
-            msg_data
-        )
+        let status = pjsua_call_answer_with_sdp(call_id, sdp as *const _, opt as *const _,
+            code, reason, msg_data);
+        check_status(status)
     }
 }
 
@@ -1396,7 +1378,7 @@ pub fn call_hangup(
     code: c_uint,
     reason: Option<String>,
     msg_data: Option<&mut pjsua_msg_data>
-) -> pj_status_t {
+) -> Result<(), pj_status_t> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const _,
@@ -1409,17 +1391,21 @@ pub fn call_hangup(
     };
 
     unsafe {
-        pjsua_call_hangup(call_id, code, reason, msg_data)
+        let status = pjsua_call_hangup(call_id, code, reason, msg_data);
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_process_redirect (pjsua_call_id call_id, pjsip_redirect_op cmd)
-pub fn call_process_redirect (call_id: pjsua_call_id, cmd: pjsip_redirect_op) -> pj_status_t {
-    unsafe { pjsua_call_process_redirect(call_id, cmd) }
+pub fn call_process_redirect (call_id: pjsua_call_id, cmd: pjsip_redirect_op) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_call_process_redirect(call_id, cmd);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_call_set_hold (pjsua_call_id call_id, const pjsua_msg_data *msg_data)
-pub fn call_set_hold (call_id: pjsua_call_id, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_set_hold (call_id: pjsua_call_id, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1427,15 +1413,16 @@ pub fn call_set_hold (call_id: pjsua_call_id, msg_data: Option<&mut pjsua_msg_da
     };
 
     unsafe {
-        pjsua_call_set_hold(
+        let status = pjsua_call_set_hold(
             call_id,
             msg_data
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_set_hold2 (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
-pub fn call_set_hold2 (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_set_hold2 (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1443,16 +1430,13 @@ pub fn call_set_hold2 (call_id: pjsua_call_id, options: u32, msg_data: Option<&m
     };
 
     unsafe {
-        pjsua_call_set_hold2(
-            call_id,
-            options,
-            msg_data
-        )
+        let status = pjsua_call_set_hold2(call_id, options, msg_data);
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_reinvite (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
-pub fn call_reinvite(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_reinvite(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1460,17 +1444,18 @@ pub fn call_reinvite(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut
     };
 
     unsafe {
-        pjsua_call_reinvite(
+        let status = pjsua_call_reinvite(
             call_id,
             options,
             msg_data
-        )
+        );
+        check_status(status)
     }
 
 }
 
 // pj_status_t 	pjsua_call_reinvite2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
-pub fn call_reinvite2(call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data> ) -> pj_status_t {
+pub fn call_reinvite2(call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data> ) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1478,16 +1463,17 @@ pub fn call_reinvite2(call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_
     };
 
     unsafe {
-        pjsua_call_reinvite2(
+        let status = pjsua_call_reinvite2(
             call_id,
             opt as *const _,
             msg_data
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_update (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
-pub fn call_update (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_update (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1495,16 +1481,17 @@ pub fn call_update (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut 
     };
 
     unsafe {
-        pjsua_call_update(
+        let status = pjsua_call_update(
             call_id,
             options,
             msg_data
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_update2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
-pub fn call_update2 (call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_update2 (call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1512,16 +1499,18 @@ pub fn call_update2 (call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_d
     };
 
     unsafe {
-        pjsua_call_update2(
+        let status = pjsua_call_update2(
             call_id,
             opt as *const _,
             msg_data
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_xfer (pjsua_call_id call_id, const pj_str_t *dest, const pjsua_msg_data *msg_data)
-pub fn call_xfer (call_id: pjsua_call_id, dest: String, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_xfer (call_id: pjsua_call_id, dest: String, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let mut dest = pj_str_t::from_string(dest);
 
@@ -1531,16 +1520,17 @@ pub fn call_xfer (call_id: pjsua_call_id, dest: String, msg_data: Option<&mut pj
     };
 
     unsafe {
-        pjsua_call_xfer(
+        let status = pjsua_call_xfer(
             call_id,
             &mut dest as *const _,
             msg_data
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_xfer_replaces (pjsua_call_id call_id, pjsua_call_id dest_call_id, unsigned options, const pjsua_msg_data *msg_data)
-pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1548,41 +1538,33 @@ pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, 
     };
 
     unsafe {
-        pjsua_call_xfer_replaces (
-            call_id,
-            dest_call_id,
-            options,
-            msg_data
-        )
+        let status = pjsua_call_xfer_replaces (call_id, dest_call_id, options, msg_data);
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_dial_dtmf (pjsua_call_id call_id, const pj_str_t *digits)
-pub fn call_dial_dtmf (call_id: pjsua_call_id, digits: String) -> pj_status_t {
+pub fn call_dial_dtmf (call_id: pjsua_call_id, digits: String) -> Result<(), pj_status_t> {
 
     let mut digits = pj_str_t::from_string(digits);
 
     unsafe {
-        pjsua_call_dial_dtmf(
-            call_id,
-            &mut digits as *const _
-        )
+        let status = pjsua_call_dial_dtmf(call_id, &mut digits as *const _);
+        check_status(status)
     }
 
 }
 
 // pj_status_t 	pjsua_call_send_dtmf (pjsua_call_id call_id, const pjsua_call_send_dtmf_param *param)
-pub fn call_send_dtmf (call_id: pjsua_call_id, param: &mut pjsua_call_send_dtmf_param) -> pj_status_t {
+pub fn call_send_dtmf (call_id: pjsua_call_id, param: &mut pjsua_call_send_dtmf_param) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_call_send_dtmf (
-            call_id,
-            param as *const _
-        )
+        let status = pjsua_call_send_dtmf (call_id, param as *const _);
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_send_im (pjsua_call_id call_id, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
-pub fn call_send_im(call_id: pjsua_call_id, mime_type: String, content: String, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_send_im(call_id: pjsua_call_id, mime_type: String, content: String, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let mut mime_type = pj_str_t::from_string(mime_type);
     let mut content = pj_str_t::from_string(content);
@@ -1593,24 +1575,19 @@ pub fn call_send_im(call_id: pjsua_call_id, mime_type: String, content: String, 
     };
 
     unsafe {
-        pjsua_call_send_im(
+        let status = pjsua_call_send_im(
             call_id,
             &mut mime_type as *const _,
             &mut content as *const _,
             msg_data,
             ptr::null_mut()
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_send_typing_ind (pjsua_call_id call_id, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
-pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
-
-    let mut a_typing = PJ_FALSE as pj_bool_t;
-
-    if is_typing {
-        a_typing = PJ_TRUE as pj_bool_t;
-    }
+pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1618,16 +1595,18 @@ pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: 
     };
 
     unsafe {
-        pjsua_call_send_typing_ind(
+        let status = pjsua_call_send_typing_ind(
             call_id,
-            a_typing,
+            boolean_to_pjbool(is_typing),
             msg_data
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_send_request (pjsua_call_id call_id, const pj_str_t *method, const pjsua_msg_data *msg_data)
-pub fn call_send_request (call_id: pjsua_call_id, method: String, msg_data: Option<&mut pjsua_msg_data>) -> pj_status_t {
+pub fn call_send_request (call_id: pjsua_call_id, method: String, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
 
     let mut method = pj_str_t::from_string(method);
 
@@ -1637,11 +1616,13 @@ pub fn call_send_request (call_id: pjsua_call_id, method: String, msg_data: Opti
     };
 
     unsafe {
-        pjsua_call_send_request (
+        let status = pjsua_call_send_request (
             call_id,
             &mut method as *const _,
             msg_data
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1654,24 +1635,22 @@ pub fn call_hangup_all () {
 
 
 // pj_status_t 	pjsua_call_get_stream_info (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_info *psi)
-pub fn call_get_stream_info (call_id: pjsua_call_id, med_idx: u32, psi: &mut pjsua_stream_info) -> pj_status_t {
+pub fn call_get_stream_info (call_id: pjsua_call_id, med_idx: u32, psi: &mut pjsua_stream_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_call_get_stream_info (
-            call_id,
-            med_idx,
-            psi as *mut _
-        )
+        let status = pjsua_call_get_stream_info (call_id, med_idx, psi as *mut _);
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_get_stream_stat (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_stat *stat)
-pub fn call_get_stream_stat (call_id: pjsua_call_id, med_idx: u32, stat: &mut pjsua_stream_stat) -> pj_status_t {
+pub fn call_get_stream_stat (call_id: pjsua_call_id, med_idx: u32, stat: &mut pjsua_stream_stat) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_call_get_stream_stat(
+        let status = pjsua_call_get_stream_stat(
             call_id,
             med_idx,
             stat as *mut _
-        )
+        );
+        check_status(status)
     }
 }
 
