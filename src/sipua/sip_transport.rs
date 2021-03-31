@@ -30,22 +30,17 @@ impl SIPTransport {
         rtp_config: *const pjsua_transport_config,
     ) {
 
-        let mut status = pjsua::transport_create(type_, config, Some(&mut self.id));
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant create transport.")
-        }
+        pjsua::transport_create(type_, config, Some(&mut self.id))
+        .expect("Can't create SIPTransport");
 
         assert_ne!(self.id, -1);
 
-        status = pjsua::acc_add_local(
+        pjsua::acc_add_local(
             self.id,
             true,
             &mut self.acc_id,
-        );
-
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init transport");
-        }
+        )
+        .expect("Can't Init Transport");
 
         assert_ne!(self.acc_id, -1);
 

@@ -38,14 +38,12 @@ impl SIPAccount {
             ctx: pjsua_acc_config::new()
         };
 
-        let status = pjsua::acc_get_info(ret.id, &mut ret.info);
-        if status != PJ_SUCCESS as pj_status_t {
-            return Err(status);
+        if let Err(e) = pjsua::acc_get_info(ret.id, &mut ret.info) {
+            return Err(e);
         }
 
-        let status = pjsua::acc_get_config(acc_id, &mut ret.ctx);
-        if status != PJ_SUCCESS as pj_status_t {
-            return Err(status);
+        if let Err(e) = pjsua::acc_get_config(acc_id, &mut ret.ctx) {
+            return Err(e);
         }
 
         Ok(ret)
@@ -105,33 +103,29 @@ impl SIPAccount {
 
     // set this account to be default
     pub fn set_default(&self) {
-        let result = pjsua::acc_set_default(self.id);
 
-        if result != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::acc_set_default(self.id) {
             println!("ERR cant set acc id={} to be default account.",
-            self.id)
+            self.id);
         }
     }
 
     // add account to internal pjsua
     pub fn add(&mut self, is_default: bool) {
 
-        let result = pjsua::acc_add(&mut self.ctx, is_default, &mut self.id);
-        if result != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_add(&mut self.ctx, is_default, &mut self.id) {
             println!("ERR cant add account to pjsua.");
         }
 
         // update account info
-        let result = pjsua::acc_get_info(self.id, &mut self.info);
-        if result != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_get_info(self.id, &mut self.info) {
             println!("ERR cant update account info.");
         }
     }
 
     // remove account from internal pjsua
     pub fn del(&self) {
-        let result = pjsua::acc_del(self.id);
-        if result != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_del(self.id) {
             println!("ERR cant delete account from pjsua..");
         }
     }

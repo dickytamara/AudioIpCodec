@@ -3,7 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(dead_code)]
 
-use super::pjdefault::AutoCreate;
+use super::pjdefault::{AutoCreate, boolean_to_pjbool, check_boolean, check_status};
 use super::pjdefault::FromString;
 
 use super::pj_sys::*;
@@ -2156,17 +2156,17 @@ pub fn acc_get_count() -> u32 {
 // pj_bool_t 	pjsua_acc_is_valid (pjsua_acc_id acc_id)
 pub fn acc_is_valid(acc_id: pjsua_acc_id) -> bool {
     unsafe {
-        if pjsua_acc_is_valid(acc_id) == PJ_TRUE as pj_bool_t {
-            true
-        } else {
-            false
-        }
+        let ret = pjsua_acc_is_valid(acc_id);
+        check_boolean(ret)
     }
 }
 
 // pj_status_t 	pjsua_acc_set_default (pjsua_acc_id acc_id)
-pub fn acc_set_default(acc_id: pjsua_acc_id) -> pj_status_t {
-    unsafe { pjsua_acc_set_default(acc_id) }
+pub fn acc_set_default(acc_id: pjsua_acc_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_acc_set_default(acc_id);
+        check_status(status)
+    }
 }
 
 // pjsua_acc_id 	pjsua_acc_get_default (void)
@@ -2175,25 +2175,21 @@ pub fn acc_get_default() -> pjsua_acc_id {
 }
 
 // pj_status_t 	pjsua_acc_add (const pjsua_acc_config *acc_cfg, pj_bool_t is_default, pjsua_acc_id *p_acc_id)
-pub fn acc_add(acc_cfg: &mut pjsua_acc_config, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> pj_status_t {
-
-    let default: pj_bool_t = PJ_FALSE as pj_bool_t;
-
-    if is_default {
-        let is_default = PJ_TRUE as pj_bool_t;
-    }
-
+pub fn acc_add(acc_cfg: &mut pjsua_acc_config, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_add(
+
+        let status = pjsua_acc_add(
             acc_cfg as *const _,
-            default,
+            boolean_to_pjbool(is_default),
             p_acc_id as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_add_local (pjsua_transport_id tid, pj_bool_t is_default, pjsua_acc_id *p_acc_id)
-pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> pj_status_t {
+pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> Result<(), pj_status_t> {
 
     let mut default = PJ_FALSE as pj_bool_t;
 
@@ -2202,11 +2198,12 @@ pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut p
     }
 
     unsafe {
-        pjsua_acc_add_local(
+        let status = pjsua_acc_add_local(
             tid,
             default,
             p_acc_id as *mut _
-        )
+        );
+        check_status(status)
     }
 }
 
@@ -2214,12 +2211,15 @@ pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut p
 // void * 	pjsua_acc_get_user_data (pjsua_acc_id acc_id)
 
 // pj_status_t 	pjsua_acc_del (pjsua_acc_id acc_id)
-pub fn acc_del(acc_id: pjsua_acc_id) -> pj_status_t {
-    unsafe { pjsua_acc_del(acc_id) }
+pub fn acc_del(acc_id: pjsua_acc_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_acc_del(acc_id);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_acc_get_config (pjsua_acc_id acc_id, pj_pool_t *pool, pjsua_acc_config *acc_cfg)
-pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> pj_status_t {
+pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> Result<(), pj_status_t> {
     unsafe {
         let pool = pool_create("tmp-pool");
 
@@ -2227,7 +2227,7 @@ pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> 
 
         pool_release(pool);
 
-        status
+        check_status(status)
     }
 }
 
@@ -2294,9 +2294,10 @@ pub fn acc_set_registration(acc_id: pjsua_acc_id, renew: bool) -> pj_status_t {
 }
 
 // pj_status_t 	pjsua_acc_get_info (pjsua_acc_id acc_id, pjsua_acc_info *info)
-pub fn acc_get_info (acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> pj_status_t {
+pub fn acc_get_info (acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_get_info(acc_id, info as *mut _)
+        let status = pjsua_acc_get_info(acc_id, info as *mut _);
+        check_status(status)
     }
 }
 
@@ -2644,7 +2645,7 @@ pub fn transport_config_dup(dst: &mut pjsua_transport_config, src: &mut pjsua_tr
 }
 
 // pj_status_t 	pjsua_transport_create (pjsip_transport_type_e type, const pjsua_transport_config *cfg, pjsua_transport_id *p_id)
-pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport_config, p_id: Option<&mut pjsua_transport_id>) -> pj_status_t {
+pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport_config, p_id: Option<&mut pjsua_transport_id>) -> Result<(), pj_status_t> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -2652,11 +2653,12 @@ pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport
     };
 
     unsafe {
-        pjsua_transport_create(
+        let status = pjsua_transport_create(
             type_,
             cfg as *const _,
             p_id
-        )
+        );
+        check_status(status)
     }
 }
 

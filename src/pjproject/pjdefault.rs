@@ -1,4 +1,4 @@
-use pj_sys::{PJ_SUCCESS, PJ_TRUE, pj_bool_t, pj_status_t};
+use pj_sys::{PJ_FALSE, PJ_SUCCESS, PJ_TRUE, pj_bool_t, pj_status_t};
 
 
 
@@ -33,3 +33,13 @@ pub fn check_boolean(value: pj_bool_t) -> bool {
         false
     }
 }
+
+pub fn boolean_to_pjbool(value: bool) -> pj_bool_t {
+
+    if value {
+        PJ_TRUE as pj_bool_t
+    } else {
+        PJ_FALSE as pj_bool_t
+    }
+}
+
