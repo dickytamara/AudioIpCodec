@@ -1,3 +1,5 @@
+use pj_sys::{PJ_SUCCESS, PJ_TRUE, pj_bool_t, pj_status_t};
+
 
 
 //use std::os::raw::{c_char, c_void};
@@ -14,4 +16,20 @@ pub trait ToString {
 
 pub trait FromString<T> {
     fn from_string(value: String) -> T;
+}
+
+pub fn check_status(status: pj_status_t) -> Result<(), pj_status_t> {
+    if status == PJ_SUCCESS as pj_status_t {
+        Ok(())
+    } else {
+        Err(status)
+    }
+}
+
+pub fn check_boolean(value: pj_bool_t) -> bool {
+    if value == PJ_TRUE as pj_bool_t {
+        true
+    } else {
+        false
+    }
 }

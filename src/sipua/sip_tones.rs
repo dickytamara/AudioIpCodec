@@ -7,7 +7,7 @@ use super::pjdefault::*;
 
 use super::pjsua;
 use super::pjmedia;
-use std::ptr;
+use std::{mem::MaybeUninit, ptr};
 use std::ffi::CString;
 
 // Optional
@@ -19,18 +19,18 @@ pub struct SIPTones {
 }
 
 impl SIPTones {
+    
     pub fn new() -> SIPTones {
         SIPTones {
             slot: -1,
             tones: [pjmedia_tone_desc::new(); 32usize],
             port: Box::new(ptr::null_mut())
-
         }
     }
 
     pub fn init(&mut self, pool: *mut pj_pool_t, freq1: u16, freq2: u16) {
 
-        let mut status = pjmedia::tonegen_create2(
+        pjmedia::tonegen_create2(
             pool,
             format!("tone-{}-{}", freq1, freq2),
             8000,
@@ -39,31 +39,19 @@ impl SIPTones {
             16,
             PJMEDIA_TONEGEN_LOOP,
             &mut self.port
-        );
+        )
+        .expect("can't init SIPTones");
 
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPTones");
-        }
+        pjsua::conf_add_port(*self.port, Some(&mut self.slot))
+        .expect("SIPTones");
 
-        status = pjsua::conf_add_port(
-            &mut self.port,
-            Some(&mut self.slot)
-        );
-
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPTones");
-        }
-
-        status = pjmedia::tonegen_play(
-            &mut self.port,
+        let status = pjmedia::tonegen_play(
+            *self.port,
             1,
             &mut self.tones,
             0
-        );
-
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPTones");
-        }
+        )
+        .expect("SIPTones");
 
         assert_ne!(self.slot, -1);
 
@@ -102,7 +90,7 @@ impl SIPRingback {
         self.tones[0].on_msec = 2000;
         self.tones[0].off_msec = 4000;
 
-        let mut status = pjmedia::tonegen_create2(
+        pjmedia::tonegen_create2(
             pool,
             String::from("ringback"),
             media_config.clock_rate,
@@ -111,33 +99,20 @@ impl SIPRingback {
             16,
             PJMEDIA_TONEGEN_LOOP,
             &mut self.port
-        );
+        )
+        .expect("Can't init SIPRingback");
 
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPRingback");
-        }
+        pjsua::conf_add_port(*self.port,Some(&mut self.slot)).expect("SIPRingback");
 
-        status = pjsua::conf_add_port(
-            &mut self.port,
-            Some(&mut self.slot)
-        );
-
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPRingback");
-        }
-
-        status = pjmedia::tonegen_play(
-            &mut self.port,
+        let status = pjmedia::tonegen_play(
+            *self.port,
             1,
             &mut self.tones,
             PJMEDIA_TONEGEN_LOOP
-        );
+        )
+        .expect("SIPRingback");
 
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPRingback");
-        }
-
-        assert_ne!(self.port.is_null(), true);
+        // assert_ne!(self.port.is_null(), true);
         assert_ne!(self.slot, -1);
         // println!("SIPRingback init with slot {}", self.slot);
     }
@@ -145,7 +120,7 @@ impl SIPRingback {
 
 impl Drop for SIPRingback {
     fn drop(&mut self) {
-        pjmedia::tonegen_stop(&mut self.port);
+        pjmedia::tonegen_stop(*self.port).expect("SIPRingback");
     }
 }
 
@@ -183,7 +158,7 @@ impl SIPRingtone {
 
         self.tones[2].off_msec = 3000;
 
-        let mut status = pjmedia::tonegen_create2(
+        pjmedia::tonegen_create2(
             pool,
             String::from("ringtone"),
             media_config.clock_rate,
@@ -192,32 +167,20 @@ impl SIPRingtone {
             16,
             PJMEDIA_TONEGEN_LOOP,
             &mut self.port
-        );
+        )
+        .expect("Can't init SIPRingtone");
 
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPRingtone");
-        }
+        pjsua::conf_add_port(*self.port,Some(&mut self.slot)).expect("SIPRingtone");
 
-        status = pjsua::conf_add_port(
-            &mut self.port,
-            Some(&mut self.slot));
-
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPRingtone");
-        }
-
-        status = pjmedia::tonegen_play(
-            &mut self.port,
+        pjmedia::tonegen_play(
+            *self.port,
             3,
             &mut self.tones,
             PJMEDIA_TONEGEN_LOOP
-        );
+        )
+        .expect("SIPRingtone");
 
-        if status != PJ_SUCCESS as i32 {
-            panic!("cant init SIPRingtone");
-        }
-
-        assert_ne!(self.port.is_null(), true);
+        // assert_ne!(self.port.is_null(), true);
         assert_ne!(self.slot, -1);
         println!("SIPRingtone init with slot {}", self.slot);
     }
@@ -225,6 +188,6 @@ impl SIPRingtone {
 
 impl Drop for SIPRingtone {
     fn drop(&mut self) {
-        pjmedia::tonegen_stop(&mut self.port);
+        pjmedia::tonegen_stop(*self.port).expect("SIPRingtone");
     }
 }

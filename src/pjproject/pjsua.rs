@@ -12,7 +12,7 @@ use super::pjsip_sys::*;
 use super::pjsip_simple_sys::*;
 use super::pjsua_sys::*;
 
-use std::os::raw::{c_int, c_uint, c_void};
+use std::{mem::MaybeUninit, os::raw::{c_int, c_uint, c_void}};
 use std::ffi::CString;
 use std::ffi::CStr;
 use std::ptr;
@@ -1743,7 +1743,7 @@ pub fn conf_get_port_info (port_id: pjsua_conf_port_id, info: &mut pjsua_conf_po
 }
 
 // pj_status_t 	pjsua_conf_add_port (pj_pool_t *pool, pjmedia_port *port, pjsua_conf_port_id *p_id)
-pub fn conf_add_port(port: &mut Box<*mut pjmedia_port>, p_id: Option<&mut pjsua_conf_port_id>) -> pj_status_t {
+pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut pjsua_conf_port_id>) -> Result<(), pj_status_t> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -1757,13 +1757,17 @@ pub fn conf_add_port(port: &mut Box<*mut pjmedia_port>, p_id: Option<&mut pjsua_
         // let aport = port.as_mut().as_ptr();
         let result = pjsua_conf_add_port(
             pool,
-            *(port.as_mut()) as *mut _,
+            port,
             p_id
         );
 
         pool_release(pool);
 
-        result
+        if result == PJ_SUCCESS as pj_status_t {
+            Ok(())
+        } else {
+            Err(result)
+        }
     }
 }
 

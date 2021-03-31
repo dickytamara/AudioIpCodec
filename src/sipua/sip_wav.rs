@@ -9,6 +9,7 @@ use super::pjdefault::*;
 use std::ptr;
 use std::ffi::CString;
 use std::os::raw::c_void;
+use std::mem::MaybeUninit;
 use super::pjsua;
 
 
@@ -18,7 +19,7 @@ pub struct SIPWavPlayer {
     play_opt: u32,
     play_hangup: bool,
     play_timer: pj_timer_entry,
-    port: *mut pjmedia_port,
+    port: Box<pjmedia_port>,
 }
 
 trait SIPWavPlayerDone {
@@ -27,49 +28,52 @@ trait SIPWavPlayerDone {
 
 // wav player
 impl SIPWavPlayer {
+
     pub fn new(file_path: String, play_options: u32, auto_play_hangup: bool) -> SIPWavPlayer {
+
         let mut player = SIPWavPlayer {
             id: -1,
             files: file_path,
             play_opt: play_options,
             play_hangup: auto_play_hangup,
             play_timer: pj_timer_entry::new(),
-            port: ptr::null_mut(),
+            port: Box::new(pjmedia_port::new())
         };
 
         player.play_opt |= player.play_opt;
         unsafe {
-            let mut files_str = pj_str(
-                CString::new(player.files.clone())
-                    .expect("error")
-                    .into_raw(),
-            );
-            pjsua_player_create(
-                &mut files_str as *const _,
+
+            pjsua::player_create(
+                player.files.clone(),
                 player.play_opt,
-                &mut player.id as *mut _,
+                &mut player.id
             );
 
-            let conf_port = pjsua_player_get_conf_port(player.id);
-            pjsua_player_get_port(conf_port, player.port as *mut _);
+            // let conf_port = pjsua_player_get_conf_port(player.id);
+            let conf_port = pjsua::player_get_conf_port(player.id);
+
+
+            // pjsua_player_get_port(conf_port, player.port as *mut _);
+
+            let status = pjsua::player_get_port(conf_port, player.port.as_mut());
 
             if player.play_hangup {
-                let status = pjmedia_wav_player_set_eof_cb2(
-                    player.port,
-                    ptr::null_mut(),
-                    Some(SIPWavPlayer::eof),
-                );
+                // let status = pjmedia_wav_player_set_eof_cb2(
+                //     player.port,
+                //     ptr::null_mut(),
+                //     Some(SIPWavPlayer::eof),
+                // );
 
                 if status != PJ_SUCCESS as i32 {
                     panic!("panic set pjmedia_wav_player_set_eof_cb2");
                 }
 
-                pj_timer_entry_init(
-                    player.port as *mut _,
-                    0,
-                    ptr::null_mut(),
-                    Some(SIPWavPlayer::pj_timer_heap_callback),
-                );
+                // pj_timer_entry_init(
+                //     player.port as *mut _,
+                //     0,
+                //     ptr::null_mut(),
+                //     Some(SIPWavPlayer::pj_timer_heap_callback),
+                // );
             }
         }
 
