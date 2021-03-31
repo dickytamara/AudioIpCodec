@@ -24,9 +24,7 @@ impl SIPBuddy {
 
     pub fn init(&mut self) {
 
-        let status = pjsua::buddy_add(&mut self.ctx, &mut self.id);
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_)= pjsua::buddy_add(&mut self.ctx, &mut self.id) {
             panic!("Panic SIPBuddy");
         }
 
@@ -36,13 +34,7 @@ impl SIPBuddy {
     // Check if buddy ID is valid.
     pub fn is_valid(&self) -> bool {
 
-        let result = pjsua::buddy_is_valid(self.id);
-
-        if result == PJ_TRUE as pj_bool_t {
-            true
-        } else {
-            false
-        }
+        pjsua::buddy_is_valid(self.id)
     }
 
     // Get detailed buddy info.
@@ -50,28 +42,18 @@ impl SIPBuddy {
 
         let mut info = pjsua_buddy_info::new();
 
-        let status = pjsua::buddy_get_info(
-            self.id,
-            &mut info
-        );
-
-        if status == PJ_SUCCESS as pj_status_t {
-            Ok(info)
-        } else {
+        if let Err(e)= pjsua::buddy_get_info( self.id, &mut info) {
             println!("Err cant get buddy info.");
-            Err(status)
+            return Err(e);
         }
+
+        Ok(info)
     }
 
     // add buddy to internal pjsua
     pub fn add(&mut self) {
 
-        let status = pjsua::buddy_add(
-            &mut self.ctx,
-            &mut self.id
-        );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::buddy_add(&mut self.ctx, &mut self.id) {
             println!("ERR cant add buddy to internal pjsua.")
         }
     }
@@ -79,9 +61,7 @@ impl SIPBuddy {
     // delete buddy from internal pjsua
     pub fn del(&self) {
 
-        let status = pjsua::buddy_del(self.id);
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::buddy_del(self.id) {
             println!("ERR cant delete buddy from pjsua");
         }
     }
@@ -89,22 +69,16 @@ impl SIPBuddy {
     // Enable/disable buddy's presence monitoring.
     pub fn subscribe_pres(&self, subscribe: bool) {
 
-        let status = pjsua::buddy_subscribe_pres(
-            self.id,
-            subscribe
-        );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::buddy_subscribe_pres(self.id, subscribe) {
             println!("ERR cant subscribe presents");
         }
+
     }
 
     // Update the presence information for the buddy.
     pub fn update_pres(&self) {
 
-        let status = pjsua::buddy_update_pres( self.id );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::buddy_update_pres( self.id ) {
             println!("ERR cant update presents.");
         }
     }
@@ -138,12 +112,8 @@ impl SIPBuddys {
         let mut ids: [pjsua_buddy_id; PJSUA_MAX_BUDDIES as usize] = [-1; PJSUA_MAX_BUDDIES as usize];
         let mut count = 0u32;
 
-        let status = pjsua::enum_buddies(
-                &mut ids,
-                &mut count
-            );
-
-        if status == PJ_SUCCESS as pj_status_t {
+        if let Ok(_) = pjsua::enum_buddies(&mut ids, &mut count) {
+            
             for i in 0..count as usize {
                 ret.push(ids[i])
             }

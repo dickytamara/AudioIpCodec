@@ -2405,17 +2405,21 @@ pub fn get_buddy_count() -> u32 {
 }
 
 // pj_bool_t 	pjsua_buddy_is_valid (pjsua_buddy_id buddy_id)
-pub fn buddy_is_valid(buddy_id: pjsua_buddy_id) -> pj_bool_t {
-    unsafe { pjsua_buddy_is_valid(buddy_id) }
+pub fn buddy_is_valid(buddy_id: pjsua_buddy_id) -> bool {
+    unsafe {
+        let result = pjsua_buddy_is_valid(buddy_id);
+        check_boolean(result)
+    }
 }
 
 // pj_status_t 	pjsua_enum_buddies (pjsua_buddy_id ids[], unsigned *count)
-pub fn enum_buddies(ids: &mut [pjsua_buddy_id; PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> pj_status_t {
+pub fn enum_buddies(ids: &mut [pjsua_buddy_id; PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_enum_buddies(
+        let status = pjsua_enum_buddies(
             ids.as_mut_ptr(),
             count as *mut _
-        )
+        );
+        check_status(status)
     }
 }
 
@@ -2432,12 +2436,14 @@ pub fn buddy_find(uri: String) -> pjsua_buddy_id {
 }
 
 // pj_status_t 	pjsua_buddy_get_info (pjsua_buddy_id buddy_id, pjsua_buddy_info *info)
-pub fn buddy_get_info(buddy_id: pjsua_buddy_id, info: &mut pjsua_buddy_info) -> pj_status_t {
+pub fn buddy_get_info(buddy_id: pjsua_buddy_id, info: &mut pjsua_buddy_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_buddy_get_info(
+        let status = pjsua_buddy_get_info(
             buddy_id,
             info as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -2446,40 +2452,43 @@ pub fn buddy_get_info(buddy_id: pjsua_buddy_id, info: &mut pjsua_buddy_info) -> 
 // void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
 
 // pj_status_t 	pjsua_buddy_add (const pjsua_buddy_config *buddy_cfg, pjsua_buddy_id *p_buddy_id)
-pub fn buddy_add(buddy_cfg: &mut pjsua_buddy_config, p_buddy_id: *mut pjsua_buddy_id) -> pj_status_t {
+pub fn buddy_add(buddy_cfg: &mut pjsua_buddy_config, p_buddy_id: *mut pjsua_buddy_id) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_buddy_add (
+        let status = pjsua_buddy_add (
             buddy_cfg as *const _,
             p_buddy_id as *mut _
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_buddy_del (pjsua_buddy_id buddy_id)
-pub fn buddy_del(buddy_id: pjsua_buddy_id) -> pj_status_t {
-    unsafe { pjsua_buddy_del(buddy_id) }
+pub fn buddy_del(buddy_id: pjsua_buddy_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_buddy_del(buddy_id);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_buddy_subscribe_pres (pjsua_buddy_id buddy_id, pj_bool_t subscribe)
-pub fn buddy_subscribe_pres(buddy_id: pjsua_buddy_id, subscribe: bool) -> pj_status_t {
-
-    let mut asubscribe = PJ_FALSE as pj_bool_t;
-
-    if subscribe {
-        asubscribe = PJ_TRUE as pj_bool_t
-    }
+pub fn buddy_subscribe_pres(buddy_id: pjsua_buddy_id, subscribe: bool) -> Result<(), pj_status_t> {
 
     unsafe {
-        pjsua_buddy_subscribe_pres(
+        let status = pjsua_buddy_subscribe_pres(
             buddy_id,
-            asubscribe
-        )
+            boolean_to_pjbool(subscribe)
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_buddy_update_pres (pjsua_buddy_id buddy_id)
-pub fn buddy_update_pres(buddy_id: pjsua_buddy_id) -> pj_status_t {
-    unsafe { pjsua_buddy_update_pres(buddy_id) }
+pub fn buddy_update_pres(buddy_id: pjsua_buddy_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_buddy_update_pres(buddy_id);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_pres_notify (pjsua_acc_id acc_id, pjsua_srv_pres *srv_pres, pjsip_evsub_state state, const pj_str_t *state_str, const pj_str_t *reason, pj_bool_t with_body, const pjsua_msg_data *msg_data)
