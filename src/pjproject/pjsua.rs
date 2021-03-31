@@ -2537,7 +2537,7 @@ pub fn im_send(
     mime_type: String,
     content: String,
     msg_data: Option<&mut pjsua_msg_data>
-) -> pj_status_t {
+) -> Result<(), pj_status_t> {
 
     let mut to = pj_str_t::from_string(to);
     let mut mime_type = pj_str_t::from_string(mime_type);
@@ -2549,14 +2549,15 @@ pub fn im_send(
     };
 
     unsafe {
-        pjsua_im_send(
+        let status = pjsua_im_send(
             acc_id,
             &mut to as *const _,
             &mut mime_type as *const _,
             &mut content as *const _,
             msg_data,
             ptr::null_mut()
-        )
+        );
+        check_status(status)
     }
 
 }
@@ -2567,15 +2568,9 @@ pub fn im_typing(
     to:String,
     is_typing: bool,
     msg_data: Option<&mut pjsua_msg_data>
-) -> pj_status_t {
+) -> Result<(), pj_status_t> {
 
     let mut to = pj_str_t::from_string(to);
-
-    let mut istyping = PJ_FALSE as pj_bool_t;
-
-    if is_typing {
-        istyping = PJ_TRUE as pj_bool_t;
-    }
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -2583,12 +2578,13 @@ pub fn im_typing(
     };
 
     unsafe {
-        pjsua_im_typing(
+        let status = pjsua_im_typing(
             acc_id,
             &mut to as *const _,
-            istyping,
+            boolean_to_pjbool(is_typing),
             msg_data
-        )
+        );
+        check_status(status)
     }
 
 }

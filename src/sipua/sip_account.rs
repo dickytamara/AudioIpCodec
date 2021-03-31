@@ -254,15 +254,13 @@ impl SIPAccount {
         msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        let status = pjsua::im_send(
+        if let Err(_)= pjsua::im_send(
             self.id,
             to,
             mime_type,
             content,
             msg_data
-        );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        ) {
             println!("ERR cant send im for account");
         }
     }
@@ -270,14 +268,12 @@ impl SIPAccount {
     // Send typing indication outside dialog.
     pub fn im_typing(&self, to: String, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) {
 
-        let status = pjsua::im_typing(
+        if let Err(e) = pjsua::im_typing(
             self.id,
             to,
             is_typing,
             msg_data
-        );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        ) {
             println!("ERR cant im typing indication for account")
         }
     }
