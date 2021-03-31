@@ -89,9 +89,9 @@ pub trait SIPCoreEventsExt {
 
 impl SIPCore {
 
-    pub fn new() -> SIPCore {
+    pub fn new() -> Self {
         // create default data
-        pjsua::create();
+        pjsua::create().unwrap();
 
         let sip_core = SIPCore {
             pool: ptr::null_mut(),
@@ -158,7 +158,7 @@ impl SIPCore {
             &mut self.app_config,
             &mut self.log_config,
             &mut self.media_config.get_context()
-        );
+        ).unwrap();
 
         // pjsip endpoint for unhadled error
         self.default_handler.priority = (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32;
@@ -225,7 +225,7 @@ impl SIPCore {
 
     pub fn deinit(&mut self) {
         pjsua::pool_release(self.pool);
-        pjsua::destroy();
+        pjsua::destroy().unwrap();
     }
 
     pub fn call(&self, call_addr: &str) {
@@ -324,8 +324,8 @@ impl SIPCore {
                     );
                 }
             }
-            pjsua::conf_connect(call_conf_slot, 0);
-            pjsua::conf_connect(0, call_conf_slot);
+            pjsua::conf_connect(call_conf_slot, 0).unwrap();
+            pjsua::conf_connect(0, call_conf_slot).unwrap();
 
         }
 

@@ -19,8 +19,8 @@ pub struct SIPTones {
 }
 
 impl SIPTones {
-    
-    pub fn new() -> SIPTones {
+
+    pub fn new() -> Self {
         SIPTones {
             slot: -1,
             tones: [pjmedia_tone_desc::new(); 32usize],
@@ -70,7 +70,7 @@ pub struct SIPRingback {
 }
 
 impl SIPRingback {
-    pub fn new() -> SIPRingback {
+    pub fn new() -> Self {
         SIPRingback {
             tones: [pjmedia_tone_desc::new(); 32usize],
             slot: -1,
@@ -132,7 +132,7 @@ pub struct SIPRingtone {
 }
 
 impl SIPRingtone {
-    pub fn new() -> SIPRingtone {
+    pub fn new() -> Self {
         SIPRingtone {
             tones: [pjmedia_tone_desc::new(); 32usize],
             slot: -1,

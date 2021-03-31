@@ -15,7 +15,7 @@ pub struct SIPBuddy {
 
 impl SIPBuddy {
 
-    pub fn new() -> SIPBuddy {
+    pub fn new() -> Self {
         SIPBuddy {
             id: -1,
             ctx: pjsua_buddy_config::new(),
@@ -91,7 +91,7 @@ pub struct SIPBuddys {
 
 impl SIPBuddys {
 
-    pub fn new() -> SIPBuddys {
+    pub fn new() -> Self {
         SIPBuddys {
             buddy_list: [SIPBuddy::new(); PJSUA_MAX_BUDDIES as usize]
         }

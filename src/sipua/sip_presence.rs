@@ -8,7 +8,7 @@ pub struct SIPPresence {
 
 
 impl SIPPresence {
-    pub fn new() -> SIPPresence {
+    pub fn new() -> Self {
         SIPPresence {
             buddy_list: Vec::<SIPBuddy>::new(),
         }

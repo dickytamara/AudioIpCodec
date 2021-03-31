@@ -29,7 +29,7 @@ trait SIPWavPlayerDone {
 // wav player
 impl SIPWavPlayer {
 
-    pub fn new(file_path: String, play_options: u32, auto_play_hangup: bool) -> SIPWavPlayer {
+    pub fn new(file_path: String, play_options: u32, auto_play_hangup: bool) -> Self {
 
         let mut player = SIPWavPlayer {
             id: -1,
@@ -47,7 +47,7 @@ impl SIPWavPlayer {
                 player.files.clone(),
                 player.play_opt,
                 &mut player.id
-            );
+            ).unwrap();
 
             // let conf_port = pjsua_player_get_conf_port(player.id);
             let conf_port = pjsua::player_get_conf_port(player.id);
@@ -103,7 +103,7 @@ impl Drop for SIPWavPlayer {
     fn drop(&mut self) {
         // destroy player
         // TODO event
-        pjsua::player_destroy(self.id);
+        pjsua::player_destroy(self.id).expect("SIPWavPlayer");
     }
 }
 
@@ -115,7 +115,7 @@ pub struct SIPWavRecorder {
 }
 
 impl SIPWavRecorder {
-    pub fn new() -> SIPWavRecorder {
+    pub fn new() -> Self {
         SIPWavRecorder {
             id: -1,
             files: String::from("rec.wav"),

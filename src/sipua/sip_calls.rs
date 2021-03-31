@@ -22,7 +22,7 @@ pub struct SIPCall {
 
 impl SIPCall {
 
-    pub fn new() -> SIPCall {
+    pub fn new() -> Self {
         SIPCall {
             id: -1,
             ringback_on: false,
@@ -30,7 +30,7 @@ impl SIPCall {
         }
     }
 
-    pub fn from(call_id: pjsua_call_id) -> SIPCall {
+    pub fn from(call_id: pjsua_call_id) -> Self {
         SIPCall {
             id: call_id,
             ringback_on: false,

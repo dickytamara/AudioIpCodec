@@ -23,7 +23,7 @@ pub struct SIPAccount {
 
 impl SIPAccount {
 
-    pub fn new() -> SIPAccount {
+    pub fn new() -> Self {
         SIPAccount {
             id: -1,
             info: pjsua_acc_info::new(),
@@ -31,7 +31,7 @@ impl SIPAccount {
         }
     }
 
-    pub fn from(acc_id: pjsua_acc_id) -> Result<SIPAccount, i32> {
+    pub fn from(acc_id: pjsua_acc_id) -> Result<Self, i32> {
         let mut ret = SIPAccount {
             id: acc_id,
             info: pjsua_acc_info::new(),

@@ -18,7 +18,7 @@ pub struct SIPTransport {
 }
 
 impl SIPTransport {
-    pub fn new() -> SIPTransport {
+    pub fn new() -> Self {
         SIPTransport { id: -1, acc_id: -1 }
     }
 
@@ -45,7 +45,7 @@ impl SIPTransport {
         assert_ne!(self.acc_id, -1);
 
         let mut acc_cfg = pjsua_acc_config::new();
-        pjsua::acc_get_config(self.acc_id, &mut acc_cfg);
+        pjsua::acc_get_config(self.acc_id, &mut acc_cfg).unwrap();
 
         unsafe {
             acc_cfg.rtp_cfg = *rtp_config;
@@ -56,8 +56,8 @@ impl SIPTransport {
             }
         }
 
-        pjsua::acc_modify(self.acc_id, &mut acc_cfg);
-        pjsua::acc_set_online_status(pjsua::acc_get_default(), true);
+        pjsua::acc_modify(self.acc_id, &mut acc_cfg).unwrap();
+        pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
     }
 
     pub fn get_info(&self) -> Result<*const pjsua_transport_info, i32> {
@@ -105,7 +105,7 @@ pub struct SIPTransports {
 
 impl SIPTransports {
 
-    pub fn new() -> SIPTransports {
+    pub fn new() -> Self {
 
         let mut sip_transports = SIPTransports {
             transport_list: Vec::<SIPTransport>::new(),

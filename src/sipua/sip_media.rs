@@ -26,7 +26,7 @@ pub struct SIPMedia {
 impl SIPMedia {
 
     // Create new SIP Media.
-    pub fn new() -> SIPMedia {
+    pub fn new() -> Self {
         let mut cfg = SIPMedia {
             ctx: pjsua_media_config::new(),
             capture_dev: -1,
@@ -126,12 +126,12 @@ impl SIPMedia {
 
     pub fn set_input_level(&mut self, value: i32) {
         self.input_level = value;
-        pjsua::conf_adjust_rx_level(0, (self.input_level as f32 / 100.0) as f32);
+        pjsua::conf_adjust_rx_level(0, (self.input_level as f32 / 100.0) as f32).unwrap();
     }
 
     pub fn set_output_level(&mut self, value: i32) {
         self.output_level = value;
-        pjsua::conf_adjust_tx_level(0, (self.output_level as f32 / 100.0) as f32);
+        pjsua::conf_adjust_tx_level(0, (self.output_level as f32 / 100.0) as f32).unwrap();
     }
 
     pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
