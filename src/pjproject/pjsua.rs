@@ -973,27 +973,38 @@ pub fn config_derfault(cfg: &mut pjsua_config) {
 }
 
 // pj_status_t 	pjsua_create (void)
-pub fn create () -> pj_status_t {
-    unsafe { pjsua_create() }
+pub fn create () -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_create();
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_init (const pjsua_config *ua_cfg, const pjsua_logging_config *log_cfg, const pjsua_media_config *media_cfg)
-pub fn init (ua_cfg: &mut pjsua_config, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) -> pj_status_t {
-    unsafe { pjsua_init(
+pub fn init (ua_cfg: &mut pjsua_config, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_init(
         ua_cfg as *const _,
         log_cfg as *const _,
         media_cfg as *const _
-    ) }
+        );
+
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_start (void)
-pub fn start () -> pj_status_t {
-    unsafe { pjsua_start() }
+pub fn start () -> Result<(), pj_status_t> {
+    unsafe {
+        check_status(pjsua_start())
+    }
 }
 
 // pj_status_t 	pjsua_destroy (void)
-pub fn destroy () -> pj_status_t {
-    unsafe { pjsua_destroy() }
+pub fn destroy () -> Result<(), pj_status_t> {
+    unsafe {
+        check_status(pjsua_destroy())
+    }
 }
 
 // pjsua_state 	pjsua_get_state (void)
@@ -1068,9 +1079,10 @@ pub fn stop_worker_threads() {
 }
 
 // pj_status_t 	pjsua_reconfigure_logging (const pjsua_logging_config *c)
-pub fn reconfigure_logging (c: &mut pjsua_logging_config) -> pj_status_t {
+pub fn reconfigure_logging (c: &mut pjsua_logging_config) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_reconfigure_logging(c as *const _)
+        let status = pjsua_reconfigure_logging(c as *const _);
+        check_status(status)
     }
 }
 
@@ -1095,31 +1107,31 @@ pub fn ip_change_param_default(param: &mut pjsua_ip_change_param) {
 }
 
 // pj_status_t 	pjsua_detect_nat_type (void)
-pub fn detect_nat_type () -> pj_status_t {
-    unsafe { pjsua_detect_nat_type() }
+pub fn detect_nat_type () -> Result<(), pj_status_t> {
+    unsafe {
+        check_status(pjsua_detect_nat_type())
+    }
 }
 
 // pj_status_t 	pjsua_get_nat_type (pj_stun_nat_type *type)
-pub fn get_nat_type(type_: &mut pj_stun_nat_type) -> pj_status_t {
-    unsafe { pjsua_get_nat_type(type_ as *mut _) }
+pub fn get_nat_type(type_: &mut pj_stun_nat_type) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_get_nat_type(type_ as *mut _);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_update_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait)
-pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> pj_status_t {
+pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> Result<(), pj_status_t> {
     unsafe {
-        let mut a_wait = PJ_FALSE as pj_bool_t;
-
-        if wait {
-            a_wait = PJ_TRUE as pj_bool_t;
-        }
-
         // todo fix this and compare result with c code.
-        pjsua_update_stun_servers(
+        let status = pjsua_update_stun_servers(
                 count,
                 srv.as_mut_ptr(),
-                a_wait
-            )
+                boolean_to_pjbool(wait)
+            );
 
+        check_status(status)
     }
 }
 
@@ -1135,34 +1147,40 @@ pub fn resolve_stun_servers (
 // pj_status_t 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
 
 // pj_status_t 	pjsua_verify_sip_url (const char *url)
-pub fn verify_sip_url(url: String) -> pj_status_t {
+pub fn verify_sip_url(url: String) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_verify_sip_url(
+        let status = pjsua_verify_sip_url(
             CString::new(url).expect("error url").into_raw()
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_verify_url (const char *url)
-pub fn verify_url (url: String) -> pj_status_t {
+pub fn verify_url (url: String) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_verify_url (
+        let status = pjsua_verify_url (
             CString::new(url).expect("error url").into_raw()
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_schedule_timer (pj_timer_entry *entry, const pj_time_val *delay)
-pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> pj_status_t {
+pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> Result<(), pj_status_t> {
     unsafe {
         // because we use debug pjsua
         // will provide timer with debug suport
-        pjsua_schedule_timer_dbg(
+        let status = pjsua_schedule_timer_dbg(
             entry as *mut _,
             delay as *const _,
             ptr::null_mut(),
             0
-        )
+        );
+
+        check_status(status)
      }
 }
 
@@ -1197,8 +1215,11 @@ pub fn dump(detail: bool) {
 }
 
 // pj_status_t 	pjsua_handle_ip_change (const pjsua_ip_change_param *param)
-pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> pj_status_t {
-    unsafe { pjsua_handle_ip_change( param as *const _ ) }
+pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_handle_ip_change( param as *const _ );
+        check_status(status)
+    }
 }
 
 
@@ -1225,12 +1246,14 @@ pub fn call_get_count () -> u32 {
 }
 
 // pj_status_t 	pjsua_enum_calls (pjsua_call_id ids[], unsigned *count)
-pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &mut u32) -> pj_status_t {
+pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_enum_calls(
+        let status = pjsua_enum_calls(
             ids.as_mut_ptr(),
             count as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1451,7 +1474,6 @@ pub fn call_reinvite(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut
         );
         check_status(status)
     }
-
 }
 
 // pj_status_t 	pjsua_call_reinvite2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
@@ -1650,18 +1672,21 @@ pub fn call_get_stream_stat (call_id: pjsua_call_id, med_idx: u32, stat: &mut pj
             med_idx,
             stat as *mut _
         );
+
         check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_call_get_med_transport_info (pjsua_call_id call_id, unsigned med_idx, pjmedia_transport_info *t)
-pub fn call_get_med_transport_info (call_id: pjsua_call_id, med_idx: u32, t: &mut pjmedia_transport_info) -> pj_status_t {
+pub fn call_get_med_transport_info (call_id: pjsua_call_id, med_idx: u32, t: &mut pjmedia_transport_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_call_get_med_transport_info(
+        let status = pjsua_call_get_med_transport_info(
             call_id,
             med_idx,
             t as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1704,20 +1729,26 @@ pub fn conf_get_active_ports() -> u32 {
 }
 
 // pj_status_t 	pjsua_enum_conf_ports (pjsua_conf_port_id id[], unsigned *count)
-pub fn enum_conf_ports(id: &mut [pjsua_conf_port_id; PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> pj_status_t {
-    unsafe { pjsua_enum_conf_ports(
-        id.as_mut_ptr(),
-        count as *mut _
-    ) }
+pub fn enum_conf_ports(id: &mut [pjsua_conf_port_id; PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_enum_conf_ports(
+            id.as_mut_ptr(),
+            count as *mut _
+        );
+
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_conf_get_port_info (pjsua_conf_port_id port_id, pjsua_conf_port_info *info)
-pub fn conf_get_port_info (port_id: pjsua_conf_port_id, info: &mut pjsua_conf_port_info) -> pj_status_t {
+pub fn conf_get_port_info (port_id: pjsua_conf_port_id, info: &mut pjsua_conf_port_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_conf_get_port_info(
+        let status = pjsua_conf_get_port_info(
             port_id,
             info as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1752,54 +1783,76 @@ pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut pjsua_conf_port_
 
 
 // pj_status_t 	pjsua_conf_remove_port (pjsua_conf_port_id port_id)
-pub fn conf_remove_port (port_id: pjsua_conf_port_id) -> pj_status_t {
-    unsafe { pjsua_conf_remove_port(port_id) }
+pub fn conf_remove_port (port_id: pjsua_conf_port_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_conf_remove_port(port_id);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_conf_connect (pjsua_conf_port_id source, pjsua_conf_port_id sink)
-pub fn conf_connect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> pj_status_t {
-    unsafe { pjsua_conf_connect(source, sink) }
+pub fn conf_connect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_conf_connect(source, sink);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_conf_connect2 (pjsua_conf_port_id source, pjsua_conf_port_id sink, const pjsua_conf_connect_param *prm)
-pub fn conf_connect2 (source: pjsua_conf_port_id, sink: pjsua_conf_port_id, prm: &mut pjsua_conf_connect_param) -> pj_status_t {
+pub fn conf_connect2 (source: pjsua_conf_port_id, sink: pjsua_conf_port_id, prm: &mut pjsua_conf_connect_param) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_conf_connect2 (
+        let status = pjsua_conf_connect2 (
             source,
             sink,
             prm as *const _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_conf_disconnect (pjsua_conf_port_id source, pjsua_conf_port_id sink)
-pub fn conf_disconnect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> pj_status_t {
-    unsafe { pjsua_conf_disconnect(source, sink) }
+pub fn conf_disconnect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_conf_disconnect(source, sink);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_conf_adjust_tx_level (pjsua_conf_port_id slot, float level)
-pub fn conf_adjust_tx_level (slot: pjsua_conf_port_id, level: f32) -> pj_status_t {
-    unsafe { pjsua_conf_adjust_tx_level(slot, level) }
+pub fn conf_adjust_tx_level (slot: pjsua_conf_port_id, level: f32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_conf_adjust_tx_level(slot, level);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_conf_adjust_rx_level (pjsua_conf_port_id slot, float level)
-pub fn conf_adjust_rx_level (slot: pjsua_conf_port_id, level: f32) -> pj_status_t {
-    unsafe { pjsua_conf_adjust_rx_level(slot, level) }
+pub fn conf_adjust_rx_level (slot: pjsua_conf_port_id, level: f32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_conf_adjust_rx_level(slot, level);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_conf_get_signal_level (pjsua_conf_port_id slot, unsigned *tx_level, unsigned *rx_level)
-pub fn conf_get_signal_level (slot: pjsua_conf_port_id, tx_level: &mut u32, rx_level: &mut u32) -> pj_status_t {
-    unsafe { pjsua_conf_get_signal_level (slot, tx_level, rx_level) }
+pub fn conf_get_signal_level (slot: pjsua_conf_port_id, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_conf_get_signal_level (slot, tx_level, rx_level);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_player_create (const pj_str_t *filename, unsigned options, pjsua_player_id *p_id)
-pub fn player_create(filename: String, options: u32, p_id: &mut pjsua_player_id) -> pj_status_t {
+pub fn player_create(filename: String, options: u32, p_id: &mut pjsua_player_id) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_player_create(
+        let status = pjsua_player_create(
             &mut pj_str_t::from_string(filename) as *const _,
             options,
             p_id as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1811,22 +1864,26 @@ pub fn player_get_conf_port(id: pjsua_player_id) -> pjsua_conf_port_id {
 }
 
 // pj_status_t 	pjsua_player_get_port (pjsua_player_id id, pjmedia_port **p_port)
-pub fn player_get_port(id: pjsua_player_id, p_port: &mut pjmedia_port) -> pj_status_t {
+pub fn player_get_port(id: pjsua_player_id, p_port: &mut pjmedia_port) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_player_get_port(
+        let status = pjsua_player_get_port(
             id,
             &mut (p_port as *mut _) as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_player_get_info (pjsua_player_id id, pjmedia_wav_player_info *info)
-pub fn player_get_info(id: pjsua_player_id, info: &mut pjmedia_wav_player_info) -> pj_status_t {
+pub fn player_get_info(id: pjsua_player_id, info: &mut pjmedia_wav_player_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_player_get_info(
+        let status = pjsua_player_get_info(
             id,
             info as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1836,13 +1893,19 @@ pub fn player_get_pos(id: pjsua_player_id) -> pj_ssize_t {
 }
 
 // pj_status_t 	pjsua_player_set_pos (pjsua_player_id id, pj_uint32_t samples)
-pub fn player_set_pos(id: pjsua_player_id, samples: pj_uint32_t) -> pj_status_t {
-    unsafe { pjsua_player_set_pos(id, samples) }
+pub fn player_set_pos(id: pjsua_player_id, samples: pj_uint32_t) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_player_set_pos(id, samples);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_player_destroy (pjsua_player_id id)
-pub fn player_destroy (id: pjsua_player_id) -> pj_status_t {
-    unsafe { pjsua_player_destroy(id) }
+pub fn player_destroy (id: pjsua_player_id) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_player_destroy(id);
+        check_status(status)
+    }
 }
 
 // skiped function
@@ -1853,46 +1916,57 @@ pub fn player_destroy (id: pjsua_player_id) -> pj_status_t {
 // pj_status_t 	pjsua_recorder_destroy (pjsua_recorder_id id)
 
 // pj_status_t 	pjsua_enum_aud_devs (pjmedia_aud_dev_info info[], unsigned *count)
-pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> pj_status_t {
+pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_enum_aud_devs(
+        let status = pjsua_enum_aud_devs(
             info.as_mut_ptr(),
             count as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_enum_snd_devs (pjmedia_snd_dev_info info[], unsigned *count)
-pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> pj_status_t {
+pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_enum_snd_devs(
+        let status = pjsua_enum_snd_devs(
             info.as_mut_ptr(),
             count as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_get_snd_dev (int *capture_dev, int *playback_dev)
-pub fn get_snd_dev(capture_dev: &mut i32, playback_dev: &mut i32) -> pj_status_t {
+pub fn get_snd_dev(capture_dev: &mut i32, playback_dev: &mut i32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_get_snd_dev(
+        let status = pjsua_get_snd_dev(
             capture_dev as *mut _,
             playback_dev as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_set_snd_dev (int capture_dev, int playback_dev)
-pub fn set_snd_dev(capture_dev: i32, playback_dev: i32) -> pj_status_t {
-    unsafe { pjsua_set_snd_dev(capture_dev, playback_dev) }
+pub fn set_snd_dev(capture_dev: i32, playback_dev: i32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_set_snd_dev(capture_dev, playback_dev);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_set_snd_dev2 (pjsua_snd_dev_param *snd_param)
-pub fn set_snd_dev2(snd_param: &mut pjsua_snd_dev_param) -> pj_status_t {
+pub fn set_snd_dev2(snd_param: &mut pjsua_snd_dev_param) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_set_snd_dev2(
+        let status = pjsua_set_snd_dev2(
             snd_param as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -1907,28 +1981,33 @@ pub fn set_no_snd_dev() -> *mut pjmedia_port {
 }
 
 // pj_status_t 	pjsua_set_ec (unsigned tail_ms, unsigned options)
-pub fn set_ec(tail_ms: u32, options: u32) -> pj_status_t {
-    unsafe { pjsua_set_ec(tail_ms, options) }
+pub fn set_ec(tail_ms: u32, options: u32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_set_ec(tail_ms, options);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_get_ec_tail (unsigned *p_tail_ms)
-pub fn get_ec_tail(p_tail_ms: &mut u32) -> pj_status_t {
-    unsafe { pjsua_get_ec_tail(p_tail_ms) }
+pub fn get_ec_tail(p_tail_ms: &mut u32) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_get_ec_tail(p_tail_ms);
+        check_status(status)
+    }
 }
 
 // pj_status_t 	pjsua_get_ec_stat (pjmedia_echo_stat *p_stat)
-pub fn get_ec_stat(p_stat: &mut pjmedia_echo_stat) -> pj_status_t {
-    unsafe { pjsua_get_ec_stat( p_stat as *mut _ ) }
+pub fn get_ec_stat(p_stat: &mut pjmedia_echo_stat) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjsua_get_ec_stat( p_stat as *mut _ );
+        check_status(status)
+    }
 }
 
 // pj_bool_t 	pjsua_snd_is_active (void)
 pub fn snd_is_active() -> bool {
     unsafe {
-        if pjsua_snd_is_active() == (PJ_TRUE as pj_bool_t) {
-            true
-        } else {
-            false
-        }
+        check_boolean(pjsua_snd_is_active())
     }
 }
 
@@ -1939,19 +2018,22 @@ pub fn snd_is_active() -> bool {
 
 // TODO check this create and destroy
 // pj_status_t 	pjsua_ext_snd_dev_create (pjmedia_snd_port_param *param, pjsua_ext_snd_dev **p_snd)
-pub fn ext_snd_dev_create(param: &mut pjmedia_snd_port_param, p_snd: &mut pjsua_ext_snd_dev) -> pj_status_t {
+pub fn ext_snd_dev_create(param: &mut pjmedia_snd_port_param, p_snd: &mut pjsua_ext_snd_dev) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_ext_snd_dev_create(
+        let status = pjsua_ext_snd_dev_create(
             param as *mut _,
             &mut (p_snd as *mut _) as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_ext_snd_dev_destroy (pjsua_ext_snd_dev *snd)
-pub fn ext_snd_dev_destroy(snd: &mut pjsua_ext_snd_dev) -> pj_status_t {
+pub fn ext_snd_dev_destroy(snd: &mut pjsua_ext_snd_dev) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_ext_snd_dev_destroy(snd as *mut _)
+        let status = pjsua_ext_snd_dev_destroy(snd as *mut _);
+        check_status(status)
     }
 }
 
@@ -1974,37 +2056,44 @@ pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> pjsua_conf_port
 }
 
 // pj_status_t 	pjsua_enum_codecs (pjsua_codec_info id[], unsigned *count)
-pub fn enum_codecs(id: &mut [pjsua_codec_info; 64], count: *mut u32) -> pj_status_t {
+pub fn enum_codecs(id: &mut [pjsua_codec_info; 64], count: *mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_enum_codecs(
+        let status = pjsua_enum_codecs(
             id.as_mut_ptr(),
             count as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_codec_set_priority (const pj_str_t *codec_id, pj_uint8_t priority)
-pub fn codec_set_priority(codec_id: String, priority: u8) -> pj_status_t {
+pub fn codec_set_priority(codec_id: String, priority: u8) -> Result<(), pj_status_t> {
+
     let mut codec_id = pj_str_t::from_string(codec_id);
 
     unsafe {
-        pjsua_codec_set_priority(
+        let status = pjsua_codec_set_priority(
             &mut codec_id as *const _,
             priority
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_codec_get_param (const pj_str_t *codec_id, pjmedia_codec_param *param)
-pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> pj_status_t {
+pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), pj_status_t> {
 
     let mut codec_id = pj_str_t::from_string(codec_id);
 
     unsafe {
-        pjsua_codec_get_param(
+        let status = pjsua_codec_get_param(
             &mut codec_id as *const _,
             param as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
@@ -2129,8 +2218,7 @@ pub fn acc_get_count() -> u32 {
 // pj_bool_t 	pjsua_acc_is_valid (pjsua_acc_id acc_id)
 pub fn acc_is_valid(acc_id: pjsua_acc_id) -> bool {
     unsafe {
-        let ret = pjsua_acc_is_valid(acc_id);
-        check_boolean(ret)
+        check_boolean(pjsua_acc_is_valid(acc_id))
     }
 }
 
@@ -2375,8 +2463,7 @@ pub fn get_buddy_count() -> u32 {
 // pj_bool_t 	pjsua_buddy_is_valid (pjsua_buddy_id buddy_id)
 pub fn buddy_is_valid(buddy_id: pjsua_buddy_id) -> bool {
     unsafe {
-        let result = pjsua_buddy_is_valid(buddy_id);
-        check_boolean(result)
+        check_boolean(pjsua_buddy_is_valid(buddy_id))
     }
 }
 
@@ -2554,6 +2641,7 @@ pub fn im_typing(
             boolean_to_pjbool(is_typing),
             msg_data
         );
+
         check_status(status)
     }
 
@@ -2600,7 +2688,7 @@ pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport
 }
 
 // pj_status_t 	pjsua_transport_register (pjsip_transport *tp, pjsua_transport_id *p_id)
-pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut pjsua_transport_id>) -> pj_status_t {
+pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut pjsua_transport_id>) -> Result<(), pj_status_t> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -2608,15 +2696,17 @@ pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut pjsua_tran
     };
 
     unsafe {
-        pjsua_transport_register(
+        let status = pjsua_transport_register(
             tp as *mut _,
             p_id
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_tpfactory_register (pjsip_tpfactory *tf, pjsua_transport_id *p_id)
-pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut pjsua_transport_id>) -> pj_status_t {
+pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut pjsua_transport_id>) -> Result<(), pj_status_t> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -2624,121 +2714,75 @@ pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut pjsua_tran
     };
 
     unsafe {
-        pjsua_tpfactory_register(
+        let status = pjsua_tpfactory_register(
             tf as *mut _,
             p_id
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_enum_transports (pjsua_transport_id id[], unsigned *count)
-pub fn enum_transports(id: &mut [pjsua_transport_id; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> pj_status_t {
+pub fn enum_transports(id: &mut [pjsua_transport_id; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> Result<(), pj_status_t> {
 
     unsafe {
-        pjsua_enum_transports(
+        let status = pjsua_enum_transports(
             id.as_mut_ptr(),
             count as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_transport_get_info (pjsua_transport_id id, pjsua_transport_info *info)
-pub fn transport_get_info(id: pjsua_transport_id, info: &mut pjsua_transport_info) -> pj_status_t {
+pub fn transport_get_info(id: pjsua_transport_id, info: &mut pjsua_transport_info) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_transport_get_info (
+        let status = pjsua_transport_get_info (
             id,
             info as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_transport_set_enable (pjsua_transport_id id, pj_bool_t enabled)
-pub fn transport_set_enable(id: pjsua_transport_id, enabled: bool) -> pj_status_t {
+pub fn transport_set_enable(id: pjsua_transport_id, enabled: bool) -> Result<(), pj_status_t> {
 
     unsafe {
-        pjsua_transport_set_enable(
+        let status = pjsua_transport_set_enable(
             id,
             boolean_to_pjbool(enabled)
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_transport_close (pjsua_transport_id id, pj_bool_t force)
-pub fn transport_close (id: pjsua_transport_id, force: bool) -> pj_status_t {
+pub fn transport_close (id: pjsua_transport_id, force: bool) -> Result<(), pj_status_t> {
 
     unsafe {
-        pjsua_transport_close (
+        let status = pjsua_transport_close (
             id,
             boolean_to_pjbool(force)
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_transport_lis_start (pjsua_transport_id id, const pjsua_transport_config *cfg)
-pub fn transport_lis_start(id: pjsua_transport_id, cfg: &mut pjsua_transport_config) -> pj_status_t {
+pub fn transport_lis_start(id: pjsua_transport_id, cfg: &mut pjsua_transport_config) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_transport_lis_start(
+        let status = pjsua_transport_lis_start(
             id,
             cfg as *const _
-        )
+        );
+
+        check_status(status)
     }
 }
-
-
-
-
-// void 	pjsua_media_config_default (pjsua_media_config *cfg)
-// void 	pjsua_snd_dev_param_default (pjsua_snd_dev_param *prm)
-// void 	pjsua_conf_connect_param_default (pjsua_conf_connect_param *prm)
-
-// unsigned 	pjsua_conf_get_max_ports (void)
-
-
-
-// unsigned 	pjsua_conf_get_active_ports (void)
-// pj_status_t 	pjsua_enum_conf_ports (pjsua_conf_port_id id[], unsigned *count)
-// pj_status_t 	pjsua_conf_get_port_info (pjsua_conf_port_id port_id, pjsua_conf_port_info *info)
-// pj_status_t 	pjsua_conf_add_port (pj_pool_t *pool, pjmedia_port *port, pjsua_conf_port_id *p_id)
-// pj_status_t 	pjsua_conf_remove_port (pjsua_conf_port_id port_id)
-// pj_status_t 	pjsua_conf_connect (pjsua_conf_port_id source, pjsua_conf_port_id sink)
-// pj_status_t 	pjsua_conf_connect2 (pjsua_conf_port_id source, pjsua_conf_port_id sink, const pjsua_conf_connect_param *prm)
-// pj_status_t 	pjsua_conf_disconnect (pjsua_conf_port_id source, pjsua_conf_port_id sink)
-// pj_status_t 	pjsua_conf_adjust_tx_level (pjsua_conf_port_id slot, float level)
-// pj_status_t 	pjsua_conf_adjust_rx_level (pjsua_conf_port_id slot, float level)
-// pj_status_t 	pjsua_conf_get_signal_level (pjsua_conf_port_id slot, unsigned *tx_level, unsigned *rx_level)
-// pj_status_t 	pjsua_player_create (const pj_str_t *filename, unsigned options, pjsua_player_id *p_id)
-// pj_status_t 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label, unsigned options, pjsua_player_id *p_id)
-// pjsua_conf_port_id 	pjsua_player_get_conf_port (pjsua_player_id id)
-// pj_status_t 	pjsua_player_get_port (pjsua_player_id id, pjmedia_port **p_port)
-// pj_status_t 	pjsua_player_get_info (pjsua_player_id id, pjmedia_wav_player_info *info)
-// pj_ssize_t 	pjsua_player_get_pos (pjsua_player_id id)
-// pj_status_t 	pjsua_player_set_pos (pjsua_player_id id, pj_uint32_t samples)
-// pj_status_t 	pjsua_player_destroy (pjsua_player_id id)
-// pj_status_t 	pjsua_recorder_create (const pj_str_t *filename, unsigned enc_type, void *enc_param, pj_ssize_t max_size, unsigned options, pjsua_recorder_id *p_id)
-// pjsua_conf_port_id 	pjsua_recorder_get_conf_port (pjsua_recorder_id id)
-// pj_status_t 	pjsua_recorder_get_port (pjsua_recorder_id id, pjmedia_port **p_port)
-// pj_status_t 	pjsua_recorder_destroy (pjsua_recorder_id id)
-// pj_status_t 	pjsua_enum_aud_devs (pjmedia_aud_dev_info info[], unsigned *count)
-// pj_status_t 	pjsua_enum_snd_devs (pjmedia_snd_dev_info info[], unsigned *count)
-// pj_status_t 	pjsua_get_snd_dev (int *capture_dev, int *playback_dev)
-// pj_status_t 	pjsua_set_snd_dev (int capture_dev, int playback_dev)
-// pj_status_t 	pjsua_set_snd_dev2 (pjsua_snd_dev_param *snd_param)
-// pj_status_t 	pjsua_set_null_snd_dev (void)
-// pjmedia_port * 	pjsua_set_no_snd_dev (void)
-// pj_status_t 	pjsua_set_ec (unsigned tail_ms, unsigned options)
-// pj_status_t 	pjsua_get_ec_tail (unsigned *p_tail_ms)
-// pj_status_t 	pjsua_get_ec_stat (pjmedia_echo_stat *p_stat)
-// pj_bool_t 	pjsua_snd_is_active (void)
-// pj_status_t 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
-// pj_status_t 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
-// pj_status_t 	pjsua_ext_snd_dev_create (pjmedia_snd_port_param *param, pjsua_ext_snd_dev **p_snd)
-// pj_status_t 	pjsua_ext_snd_dev_destroy (pjsua_ext_snd_dev *snd)
-// pjmedia_snd_port * 	pjsua_ext_snd_dev_get_snd_port (pjsua_ext_snd_dev *snd)
-// pjsua_conf_port_id 	pjsua_ext_snd_dev_get_conf_port (pjsua_ext_snd_dev *snd)
-// pj_status_t 	pjsua_enum_codecs (pjsua_codec_info id[], unsigned *count)
-// pj_status_t 	pjsua_codec_set_priority (const pj_str_t *codec_id, pj_uint8_t priority)
-// pj_status_t 	pjsua_codec_get_param (const pj_str_t *codec_id, pjmedia_codec_param *param)
-// pj_status_t 	pjsua_codec_set_param (const pj_str_t *codec_id, const pjmedia_codec_param *param)
-
-
 
