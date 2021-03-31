@@ -135,28 +135,17 @@ impl SIPAccount {
 
         let mut acc_cfg = pjsua_acc_config::new();
 
-        let result = pjsua::acc_get_config(
-                self.id,
-                &mut acc_cfg
-            );
-
-        if result == PJ_SUCCESS as pj_status_t {
-            Ok(acc_cfg)
-        } else {
-            println!("ERR cant get account config");
-            Err(result)
+        if let Err(e) = pjsua::acc_get_config(self.id, &mut acc_cfg) {
+            return Err(e)
         }
+
+        Ok(acc_cfg)
     }
 
     // modify acoount config
     pub fn modify(&self, acc_config: &mut pjsua_acc_config) {
 
-        let result = pjsua::acc_modify(
-                self.id,
-                acc_config
-            );
-
-        if result != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_modify( self.id, acc_config) {
             println!("ERR cant modify account config");
         }
     }
@@ -164,12 +153,7 @@ impl SIPAccount {
     // set online or ofline status
     pub fn set_online_status(&self, is_online: bool) {
 
-        let status = pjsua::acc_set_online_status(
-            self.id,
-            is_online
-        );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_set_online_status( self.id, is_online) {
             println!("ERR cant set online or offline account");
         }
     }
@@ -177,13 +161,7 @@ impl SIPAccount {
     // this online status more like presence state for account
     pub fn set_online_status2(&self, is_online: bool, pr: &mut pjrpid_element) {
 
-        let status = pjsua::acc_set_online_status2(
-                self.id,
-                is_online,
-                pr
-            );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_set_online_status2( self.id, is_online, pr ) {
             println!("ERR cant set account presence.");
         }
     }
@@ -191,12 +169,7 @@ impl SIPAccount {
     // set registration process
     pub fn set_registration(&self, renew: bool) {
 
-        let status = pjsua::acc_set_registration(
-                self.id,
-                renew
-            );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_set_registration( self.id, renew) {
             println!("ERR cant set registration status.");
         }
     }
@@ -206,17 +179,12 @@ impl SIPAccount {
 
         let mut info = pjsua_acc_info::new();
 
-        let status = pjsua::acc_get_info(
-                self.id,
-                &mut info
-            );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(e) = pjsua::acc_get_info( self.id, &mut info) {
             println!("ERR cant get account info");
-            Err(status)
-        } else {
-            Ok(info)
+            return Err(e);
         }
+
+        Ok(info)
     }
 
     // Create arbitrary requests using the account.
@@ -226,31 +194,21 @@ impl SIPAccount {
 
         let mut rdata = pjsip_tx_data::new();
 
-        let status = pjsua::acc_create_request(
-            self.id,
-            method,
-            target,
-            &mut rdata);
+        if let Err(e) = pjsua::acc_create_request( self.id, method, target,
+            &mut rdata) {
 
-        if status == PJ_SUCCESS as pj_status_t {
             println!("ERR cant create request for account");
-            Ok(rdata)
-        } else {
-            Err(status)
+            return Err(e);
         }
+
+        Ok(rdata)
     }
 
     // Create a suitable Contact header value,
     // based on the specified target URI for the specified account.
     pub fn create_uac_contact(&self, contact: String, uri: String) {
 
-        let status = pjsua::acc_create_uac_contact(
-                contact,
-                self.id,
-                uri
-            );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_)= pjsua::acc_create_uac_contact( contact, self.id, uri) {
             println!("ERR cant create uac contact for account.");
         }
     }
@@ -258,13 +216,7 @@ impl SIPAccount {
     // Create a suitable Contact header value, based on the information in the incoming request.
     pub fn create_uas_contact(&self, contact: String, rdata: &mut pjsip_rx_data) {
 
-        let status = pjsua::acc_create_uas_contact(
-                contact,
-                self.id,
-                rdata
-            );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::acc_create_uas_contact( contact, self.id, rdata) {
             println!("ERR cant create uas contact for account")
         }
     }
@@ -272,12 +224,7 @@ impl SIPAccount {
     // set transport by given id transport id for account
     pub fn set_transport(&self, tp_id: pjsua_transport_id) {
 
-        let status = pjsua::acc_set_transport(
-                self.id,
-                tp_id
-            );
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::acc_set_transport( self.id, tp_id) {
             println!("ERR cant set transport for account.");
         }
     }
@@ -294,16 +241,7 @@ impl SIPAccount {
         msg_data: Option<&mut pjsua_msg_data>
     ) {
 
-        let status = pjsua::pres_notify(
-            self.id,
-            srv_pres,
-            state,
-            state_str,
-            reason,
-            with_body,
-            msg_data);
-
-        if status != PJ_SUCCESS as pj_status_t {
+        if let Err(_) = pjsua::pres_notify(self.id, srv_pres, state, state_str, reason, with_body, msg_data){
             println!("ERR cant nofify presents for account.");
         }
     }

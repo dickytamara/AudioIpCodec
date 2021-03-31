@@ -2232,64 +2232,39 @@ pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> 
 }
 
 // pj_status_t 	pjsua_acc_modify (pjsua_acc_id acc_id, const pjsua_acc_config *acc_cfg)
-pub fn acc_modify(acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> pj_status_t {
+pub fn acc_modify(acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_modify(
-            acc_id,
-            acc_cfg as *const _
-        )
+        let status = pjsua_acc_modify( acc_id, acc_cfg as *const _ );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_set_online_status (pjsua_acc_id acc_id, pj_bool_t is_online)
-pub fn acc_set_online_status(acc_id: pjsua_acc_id, is_online: bool) -> pj_status_t {
-
-    let mut online = PJ_FALSE as pj_bool_t;
-
-    if is_online {
-        online = PJ_TRUE as pj_bool_t;
-    }
-
+pub fn acc_set_online_status(acc_id: pjsua_acc_id, is_online: bool) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_set_online_status(
-            acc_id,
-            online
-        )
+        let status = pjsua_acc_set_online_status( acc_id, boolean_to_pjbool(is_online));
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_set_online_status2 (pjsua_acc_id acc_id, pj_bool_t is_online, const pjrpid_element *pr)
-pub fn acc_set_online_status2(acc_id: pjsua_acc_id, is_online: bool, pr: &mut  pjrpid_element) -> pj_status_t {
-
-    let mut online = PJ_FALSE as pj_bool_t;
-
-    if is_online {
-        online = PJ_TRUE as pj_bool_t;
-    }
+pub fn acc_set_online_status2(acc_id: pjsua_acc_id, is_online: bool, pr: &mut  pjrpid_element) -> Result<(), pj_status_t> {
 
     unsafe {
-        pjsua_acc_set_online_status2(
+        let status = pjsua_acc_set_online_status2(
             acc_id,
-            online,
+            boolean_to_pjbool(is_online),
             pr as *const _
-        )
+        );
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_set_registration (pjsua_acc_id acc_id, pj_bool_t renew)
-pub fn acc_set_registration(acc_id: pjsua_acc_id, renew: bool) -> pj_status_t {
-
-    let mut arenew = PJ_FALSE as pj_bool_t;
-
-    if renew {
-        arenew = PJ_TRUE as pj_bool_t;
-    }
-
+pub fn acc_set_registration(acc_id: pjsua_acc_id, renew: bool) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_set_registration(
-            acc_id,
-            arenew
-        )
+        let status = pjsua_acc_set_registration( acc_id, boolean_to_pjbool(renew));
+        check_status(status)
     }
 }
 
@@ -2345,22 +2320,24 @@ pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
 }
 
 // pj_status_t 	pjsua_acc_create_request (pjsua_acc_id acc_id, const pjsip_method *method, const pj_str_t *target, pjsip_tx_data **p_tdata)
-pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> pj_status_t {
+pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), pj_status_t> {
 
     let mut target = pj_str_t::from_string(target);
 
     unsafe {
-        pjsua_acc_create_request(
+        let status = pjsua_acc_create_request(
             acc_id,
             method as *const _,
             &mut target as *const _,
             (p_tdata as *mut _) as *mut _
-        )
+        );
+
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_create_uac_contact (pj_pool_t *pool, pj_str_t *contact, pjsua_acc_id acc_id, const pj_str_t *uri)
-pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String) -> pj_status_t {
+pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String) -> Result<(), pj_status_t> {
 
     let mut contact = pj_str_t::from_string(contact);
     let mut uri = pj_str_t::from_string(uri);
@@ -2368,7 +2345,7 @@ pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String
     unsafe {
         let pool = pool_create("tmp-pool");
 
-        let result = pjsua_acc_create_uac_contact(
+        let status = pjsua_acc_create_uac_contact(
             pool,
             &mut contact as *mut _,
             acc_id,
@@ -2377,19 +2354,19 @@ pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String
 
         pool_release(pool);
 
-        result
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_create_uas_contact (pj_pool_t *pool, pj_str_t *contact, pjsua_acc_id acc_id, pjsip_rx_data *rdata)
-pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut pjsip_rx_data) -> pj_status_t {
+pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut pjsip_rx_data) -> Result<(), pj_status_t> {
 
     let mut contact = pj_str_t::from_string(contact);
 
     unsafe {
         let pool = pool_create("tmp-pool");
 
-        let result = pjsua_acc_create_uas_contact(
+        let status = pjsua_acc_create_uas_contact(
             pool,
             &mut contact as *mut _,
             acc_id,
@@ -2398,17 +2375,15 @@ pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut
 
         pool_release(pool);
 
-        result
+        check_status(status)
     }
 }
 
 // pj_status_t 	pjsua_acc_set_transport (pjsua_acc_id acc_id, pjsua_transport_id tp_id)
-pub fn acc_set_transport(acc_id: pjsua_acc_id, tp_id: pjsua_transport_id) -> pj_status_t {
+pub fn acc_set_transport(acc_id: pjsua_acc_id, tp_id: pjsua_transport_id) -> Result<(), pj_status_t> {
     unsafe {
-        pjsua_acc_set_transport(
-            acc_id,
-            tp_id
-        )
+        let status = pjsua_acc_set_transport( acc_id, tp_id );
+        check_status(status)
     }
 }
 
@@ -2516,16 +2491,10 @@ pub fn pres_notify(
     reason: String,
     with_body: bool,
     msg_data: Option<&mut pjsua_msg_data>
-) -> pj_status_t {
+) -> Result<(), pj_status_t> {
 
     let mut state_str = pj_str_t::from_string(state_str);
     let mut reason = pj_str_t::from_string(reason);
-
-    let mut abody = PJ_FALSE as pj_bool_t;
-
-    if with_body {
-        abody = PJ_TRUE as pj_bool_t;
-    }
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -2533,15 +2502,17 @@ pub fn pres_notify(
     };
 
     unsafe {
-        pjsua_pres_notify(
+        let status = pjsua_pres_notify(
             acc_id,
             srv_pres,
             state,
             &mut state_str as *const _,
             &mut reason as *const _,
-            abody,
+            boolean_to_pjbool(with_body),
             msg_data
-        )
+        );
+
+        check_status(status)
     }
 }
 
