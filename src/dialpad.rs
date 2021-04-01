@@ -47,7 +47,7 @@ pub struct DialpadStorage {
 
 impl DialpadStorage {
 
-    pub fn new (gtk_builder: &gtk::Builder) -> DialpadStorage {
+    pub fn new (gtk_builder: &gtk::Builder) -> Self {
         // liststore types
         let list_types = [u32::static_type(), String::static_type()];
 
@@ -87,7 +87,7 @@ pub struct DialpadWidget {
 
 impl DialpadWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder) -> DialpadWidget {
+    pub fn new(gtk_builder: &gtk::Builder) -> Self {
         DialpadWidget {
             // inner data just borrow not mutate
             ctx: RefCell::new(DialpadStorage::new(gtk_builder))
@@ -248,7 +248,7 @@ impl DialpadWidget {
     pub fn on_button_call_clicked<F: Fn(&str, CallButtonState) + 'static> (&self, callback: F) {
         let wid = self.clone();
         self.ctx.borrow().btn_call.connect_clicked( move | b | {
-            
+
             let sip_address = wid.get_call_address_text().clone();
             let b_str = b.get_label().unwrap().to_string();
 

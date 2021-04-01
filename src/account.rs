@@ -28,7 +28,7 @@ pub struct AccountStorage {
 }
 
 impl AccountStorage {
-    pub fn new (gtk_builder: &gtk::Builder) -> AccountStorage {
+    pub fn new (gtk_builder: &gtk::Builder) -> Self {
         AccountStorage {
             lbl_sip_url: gtk_builder.get_object("lbl_sip_url").unwrap(),
             lbl_registrar_url: gtk_builder.get_object("lbl_registrar_url").unwrap(),
@@ -54,7 +54,7 @@ pub struct AccountWidget {
 
 impl AccountWidget {
 
-    pub fn new (gtk_builder: &gtk::Builder) -> AccountWidget {
+    pub fn new (gtk_builder: &gtk::Builder) -> Self {
         AccountWidget {
             ctx: RefCell::new(AccountStorage::new(gtk_builder))
         }
