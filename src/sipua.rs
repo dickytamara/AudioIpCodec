@@ -141,7 +141,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref sipua) => {
-                    sipua.get_input_level()
+                    sipua.media_config.get_input_level()
                 },
                 _ => { 0 }
             }
@@ -153,7 +153,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref sipua) => {
-                    sipua.get_output_level()
+                    sipua.media_config.get_output_level()
                 },
                 _ => { 0 }
             }
@@ -165,7 +165,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
-                    sipua.set_input_level(value);
+                    sipua.media_config.set_input_level(value);
                 },
                 _ => panic!("")
             }
@@ -177,8 +177,26 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
-                    sipua.set_output_level(value);
+                    sipua.media_config.set_output_level(value);
                 },
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn input_mute(&self, is_mute: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref sipua) => sipua.media_config.input_mute(is_mute),
+                _ => panic!("")
+            }
+        }
+    }
+
+    pub fn output_mute(&self, is_mute: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref sipua) => sipua.media_config.output_mute(is_mute),
                 _ => panic!("")
             }
         }
@@ -189,7 +207,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref sipua) => {
-                    sipua.get_signal_level()
+                    sipua.media_config.get_signal_level()
                 },
                 _ => (0,0,0,0)
             }

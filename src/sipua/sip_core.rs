@@ -261,25 +261,7 @@ impl SIPCore {
 
     }
 
-    pub fn get_input_level(&self) -> i32 {
-        self.media_config.get_input_level()
-    }
 
-    pub fn get_output_level(&self) -> i32 {
-        self.media_config.get_output_level()
-    }
-
-    pub fn set_input_level(&mut self, value: i32) {
-        self.media_config.set_input_level(value);
-    }
-
-    pub fn set_output_level(&mut self, value: i32) {
-        self.media_config.set_output_level(value);
-    }
-
-    pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
-        self.media_config.get_signal_level()
-    }
 
     pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 

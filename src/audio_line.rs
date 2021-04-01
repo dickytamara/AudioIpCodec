@@ -144,12 +144,20 @@ impl AudioLineWidget {
     }
 
     /// on button mute clicked
-    pub fn on_button_mute_clicked<F: Fn() +'static> (&self, callback: F) {
-        self.ctx.borrow().btn_mute.connect_clicked(move |_| {
-            callback();
-        });
-    }
+    pub fn on_button_mute_clicked<F: Fn(bool) +'static> (&self, callback: F) {
 
+        // self.ctx.borrow().btn_mute.connect_clicked(move |_| {
+        //     callback();
+        // });
+
+        let widget = self.ctx.borrow();
+        widget.btn_mute.connect_toggled(
+            clone!(@weak widget.btn_mute as mute => move | btn | {
+                let state = btn.get_active();
+                callback(state);
+        }));
+    }
+    
 }
 
 /// create transmit widget

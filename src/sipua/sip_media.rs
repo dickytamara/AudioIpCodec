@@ -134,6 +134,22 @@ impl SIPMedia {
         pjsua::conf_adjust_tx_level(0, (self.output_level as f32 / 100.0) as f32).unwrap();
     }
 
+    pub fn input_mute(&self, is_mute: bool) {
+        if is_mute {
+            pjsua::conf_adjust_rx_level(0, 0f32).unwrap();
+        } else {
+            pjsua::conf_adjust_rx_level(0, (self.input_level as f32 / 100.0) as f32).unwrap();
+        }
+    }
+
+    pub fn output_mute(&self, is_mute: bool) {
+        if is_mute {
+            pjsua::conf_adjust_tx_level(0, 0f32).unwrap();
+        } else {
+            pjsua::conf_adjust_tx_level(0, (self.output_level as f32 / 100.0) as f32).unwrap();
+        }
+    }
+
     pub fn get_signal_level(&self) -> (u32, u32, u32, u32) {
         // transmit/receive signal level
         let mut tx_l: c_uint = 0;
