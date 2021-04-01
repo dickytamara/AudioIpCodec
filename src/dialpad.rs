@@ -7,7 +7,7 @@ use gtk::{TreeModelExt, TreeViewColumn};
 
 use super::gtk::prelude::*;
 use super::gdk::prelude::*;
-use super::gtk::{Builder, Label, Entry, Button, TreeView, CellRendererText};
+use super::gtk::{Builder, Label, Entry, Button, TreeView, TreeSelection, CellRendererText};
 use super::glib::clone;
 
 use super::gdk::*;
@@ -42,6 +42,7 @@ pub struct DialpadStorage {
     btn_call_address_clear: gtk::Button,
     ent_call_address: gtk::Entry,
     tv_call_log: gtk::TreeView,
+    tv_call_log_selection: gtk::TreeSelection,
     ls_call_log: gtk::ListStore
 }
 
@@ -70,6 +71,7 @@ impl DialpadStorage {
             btn_call_address_clear: gtk_builder.get_object("btn_call_address_clear").unwrap(),
             ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
             tv_call_log: gtk_builder.get_object("tv_call_log").unwrap(),
+            tv_call_log_selection: gtk_builder.get_object("tv_call_log_selection").unwrap(),
             ls_call_log: gtk::ListStore::new(&list_types)
         }
     }
@@ -202,16 +204,11 @@ impl DialpadWidget {
                 entry.set_text("");
         }));
 
-        // // btn dialpad call log clear event
-        // self.btn_call_log_clear.connect_clicked ( |_| {
-
-        // });
-
-        // main button event for calling
-        // self.btn_call_address_clear.connect_clicked(
-        //     clone!( @weak self.ent_call_address as ent => move |_| {
-
-        // }));
+        // btn dialpad call log clear event
+        widget.btn_call_log_clear.connect_clicked (
+            clone!( @weak widget.ls_call_log as list => move |_| {
+                list.clear();
+            }));
 
         //self.ent_call_address.set_events(EventMask::BUTTON2_MOTION_MASK);
     }
@@ -263,6 +260,11 @@ impl DialpadWidget {
 
             callback(sip_address.as_str(), state);
         });
+    }
+
+    /// clear log external code
+    pub fn clear_log(&self) {
+        self.ctx.borrow().ls_call_log.clear();
     }
 
     /// update gui to normal state

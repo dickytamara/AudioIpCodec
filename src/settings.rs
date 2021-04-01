@@ -46,7 +46,7 @@ pub struct SettingsWidget {
 }
 
 impl SettingsWidget {
-    pub fn new(gtk_builder: &gtk::Builder) -> SettingsWidget {
+    pub fn new(gtk_builder: &gtk::Builder) -> Self {
         SettingsWidget {
             // gtk notebook
             ntbk_settings: gtk_builder.get_object("ntbk_settings").unwrap(),

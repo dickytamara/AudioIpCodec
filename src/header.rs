@@ -20,7 +20,7 @@ pub struct HeaderStorage{
 }
 
 impl HeaderStorage {
-    pub fn new (gtk_builder: &gtk::Builder) -> HeaderStorage {
+    pub fn new (gtk_builder: &gtk::Builder) -> Self {
         HeaderStorage {
             cpu_lvl: gtk_builder.get_object("lvl_cpu").unwrap(),
         }
@@ -33,7 +33,7 @@ pub struct HeaderWidget {
 
 impl HeaderWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder) -> HeaderWidget {
+    pub fn new(gtk_builder: &gtk::Builder) -> Self {
         HeaderWidget {
             ctx: RefCell::new(HeaderStorage::new(gtk_builder))
         }

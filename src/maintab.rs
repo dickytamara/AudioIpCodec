@@ -13,7 +13,7 @@ pub struct MaintabStorage {
  }
 
  impl MaintabStorage {
-     pub fn new (gtk_builder: &gtk::Builder) -> MaintabStorage {
+     pub fn new (gtk_builder: &gtk::Builder) -> Self {
         MaintabStorage {
             btnbox: gtk_builder.get_object("btnbox_main").unwrap(),
             stack: gtk_builder.get_object("stack_main").unwrap(),
@@ -33,7 +33,7 @@ pub struct MaintabStorage {
 
  impl MaintabWidget {
 
-     pub fn new(gtk_builder: &gtk::Builder) -> MaintabWidget {
+     pub fn new(gtk_builder: &gtk::Builder) -> Self {
 
         MaintabWidget{
             // inner data just borrow not mutate

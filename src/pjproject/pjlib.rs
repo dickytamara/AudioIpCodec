@@ -168,8 +168,7 @@ impl AutoCreate<pj_turn_sock_tls_cfg> for pj_turn_sock_tls_cfg {
     }
 }
 
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1
-{
+impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
     fn new() -> pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
         pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
             realm: pj_str_t::new(),
@@ -181,8 +180,7 @@ impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1> for pj_stun_auth_
     }
 }
 
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2
-{
+impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
     fn new() -> pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
         pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
             user_data: ptr::null_mut(),
