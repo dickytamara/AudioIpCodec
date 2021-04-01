@@ -2250,7 +2250,6 @@ pub fn acc_find_for_outgoing(url: String) -> pjsua_acc_id {
 
 }
 
-// pjsua_acc_id 	pjsua_acc_find_for_incoming (pjsip_rx_data *rdata)
 pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
 
     unsafe {
@@ -2260,7 +2259,6 @@ pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
     }
 }
 
-// pj_status_t 	pjsua_acc_create_request (pjsua_acc_id acc_id, const pjsip_method *method, const pj_str_t *target, pjsip_tx_data **p_tdata)
 pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), pj_status_t> {
 
     let mut target = pj_str_t::from_string(target);
@@ -2277,7 +2275,6 @@ pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, targe
     }
 }
 
-// pj_status_t 	pjsua_acc_create_uac_contact (pj_pool_t *pool, pj_str_t *contact, pjsua_acc_id acc_id, const pj_str_t *uri)
 pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String) -> Result<(), pj_status_t> {
 
     let mut contact = pj_str_t::from_string(contact);
@@ -2299,7 +2296,6 @@ pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String
     }
 }
 
-// pj_status_t 	pjsua_acc_create_uas_contact (pj_pool_t *pool, pj_str_t *contact, pjsua_acc_id acc_id, pjsip_rx_data *rdata)
 pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut pjsip_rx_data) -> Result<(), pj_status_t> {
 
     let mut contact = pj_str_t::from_string(contact);
@@ -2320,7 +2316,6 @@ pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut
     }
 }
 
-// pj_status_t 	pjsua_acc_set_transport (pjsua_acc_id acc_id, pjsua_transport_id tp_id)
 pub fn acc_set_transport(acc_id: pjsua_acc_id, tp_id: pjsua_transport_id) -> Result<(), pj_status_t> {
     unsafe {
         let status = pjsua_acc_set_transport( acc_id, tp_id );
