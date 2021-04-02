@@ -45,9 +45,9 @@ pub struct SIPCore {
     no_tcp: bool,
     use_ipv6: bool,
     transports: SIPTransports,
-    accounts: SIPAccounts,
+    // accounts: SIPAccounts,
     presence: SIPPresence,
-    calls: SIPCalls,
+    // pub calls: SIPCalls,
     tones: Vec<SIPTones>,
     ringback: SIPRingback,
     ringtone: SIPRingtone,
@@ -62,7 +62,7 @@ pub struct SIPCore {
     auto_play_hangup: bool,
     duration: u32,
     current_call: i32,
-    aud_cnt: u32,
+    // aud_cnt: u32,
     auto_answer: u32,
     events: SIPCoreEvents
 }
@@ -98,13 +98,13 @@ impl SIPCore {
             app_config: pjsua_config::new(),
             log_config: pjsua_logging_config::new(),
             media_config: SIPMedia::new(),
-            no_udp: false,
+            no_udp: true,
             no_tcp: false,
             use_ipv6: false,
             transports: SIPTransports::new(),
-            accounts: SIPAccounts::new(), // only reg acc not local
+            // accounts: SIPAccounts::new(), // only reg acc not local
             presence: SIPPresence::new(),
-            calls: SIPCalls::new(),
+            // calls: SIPCalls::new(),
             tones: Vec::new(),
             ringback: SIPRingback::new(),
             ringtone: SIPRingtone::new(),
@@ -119,7 +119,7 @@ impl SIPCore {
             auto_play_hangup: false,
             duration: 0,
             current_call: -1,
-            aud_cnt: 1,
+            // aud_cnt: 1,
             auto_answer: 0,
             events: SIPCoreEvents::new()
         };
@@ -208,7 +208,7 @@ impl SIPCore {
         }
 
         self.media_config.init();
-        self.calls.set_audio_count(self.aud_cnt);
+        // self.calls.set_audio_count(self.aud_cnt);
 
 
 
@@ -218,9 +218,9 @@ impl SIPCore {
 
         // we don't need add account for this state
         // so we create dynamicaly in addition
-        self.accounts.set_rtp_config(self.transports.get_rtp_config());
-        self.accounts.set_reg_retry_interval(300);
-        self.accounts.set_reg_first_retry_interval(60);
+        // self.accounts.set_rtp_config(self.transports.get_rtp_config());
+        // self.accounts.set_reg_retry_interval(300);
+        // self.accounts.set_reg_first_retry_interval(60);
     }
 
     pub fn deinit(&mut self) {
@@ -230,31 +230,47 @@ impl SIPCore {
 
     pub fn call(&self, call_addr: &str) {
 
+        let calls = SIPCalls::new();
+        let accounts = SIPAccounts::new();
+
+        let default_acc_id = accounts.get_default();
+        let default_acc = SIPAccount::from(default_acc_id).unwrap();
+
         let mut msg_data = pjsua_msg_data::new();
-        pjsua::msg_data_init(&mut msg_data);
 
-        let default_acc = self.accounts.get_default();
-        println!("default accid : {}", default_acc);
-
-        let mut call_addr = pj_str_t::from_string(String::from(call_addr));
-
-        unsafe{
-            let status = pjsua_call_make_call(
-                        default_acc,
-                        &mut call_addr as *const _,
-                        &mut self.calls.get_call_opt() as *mut _,
-                        // ptr::null_mut(),
-                        // &mut msg_data as *mut _,
-                        // self.current_call as *mut _
-                        ptr::null_mut(),
-                        ptr::null_mut(),
-                        ptr::null_mut()
-            );
-        }
+        default_acc.call(String::from(call_addr), None, Some(&mut msg_data), None);
     }
 
-    pub fn hangup(&self) {
-        self.calls.hangup_all();
+    pub fn call_hangup(&self) {
+
+        if self.current_call == -1 {
+            return;
+        }
+
+        let calls = SIPCalls::new();
+
+        if calls.get_count() > 1 {
+            calls.hangup_all();
+        } else {
+            let call = SIPCall::from(self.current_call);
+            call.hangup(0, None, None);
+        }
+
+    }
+
+    pub fn call_answer(&self) {
+
+        if self.current_call == -1 {
+            println!("call_answer: no active call");
+            return;
+        }
+
+        let calls = SIPCalls::new();
+        let current_call = SIPCall::from(self.current_call);
+        let mut msg_data = pjsua_msg_data::new();
+        let mut call_opt = calls.get_call_opt();
+
+        current_call.answer2(&mut call_opt, 200, None, Some(&mut msg_data));
     }
 
     pub fn call_account(&self) {
@@ -281,15 +297,15 @@ impl SIPCore {
         media.status == PJSUA_CALL_MEDIA_REMOTE_HOLD {
             let call_conf_slot: pjsua_conf_port_id;
 
+
+
+            let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
+            let mut call_cnt = 32u32;
+
+            pjsua::enum_calls(&mut call_ids, &mut call_cnt).unwrap();
+
             unsafe {
-
                 call_conf_slot = media.stream.aud.conf_slot;
-
-                let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
-                let mut call_cnt = 32u32;
-
-                pjsua_enum_calls(call_ids.as_mut_ptr(),
-                    &mut call_cnt as *mut _);
 
                 for idx in 0..call_cnt as usize {
                     if call_ids[idx] == ci.id { continue; }
@@ -343,10 +359,30 @@ impl SIPCore {
             PJSIP_INV_STATE_DISCONNECTED => (self.events.invite)(SIPInviteState::Disconnected),
             _ => (self.events.invite)(SIPInviteState::Unknown)
         }
+
+        match call_info.state {
+            PJSIP_INV_STATE_DISCONNECTED => {
+                if self.current_call == call_id  {
+                    if call_info.state == PJSIP_INV_STATE_DISCONNECTED {
+                        self.current_call = -1;
+                    }
+                } else if self.current_call != -1 {
+                    let call = SIPCall::from(call_id);
+                    call.hangup(0, None, None);
+                }
+            },
+            _ => {
+                if self.current_call == -1 {
+                    self.current_call = call_id;
+                }
+            }
+        }
+
+
     }
 
     pub fn callback_on_stream_destroyed(&self, call_id: pjsua_call_id, strm: *mut pjmedia_stream, stream_idx: c_uint) {
-
+        println!("OnStreamDestroyed: CallID {}, StreamIDX {}", call_id, stream_idx);
     }
 
     pub fn callback_on_call_media_state(&mut self, call_id: pjsua_call_id) {
@@ -397,8 +433,8 @@ impl SIPCore {
 
         self.current_call = call_id;
 
-        let mut opt = self.calls.get_call_opt();
-        opt.aud_cnt = self.aud_cnt;
+        let calls = SIPCalls::new();
+        let mut opt = calls.get_call_opt();
 
         // outer level
         println!("INVSTATE [INCOMING]");

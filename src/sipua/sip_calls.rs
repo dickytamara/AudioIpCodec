@@ -38,16 +38,6 @@ impl SIPCall {
         }
     }
 
-    // skiped procedure
-    // this was for video call
-    // pjsua_vid_win_id pjsua_call_get_vid_win 	( pjsua_call_id call_id	)
-    // pjsua_conf_port_id pjsua_call_get_vid_conf_port 	( pjsua_call_id call_id, pjmedia_dir dir)
-
-    // skiped procedure
-    // this for avatar or something related to user data. mostly used by im implementation
-    // call_set_user_data()
-    // call_get_user_data()
-
     pub fn is_active(&self) -> bool {
         pjsua::call_is_active(self.id)
     }
@@ -273,7 +263,6 @@ impl SIPCall {
         Ok(info)
     }
 
-
 }
 
 #[derive(Clone, Copy)]
@@ -326,6 +315,43 @@ impl SIPCalls {
 
     pub fn hangup_all(&self) {
         pjsua::call_hangup_all();
+    }
+
+    pub fn enum_calls(&self) -> Vec<SIPCall> {
+
+        let mut ret: Vec<SIPCall> = Vec::new();
+
+        let mut id:[pjsua_call_id; PJSUA_MAX_CALLS as usize] = [-1i32; PJSUA_MAX_CALLS as usize];
+        let mut count = 32u32;
+
+        pjsua::enum_calls(&mut id, &mut count).unwrap();
+
+        for i in 0..count as usize {
+            ret.push(SIPCall::from(id[i]));
+        }
+
+        ret
+    }
+
+    pub fn get_current_call(&self) -> Option<SIPCall> {
+        if self.get_count() > 0 {
+
+            let calls = self.enum_calls();
+            calls.last().cloned()
+        } else {
+            None
+        }
+    }
+
+    pub fn make_call(
+        &self,
+        acc_id: pjsua_acc_id,
+        dst_uri: String,
+        opt: Option<&mut pjsua_call_setting>,
+        msg_data: Option<&mut pjsua_msg_data>,
+        p_call_id: Option<&mut pjsua_call_id>
+    ) {
+        pjsua::call_make_call(acc_id, dst_uri, opt, msg_data, p_call_id).unwrap();
     }
 
 }

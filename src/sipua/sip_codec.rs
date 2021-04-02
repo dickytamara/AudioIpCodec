@@ -47,8 +47,8 @@ impl SIPCodec {
     }
 
     pub fn set_param(&self, param: &mut pjmedia_codec_param) {
-        pjsua::codec_set_param(self.codec_info.to_string(),
-            &mut param
+        pjsua::codec_set_param(self.codec_info.codec_id.to_string(),
+            param
         ).expect("Can't set codec parameter");
     }
 }
@@ -61,7 +61,6 @@ impl SIPCodecs {
     pub fn new() -> Self {
         SIPCodecs { }
     }
-
 
     pub fn enum_codecs(&self) -> Vec<pjsua_codec_info> {
 
@@ -77,6 +76,17 @@ impl SIPCodecs {
         }
 
         ret
+    }
+
+    pub fn get_codec_param(&self, codec_id: String) -> Option<pjmedia_codec_param> {
+
+        let param = pjmedia_codec_param::new();
+
+        // param
+        // TODO
+
+
+        Some(param)
     }
 
 }

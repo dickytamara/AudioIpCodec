@@ -282,6 +282,23 @@ impl SIPAccount {
         self.ctx.rtp_cfg = rtp_config;
     }
 
+    pub fn call(
+        &self,
+        dst_uri: String,
+        opt: Option<&mut pjsua_call_setting>,
+        msg_data: Option<&mut pjsua_msg_data>,
+        p_call_id: Option<&mut pjsua_call_id>
+    ) {
+
+        pjsua::call_make_call(
+            self.id,
+            dst_uri,
+            opt,
+            msg_data,
+            p_call_id
+        ).unwrap();
+    }
+
 }
 
 // true interface for managing accounts
@@ -294,9 +311,7 @@ impl SIPAccounts {
 
     // create new accounts
     pub fn new() -> SIPAccounts {
-        SIPAccounts {
-            // acc_list: [SIPAccount::new(); PJSUA_MAX_ACC as usize],
-        }
+        SIPAccounts { }
     }
 
     // get default account

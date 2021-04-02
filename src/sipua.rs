@@ -128,14 +128,24 @@ impl SIPUserAgent {
         }
     }
 
-    pub fn hangup(&self) {
+    pub fn call_answer(&self) {
         unsafe {
             match SIP_CORE {
-                Some(ref sipua) => sipua.hangup(),
+                Some(ref sipua) => sipua.call_answer(),
                 _ => panic!("")
             }
         }
     }
+
+    pub fn call_hangup(&self) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref sipua) => sipua.call_hangup(),
+                _ => panic!("")
+            }
+        }
+    }
+
 
     /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {

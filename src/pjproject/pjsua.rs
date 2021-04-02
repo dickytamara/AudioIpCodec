@@ -765,18 +765,22 @@ impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
 
 impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
     fn new() -> pjsua_call_setting {
+
+        let mut ret = pjsua_call_setting {
+            flag: 0,
+            req_keyframe_method: 0,
+            aud_cnt: 0,
+            vid_cnt: 0,
+        };
+
         unsafe {
-
-            let mut call_setting = pjsua_call_setting {
-                flag: 0,
-                req_keyframe_method: 0,
-                aud_cnt: 0,
-                vid_cnt: 0,
-            };
-
-            pjsua_call_setting_default(&mut call_setting as *mut _);
-            call_setting
+            pjsua_call_setting_default(&mut ret as *mut _);
         }
+
+        ret.aud_cnt = 1;
+        ret.vid_cnt = 0;
+
+        ret
     }
 }
 
@@ -874,14 +878,20 @@ impl AutoCreate<pjsua_buddy_info> for pjsua_buddy_info {
 
 impl AutoCreate<pjsua_msg_data> for pjsua_msg_data {
     fn new () -> pjsua_msg_data{
-        pjsua_msg_data {
+        let mut ret = pjsua_msg_data {
             target_uri: pj_str_t::new(),
             hdr_list: pjsip_hdr::new(),
             content_type: pj_str_t::new(),
             msg_body: pj_str_t::new(),
             multipart_ctype: pjsip_media_type::new(),
             multipart_parts: pjsip_multipart_part::new()
+        };
+
+        unsafe {
+            pjsua_msg_data_init(&mut ret as *mut _);
         }
+
+        ret
     }
 }
 
@@ -1224,6 +1234,9 @@ pub fn call_get_count () -> u32 {
 
 pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
+        // let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
+        // let mut call_count = 0u32;
+
         let status = pjsua_enum_calls(
             ids.as_mut_ptr(),
             count as *mut _
@@ -1234,6 +1247,46 @@ pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &
 }
 
 // pj_status_t 	pjsua_call_make_call (pjsua_acc_id acc_id, const pj_str_t *dst_uri, const pjsua_call_setting *opt, void *user_data, const pjsua_msg_data *msg_data, pjsua_call_id *p_call_id)
+pub fn call_make_call (
+    acc_id: pjsua_acc_id,
+    dst_uri: String,
+    opt: Option<&mut pjsua_call_setting>,
+    msg_data: Option<&mut pjsua_msg_data>,
+    p_call_id: Option<&mut pjsua_call_id>
+) -> Result<(), pj_status_t> {
+
+    let mut dst_uri = pj_str_t::from_string(dst_uri);
+
+    let opt = match opt {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    let p_call_id = match p_call_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+
+    unsafe {
+
+        let status = pjsua_call_make_call(
+            acc_id,
+            &mut dst_uri as *const _,
+            opt,
+            ptr::null_mut(),
+            msg_data,
+            p_call_id
+        );
+
+        check_status(status)
+    }
+}
 
 pub fn call_is_active (call_id: pjsua_call_id) -> bool {
     unsafe {
@@ -1966,7 +2019,7 @@ pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> pjsua_conf_port
     }
 }
 
-pub fn enum_codecs(id: &mut [pjsua_codec_info; 32], count: *mut u32) -> Result<(), pj_status_t> {
+pub fn enum_codecs(id: &mut [pjsua_codec_info; 32], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
         let status = pjsua_enum_codecs(
             id.as_mut_ptr(),
@@ -2005,15 +2058,17 @@ pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Res
     }
 }
 
-pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> pj_status_t {
+pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), pj_status_t> {
 
     let mut codec_id = pj_str_t::from_string(codec_id);
 
     unsafe {
-        pjsua_codec_set_param(
+        let status = pjsua_codec_set_param(
             &mut codec_id as *const _,
             param as *const _
-        )
+        );
+
+        check_status(status)
     }
 }
 
