@@ -4658,10 +4658,10 @@ extern "C" {
     // pub fn pjmedia_codec_openh264_vid_init( mgr: *mut pjmedia_vid_codec_mgr, pf: *mut pj_pool_factory, ) -> pj_status_t;
     // pub fn pjmedia_codec_openh264_vid_deinit() -> pj_status_t;
 
-    // pub fn pjmedia_codec_opus_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
-    // pub fn pjmedia_codec_opus_deinit() -> pj_status_t;
-    // pub fn pjmedia_codec_opus_get_config(cfg: *mut pjmedia_codec_opus_config) -> pj_status_t;
-    // pub fn pjmedia_codec_opus_set_default_param( cfg: *const pjmedia_codec_opus_config, param: *mut pjmedia_codec_param, ) -> pj_status_t;
+    pub fn pjmedia_codec_opus_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_codec_opus_deinit() -> pj_status_t;
+    pub fn pjmedia_codec_opus_get_config(cfg: *mut pjmedia_codec_opus_config) -> pj_status_t;
+    pub fn pjmedia_codec_opus_set_default_param( cfg: *const pjmedia_codec_opus_config, param: *mut pjmedia_codec_param, ) -> pj_status_t;
 
     // pub fn pjmedia_codec_silk_init(endpt: *mut pjmedia_endpt) -> pj_status_t;
     // pub fn pjmedia_codec_silk_set_config( clock_rate: c_uint, opt: *const pjmedia_codec_silk_setting, ) -> pj_status_t;

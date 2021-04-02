@@ -294,7 +294,7 @@ pub struct SIPCalls {
 
 impl SIPCalls {
 
-    pub fn new() -> SIPCalls {
+    pub fn new() -> Self {
         SIPCalls {
             id_list: [0; PJSUA_MAX_CALLS as usize],
             call_data: [SIPCall::new(); PJSUA_MAX_CALLS as usize],
@@ -327,8 +327,6 @@ impl SIPCalls {
     pub fn hangup_all(&self) {
         pjsua::call_hangup_all();
     }
-
-
 
 }
 

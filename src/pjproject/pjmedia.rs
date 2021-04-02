@@ -607,3 +607,40 @@ pub fn tonegen_play(
 // pj_status_t 	pjmedia_tonegen_play_digits (pjmedia_port *tonegen, unsigned count, const pjmedia_tone_digit digits[], unsigned options)
 // pj_status_t 	pjmedia_tonegen_get_digit_map (pjmedia_port *tonegen, const pjmedia_tone_digit_map **m)
 // pj_status_t 	pjmedia_tonegen_set_digit_map (pjmedia_port *tonegen, pjmedia_tone_digit_map *m)
+
+// spesific tune for opus codec
+// pj_status_t 	pjmedia_codec_opus_init (pjmedia_endpt *endpt)
+pub fn codec_opus_init(endpt: &mut pjmedia_endpt) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjmedia_codec_opus_init(endpt as *mut _);
+        check_status(status)
+    }
+}
+
+// pj_status_t 	pjmedia_codec_opus_deinit (void)
+pub fn codec_opus_deinit() -> Result<(), pj_status_t> {
+    unsafe {
+        check_status(pjmedia_codec_opus_deinit())
+    }
+}
+
+// pj_status_t 	pjmedia_codec_opus_get_config (pjmedia_codec_opus_config *cfg)
+pub fn codec_opus_get_config(cfg: &mut pjmedia_codec_opus_config) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjmedia_codec_opus_get_config(
+            cfg as *mut _
+        );
+        check_status(status)
+    }
+}
+
+// pj_status_t 	pjmedia_codec_opus_set_default_param (const pjmedia_codec_opus_config *cfg, pjmedia_codec_param *param)
+pub fn codec_opus_set_default_param(cfg: &mut pjmedia_codec_opus_config, param: &mut pjmedia_codec_param) -> Result<(), pj_status_t> {
+    unsafe {
+        let status = pjmedia_codec_opus_set_default_param (
+            cfg as *mut _,
+            param as *mut _
+        );
+        check_status(status)
+    }
+}

@@ -9,6 +9,7 @@ extern crate pjsua_sys;
 pub mod sip_account;
 pub mod sip_buddy;
 pub mod sip_calls;
+pub mod sip_codec;
 pub mod sip_core;
 pub mod sip_media;
 pub mod sip_presence;

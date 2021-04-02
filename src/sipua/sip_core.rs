@@ -229,16 +229,16 @@ impl SIPCore {
     }
 
     pub fn call(&self, call_addr: &str) {
+
+        let mut msg_data = pjsua_msg_data::new();
+        pjsua::msg_data_init(&mut msg_data);
+
+        let default_acc = self.accounts.get_default();
+        println!("default accid : {}", default_acc);
+
+        let mut call_addr = pj_str_t::from_string(String::from(call_addr));
+
         unsafe{
-
-            let mut msg_data = pjsua_msg_data::new();
-            pjsua::msg_data_init(&mut msg_data);
-
-            let default_acc = self.accounts.get_default();
-            println!("default accid : {}", default_acc);
-
-            let mut call_addr = pj_str(CString::new(call_addr).expect("error").into_raw() as *mut _);
-
             let status = pjsua_call_make_call(
                         default_acc,
                         &mut call_addr as *const _,

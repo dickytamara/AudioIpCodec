@@ -930,6 +930,17 @@ impl AutoCreate<pjsua_stream_stat> for pjsua_stream_stat {
     }
 }
 
+impl AutoCreate<pjsua_codec_info> for pjsua_codec_info {
+    fn new () -> pjsua_codec_info {
+        pjsua_codec_info {
+            codec_id: pj_str_t::from_string(String::new()),
+            priority: 0,
+            desc: pj_str_t::from_string(String::new()),
+            buf_: [0; 64usize],
+        }
+    }
+}
+
 
 // function helper
 
@@ -1955,7 +1966,7 @@ pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> pjsua_conf_port
     }
 }
 
-pub fn enum_codecs(id: &mut [pjsua_codec_info; 64], count: *mut u32) -> Result<(), pj_status_t> {
+pub fn enum_codecs(id: &mut [pjsua_codec_info; 32], count: *mut u32) -> Result<(), pj_status_t> {
     unsafe {
         let status = pjsua_enum_codecs(
             id.as_mut_ptr(),
