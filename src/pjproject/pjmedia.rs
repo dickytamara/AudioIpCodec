@@ -391,6 +391,66 @@ impl AutoCreate<pjmedia_transport_info> for pjmedia_transport_info {
     }
 }
 
+impl AutoCreate<pjmedia_codec_param__bindgen_ty_1> for pjmedia_codec_param__bindgen_ty_1 {
+    fn new () -> pjmedia_codec_param__bindgen_ty_1 {
+        pjmedia_codec_param__bindgen_ty_1 {
+            clock_rate: 0,
+            channel_cnt: 0,
+            avg_bps: 0,
+            max_bps: 0,
+            max_rx_frame_size: 0,
+            frm_ptime: 0,
+            enc_ptime: 0,
+            pcm_bits_per_sample: 0,
+            pt: 0,
+            fmt_id: 0,
+        }
+    }
+}
+
+
+impl AutoCreate<pjmedia_codec_fmtp_param> for pjmedia_codec_fmtp_param {
+    fn new () -> pjmedia_codec_fmtp_param {
+        pjmedia_codec_fmtp_param {
+            name: pj_str_t::from_string(String::new()),
+            val: pj_str_t::from_string(String::new())
+        }
+    }
+}
+
+
+impl AutoCreate<pjmedia_codec_fmtp> for pjmedia_codec_fmtp {
+    fn new() -> pjmedia_codec_fmtp {
+        pjmedia_codec_fmtp {
+            cnt: 0,
+            param: [pjmedia_codec_fmtp_param::new(); 16usize],
+        }
+    }
+}
+
+
+impl AutoCreate<pjmedia_codec_param__bindgen_ty_2> for pjmedia_codec_param__bindgen_ty_2 {
+    fn new() -> pjmedia_codec_param__bindgen_ty_2 {
+        pjmedia_codec_param__bindgen_ty_2 {
+            frm_per_pkt: 0,
+            _bitfield_align_1: [0; 0],
+            _bitfield_1: __BindgenBitfieldUnit::new([0; 1usize]),
+            enc_fmtp: pjmedia_codec_fmtp::new(),
+            dec_fmtp: pjmedia_codec_fmtp::new(),
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_codec_param> for pjmedia_codec_param {
+    fn new () -> pjmedia_codec_param {
+        pjmedia_codec_param {
+            info: pjmedia_codec_param__bindgen_ty_1::new(),
+            setting: pjmedia_codec_param__bindgen_ty_2::new()
+        }
+    }
+}
+
+
 pub fn type_name(media_type: pjmedia_type) -> String {
     unsafe {
         String::from(CStr::from_ptr(
@@ -608,7 +668,7 @@ pub fn tonegen_play(
 // pj_status_t 	pjmedia_tonegen_get_digit_map (pjmedia_port *tonegen, const pjmedia_tone_digit_map **m)
 // pj_status_t 	pjmedia_tonegen_set_digit_map (pjmedia_port *tonegen, pjmedia_tone_digit_map *m)
 
-// spesific tune for opus codec
+
 // pj_status_t 	pjmedia_codec_opus_init (pjmedia_endpt *endpt)
 pub fn codec_opus_init(endpt: &mut pjmedia_endpt) -> Result<(), pj_status_t> {
     unsafe {

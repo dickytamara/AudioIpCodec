@@ -32,22 +32,24 @@ impl SIPCodec {
         ).expect("Can't set codec priority.");
     }
 
-    // pub fn get_param(&self) -> Option<pjmedia_codec_param> {
+    pub fn get_param(&self) -> Option<pjmedia_codec_param> {
 
-    //     let mut param = pjmedia_codec_param::new();
+        let mut param = pjmedia_codec_param::new();
 
-    //     if let Err(e) = pjsua::codec_get_param(
-    //         self.codec_info.codec_id.to_string(),
-    //         &mut param
-    //     ) {
-    //         return None;
-    //     }
+        if let Err(e) = pjsua::codec_get_param(
+            self.codec_info.codec_id.to_string(),
+            &mut param
+        ) {
+            return None;
+        }
 
-    //     Some(param)
-    // }
+        Some(param)
+    }
 
     pub fn set_param(&self, param: &mut pjmedia_codec_param) {
-
+        pjsua::codec_set_param(self.codec_info.to_string(),
+            &mut param
+        ).expect("Can't set codec parameter");
     }
 }
 
@@ -55,11 +57,6 @@ impl SIPCodec {
 pub struct SIPCodecs { }
 
 impl SIPCodecs {
-
-    // pj_status_t 	pjsua_enum_codecs (pjsua_codec_info id[], unsigned *count)
-    // pj_status_t 	pjsua_codec_set_priority (const pj_str_t *codec_id, pj_uint8_t priority)
-    // pj_status_t 	pjsua_codec_get_param (const pj_str_t *codec_id, pjmedia_codec_param *param)
-    // pj_status_t 	pjsua_codec_set_param (const pj_str_t *codec_id, const pjmedia_codec_param *param)
 
     pub fn new() -> Self {
         SIPCodecs { }
