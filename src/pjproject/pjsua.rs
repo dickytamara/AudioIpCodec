@@ -986,7 +986,7 @@ pub fn logging_config_default(cfg: &mut pjsua_logging_config) {
     unsafe { pjsua_logging_config_default(cfg as *mut _); }
 }
 
-pub fn config_derfault(cfg: &mut pjsua_config) {
+pub fn config_default(cfg: &mut pjsua_config) {
     unsafe { pjsua_config_default(cfg as *mut _); }
 }
 
@@ -1025,8 +1025,8 @@ pub fn get_state () -> pjsua_state {
     unsafe { pjsua_get_state() }
 }
 
-pub fn destroy2 (flags: u32) -> pj_status_t {
-    unsafe { pjsua_destroy2(flags) }
+pub fn destroy2 (flags: u32) -> Result<(), pj_status_t> {
+    unsafe { check_status(pjsua_destroy2(flags)) }
 }
 
 pub fn logging_config_dup (dst: &mut pjsua_logging_config, src: &mut pjsua_logging_config) {
@@ -1134,15 +1134,50 @@ pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> 
 }
 
 // pj_status_t 	pjsua_resolve_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait, void *token, pj_stun_resolve_cb cb)
-pub fn resolve_stun_servers (
+pub fn resolve_stun_servers<T> (
     count: u32,
     srv: &mut [pj_str_t; 8],
-    wait: bool, ) {
-        // todo
+    wait: bool,
+    token: Option<&mut T>,
+    cb: pj_stun_resolve_cb
+) -> Result<(), pj_status_t> {
+        // todo check token
+    unsafe {
+
+        let token = match token {
+            Some(value) => (value as *mut _) as *mut c_void,
+            None => ptr::null_mut()
+        };
+
+        let status = pjsua_resolve_stun_servers(
+            count,
+            srv.as_mut_ptr(),
+            boolean_to_pjbool(wait),
+            ptr::null_mut(),
+            cb
+        );
+
+        check_status(status)
+    }
 }
 
-// this function mosly unsued
 // pj_status_t 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
+pub fn cancel_stun_resolution<T> (token: Option<&mut T>, notify_cb: bool) -> Result<(), pj_status_t> {
+    unsafe {
+
+        let token = match token {
+            Some(val) => (val as *mut _) as *mut c_void,
+            None => ptr::null_mut()
+        };
+
+        let status = pjsua_cancel_stun_resolution (
+            token,
+            boolean_to_pjbool(notify_cb)
+        );
+
+        check_status(status)
+    }
+}
 
 pub fn verify_sip_url(url: String) -> Result<(), pj_status_t> {
     unsafe {
@@ -1234,9 +1269,6 @@ pub fn call_get_count () -> u32 {
 
 pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &mut u32) -> Result<(), pj_status_t> {
     unsafe {
-        // let mut call_ids: [pjsua_call_id; 32] = [-1; 32];
-        // let mut call_count = 0u32;
-
         let status = pjsua_enum_calls(
             ids.as_mut_ptr(),
             count as *mut _

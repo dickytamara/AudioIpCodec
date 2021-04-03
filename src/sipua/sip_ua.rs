@@ -1,5 +1,5 @@
 
-use std::cell::RefCell;
+use std::cell::{RefCell, RefMut};
 
 use super::pj_sys::*;
 use super::pjsip_sys::*;
@@ -19,12 +19,213 @@ pub struct SIPUa {
     ctx: RefCell<pjsua_config>
 }
 
+/// this trait handle all pjsua_config struct fields
+pub trait SIPUaExt {
+    /// Set Maximum calls to support (default: 4). The value specified here must be smaller
+    /// than the compile time maximum settings PJSUA_MAX_CALLS, which by default is 32.
+    /// To increase this limit, the library must be recompiled with new PJSUA_MAX_CALLS value.
+    fn set_max_calls (&self, max_calls: u32);
+    fn get_max_calls (&self) -> u32;
+    /// Number of worker threads. Normally application will want to have at least one worker thread,
+    /// unless when it wants to poll the library periodically,
+    /// which in this case the worker thread can be set to zero.
+    fn set_thread_cnt(&self, value: u32);
+    fn get_thread_cnt(&self) -> u32;
+    /// Number of nameservers. If no name server is configured,
+    /// the SIP SRV resolution would be disabled,
+    /// and domain will be resolved with standard pj_gethostbyname() function.
+    fn set_nameserver_count(&self, value: u32);
+    fn get_nameserver_count(&self) -> u32;
+    /// Array of nameservers to be used by the SIP resolver subsystem.
+    /// The order of the name server specifies the priority
+    /// (first name server will be used first, unless it is not reachable).
+    fn set_nameserver(&self, nameserver: [String; 4usize]);
+    fn get_nameserver(&self) -> [String; 4usize];
+    /// Force loose-route to be used in all route/proxy URIs (outbound_proxy and account's proxy settings).
+    /// When this setting is enabled, the library will check all the route/proxy
+    /// URIs specified in the settings and append ";lr" parameter to the URI if the parameter is not present.
+    fn set_force_lr(&self, value: bool);
+    fn get_force_lr(&self) -> bool;
+    /// Number of outbound proxies in the outbound_proxy array.
+    fn set_outbound_proxy_cnt(&self, value: u32);
+    fn get_outbound_proxy_cnt(&self) -> u32;
+    /// Specify the URL of outbound proxies to visit for all outgoing requests.
+    /// The outbound proxies will be used for all accounts,
+    /// and it will be used to build the route set for outgoing requests.
+    /// The final route set for outgoing requests will consists of the outbound
+    /// proxies and the proxy configured in the account.
+    fn set_outbound_proxy(&self, value: [String; 4usize]);
+    fn get_outbound_proxy(&self) -> [String; 4usize];
+    /// Warning: deprecated, please use stun_srv field instead.
+    /// To maintain backward compatibility, if stun_srv_cnt is zero then
+    /// the value of this field will be copied to stun_srv field, if present.
+    ///
+    /// Get Specify domain name to be resolved with DNS SRV
+    /// resolution to get the address of the STUN server.
+    /// Alternatively application may specify stun_host instead.
+    ///
+    /// If DNS SRV resolution failed for this domain, then DNS A resolution will be
+    /// performed only if stun_host is specified.
+    fn set_stun_domain(&self, value: String);
+    fn get_stun_domain(&self) -> String;
+    /// Warning: deprecated, please use stun_srv field instead.
+    /// To maintain backward compatibility, if stun_srv_cnt is zero then the
+    /// value of this field will be copied to stun_srv field, if present.
+    ///
+    /// Get Specify STUN server to be used, in "HOST\[:PORT\]" format.
+    /// If port is not specified, default port 3478 will be used.
+    fn set_stun_host(&self, value: String);
+    fn get_stun_host(&self) -> String;
+    /// Get Number of STUN server entries in stun_srv array.
+    fn set_stun_srv_cnt(&self, value: u32);
+    fn get_stun_srv_cnt(&self) -> u32;
+    /// Array of STUN servers to try. The library will try to resolve and contact each of the
+    /// STUN server entry until it finds one that is usable. Each entry may be a domain name,
+    /// host name, IP address, and it may contain an optional port number. For example:
+    ///
+    /// - "pjsip.org" (domain name)
+    /// - "sip.pjsip.org" (host name)
+    /// - "pjsip.org:33478" (domain name and a non-standard port number)
+    /// - "10.0.0.1:3478" (IP address and port number)
+    ///
+    /// When nameserver is configured in the pjsua_config.nameserver field,
+    /// if entry is not an IP address, it will be resolved with DNS SRV resolution first,
+    /// and it will fallback to use DNS A resolution if this fails.
+    /// Port number may be specified even if the entry is a domain name,
+    /// in case the DNS SRV resolution should fallback to a non-standard port.
+    ///
+    /// When nameserver is not configured, entries will be resolved with pj_gethostbyname()
+    /// if it's not an IP address. Port number may be specified
+    /// if the server is not listening in standard STUN port.
+    fn set_stun_srv(&self, value: [String; 8usize]);
+    fn get_stun_srv(&self) -> [String; 8usize];
+    /// This specifies if the library should try to do an IPv6 resolution of
+    /// the STUN servers if the IPv4 resolution fails. It can be useful in an
+    /// IPv6-only environment, including on NAT64.
+    ///
+    /// [Default] PJ_FALSE
+    fn set_stun_try_ipv6(&self, value: bool);
+    fn get_stun_try_ipv6(&self) -> bool;
+    /// This specifies if the library should ignore failure with the STUN servers.
+    /// If this is set to PJ_FALSE, the library will refuse to start if it fails
+    /// to resolve or contact any of the STUN servers.
+    ///
+    /// This setting will also determine what happens if STUN servers are unavailable
+    /// during runtime (if set to PJ_FALSE, calls will directly fail, otherwise
+    /// (if PJ_TRUE) call medias will fallback to proceed as though not using STUN servers.
+    ///
+    /// [Default] PJ_TRUE
+    fn set_stun_ignore_failure(&self, value: bool);
+    fn get_stun_ignore_failure(&self) -> bool;
+    /// This specifies whether STUN requests for resolving socket mapped address should use the new format,
+    /// i.e: having STUN magic cookie in its transaction ID.
+    ///
+    /// [Default] PJ_FALSE
+    fn set_stun_map_use_stun2(&self, value: bool);
+    fn get_stun_map_use_stun2(&self) -> bool;
+    /// Support for adding and parsing NAT type in the SDP to assist troubleshooting. The valid values are:
+    ///
+    /// - 0: no information will be added in SDP, and parsing is disabled.
+    /// - 1: only the NAT type number is added.
+    /// - 2: add both NAT type number and name.
+    ///
+    /// [Default] 1
+    fn set_nat_type_in_sdp(&self, value: i32);
+    fn get_nat_type_in_sdp(&self) -> i32;
+    /// Specify how the support for reliable provisional response (100rel/ PRACK) should be used by default.
+    /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
+    ///
+    /// [Default] PJSUA_100REL_NOT_USED
+    fn set_require_100rel(&self, value: pjsua_100rel_use);
+    fn get_require_100rel(&self) -> pjsua_100rel_use;
+    /// Specify the usage of Session Timers for all sessions. See the pjsua_sip_timer_use for possible values.
+    /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
+    ///
+    /// [Default] PJSUA_SIP_TIMER_OPTIONAL
+    fn set_use_timer(&self, value: pjsua_sip_timer_use);
+    fn get_use_timer(&self) -> pjsua_sip_timer_use;
+    /// Handle unsolicited NOTIFY requests containing message waiting indication (MWI) info.
+    /// Unsolicited MWI is incoming NOTIFY requests which are not requested by client with SUBSCRIBE request.
+    ///
+    /// If this is enabled, the library will respond 200/OK
+    /// to the NOTIFY request and forward the request to on_mwi_info() callback.
+    ///
+    /// See also mwi_enabled field #on pjsua_acc_config.
+    ///
+    /// [Default] PJ_TRUE
+    fn set_enable_unsolicited_mwi(&self, value: bool);
+    fn get_enable_unsolicited_mwi(&self) -> bool;
+    /// Specify Session Timer settings, see pjsip_timer_setting.
+    /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
+    fn set_timer_setting(&self, value: pjsip_timer_setting);
+    fn get_timer_setting(&self) -> pjsip_timer_setting;
+    /// Number of credentials in the credential array.
+    fn set_cread_count(&self, value: u32);
+    fn get_cred_count(&self) -> u32;
+    /// Array of credentials. These credentials will be used by all accounts,
+    /// and can be used to authenticate against outbound proxies.
+    /// If the credential is specific to the account, then application should
+    /// set the credential in the pjsua_acc_config rather than the credential here.
+    fn set_cred_info(&self, value: [pjsip_cred_info; 8usize]);
+    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
+
+    // TODO create pjsua_callback.
+    // Application callback to receive various event notifications from the library.
+    // pub cb: pjsua_callback,
+
+    /// Optional user agent string (default empty).
+    /// If it's empty, no User-Agent header will be sent with outgoing requests.
+    fn set_user_agent(&self, value: String);
+    fn get_user_agent(&self) -> String;
+    /// Specify default value of secure media transport usage.
+    /// Valid values are PJMEDIA_SRTP_DISABLED, PJMEDIA_SRTP_OPTIONAL, and PJMEDIA_SRTP_MANDATORY.
+    ///
+    /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
+    ///
+    /// [Default]: PJSUA_DEFAULT_USE_SRTP
+    fn set_use_srtp(&self, value: pjmedia_srtp_use);
+    fn get_use_srtp(&self) -> pjmedia_srtp_use;
+    /// Specify whether SRTP requires secure signaling to be used. This option is only used when use_srtp option above is non-zero.
+    ///
+    /// Valid values are:
+    /// - 0: SRTP does not require secure signaling
+    /// - 1: SRTP requires secure transport such as TLS
+    /// - 2: SRTP requires secure end-to-end transport (SIPS)
+    ///
+    /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
+    ///
+    /// [Default] PJSUA_DEFAULT_SRTP_SECURE_SIGNALING
+    fn set_srtp_secure_signaling(&self, value: i32);
+    fn get_srtp_secure_signaling(&self) -> i32;
+    /// This setting has been deprecated and will be ignored.
+    fn set_srtp_optional_dup_offer(&self, value: bool);
+    fn get_srtp_optional_dup_offer(&self) -> bool;
+    /// Specify SRTP transport setting. Application can initialize it with
+    /// default values using pjsua_srtp_opt_default().
+    fn set_srtp_opt(&self, value: pjsua_srtp_opt);
+    fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+    /// Disconnect other call legs when more than one 2xx responses for outgoing INVITE
+    /// are received due to forking. Currently the library is not able to handle simultaneous
+    /// forked media, so disconnecting the other call legs is necessary.
+    ///
+    /// With this setting enabled, the library will handle only one of the connected call leg,
+    /// and the other connected call legs will be disconnected.
+    ///
+    /// [Default] PJ_TRUE (only disable this setting for testing purposes).
+    fn set_hangup_forked_call(&self, value: bool);
+    fn get_hangup_forked_call(&self) -> bool;
+}
+
 impl SIPUa {
 
     pub fn new() -> Self {
         SIPUa {
             ctx: RefCell::new(pjsua_config::new())
         }
+    }
+
+    pub fn get_context(&self) -> RefMut<pjsua_config> {
+        self.ctx.borrow_mut()
     }
 
     /// Use this function to initialize logging config.
@@ -74,9 +275,9 @@ impl SIPUa {
     /// Initialize pjsua with the specified settings. All the settings are optional,
     /// and the default values will be used when the config is not specified.
     /// Note that create() MUST be called before calling this function.
-    pub fn init(&mut self, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) {
+    pub fn init(&self, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) {
         pjsua::init(
-            &mut self.ctx.try_borrow_mut().expect("SIPUa::pjsua_init ctx value"),
+            &mut self.ctx.borrow_mut(),
             log_cfg,
             media_cfg
         ).expect("SIPUa::pjsua_init");
@@ -95,12 +296,11 @@ impl SIPUa {
     /// this function will do all of these if it finds there are active sessions that need to be terminated.
     /// This function will approximately block for one second to wait for replies from remote.\
     ///
-    /// Application.may safely call this function more than once if it doesn't keep track of it's state.
+    /// Application may safely call this function more than once if it doesn't keep track of it's state.
     ///
     /// See also
-    /// ```code
-    /// destroy2()
-    /// ```
+    ///
+    /// [`SIPUa::destroy2`]
     pub fn destroy(&self) {
         pjsua::destroy().expect("SIPUa::pjsua_destroy");
     }
@@ -272,12 +472,12 @@ impl SIPUa {
 
     /// Inform the stack that IP address change event was detected. The stack will:
     ///
-    /// - [Restart] the listener (this step is configurable via pjsua_ip_change_param.restart_listener).
-    /// - [Shutdown] the transport used by account registration
+    /// - `Restart` the listener (this step is configurable via pjsua_ip_change_param.restart_listener).
+    /// - `Shutdown` the transport used by account registration
     ///              (this step is configurable via pjsua_acc_config.ip_change_cfg.shutdown_tp).
-    /// - [Update] contact URI by sending re-Registration (this step is configurable via
+    /// - `Update` contact URI by sending re-Registration (this step is configurable via
     ///            pjsua_acc_config.allow_contact_rewrite and pjsua_acc_config.contact_rewrite_method)
-    /// - [Hangup] active calls (this step is configurable via a\ pjsua_acc_config.ip_change_cfg.hangup_calls)
+    /// - `Hangup` active calls (this step is configurable via a\ pjsua_acc_config.ip_change_cfg.hangup_calls)
     ///            or continue the call by sending re-INVITE (configurable via pjsua_acc_config.ip_change_cfg.reinvite_flags).
     pub fn handle_ip_change(&self, param: &mut pjsua_ip_change_param) {
         pjsua::handle_ip_change(param).expect("SIPUa::pjsua_handle_ip_change");
