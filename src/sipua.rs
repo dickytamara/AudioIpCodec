@@ -11,10 +11,12 @@ pub mod sip_buddy;
 pub mod sip_calls;
 pub mod sip_codec;
 pub mod sip_core;
+pub mod sip_log;
 pub mod sip_media;
 pub mod sip_presence;
 pub mod sip_tones;
 pub mod sip_transport;
+pub mod sip_ua;
 pub mod sip_wav;
 
 use super::pj_sys::*;

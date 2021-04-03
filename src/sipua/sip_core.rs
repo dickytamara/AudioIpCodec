@@ -12,6 +12,7 @@ use super::pjdefault::*;
 use super::sip_account::*;
 use super::sip_buddy::*;
 use super::sip_calls::*;
+use super::sip_log::*;
 use super::sip_media::*;
 use super::sip_presence::*;
 use super::sip_tones::*;
@@ -39,15 +40,13 @@ pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 pub struct SIPCore {
     pool: *mut pj_pool_t,
     app_config: pjsua_config,
-    log_config: pjsua_logging_config,
+    log_config: SIPLog,
     pub media_config: SIPMedia,
     no_udp: bool,
     no_tcp: bool,
     use_ipv6: bool,
     transports: SIPTransports,
-    // accounts: SIPAccounts,
     presence: SIPPresence,
-    // pub calls: SIPCalls,
     tones: Vec<SIPTones>,
     ringback: SIPRingback,
     ringtone: SIPRingtone,
@@ -62,7 +61,6 @@ pub struct SIPCore {
     auto_play_hangup: bool,
     duration: u32,
     current_call: i32,
-    // aud_cnt: u32,
     auto_answer: u32,
     events: SIPCoreEvents
 }
@@ -96,15 +94,13 @@ impl SIPCore {
         let sip_core = SIPCore {
             pool: ptr::null_mut(),
             app_config: pjsua_config::new(),
-            log_config: pjsua_logging_config::new(),
+            log_config: SIPLog::new(),
             media_config: SIPMedia::new(),
             no_udp: true,
             no_tcp: false,
             use_ipv6: false,
             transports: SIPTransports::new(),
-            // accounts: SIPAccounts::new(), // only reg acc not local
             presence: SIPPresence::new(),
-            // calls: SIPCalls::new(),
             tones: Vec::new(),
             ringback: SIPRingback::new(),
             ringtone: SIPRingtone::new(),
@@ -119,7 +115,6 @@ impl SIPCore {
             auto_play_hangup: false,
             duration: 0,
             current_call: -1,
-            // aud_cnt: 1,
             auto_answer: 0,
             events: SIPCoreEvents::new()
         };
@@ -156,7 +151,7 @@ impl SIPCore {
         // init pjsua
         pjsua::init(
             &mut self.app_config,
-            &mut self.log_config,
+            &mut self.log_config.get_context(),
             &mut self.media_config.get_context()
         ).unwrap();
 
@@ -273,13 +268,9 @@ impl SIPCore {
         current_call.answer2(&mut call_opt, 200, None, Some(&mut msg_data));
     }
 
-    pub fn call_account(&self) {
-
+    pub fn ringback_start(&self, call_id: pjsua_call_id) {
+        // start procedure ringback
     }
-
-
-
-    pub fn ringback_start(&self, call_id: pjsua_call_id) {}
 
     pub fn ring_stop(&self, call_id: &pjsua_call_id) {
         // ring stop on incomming call
@@ -377,8 +368,6 @@ impl SIPCore {
                 }
             }
         }
-
-
     }
 
     pub fn callback_on_stream_destroyed(&self, call_id: pjsua_call_id, strm: *mut pjmedia_stream, stream_idx: c_uint) {
@@ -663,6 +652,7 @@ impl SIPCore {
         status: pj_status_t,
         param: *mut c_void,
     ) {
+        // this only log print
         let ice_trans_op_text: String;
         let ice_status_text: String;
 
@@ -691,9 +681,7 @@ impl SIPCore {
         let mut play_dev = -1;
         let op: String;
 
-        unsafe {
-            pjsua_get_snd_dev(&mut cap_dev as *mut _, &mut play_dev as *mut _);
-        }
+        pjsua::get_snd_dev(&mut cap_dev, &mut play_dev).unwrap();
 
         if operation > 0 {
             op = String::from("ON");
@@ -714,10 +702,8 @@ impl SIPCore {
         med_idx: c_uint,
         event: *mut pjmedia_event)
     {
-
-
+        // if pjsua has support video
         println!("Event {}", "skip");
-
     }
 
     pub fn callback_on_ip_change_progress(

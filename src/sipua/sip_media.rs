@@ -14,7 +14,7 @@ use std::os::raw::c_uint;
 use std::ffi::CStr;
 
 
-// Media Implementation
+// Media and sound device implementation Implementation
 pub struct SIPMedia {
     ctx: pjsua_media_config,
     capture_dev: i32,
