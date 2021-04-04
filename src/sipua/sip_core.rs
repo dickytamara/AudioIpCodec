@@ -177,10 +177,10 @@ impl SIPCore {
         }
 
         // init ringback
-        self.ringback.init(self.pool, self.media_config.get_context());
+        self.ringback.init(self.pool, *self.media_config.get_context());
 
         // init ringtone
-        self.ringtone.init(self.pool, self.media_config.get_context());
+        self.ringtone.init(self.pool, *self.media_config.get_context());
 
         // Initialize UDP Transport
         if !self.no_udp {

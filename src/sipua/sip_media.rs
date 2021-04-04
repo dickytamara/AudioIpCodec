@@ -10,13 +10,13 @@ use super::pjdefault::*;
 use super::pjmedia;
 use super::pjsua;
 
-use std::os::raw::c_uint;
+use std::{cell::{RefCell, RefMut}, os::raw::c_uint};
 use std::ffi::CStr;
 
 
 // Media and sound device implementation Implementation
 pub struct SIPMedia {
-    ctx: pjsua_media_config,
+    ctx: RefCell<pjsua_media_config>,
     capture_dev: i32,
     playback_dev: i32,
     input_level: i32,
@@ -27,8 +27,8 @@ impl SIPMedia {
 
     // Create new SIP Media.
     pub fn new() -> Self {
-        let mut cfg = SIPMedia {
-            ctx: pjsua_media_config::new(),
+        let cfg = SIPMedia {
+            ctx: RefCell::new(pjsua_media_config::new()),
             capture_dev: -1,
             playback_dev: -2,
             input_level: 100,
@@ -36,24 +36,24 @@ impl SIPMedia {
         };
 
         // spesific tune for AudioIpCodec
-        cfg.ctx.clock_rate = 48000;
-        cfg.ctx.snd_clock_rate = 48000;
-        cfg.ctx.channel_count = 2;
+        cfg.ctx.borrow_mut().clock_rate = 48000;
+        cfg.ctx.borrow_mut().snd_clock_rate = 48000;
+        cfg.ctx.borrow_mut().channel_count = 2;
 
         // media encoding and decoding quality
-        cfg.ctx.quality = 10;
+        cfg.ctx.borrow_mut().quality = 10;
 
         // disable voice activity detection
-        cfg.ctx.no_vad = PJ_TRUE as pj_bool_t;
+        cfg.ctx.borrow_mut().no_vad = PJ_TRUE as pj_bool_t;
 
         // disable echo cancelar
-        cfg.ctx.ec_tail_len = 0;
-        cfg.ctx.ec_options = 0;
+        cfg.ctx.borrow_mut().ec_tail_len = 0;
+        cfg.ctx.borrow_mut().ec_options = 0;
 
         //ptime
-        cfg.ctx.ptime = 10;
-        cfg.ctx.jb_max = 3840;
-        cfg.ctx.jb_discard_algo = 0;
+        cfg.ctx.borrow_mut().ptime = 10;
+        cfg.ctx.borrow_mut().jb_max = 3840;
+        cfg.ctx.borrow_mut().jb_discard_algo = 0;
 
         cfg
     }
@@ -110,8 +110,8 @@ impl SIPMedia {
         result
     }
 
-    pub fn get_context(&self) -> pjsua_media_config {
-        self.ctx.clone()
+    pub fn get_context(&self) -> RefMut<pjsua_media_config> {
+        self.ctx.borrow_mut()
     }
 
     pub fn media_list () { }

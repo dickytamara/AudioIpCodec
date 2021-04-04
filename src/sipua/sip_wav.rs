@@ -41,7 +41,7 @@ impl SIPWavPlayer {
         };
 
         player.play_opt |= player.play_opt;
-        unsafe {
+        // unsafe {
 
             pjsua::player_create(
                 player.files.clone(),
@@ -74,7 +74,7 @@ impl SIPWavPlayer {
                 //     ptr::null_mut(),
                 //     Some(SIPWavPlayer::pj_timer_heap_callback),
                 // );
-            }
+            // }
         }
 
         player
