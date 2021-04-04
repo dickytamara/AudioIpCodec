@@ -1,12 +1,14 @@
 
 use std::cell::{RefCell, RefMut};
 
+use crate::pjproject::pjdefault::{boolean_to_pjbool, check_boolean};
+
 use super::pj_sys::*;
 use super::pjsip_sys::*;
 use super::pjmedia_sys::*;
 use super::pjsua_sys::*;
 
-use super::pjdefault::{AutoCreate, FromString};
+use super::pjdefault::{AutoCreate, FromString, ToString};
 use super::pjsua;
 
 
@@ -103,7 +105,8 @@ pub trait SIPUaExt {
     /// the STUN servers if the IPv4 resolution fails. It can be useful in an
     /// IPv6-only environment, including on NAT64.
     ///
-    /// [Default] PJ_FALSE
+    /// #Default
+    /// PJ_FALSE
     fn set_stun_try_ipv6(&self, value: bool);
     fn get_stun_try_ipv6(&self) -> bool;
     /// This specifies if the library should ignore failure with the STUN servers.
@@ -114,13 +117,15 @@ pub trait SIPUaExt {
     /// during runtime (if set to PJ_FALSE, calls will directly fail, otherwise
     /// (if PJ_TRUE) call medias will fallback to proceed as though not using STUN servers.
     ///
-    /// [Default] PJ_TRUE
+    /// # Default
+    /// PJ_TRUE
     fn set_stun_ignore_failure(&self, value: bool);
     fn get_stun_ignore_failure(&self) -> bool;
     /// This specifies whether STUN requests for resolving socket mapped address should use the new format,
     /// i.e: having STUN magic cookie in its transaction ID.
     ///
-    /// [Default] PJ_FALSE
+    /// # Default
+    /// PJ_FALSE
     fn set_stun_map_use_stun2(&self, value: bool);
     fn get_stun_map_use_stun2(&self) -> bool;
     /// Support for adding and parsing NAT type in the SDP to assist troubleshooting. The valid values are:
@@ -129,7 +134,8 @@ pub trait SIPUaExt {
     /// - 1: only the NAT type number is added.
     /// - 2: add both NAT type number and name.
     ///
-    /// [Default] 1
+    /// # Default
+    /// 1
     fn set_nat_type_in_sdp(&self, value: i32);
     fn get_nat_type_in_sdp(&self) -> i32;
     /// Specify how the support for reliable provisional response (100rel/ PRACK) should be used by default.
@@ -141,7 +147,8 @@ pub trait SIPUaExt {
     /// Specify the usage of Session Timers for all sessions. See the pjsua_sip_timer_use for possible values.
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
     ///
-    /// [Default] PJSUA_SIP_TIMER_OPTIONAL
+    /// # Default
+    /// PJSUA_SIP_TIMER_OPTIONAL
     fn set_use_timer(&self, value: pjsua_sip_timer_use);
     fn get_use_timer(&self) -> pjsua_sip_timer_use;
     /// Handle unsolicited NOTIFY requests containing message waiting indication (MWI) info.
@@ -152,7 +159,8 @@ pub trait SIPUaExt {
     ///
     /// See also mwi_enabled field #on pjsua_acc_config.
     ///
-    /// [Default] PJ_TRUE
+    /// # Default
+    /// PJ_TRUE
     fn set_enable_unsolicited_mwi(&self, value: bool);
     fn get_enable_unsolicited_mwi(&self) -> bool;
     /// Specify Session Timer settings, see pjsip_timer_setting.
@@ -160,7 +168,7 @@ pub trait SIPUaExt {
     fn set_timer_setting(&self, value: pjsip_timer_setting);
     fn get_timer_setting(&self) -> pjsip_timer_setting;
     /// Number of credentials in the credential array.
-    fn set_cread_count(&self, value: u32);
+    fn set_cred_count(&self, value: u32);
     fn get_cred_count(&self) -> u32;
     /// Array of credentials. These credentials will be used by all accounts,
     /// and can be used to authenticate against outbound proxies.
@@ -182,7 +190,8 @@ pub trait SIPUaExt {
     ///
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
     ///
-    /// [Default]: PJSUA_DEFAULT_USE_SRTP
+    /// # Default
+    /// PJSUA_DEFAULT_USE_SRTP`
     fn set_use_srtp(&self, value: pjmedia_srtp_use);
     fn get_use_srtp(&self) -> pjmedia_srtp_use;
     /// Specify whether SRTP requires secure signaling to be used. This option is only used when use_srtp option above is non-zero.
@@ -194,7 +203,8 @@ pub trait SIPUaExt {
     ///
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
     ///
-    /// [Default] PJSUA_DEFAULT_SRTP_SECURE_SIGNALING
+    /// # Default
+    /// PJSUA_DEFAULT_SRTP_SECURE_SIGNALING
     fn set_srtp_secure_signaling(&self, value: i32);
     fn get_srtp_secure_signaling(&self) -> i32;
     /// This setting has been deprecated and will be ignored.
@@ -211,7 +221,8 @@ pub trait SIPUaExt {
     /// With this setting enabled, the library will handle only one of the connected call leg,
     /// and the other connected call legs will be disconnected.
     ///
-    /// [Default] PJ_TRUE (only disable this setting for testing purposes).
+    /// # Default
+    /// PJ_TRUE (only disable this setting for testing purposes).
     fn set_hangup_forked_call(&self, value: bool);
     fn get_hangup_forked_call(&self) -> bool;
 }
@@ -481,6 +492,273 @@ impl SIPUa {
     ///            or continue the call by sending re-INVITE (configurable via pjsua_acc_config.ip_change_cfg.reinvite_flags).
     pub fn handle_ip_change(&self, param: &mut pjsua_ip_change_param) {
         pjsua::handle_ip_change(param).expect("SIPUa::pjsua_handle_ip_change");
+    }
+}
+
+
+impl SIPUaExt for SIPUa {
+
+    fn set_max_calls (&self, max_calls: u32) {
+        self.ctx.borrow_mut().max_calls = max_calls;
+    }
+
+    fn get_max_calls (&self) -> u32 {
+        self.ctx.borrow().max_calls
+    }
+
+    fn set_thread_cnt(&self, value: u32) {
+        self.ctx.borrow_mut().thread_cnt = value;
+    }
+
+    fn get_thread_cnt(&self) -> u32 {
+        self.ctx.borrow().thread_cnt
+    }
+
+    fn set_nameserver_count(&self, value: u32) {
+        self.ctx.borrow_mut().nameserver_count = value;
+    }
+
+    fn get_nameserver_count(&self) -> u32 {
+        self.ctx.borrow().nameserver_count
+    }
+
+    fn set_nameserver(&self, nameserver: [String; 4usize]) {
+
+        let mut tmp = [pj_str_t::new(); 4usize];
+
+        for (idx, value) in nameserver.iter().enumerate() {
+            tmp[idx] = pj_str_t::from_string(value.clone());
+        }
+
+        self.ctx.borrow_mut().nameserver = tmp;
+    }
+
+    fn get_nameserver(&self) -> [String; 4usize] {
+        // something not good to see.
+        let mut tmp= [String::new(), String::new(), String::new(), String::new()];
+        let nameserver = self.ctx.borrow().nameserver;
+
+        for idx in 0..4usize {
+            tmp[idx] = nameserver[idx].to_string();
+        }
+
+        tmp
+    }
+
+    fn set_force_lr(&self, value: bool) {
+        self.ctx.borrow_mut().force_lr = boolean_to_pjbool(value);
+    }
+
+    fn get_force_lr(&self) -> bool {
+        check_boolean(self.ctx.borrow().force_lr)
+    }
+
+    fn set_outbound_proxy_cnt(&self, value: u32) {
+        self.ctx.borrow_mut().outbound_proxy_cnt = value;
+    }
+
+    fn get_outbound_proxy_cnt(&self) -> u32 {
+        self.ctx.borrow().outbound_proxy_cnt
+    }
+
+    fn set_outbound_proxy(&self, value: [String; 4usize]) {
+        let mut tmp = [pj_str_t::new(); 4usize];
+
+        for (idx, value) in value.iter().enumerate() {
+            tmp[idx] = pj_str_t::from_string(value.clone());
+        }
+
+        self.ctx.borrow_mut().outbound_proxy = tmp;
+    }
+
+    fn get_outbound_proxy(&self) -> [String; 4usize] {
+        // something not good to see
+        let mut tmp= [String::new(), String::new(), String::new(), String::new()];
+        let outbound_proxy = self.ctx.borrow().outbound_proxy;
+
+        for idx in 0..4usize {
+            tmp[idx] = outbound_proxy[idx].to_string();
+        }
+
+        tmp
+    }
+
+    fn set_stun_domain(&self, value: String) {
+        self.ctx.borrow_mut().stun_domain = pj_str_t::from_string(value);
+    }
+
+    fn get_stun_domain(&self) -> String {
+        self.ctx.borrow().stun_domain.to_string()
+    }
+
+    fn set_stun_host(&self, value: String) {
+        self.ctx.borrow_mut().stun_host = pj_str_t::from_string(value);
+    }
+
+    fn get_stun_host(&self) -> String {
+        self.ctx.borrow().stun_host.to_string()
+    }
+
+    fn set_stun_srv_cnt(&self, value: u32) {
+        self.ctx.borrow_mut().stun_srv_cnt = value;
+    }
+
+    fn get_stun_srv_cnt(&self) -> u32 {
+        self.ctx.borrow().stun_srv_cnt
+    }
+
+    fn set_stun_srv(&self, value: [String; 8usize]) {
+        let mut tmp = [pj_str_t::new(); 8usize];
+
+        for (idx, value) in value.iter().enumerate() {
+            tmp[idx] = pj_str_t::from_string(value.clone());
+        }
+
+        self.ctx.borrow_mut().stun_srv = tmp;
+    }
+
+    fn get_stun_srv(&self) -> [String; 8usize] {
+        // something not good to see.
+        let mut tmp= [
+            String::new(), String::new(), String::new(), String::new(),
+            String::new(), String::new(), String::new(), String::new(),
+        ];
+
+        let stun_srv = self.ctx.borrow().stun_srv;
+
+        for idx in 0..8usize {
+            tmp[idx] = stun_srv[idx].to_string();
+        }
+
+        tmp
+    }
+
+    fn set_stun_try_ipv6(&self, value: bool) {
+        self.ctx.borrow_mut().stun_try_ipv6 = boolean_to_pjbool(value);
+    }
+
+    fn get_stun_try_ipv6(&self) -> bool {
+        check_boolean(self.ctx.borrow().stun_try_ipv6)
+    }
+
+    fn set_stun_ignore_failure(&self, value: bool) {
+        self.ctx.borrow_mut().stun_ignore_failure = boolean_to_pjbool(value);
+    }
+
+    fn get_stun_ignore_failure(&self) -> bool {
+        check_boolean(self.ctx.borrow().stun_ignore_failure)
+    }
+
+    fn set_stun_map_use_stun2(&self, value: bool) {
+        self.ctx.borrow_mut().stun_map_use_stun2 = boolean_to_pjbool(value);
+    }
+
+    fn get_stun_map_use_stun2(&self) -> bool {
+        check_boolean(self.ctx.borrow().stun_map_use_stun2)
+    }
+
+    fn set_nat_type_in_sdp(&self, value: i32) {
+        self.ctx.borrow_mut().nat_type_in_sdp = value;
+    }
+
+    fn get_nat_type_in_sdp(&self) -> i32 {
+        self.ctx.borrow().nat_type_in_sdp
+    }
+
+    fn set_require_100rel(&self, value: pjsua_100rel_use) {
+        self.ctx.borrow_mut().require_100rel = value;
+    }
+
+    fn get_require_100rel(&self) -> pjsua_100rel_use {
+        self.ctx.borrow().require_100rel
+    }
+
+    fn set_use_timer(&self, value: pjsua_sip_timer_use) {
+        self.ctx.borrow_mut().use_timer = value;
+    }
+
+    fn get_use_timer(&self) -> pjsua_sip_timer_use {
+        self.ctx.borrow().use_timer
+    }
+
+    fn set_enable_unsolicited_mwi(&self, value: bool) {
+        self.ctx.borrow_mut().enable_unsolicited_mwi = boolean_to_pjbool(value);
+    }
+
+    fn get_enable_unsolicited_mwi(&self) -> bool {
+        check_boolean(self.ctx.borrow().enable_unsolicited_mwi)
+    }
+
+    fn set_timer_setting(&self, value: pjsip_timer_setting) {
+        self.ctx.borrow_mut().timer_setting = value;
+    }
+
+    fn get_timer_setting(&self) -> pjsip_timer_setting {
+        self.ctx.borrow().timer_setting
+    }
+
+    fn set_cred_count(&self, value: u32) {
+        self.ctx.borrow_mut().cred_count = value;
+    }
+
+    fn get_cred_count(&self) -> u32 {
+        self.ctx.borrow().cred_count
+    }
+
+    fn set_cred_info(&self, value: [pjsip_cred_info; 8usize]) {
+        self.ctx.borrow_mut().cred_info = value;
+    }
+
+    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize] {
+        self.ctx.borrow().cred_info
+    }
+
+    fn set_user_agent(&self, value: String) {
+        self.ctx.borrow_mut().user_agent = pj_str_t::from_string(value);
+    }
+
+    fn get_user_agent(&self) -> String {
+        self.ctx.borrow().user_agent.to_string()
+    }
+
+    fn set_use_srtp(&self, value: pjmedia_srtp_use) {
+        self.ctx.borrow_mut().use_srtp = value;
+    }
+
+    fn get_use_srtp(&self) -> pjmedia_srtp_use {
+        self.ctx.borrow().use_srtp
+    }
+
+    fn set_srtp_secure_signaling(&self, value: i32) {
+        self.ctx.borrow_mut().srtp_secure_signaling = value;
+    }
+
+    fn get_srtp_secure_signaling(&self) -> i32 {
+        self.ctx.borrow().srtp_secure_signaling
+    }
+
+    fn set_srtp_optional_dup_offer(&self, value: bool) {
+        self.ctx.borrow_mut().srtp_optional_dup_offer = boolean_to_pjbool(value)
+    }
+
+    fn get_srtp_optional_dup_offer(&self) -> bool {
+        check_boolean(self.ctx.borrow().srtp_optional_dup_offer)
+    }
+
+    fn set_srtp_opt(&self, value: pjsua_srtp_opt) {
+        self.ctx.borrow_mut().srtp_opt = value;
+    }
+
+    fn get_srtp_opt(&self) -> pjsua_srtp_opt {
+        self.ctx.borrow().srtp_opt
+    }
+
+    fn set_hangup_forked_call(&self, value: bool) {
+        self.ctx.borrow_mut().hangup_forked_call = boolean_to_pjbool(value);
+    }
+
+    fn get_hangup_forked_call(&self) -> bool {
+        check_boolean(self.ctx.borrow().hangup_forked_call)
     }
 }
 
