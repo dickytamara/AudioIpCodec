@@ -6,6 +6,7 @@ use super::pjsua_sys::*;
 
 use super::pjsua::*;
 use super::pjdefault::*;
+use super::pjdefault::{ToString, FromString};
 
 use super::pjmedia;
 use super::pjsua;
@@ -24,113 +25,216 @@ pub struct SIPMedia {
 }
 
 pub trait SIPMediaExt {
-    //     pub clock_rate: c_uint,
+    /// Clock rate to be applied to the conference bridge. If value is zero,
+    /// default clock rate will be used (PJSUA_DEFAULT_CLOCK_RATE, which by default is 16KHz).
     fn set_clock_rate(&self, value: u32);
     fn get_clock_rate(&self) -> u32;
-    //     pub snd_clock_rate: c_uint,
+    /// Clock rate to be applied when opening the sound device. If value is zero,
+    /// conference bridge clock rate will be used.
     fn set_snd_clock_rate(&self, value: u32);
     fn get_snd_clock_rate(&self) -> u32;
-    //     pub channel_count: c_uint,
+    /// Channel count be applied when opening the sound device and conference bridge.
     fn set_channel_count(&self, value: u32);
     fn get_channel_count(&self) -> u32;
-    //     pub audio_frame_ptime: c_uint,
+    /// Specify audio frame ptime. The value here will affect the samples per frame of both the
+    /// sound device and the conference bridge. Specifying lower ptime will normally reduce the latency.
+    ///
+    /// # Default
+    /// PJSUA_DEFAULT_AUDIO_FRAME_PTIME
     fn set_audio_frame_ptime(&self, value: u32);
     fn get_audio_frame_ptime(&self) -> u32;
-    //     pub max_media_ports: c_uint,
+    /// Specify maximum number of media ports to be created in the conference bridge.
+    /// Since all media terminate in the bridge (calls, file player, file recorder, etc),
+    /// the value must be large enough to support all of them. However,
+    /// the larger the value, the more computations are performed.
+    ///
+    /// # Default
+    /// PJSUA_MAX_CONF_PORTS
     fn set_max_media_ports(&self, value: u32);
     fn get_max_media_ports(&self) -> u32;
-    //     pub has_ioqueue: pj_bool_t,
+    /// Specify whether the media manager should manage its own ioqueue for the RTP/RTCP sockets.
+    /// If yes, ioqueue will be created and at least one worker thread will be created too.
+    /// If no, the RTP/RTCP sockets will share the same ioqueue as SIP sockets,
+    /// and no worker thread is needed.
+    ///
+    /// Normally application would say yes here, unless it wants to run everything from a single thread.
     fn set_has_ioqueue(&self, value: bool);
     fn get_has_ioqueue(&self) -> bool;
-    //     pub thread_cnt: c_uint,
+    /// Specify the number of worker threads to handle incoming RTP packets.
+    /// A value of one is recommended for most applications.
     fn set_thread_cnt(&self, value: u32);
-    fn get_thread_cnt(&self);
-    //     pub quality: c_uint,
+    fn get_thread_cnt(&self) -> u32;
+    /// Media quality, 0-10, according to this table: 5-10:
+    /// - resampling use large filter, 3-4:
+    /// - resampling use small filter, 1-2:
+    /// - resampling use linear.
+    /// The media quality also sets speex codec quality/complexity to the number.
+    ///
+    /// # Default
+    /// 5 (PJSUA_DEFAULT_CODEC_QUALITY).
     fn set_quality(&self, value: u32);
     fn get_quality(&self) -> u32;
-    //     pub ptime: c_uint,
+    /// Specify default codec ptime.
+    ///
+    /// # Default
+    /// 0 (codec specific)
     fn set_ptime(&self, value: u32);
     fn get_ptime(&self) -> u32;
-    //     pub no_vad: pj_bool_t,
+    /// Disable VAD?
+    ///
+    /// # Default
+    /// true (no (meaning VAD is enabled))
     fn set_no_vad(&self, value: bool);
     fn get_no_vad(&self) -> bool;
-    //     pub ilbc_mode: c_uint,
-    fn set_ilbc_mode(&self, value: bool);
-    fn get_ilbc_mode(&self) -> bool;
-    //     pub tx_drop_pct: c_uint,
+    /// iLBC mode (20 or 30).
+    ///
+    /// # Default
+    /// 30 (PJSUA_DEFAULT_ILBC_MODE)
+    fn set_ilbc_mode(&self, value: u32);
+    fn get_ilbc_mode(&self) -> u32;
+    /// Percentage of RTP packet to drop in TX direction (to simulate packet lost).
+    ///
+    /// # Default
+    /// 0
     fn set_tx_drop_pct(&self, value: u32);
     fn get_tx_drop_pct(&self) -> u32;
-    //     pub rx_drop_pct: c_uint,
+    /// Percentage of RTP packet to drop in RX direction (to simulate packet lost).
+    ///
+    /// # Default
+    /// 0
     fn set_rx_drop_pct(&self, value: u32);
     fn get_rx_drop_pct(&self) -> u32;
-    //     pub ec_options: c_uint,
+    /// Echo canceller options (see pjmedia_echo_create()).
+    /// Specify PJMEDIA_ECHO_USE_SW_ECHO here if application wishes
+    /// to use software echo canceller instead of device EC.
+    ///
+    /// # Default
+    /// 0.
     fn set_ec_options(&self, value: u32);
     fn get_ec_options(&self) -> u32;
-    //     pub ec_tail_len: c_uint,
+    /// Echo canceller tail length, in miliseconds.
+    ///
+    /// # Default
+    ///  PJSUA_DEFAULT_EC_TAIL_LEN
     fn set_ec_tail_len(&self, value: u32);
     fn get_ec_tail_len(&self) -> u32;
-    //     pub snd_rec_latency: c_uint,
+    /// Audio capture buffer length, in milliseconds.
+    ///
+    /// # Default
+    /// PJMEDIA_SND_DEFAULT_REC_LATENCY
     fn set_snd_rec_latency(&self, value: u32);
     fn get_snd_rec_latency(&self) -> u32;
-    //     pub snd_play_latency: c_uint,
+    /// Audio playback buffer length, in milliseconds.
+    ///
+    /// # Default
+    /// PJMEDIA_SND_DEFAULT_PLAY_LATENCY
     fn set_snd_play_latency(&self, value: u32);
     fn get_snd_paly_latency(&self) -> u32;
-    //     pub jb_init: c_int,
+    /// Jitter buffer initial prefetch delay in msec.
+    /// The value must be between jb_min_pre and jb_max_pre below.
+    /// If the value is 0, prefetching will be disabled.
+    ///
+    /// # Default
+    /// -1 (to use default stream settings, currently 0)
     fn set_jb_init(&self, value: i32);
     fn get_jb_init(&self) -> i32;
-    //     pub jb_min_pre: c_int,
+    /// Jitter buffer minimum prefetch delay in msec.
+    ///
+    /// # Default
+    /// -1 (to use default stream settings, currently 60 msec)
     fn set_jb_min_pre(&self, value: i32);
     fn get_jb_min_pre(&self) -> i32;
-    //     pub jb_max_pre: c_int,
+    /// Jitter buffer maximum prefetch delay in msec.
+    ///
+    /// Default
+    /// -1 (to use default stream settings, currently 240 msec)
     fn set_jb_max_pre(&self, value: i32);
     fn get_jb_max_pre(&self) -> i32;
-    //     pub jb_max: c_int,
+    /// Set maximum delay that can be accomodated by the jitter buffer msec.
+    ///
+    /// Default
+    /// -1 (to use default stream settings, currently 360 msec)
     fn set_jb_max(&self, value: i32);
     fn get_jb_max(&self) -> i32;
     //     pub jb_discard_algo: pjmedia_jb_discard_algo,
     fn set_jb_discard_algo(&self, value: pjmedia_jb_discard_algo);
     fn get_jb_discard_algo(&self) -> pjmedia_jb_discard_algo;
-    //     pub enable_ice: pj_bool_t,
+    /// Enable ICE
     fn set_enable_ice(&self, value: bool);
     fn get_enable_ice(&self) -> bool;
-    //     pub ice_max_host_cands: c_int,
+    /// Set the maximum number of host candidates.
+    ///
+    /// # Default
+    /// -1 (maximum not set)
     fn set_ice_max_host_cands(&self, value: bool);
     fn get_ice_max_host_cands(&self) -> bool;
-    //     pub ice_opt: pj_ice_sess_options,
+    /// ICE session options.
     fn set_ice_opt(&self, value: pj_ice_sess_options);
     fn get_ice_opt(&self) -> pj_ice_sess_options;
-    //     pub ice_no_rtcp: pj_bool_t,
+    /// Disable RTCP component.
+    ///
+    /// # Default
+    /// no
     fn set_ice_no_rtcp(&self, value: bool);
     fn get_ice_no_rtcp(&self) -> bool;
-    //     pub ice_always_update: pj_bool_t,
+    /// Send re-INVITE/UPDATE every after ICE connectivity check regardless the
+    /// default ICE transport address is changed or not. When this is set to PJ_FALSE,
+    /// re-INVITE/UPDATE will be sent only when the default ICE transport address is changed.
+    ///
+    /// # Default
+    /// yes
     fn set_ice_always_update(&self, value: bool);
     fn get_ice_always_update(&self) -> bool;
-    //     pub enable_turn: pj_bool_t,
+    /// Enable TURN relay candidate in ICE.
     fn set_enable_turn(&self, value: bool);
     fn get_enable_turn(&self) -> bool;
-    //     pub turn_server: pj_str_t,
+    /// Specify TURN domain name or host name, in in "DOMAIN:PORT" or "HOST:PORT" format.
     fn set_turn_server(&self, value: String);
     fn get_turn_server(&self) -> String;
-    //     pub turn_conn_type: pj_turn_tp_type,
-    fn set_turn_conn_type(&self, value: String);
-    fn get_turn_conn_type(&self) -> String;
-    //     pub turn_auth_cred: pj_stun_auth_cred,
+    /// Specify the connection type to be used to the TURN server.
+    /// Valid values are PJ_TURN_TP_UDP, PJ_TURN_TP_TCP or PJ_TURN_TP_TLS.
+    ///
+    /// # Default
+    /// PJ_TURN_TP_UDP
+    fn set_turn_conn_type(&self, value: pj_turn_tp_type);
+    fn get_turn_conn_type(&self) -> pj_turn_tp_type;
+    /// Specify the credential to authenticate with the TURN server.
     fn set_turn_auth_cred(&self, value: pj_stun_auth_cred);
     fn get_turn_auth_cred(&self) -> pj_stun_auth_cred;
-    //     pub turn_tls_setting: pj_turn_sock_tls_cfg,
+    /// This specifies TLS settings for TLS transport. It is only be used when this TLS
+    /// is used to connect to the TURN server.
     fn set_turn_tls_setting(&self, value: pj_turn_sock_tls_cfg);
     fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg;
-    //     pub snd_auto_close_time: c_int,
+    /// Specify idle time of sound device before it is automatically closed,
+    /// in seconds. Use value -1 to disable the auto-close feature of sound device
+    ///
+    /// # Default
+    /// 1
     fn set_snd_auto_close_time(&self, value: i32);
     fn get_snd_auto_close_time(&self) -> i32;
 
     // skiped
     //     pub vid_preview_enable_native: pj_bool_t,
 
-    //     pub no_smart_media_update: pj_bool_t,
+    /// Disable smart media update (ticket #1568). The smart media update will check
+    /// for any changes in the media properties after a successful SDP negotiation
+    /// and the media will only be reinitialized when any change is found. When it is disabled,
+    /// media streams will always be reinitialized after a successful SDP negotiation.
+    ///
+    /// Note for third party media, the smart media update requires stream info
+    /// retrieval capability, see PJSUA_THIRD_PARTY_STREAM_HAS_GET_INFO.
+    ///
+    /// # Default
+    /// PJ_FALSE
     fn set_no_smart_media_update(&self, value: bool);
     fn get_no_smart_media_update(&self) -> bool;
-    //     pub no_rtcp_sdes_bye: pj_bool_t,
+    /// Omit RTCP SDES and BYE in outgoing RTCP packet, this setting will be applied
+    /// for both audio and video streams. Note that, when RTCP SDES and BYE are set
+    /// to be omitted, RTCP SDES will still be sent once when the stream starts/stops
+    /// and RTCP BYE will be sent once when the stream stops.
+    ///
+    /// # Default
+    /// PJ_FALSE
     fn set_no_rtcp_sdes_bye(&self, value: bool);
     fn get_no_rtcp_sdes_bye(&self) -> bool;
 
@@ -152,24 +256,24 @@ impl SIPMedia {
         };
 
         // spesific tune for AudioIpCodec
-        cfg.ctx.borrow_mut().clock_rate = 48000;
-        cfg.ctx.borrow_mut().snd_clock_rate = 48000;
-        cfg.ctx.borrow_mut().channel_count = 2;
+        cfg.set_clock_rate(48000);
+        cfg.set_snd_clock_rate(48000);
+        cfg.set_channel_count(2);
 
         // media encoding and decoding quality
-        cfg.ctx.borrow_mut().quality = 10;
+        cfg.set_quality(10);
 
         // disable voice activity detection
-        cfg.ctx.borrow_mut().no_vad = PJ_TRUE as pj_bool_t;
+        cfg.set_no_vad(true);
 
         // disable echo cancelar
-        cfg.ctx.borrow_mut().ec_tail_len = 0;
-        cfg.ctx.borrow_mut().ec_options = 0;
+        cfg.set_ec_tail_len(0);
+        cfg.set_ec_options(0);
 
         //ptime
-        cfg.ctx.borrow_mut().ptime = 10;
-        cfg.ctx.borrow_mut().jb_max = 3840;
-        cfg.ctx.borrow_mut().jb_discard_algo = 0;
+        cfg.set_ptime(10);
+        cfg.set_jb_max(3840);
+        cfg.set_jb_discard_algo(0);
 
         cfg
     }
@@ -282,5 +386,288 @@ impl SIPMedia {
         );
 
         (tx_l, tx_r, rx_l, rx_r)
+    }
+}
+
+impl SIPMediaExt for SIPMedia {
+
+    fn set_clock_rate(&self, value: u32) {
+        self.ctx.borrow_mut().clock_rate = value;
+    }
+
+    fn get_clock_rate(&self) -> u32 {
+        self.ctx.borrow().clock_rate
+    }
+
+    fn set_snd_clock_rate(&self, value: u32) {
+        self.ctx.borrow_mut().snd_clock_rate = value;
+    }
+
+    fn get_snd_clock_rate(&self) -> u32 {
+        self.ctx.borrow().snd_clock_rate
+    }
+
+    fn set_channel_count(&self, value: u32) {
+        self.ctx.borrow_mut().channel_count = value;
+    }
+
+    fn get_channel_count(&self) -> u32 {
+        self.ctx.borrow().channel_count
+    }
+
+    fn set_audio_frame_ptime(&self, value: u32) {
+        self.ctx.borrow_mut().audio_frame_ptime = value;
+    }
+
+    fn get_audio_frame_ptime(&self) -> u32 {
+        self.ctx.borrow().audio_frame_ptime
+    }
+
+    fn set_max_media_ports(&self, value: u32) {
+        self.ctx.borrow_mut().max_media_ports = value;
+    }
+
+    fn get_max_media_ports(&self) -> u32 {
+        self.ctx.borrow().max_media_ports
+    }
+
+    fn set_has_ioqueue(&self, value: bool) {
+        self.ctx.borrow_mut().has_ioqueue = boolean_to_pjbool(value);
+    }
+
+    fn get_has_ioqueue(&self) -> bool {
+        check_boolean(self.ctx.borrow().has_ioqueue)
+    }
+
+    fn set_thread_cnt(&self, value: u32) {
+        self.ctx.borrow_mut().thread_cnt = value;
+    }
+
+    fn get_thread_cnt(&self) -> u32 {
+        self.ctx.borrow().thread_cnt
+    }
+
+    fn set_quality(&self, value: u32) {
+        self.ctx.borrow_mut().quality = value;
+    }
+
+    fn get_quality(&self) -> u32 {
+        self.ctx.borrow().quality
+    }
+
+    fn set_ptime(&self, value: u32) {
+        self.ctx.borrow_mut().ptime = value;
+    }
+
+    fn get_ptime(&self) -> u32 {
+        self.ctx.borrow().ptime
+    }
+
+    fn set_no_vad(&self, value: bool) {
+        self.ctx.borrow_mut().no_vad = boolean_to_pjbool(value);
+    }
+
+    fn get_no_vad(&self) -> bool {
+        check_boolean(self.ctx.borrow().no_vad)
+    }
+
+    fn set_ilbc_mode(&self, value: u32) {
+        self.ctx.borrow_mut().ilbc_mode = value;
+    }
+
+    fn get_ilbc_mode(&self) -> u32 {
+        self.ctx.borrow().ilbc_mode
+    }
+
+    fn set_tx_drop_pct(&self, value: u32) {
+        self.ctx.borrow_mut().tx_drop_pct = value;
+    }
+
+    fn get_tx_drop_pct(&self) -> u32 {
+        self.ctx.borrow().tx_drop_pct
+    }
+
+    fn set_rx_drop_pct(&self, value: u32) {
+        self.ctx.borrow_mut().rx_drop_pct = value;
+    }
+
+    fn get_rx_drop_pct(&self) -> u32 {
+        self.ctx.borrow().rx_drop_pct
+    }
+
+    fn set_ec_options(&self, value: u32) {
+        self.ctx.borrow_mut().ec_options = value;
+    }
+
+    fn get_ec_options(&self) -> u32 {
+        self.ctx.borrow().ec_options
+    }
+
+    fn set_ec_tail_len(&self, value: u32) {
+        self.ctx.borrow_mut().ec_tail_len = value;
+    }
+
+    fn get_ec_tail_len(&self) -> u32 {
+        self.ctx.borrow().ec_tail_len
+    }
+
+    fn set_snd_rec_latency(&self, value: u32) {
+        self.ctx.borrow_mut().snd_rec_latency = value;
+    }
+
+    fn get_snd_rec_latency(&self) -> u32 {
+        self.ctx.borrow().snd_rec_latency
+    }
+
+    fn set_snd_play_latency(&self, value: u32) {
+        self.ctx.borrow_mut().snd_play_latency = value;
+    }
+
+    fn get_snd_paly_latency(&self) -> u32 {
+        self.ctx.borrow().snd_play_latency
+    }
+
+    fn set_jb_init(&self, value: i32) {
+        self.ctx.borrow_mut().jb_init = value;
+    }
+
+    fn get_jb_init(&self) -> i32 {
+        self.ctx.borrow().jb_init
+    }
+
+    fn set_jb_min_pre(&self, value: i32) {
+        self.ctx.borrow_mut().jb_min_pre = value;
+    }
+
+    fn get_jb_min_pre(&self) -> i32 {
+        self.ctx.borrow().jb_min_pre
+    }
+
+    fn set_jb_max_pre(&self, value: i32) {
+        self.ctx.borrow_mut().jb_max_pre = value;
+    }
+
+    fn get_jb_max_pre(&self) -> i32 {
+        self.ctx.borrow().jb_max_pre
+    }
+
+    fn set_jb_max(&self, value: i32) {
+        self.ctx.borrow_mut().jb_max = value;
+    }
+
+    fn get_jb_max(&self) -> i32 {
+        self.ctx.borrow().jb_max
+    }
+
+    fn set_jb_discard_algo(&self, value: pjmedia_jb_discard_algo) {
+        self.ctx.borrow_mut().jb_discard_algo = value;
+    }
+
+    fn get_jb_discard_algo(&self) -> pjmedia_jb_discard_algo {
+        self.ctx.borrow().jb_discard_algo
+    }
+
+    fn set_enable_ice(&self, value: bool) {
+        self.ctx.borrow_mut().enable_ice = boolean_to_pjbool(value);
+    }
+
+    fn get_enable_ice(&self) -> bool {
+        check_boolean(self.ctx.borrow().enable_ice)
+    }
+
+    fn set_ice_max_host_cands(&self, value: bool) {
+        self.ctx.borrow_mut().ice_max_host_cands = boolean_to_pjbool(value);
+    }
+
+    fn get_ice_max_host_cands(&self) -> bool {
+        check_boolean(self.ctx.borrow().ice_max_host_cands)
+    }
+
+    fn set_ice_opt(&self, value: pj_ice_sess_options) {
+        self.ctx.borrow_mut().ice_opt = value;
+    }
+
+    fn get_ice_opt(&self) -> pj_ice_sess_options {
+        self.ctx.borrow().ice_opt
+    }
+
+    fn set_ice_no_rtcp(&self, value: bool) {
+        self.ctx.borrow_mut().ice_no_rtcp = boolean_to_pjbool(value);
+    }
+
+    fn get_ice_no_rtcp(&self) -> bool {
+        check_boolean(self.ctx.borrow().ice_no_rtcp)
+    }
+
+    fn set_ice_always_update(&self, value: bool) {
+        self.ctx.borrow_mut().ice_always_update = boolean_to_pjbool(value);
+    }
+
+    fn get_ice_always_update(&self) -> bool {
+        check_boolean(self.ctx.borrow_mut().ice_always_update)
+    }
+
+    fn set_enable_turn(&self, value: bool) {
+        self.ctx.borrow_mut().enable_turn = boolean_to_pjbool(value);
+    }
+
+    fn get_enable_turn(&self) -> bool {
+        check_boolean(self.ctx.borrow().enable_turn)
+    }
+
+    fn set_turn_server(&self, value: String) {
+        self.ctx.borrow_mut().turn_server = pj_str_t::from_string(value);
+    }
+
+    fn get_turn_server(&self) -> String {
+        self.ctx.borrow().turn_server.to_string()
+    }
+
+    fn set_turn_conn_type(&self, value: pj_turn_tp_type) {
+        self.ctx.borrow_mut().turn_conn_type = value;
+    }
+
+    fn get_turn_conn_type(&self) -> pj_turn_tp_type {
+        self.ctx.borrow().turn_conn_type
+    }
+
+    fn set_turn_auth_cred(&self, value: pj_stun_auth_cred) {
+        self.ctx.borrow_mut().turn_auth_cred = value;
+    }
+
+    fn get_turn_auth_cred(&self) -> pj_stun_auth_cred {
+        self.ctx.borrow().turn_auth_cred
+    }
+
+    fn set_turn_tls_setting(&self, value: pj_turn_sock_tls_cfg) {
+        self.ctx.borrow_mut().turn_tls_setting = value;
+    }
+
+    fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg {
+        self.ctx.borrow().turn_tls_setting
+    }
+
+    fn set_snd_auto_close_time(&self, value: i32) {
+        self.ctx.borrow_mut().snd_auto_close_time = value;
+    }
+
+    fn get_snd_auto_close_time(&self) -> i32 {
+        self.ctx.borrow().snd_auto_close_time
+    }
+
+    fn set_no_smart_media_update(&self, value: bool) {
+        self.ctx.borrow_mut().no_smart_media_update = boolean_to_pjbool(value);
+    }
+
+    fn get_no_smart_media_update(&self) -> bool {
+        check_boolean(self.ctx.borrow().no_smart_media_update)
+    }
+
+    fn set_no_rtcp_sdes_bye(&self, value: bool) {
+        self.ctx.borrow_mut().no_rtcp_sdes_bye = boolean_to_pjbool(value);
+    }
+
+    fn get_no_rtcp_sdes_bye(&self) -> bool {
+        check_boolean(self.ctx.borrow().no_rtcp_sdes_bye)
     }
 }
