@@ -23,6 +23,122 @@ pub struct SIPMedia {
     output_level: i32
 }
 
+pub trait SIPMediaExt {
+    //     pub clock_rate: c_uint,
+    fn set_clock_rate(&self, value: u32);
+    fn get_clock_rate(&self) -> u32;
+    //     pub snd_clock_rate: c_uint,
+    fn set_snd_clock_rate(&self, value: u32);
+    fn get_snd_clock_rate(&self) -> u32;
+    //     pub channel_count: c_uint,
+    fn set_channel_count(&self, value: u32);
+    fn get_channel_count(&self) -> u32;
+    //     pub audio_frame_ptime: c_uint,
+    fn set_audio_frame_ptime(&self, value: u32);
+    fn get_audio_frame_ptime(&self) -> u32;
+    //     pub max_media_ports: c_uint,
+    fn set_max_media_ports(&self, value: u32);
+    fn get_max_media_ports(&self) -> u32;
+    //     pub has_ioqueue: pj_bool_t,
+    fn set_has_ioqueue(&self, value: bool);
+    fn get_has_ioqueue(&self) -> bool;
+    //     pub thread_cnt: c_uint,
+    fn set_thread_cnt(&self, value: u32);
+    fn get_thread_cnt(&self);
+    //     pub quality: c_uint,
+    fn set_quality(&self, value: u32);
+    fn get_quality(&self) -> u32;
+    //     pub ptime: c_uint,
+    fn set_ptime(&self, value: u32);
+    fn get_ptime(&self) -> u32;
+    //     pub no_vad: pj_bool_t,
+    fn set_no_vad(&self, value: bool);
+    fn get_no_vad(&self) -> bool;
+    //     pub ilbc_mode: c_uint,
+    fn set_ilbc_mode(&self, value: bool);
+    fn get_ilbc_mode(&self) -> bool;
+    //     pub tx_drop_pct: c_uint,
+    fn set_tx_drop_pct(&self, value: u32);
+    fn get_tx_drop_pct(&self) -> u32;
+    //     pub rx_drop_pct: c_uint,
+    fn set_rx_drop_pct(&self, value: u32);
+    fn get_rx_drop_pct(&self) -> u32;
+    //     pub ec_options: c_uint,
+    fn set_ec_options(&self, value: u32);
+    fn get_ec_options(&self) -> u32;
+    //     pub ec_tail_len: c_uint,
+    fn set_ec_tail_len(&self, value: u32);
+    fn get_ec_tail_len(&self) -> u32;
+    //     pub snd_rec_latency: c_uint,
+    fn set_snd_rec_latency(&self, value: u32);
+    fn get_snd_rec_latency(&self) -> u32;
+    //     pub snd_play_latency: c_uint,
+    fn set_snd_play_latency(&self, value: u32);
+    fn get_snd_paly_latency(&self) -> u32;
+    //     pub jb_init: c_int,
+    fn set_jb_init(&self, value: i32);
+    fn get_jb_init(&self) -> i32;
+    //     pub jb_min_pre: c_int,
+    fn set_jb_min_pre(&self, value: i32);
+    fn get_jb_min_pre(&self) -> i32;
+    //     pub jb_max_pre: c_int,
+    fn set_jb_max_pre(&self, value: i32);
+    fn get_jb_max_pre(&self) -> i32;
+    //     pub jb_max: c_int,
+    fn set_jb_max(&self, value: i32);
+    fn get_jb_max(&self) -> i32;
+    //     pub jb_discard_algo: pjmedia_jb_discard_algo,
+    fn set_jb_discard_algo(&self, value: pjmedia_jb_discard_algo);
+    fn get_jb_discard_algo(&self) -> pjmedia_jb_discard_algo;
+    //     pub enable_ice: pj_bool_t,
+    fn set_enable_ice(&self, value: bool);
+    fn get_enable_ice(&self) -> bool;
+    //     pub ice_max_host_cands: c_int,
+    fn set_ice_max_host_cands(&self, value: bool);
+    fn get_ice_max_host_cands(&self) -> bool;
+    //     pub ice_opt: pj_ice_sess_options,
+    fn set_ice_opt(&self, value: pj_ice_sess_options);
+    fn get_ice_opt(&self) -> pj_ice_sess_options;
+    //     pub ice_no_rtcp: pj_bool_t,
+    fn set_ice_no_rtcp(&self, value: bool);
+    fn get_ice_no_rtcp(&self) -> bool;
+    //     pub ice_always_update: pj_bool_t,
+    fn set_ice_always_update(&self, value: bool);
+    fn get_ice_always_update(&self) -> bool;
+    //     pub enable_turn: pj_bool_t,
+    fn set_enable_turn(&self, value: bool);
+    fn get_enable_turn(&self) -> bool;
+    //     pub turn_server: pj_str_t,
+    fn set_turn_server(&self, value: String);
+    fn get_turn_server(&self) -> String;
+    //     pub turn_conn_type: pj_turn_tp_type,
+    fn set_turn_conn_type(&self, value: String);
+    fn get_turn_conn_type(&self) -> String;
+    //     pub turn_auth_cred: pj_stun_auth_cred,
+    fn set_turn_auth_cred(&self, value: pj_stun_auth_cred);
+    fn get_turn_auth_cred(&self) -> pj_stun_auth_cred;
+    //     pub turn_tls_setting: pj_turn_sock_tls_cfg,
+    fn set_turn_tls_setting(&self, value: pj_turn_sock_tls_cfg);
+    fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg;
+    //     pub snd_auto_close_time: c_int,
+    fn set_snd_auto_close_time(&self, value: i32);
+    fn get_snd_auto_close_time(&self) -> i32;
+
+    // skiped
+    //     pub vid_preview_enable_native: pj_bool_t,
+
+    //     pub no_smart_media_update: pj_bool_t,
+    fn set_no_smart_media_update(&self, value: bool);
+    fn get_no_smart_media_update(&self) -> bool;
+    //     pub no_rtcp_sdes_bye: pj_bool_t,
+    fn set_no_rtcp_sdes_bye(&self, value: bool);
+    fn get_no_rtcp_sdes_bye(&self) -> bool;
+
+    // TODO implement callback
+    //     pub on_aud_prev_play_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
+    //     pub on_aud_prev_rec_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
+}
+
 impl SIPMedia {
 
     // Create new SIP Media.

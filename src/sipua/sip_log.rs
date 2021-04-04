@@ -26,7 +26,7 @@ pub trait SIPLogExt {
     /// Get Verbosity level for console. Value 4 is reasonable.
     fn get_console_level(&self) -> u32;
     /// Set Verbosity level for console. Value 4 is reasonable.
-    fn set_console_level(&self, console_level: u32) {}
+    fn set_console_level(&self, console_level: u32);
     /// Get Log decoration.
     fn get_decor (&self) -> u32;
     /// Set Log decoration.
@@ -34,7 +34,7 @@ pub trait SIPLogExt {
     /// Set Optional log filename.
     fn get_log_filename(&self) -> String;
     /// Get Optional log filename.
-    fn set_log_filename(&self, log_filename: String) {}
+    fn set_log_filename(&self, log_filename: String);
     /// Get Additional flags to be given to pj_file_open() when opening the log file. By default,
     /// the flag is PJ_O_WRONLY. Application may set PJ_O_APPEND here so that
     /// logs are appended to existing file instead of overwriting it.
