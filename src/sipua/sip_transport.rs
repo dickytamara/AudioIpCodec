@@ -18,6 +18,7 @@ pub struct SIPTransport {
 }
 
 impl SIPTransport {
+
     pub fn new() -> Self {
         SIPTransport { id: -1, acc_id: -1 }
     }
@@ -31,16 +32,12 @@ impl SIPTransport {
     ) {
 
         pjsua::transport_create(type_, config, Some(&mut self.id))
-        .expect("Can't create SIPTransport");
+        .expect("SIPTransport::transport_create");
 
         assert_ne!(self.id, -1);
 
-        pjsua::acc_add_local(
-            self.id,
-            true,
-            &mut self.acc_id,
-        )
-        .expect("Can't Init Transport");
+        pjsua::acc_add_local( self.id, true, &mut self.acc_id,)
+        .expect("SIPTransport::acc_add_local");
 
         assert_ne!(self.acc_id, -1);
 
@@ -64,6 +61,9 @@ impl SIPTransport {
         unsafe {
             let info: *mut pjsua_transport_info = ptr::null_mut();
             let status: pj_status_t = pjsua_transport_get_info(self.id, info);
+
+            // pjsua::transport_get_info(self.id, &mut info)
+            // .expect("SIPTransport::pjsua_get_info");
 
             if status != PJ_SUCCESS as i32 {
                 return Err(status);

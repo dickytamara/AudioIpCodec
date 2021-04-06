@@ -10,6 +10,13 @@ use super::pjmedia;
 use std::{mem::MaybeUninit, ptr};
 use std::ffi::CString;
 
+
+// basic implementation for SIPTonegen
+pub struct SIPTonegen {}
+
+
+
+
 // Optional
 #[derive(Clone)]
 pub struct SIPTones {
@@ -43,22 +50,14 @@ impl SIPTones {
         .expect("can't init SIPTones");
 
         pjsua::conf_add_port(*self.port, Some(&mut self.slot))
-        .expect("SIPTones");
+        .expect("SIPTones::pjsua_conf_add_port");
 
-        let status = pjmedia::tonegen_play(
-            *self.port,
-            1,
-            &mut self.tones,
-            0
-        )
+        pjmedia::tonegen_play(*self.port, 1, &mut self.tones, 0)
         .expect("SIPTones");
 
         assert_ne!(self.slot, -1);
 
-        // println!(
-        //     "SIPTones init slot {}, freq {} and {}",
-        //     self.slot, freq1, freq2
-        // );
+        // println!("SIPTones init slot {}, freq {} and {}", self.slot, freq1, freq2);
     }
 }
 
@@ -102,14 +101,10 @@ impl SIPRingback {
         )
         .expect("Can't init SIPRingback");
 
-        pjsua::conf_add_port(*self.port,Some(&mut self.slot)).expect("SIPRingback");
+        pjsua::conf_add_port(*self.port,Some(&mut self.slot))
+        .expect("SIPRingback::pjsua_conf_add_port");
 
-        let status = pjmedia::tonegen_play(
-            *self.port,
-            1,
-            &mut self.tones,
-            PJMEDIA_TONEGEN_LOOP
-        )
+        let status = pjmedia::tonegen_play(*self.port, 1, &mut self.tones, PJMEDIA_TONEGEN_LOOP)
         .expect("SIPRingback");
 
         // assert_ne!(self.port.is_null(), true);

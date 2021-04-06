@@ -75,9 +75,6 @@ impl DialpadStorage {
             ls_call_log: gtk::ListStore::new(&list_types)
         }
     }
-
-
-
 }
 
 unsafe impl Send for DialpadWidget {}
