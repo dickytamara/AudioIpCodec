@@ -1,4 +1,6 @@
 
+use std::cell::RefCell;
+
 use super::pj_sys::*;
 use super::pjsip_simple_sys::*;
 use super::pjsua_sys::*;
@@ -7,33 +9,68 @@ use super::pjdefault::*;
 
 use super::pjsua;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct SIPBuddy {
     id: i32,
-    ctx: pjsua_buddy_config,
+    ctx: RefCell<pjsua_buddy_config>,
 }
+
+pub trait SIPBuddyExt {
+
+    /// Buddy URL or name address.
+    fn set_uri(&self, value: String);
+    fn get_uri(&self) -> String;
+
+    /// Specify whether presence subscription should start immediately.
+    fn set_subscribe(&self, value: bool);
+    fn get_subscribe(&self) -> bool;
+
+    // skiped
+    // user_data: *mut c_void,
+}
+
+// unsigned 	pjsua_get_buddy_count (void)
+// pj_status_t 	pjsua_enum_buddies (pjsua_buddy_id ids[], unsigned *count)
+// pjsua_buddy_id 	pjsua_buddy_find (const pj_str_t *uri)
+// void 	pjsua_pres_dump (pj_bool_t verbose)
+
+// void 	pjsua_buddy_config_default (pjsua_buddy_config *cfg)
+// pj_bool_t 	pjsua_buddy_is_valid (pjsua_buddy_id buddy_id)
+// pj_status_t 	pjsua_buddy_get_info (pjsua_buddy_id buddy_id, pjsua_buddy_info *info)
+// pj_status_t 	pjsua_buddy_add (const pjsua_buddy_config *buddy_cfg, pjsua_buddy_id *p_buddy_id)
+// pj_status_t 	pjsua_buddy_del (pjsua_buddy_id buddy_id)
+// pj_status_t 	pjsua_buddy_subscribe_pres (pjsua_buddy_id buddy_id, pj_bool_t subscribe)
+// pj_status_t 	pjsua_buddy_update_pres (pjsua_buddy_id buddy_id)
+
+// pj_status_t 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
+// void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
+
+// pj_status_t 	pjsua_pres_notify (pjsua_acc_id acc_id, pjsua_srv_pres *srv_pres, pjsip_evsub_state state, const pj_str_t *state_str, const pj_str_t *reason, pj_bool_t with_body, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_im_send (pjsua_acc_id acc_id, const pj_str_t *to, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
+// pj_status_t 	pjsua_im_typing (pjsua_acc_id acc_id, const pj_str_t *to, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
 
 impl SIPBuddy {
 
     pub fn new() -> Self {
         SIPBuddy {
             id: -1,
-            ctx: pjsua_buddy_config::new(),
+            ctx: RefCell::new(pjsua_buddy_config::new()),
         }
     }
 
-    pub fn init(&mut self) {
-
-        if let Err(_)= pjsua::buddy_add(&mut self.ctx, &mut self.id) {
-            panic!("Panic SIPBuddy");
+    pub fn from(buddy_id: pjsua_buddy_id) -> Self {
+        SIPBuddy {
+            id: buddy_id,
+            ctx: RefCell::new(pjsua_buddy_config::new())
         }
+    }
 
-        assert_ne!(self.id, -1);
+    pub fn config_default(&self) {
+        pjsua::buddy_config_default(&mut self.ctx.borrow_mut());
     }
 
     // Check if buddy ID is valid.
     pub fn is_valid(&self) -> bool {
-
         pjsua::buddy_is_valid(self.id)
     }
 
@@ -43,7 +80,6 @@ impl SIPBuddy {
         let mut info = pjsua_buddy_info::new();
 
         if let Err(e)= pjsua::buddy_get_info( self.id, &mut info) {
-            println!("Err cant get buddy info.");
             return Err(e);
         }
 
@@ -52,49 +88,36 @@ impl SIPBuddy {
 
     // add buddy to internal pjsua
     pub fn add(&mut self) {
-
-        if let Err(_) = pjsua::buddy_add(&mut self.ctx, &mut self.id) {
-            println!("ERR cant add buddy to internal pjsua.")
-        }
+        pjsua::buddy_add(&mut self.ctx.borrow_mut(), &mut self.id)
+        .expect("SIPBuddy::pjsua_buddy_add");
     }
 
     // delete buddy from internal pjsua
     pub fn del(&self) {
-
-        if let Err(_) = pjsua::buddy_del(self.id) {
-            println!("ERR cant delete buddy from pjsua");
-        }
+        pjsua::buddy_del(self.id)
+        .expect("SIPBuddy::pjsua_buddy_del");
     }
 
     // Enable/disable buddy's presence monitoring.
     pub fn subscribe_pres(&self, subscribe: bool) {
-
-        if let Err(_) = pjsua::buddy_subscribe_pres(self.id, subscribe) {
-            println!("ERR cant subscribe presents");
-        }
-
+        pjsua::buddy_subscribe_pres(self.id, subscribe)
+        .expect("SIPBuddy::pjsua_buddy_subscribe_pres");
     }
 
     // Update the presence information for the buddy.
     pub fn update_pres(&self) {
-
-        if let Err(_) = pjsua::buddy_update_pres( self.id ) {
-            println!("ERR cant update presents.");
-        }
+        pjsua::buddy_update_pres( self.id )
+        .expect("SIPBuddy::pjsua_buddy_update_pres");
     }
 
 }
 
-pub struct SIPBuddys {
-    buddy_list: [SIPBuddy; PJSUA_MAX_BUDDIES as usize]
-}
+pub struct SIPBuddys { }
 
 impl SIPBuddys {
 
     pub fn new() -> Self {
-        SIPBuddys {
-            buddy_list: [SIPBuddy::new(); PJSUA_MAX_BUDDIES as usize]
-        }
+        SIPBuddys { }
     }
 
     // Get total number of buddies.
@@ -129,5 +152,28 @@ impl SIPBuddys {
         pjsua::buddy_find(uri)
     }
 
+    /// Dump presence subscriptions to log.
+    pub fn pres_dump(&self, verbose: bool) {
+        pjsua::pres_dump(verbose);
+    }
 
+}
+
+impl SIPBuddyExt for SIPBuddy {
+
+    fn set_uri(&self, value: String) {
+        self.ctx.borrow_mut().uri = pj_str_t::from_string(value);
+    }
+
+    fn get_uri(&self) -> String {
+        self.ctx.borrow().uri.to_string()
+    }
+
+    fn set_subscribe(&self, value: bool) {
+        self.ctx.borrow_mut().subscribe = boolean_to_pjbool(value);
+    }
+
+    fn get_subscribe(&self) -> bool {
+        check_boolean(self.ctx.borrow().subscribe)
+    }
 }

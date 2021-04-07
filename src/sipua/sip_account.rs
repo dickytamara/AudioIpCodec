@@ -513,21 +513,16 @@ impl SIPAccount {
     // set sip id for account
     pub fn set_id(&mut self, value: String) {
         self.ctx.borrow_mut().id = pj_str_t::from_string(value);
-
     }
 
     // set registrar uri
     pub fn set_reg_uri(&mut self, value: String) {
-
         self.ctx.borrow_mut().reg_uri = pj_str_t::from_string(value);
-
     }
 
     // set realm for account
     pub fn set_realm(&mut self, value: String) {
-
         self.ctx.borrow_mut().cred_info[0].realm = pj_str_t::from_string(value);
-
     }
 
     // set username
