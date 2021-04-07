@@ -1,13 +1,11 @@
 
 use std::{borrow::BorrowMut, cell::{RefCell, RefMut}};
 
-use crate::pjproject::pjdefault::{boolean_to_pjbool, check_boolean};
+use pj_sys::*;
+use pjsua_sys::*;
 
-use super::pj_sys::*;
-use super::pjsua_sys::*;
-
-use super::pjdefault::{AutoCreate, ToString, FromString};
-use super::pjsua;
+use crate::pjproject::pjdefault::{self, AutoCreate, ToString, FromString};
+use crate::pjproject::pjsua;
 
 
 pub struct SIPLog {
@@ -87,11 +85,11 @@ impl SIPLog {
 impl SIPLogExt for SIPLog {
 
     fn get_msg_logging(&self) -> bool {
-        check_boolean(self.ctx.borrow().msg_logging)
+        pjdefault::check_boolean(self.ctx.borrow().msg_logging)
     }
 
     fn set_msg_logging(&self, value: bool) {
-        self.ctx.borrow_mut().msg_logging = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().msg_logging = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_level(&self) -> u32 {

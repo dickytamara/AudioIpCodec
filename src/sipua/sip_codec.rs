@@ -1,12 +1,9 @@
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjsua::*;
-use super::pjdefault::*;
-
-use super::pjmedia;
-use super::pjsua;
+use crate::pjproject::pjsua;
+use crate::pjproject::pjdefault::{self, AutoCreate, ToString};
 
 use std::os::raw::c_uint;
 use std::ffi::CStr;

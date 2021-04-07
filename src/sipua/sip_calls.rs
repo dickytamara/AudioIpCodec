@@ -1,22 +1,70 @@
 
-use super::pj_sys::*;
-use super::pjsip_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjsip_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjlib::*;
-use super::pjsip::*;
-use super::pjsua::*;
-use super::pjdefault::*;
+use crate::pjproject::pjdefault::{self, AutoCreate, FromString};
+use crate::pjproject::pjlib;
+use crate::pjproject::pjsip;
+use crate::pjproject::pjsua;
 
 use std::ptr;
 use std::ffi::CString;
-use super::pjsua;
 
 #[derive(Copy, Clone)]
 pub struct SIPCall {
     id: pjsua_call_id,
 }
+
+
+// void 	pjsua_call_setting_default (pjsua_call_setting *opt)
+// void 	pjsua_call_vid_strm_op_param_default (pjsua_call_vid_strm_op_param *param)
+// void 	pjsua_call_send_dtmf_param_default (pjsua_call_send_dtmf_param *param)
+// unsigned 	pjsua_call_get_max_count (void)
+// unsigned 	pjsua_call_get_count (void)
+// pj_status_t 	pjsua_enum_calls (pjsua_call_id ids[], unsigned *count)
+
+
+
+
+// pjsua_vid_win_id 	pjsua_call_get_vid_win (pjsua_call_id call_id)
+// pjsua_conf_port_id 	pjsua_call_get_vid_conf_port (pjsua_call_id call_id, pjmedia_dir dir)
+
+
+
+
+
+// pj_status_t 	pjsua_call_set_user_data (pjsua_call_id call_id, void *user_data)
+// void * 	pjsua_call_get_user_data (pjsua_call_id call_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// void 	pjsua_call_hangup_all (void)
+
+// int 	pjsua_call_get_vid_stream_idx (pjsua_call_id call_id)
+// pj_bool_t 	pjsua_call_vid_stream_is_running (pjsua_call_id call_id, int med_idx, pjmedia_dir dir)
+// pj_status_t 	pjsua_call_set_vid_strm (pjsua_call_id call_id, pjsua_call_vid_strm_op op, const pjsua_call_vid_strm_op_param *param)
+
+
+
 
 
 impl SIPCall {
@@ -260,9 +308,9 @@ impl SIPCall {
     }
  
     /// Dump call and media statistics to string.
-    pub fn dump(&self) {
-        todo!();
-        pjsua::call_dump();
+    pub fn dump(&self, with_media: bool, buffer: String, maxlen: u32, indent: String) {
+        pjsua::call_dump(self.id, with_media, buffer, maxlen, indent)
+        .expect("SIPCall::pjsua_call_dump");
     }
  
     /// Get media stream info for the specified media index.
@@ -313,7 +361,6 @@ pub struct SIPCalls {
 // void 	pjsua_call_vid_strm_op_param_default (pjsua_call_vid_strm_op_param *param)
 // void 	pjsua_call_send_dtmf_param_default (pjsua_call_send_dtmf_param *param)
 // pj_status_t pjsua_call_make_call 	( 	pjsua_acc_id  	acc_id,
-
 
 impl SIPCalls {
 

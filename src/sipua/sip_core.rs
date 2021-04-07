@@ -1,13 +1,15 @@
 
-use super::pj_sys::*;
-use super::pjsip_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsip_simple_sys::*;
-use super::pjsua_sys::*;
 
-use super::pjsip::PjsipModuleCallback;
-use super::pjsua::*;
-use super::pjdefault::*;
+use pj_sys::*;
+use pjsip_sys::*;
+use pjmedia_sys::*;
+use pjsip_simple_sys::*;
+use pjsua_sys::*;
+
+use crate::pjproject::pjsip::{self, PjsipModuleCallback};
+use crate::pjproject::pjsua::{self, PjsuaCallback};
+use crate::pjproject::pjmedia;
+use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
 
 use super::sip_account::*;
 use super::sip_buddy::*;
@@ -19,9 +21,9 @@ use super::sip_tones::*;
 use super::sip_transport::*;
 use super::sip_wav::*;
 
-use super::pjsua;
-use super::pjmedia;
-use super::pjsip;
+// use super::pjsua;
+// use super::pjmedia;
+// use super::pjsip;
 use std::ptr;
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_int, c_void, c_uint, c_char};
@@ -108,8 +110,8 @@ impl SIPCore {
             wav_recorder: None,
             default_handler: pjsip_module::new(),
             redir_op: PJSIP_REDIRECT_ACCEPT_REPLACE,
-            input_dev: PJSUA_INVALID_ID,
-            output_dev: PJSUA_INVALID_ID,
+            input_dev: pjsua::PJSUA_INVALID_ID,
+            output_dev: pjsua::PJSUA_INVALID_ID,
             input_latency: 100,
             output_latency: 140,
             auto_play_hangup: false,
@@ -542,18 +544,7 @@ impl SIPCore {
         old_call_id: pjsua_call_id,
         new_call_id: pjsua_call_id,
     ) {
-        unsafe {
-            let mut old_ci: pjsua_call_info = pjsua_call_info::new();
-            let mut new_ci: pjsua_call_info = pjsua_call_info::new();
-
-            pjsua_call_get_info(old_call_id, &mut old_ci as *mut _);
-            pjsua_call_get_info(new_call_id, &mut new_ci as *mut _);
-
-            println!(
-                "Call {} is being replaced by call {}",
-                old_call_id, new_call_id
-            );
-        }
+        println!( "Call {} is being replaced by call {}", old_call_id, new_call_id);
     }
 
     pub fn callback_on_nat_detect(&self, res: *const pj_stun_nat_detect_result) {
@@ -803,7 +794,7 @@ impl SIPCore {
 
 }
 
-impl PjsuaCallback for SIPCore {
+impl pjsua::PjsuaCallback for SIPCore {
 
     // On Call State
     unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
@@ -1178,5 +1169,30 @@ impl PjsipModuleCallback for SIPCore {
         PJ_TRUE as pj_status_t
     }
 
+    unsafe extern "C" fn start() -> pj_status_t {
+        0
+    }
+
+    unsafe extern "C" fn stop() -> pj_status_t {
+        0
+    }
+
+    unsafe extern "C" fn unload() -> pj_status_t {
+        0
+    }
+
+    unsafe extern "C" fn on_rx_response(rdata: *mut pjsip_rx_data) -> pj_bool_t {
+        0
+    }
+
+    unsafe extern "C" fn on_tx_request(tdata: *mut pjsip_tx_data) -> pj_status_t {
+        0
+    }
+
+    unsafe extern "C" fn on_tx_response(tdata: *mut pjsip_tx_data) -> pj_status_t {
+        0
+    }
+
+    unsafe extern "C" fn on_tsx_state(tsx: *mut pjsip_transaction, event: *mut pjsip_event) {}
 }
 

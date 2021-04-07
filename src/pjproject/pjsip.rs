@@ -5,8 +5,8 @@
 #![allow(non_snake_case)]
 
 use super::pjdefault::AutoCreate;
-use super::pj_sys::*;
-use super::pjsip_sys::*;
+use pj_sys::*;
+use pjsip_sys::*;
 
 use std::ptr;
 

@@ -1,15 +1,14 @@
 
 use std::cell::{RefCell, RefMut};
 
-use crate::pjproject::pjdefault::{boolean_to_pjbool, check_boolean};
 
-use super::pj_sys::*;
-use super::pjsip_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjsip_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjdefault::{AutoCreate, FromString, ToString};
-use super::pjsua;
+use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
+use crate::pjproject::pjsua;
 
 
 // high layer API
@@ -546,11 +545,11 @@ impl SIPUaExt for SIPUa {
     }
 
     fn set_force_lr(&self, value: bool) {
-        self.ctx.borrow_mut().force_lr = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().force_lr = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_force_lr(&self) -> bool {
-        check_boolean(self.ctx.borrow().force_lr)
+        pjdefault::check_boolean(self.ctx.borrow().force_lr)
     }
 
     fn set_outbound_proxy_cnt(&self, value: u32) {
@@ -634,27 +633,27 @@ impl SIPUaExt for SIPUa {
     }
 
     fn set_stun_try_ipv6(&self, value: bool) {
-        self.ctx.borrow_mut().stun_try_ipv6 = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().stun_try_ipv6 = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_stun_try_ipv6(&self) -> bool {
-        check_boolean(self.ctx.borrow().stun_try_ipv6)
+        pjdefault::check_boolean(self.ctx.borrow().stun_try_ipv6)
     }
 
     fn set_stun_ignore_failure(&self, value: bool) {
-        self.ctx.borrow_mut().stun_ignore_failure = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().stun_ignore_failure = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_stun_ignore_failure(&self) -> bool {
-        check_boolean(self.ctx.borrow().stun_ignore_failure)
+        pjdefault::check_boolean(self.ctx.borrow().stun_ignore_failure)
     }
 
     fn set_stun_map_use_stun2(&self, value: bool) {
-        self.ctx.borrow_mut().stun_map_use_stun2 = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().stun_map_use_stun2 = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_stun_map_use_stun2(&self) -> bool {
-        check_boolean(self.ctx.borrow().stun_map_use_stun2)
+        pjdefault::check_boolean(self.ctx.borrow().stun_map_use_stun2)
     }
 
     fn set_nat_type_in_sdp(&self, value: i32) {
@@ -682,11 +681,11 @@ impl SIPUaExt for SIPUa {
     }
 
     fn set_enable_unsolicited_mwi(&self, value: bool) {
-        self.ctx.borrow_mut().enable_unsolicited_mwi = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().enable_unsolicited_mwi = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_enable_unsolicited_mwi(&self) -> bool {
-        check_boolean(self.ctx.borrow().enable_unsolicited_mwi)
+        pjdefault::check_boolean(self.ctx.borrow().enable_unsolicited_mwi)
     }
 
     fn set_timer_setting(&self, value: pjsip_timer_setting) {
@@ -738,11 +737,11 @@ impl SIPUaExt for SIPUa {
     }
 
     fn set_srtp_optional_dup_offer(&self, value: bool) {
-        self.ctx.borrow_mut().srtp_optional_dup_offer = boolean_to_pjbool(value)
+        self.ctx.borrow_mut().srtp_optional_dup_offer = pjdefault::boolean_to_pjbool(value)
     }
 
     fn get_srtp_optional_dup_offer(&self) -> bool {
-        check_boolean(self.ctx.borrow().srtp_optional_dup_offer)
+        pjdefault::check_boolean(self.ctx.borrow().srtp_optional_dup_offer)
     }
 
     fn set_srtp_opt(&self, value: pjsua_srtp_opt) {
@@ -754,11 +753,11 @@ impl SIPUaExt for SIPUa {
     }
 
     fn set_hangup_forked_call(&self, value: bool) {
-        self.ctx.borrow_mut().hangup_forked_call = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().hangup_forked_call = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_hangup_forked_call(&self) -> bool {
-        check_boolean(self.ctx.borrow().hangup_forked_call)
+        pjdefault::check_boolean(self.ctx.borrow().hangup_forked_call)
     }
 }
 

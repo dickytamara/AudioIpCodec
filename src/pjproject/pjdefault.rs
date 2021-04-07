@@ -1,9 +1,6 @@
+
 use pj_sys::{PJ_FALSE, PJ_SUCCESS, PJ_TRUE, pj_bool_t, pj_status_t};
 
-
-
-//use std::os::raw::{c_char, c_void};
-//use std::mem;
 
 // global trait for new struct
 pub trait AutoCreate<T> {

@@ -3,8 +3,8 @@
 #![allow(non_upper_case_globals)]
 
 use super::pjdefault::{AutoCreate, FromString, boolean_to_pjbool, check_boolean, check_status};
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
+use pj_sys::*;
+use pjmedia_sys::*;
 
 use super::pjlib::*;
 use super::pjsua;

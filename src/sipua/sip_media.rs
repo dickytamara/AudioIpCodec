@@ -1,15 +1,12 @@
 
 
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjsua::*;
-use super::pjdefault::*;
-use super::pjdefault::{ToString, FromString};
-
-use super::pjmedia;
-use super::pjsua;
+use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
+use crate::pjproject::pjmedia;
+use crate::pjproject::pjsua;
 
 use std::{cell::{RefCell, RefMut}, os::raw::c_uint};
 use std::ffi::CStr;
@@ -436,11 +433,11 @@ impl SIPMediaExt for SIPMedia {
     }
 
     fn set_has_ioqueue(&self, value: bool) {
-        self.ctx.borrow_mut().has_ioqueue = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().has_ioqueue = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_has_ioqueue(&self) -> bool {
-        check_boolean(self.ctx.borrow().has_ioqueue)
+        pjdefault::check_boolean(self.ctx.borrow().has_ioqueue)
     }
 
     fn set_thread_cnt(&self, value: u32) {
@@ -468,11 +465,11 @@ impl SIPMediaExt for SIPMedia {
     }
 
     fn set_no_vad(&self, value: bool) {
-        self.ctx.borrow_mut().no_vad = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().no_vad = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_no_vad(&self) -> bool {
-        check_boolean(self.ctx.borrow().no_vad)
+        pjdefault::check_boolean(self.ctx.borrow().no_vad)
     }
 
     fn set_ilbc_mode(&self, value: u32) {
@@ -572,19 +569,19 @@ impl SIPMediaExt for SIPMedia {
     }
 
     fn set_enable_ice(&self, value: bool) {
-        self.ctx.borrow_mut().enable_ice = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().enable_ice = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_enable_ice(&self) -> bool {
-        check_boolean(self.ctx.borrow().enable_ice)
+        pjdefault::check_boolean(self.ctx.borrow().enable_ice)
     }
 
     fn set_ice_max_host_cands(&self, value: bool) {
-        self.ctx.borrow_mut().ice_max_host_cands = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().ice_max_host_cands = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_ice_max_host_cands(&self) -> bool {
-        check_boolean(self.ctx.borrow().ice_max_host_cands)
+        pjdefault::check_boolean(self.ctx.borrow().ice_max_host_cands)
     }
 
     fn set_ice_opt(&self, value: pj_ice_sess_options) {
@@ -596,27 +593,27 @@ impl SIPMediaExt for SIPMedia {
     }
 
     fn set_ice_no_rtcp(&self, value: bool) {
-        self.ctx.borrow_mut().ice_no_rtcp = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().ice_no_rtcp = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_ice_no_rtcp(&self) -> bool {
-        check_boolean(self.ctx.borrow().ice_no_rtcp)
+        pjdefault::check_boolean(self.ctx.borrow().ice_no_rtcp)
     }
 
     fn set_ice_always_update(&self, value: bool) {
-        self.ctx.borrow_mut().ice_always_update = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().ice_always_update = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_ice_always_update(&self) -> bool {
-        check_boolean(self.ctx.borrow_mut().ice_always_update)
+        pjdefault::check_boolean(self.ctx.borrow_mut().ice_always_update)
     }
 
     fn set_enable_turn(&self, value: bool) {
-        self.ctx.borrow_mut().enable_turn = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().enable_turn = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_enable_turn(&self) -> bool {
-        check_boolean(self.ctx.borrow().enable_turn)
+        pjdefault::check_boolean(self.ctx.borrow().enable_turn)
     }
 
     fn set_turn_server(&self, value: String) {
@@ -660,18 +657,18 @@ impl SIPMediaExt for SIPMedia {
     }
 
     fn set_no_smart_media_update(&self, value: bool) {
-        self.ctx.borrow_mut().no_smart_media_update = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().no_smart_media_update = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_no_smart_media_update(&self) -> bool {
-        check_boolean(self.ctx.borrow().no_smart_media_update)
+        pjdefault::check_boolean(self.ctx.borrow().no_smart_media_update)
     }
 
     fn set_no_rtcp_sdes_bye(&self, value: bool) {
-        self.ctx.borrow_mut().no_rtcp_sdes_bye = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().no_rtcp_sdes_bye = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_no_rtcp_sdes_bye(&self) -> bool {
-        check_boolean(self.ctx.borrow().no_rtcp_sdes_bye)
+        pjdefault::check_boolean(self.ctx.borrow().no_rtcp_sdes_bye)
     }
 }

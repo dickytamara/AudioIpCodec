@@ -1,13 +1,11 @@
-
 use std::cell::RefCell;
 
-use super::pj_sys::*;
-use super::pjsip_simple_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjsip_simple_sys::*;
+use pjsua_sys::*;
 
-use super::pjdefault::*;
-
-use super::pjsua;
+use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
+use crate::pjproject::pjsua;
 
 #[derive(Clone)]
 pub struct SIPBuddy {
@@ -172,10 +170,10 @@ impl SIPBuddyExt for SIPBuddy {
     }
 
     fn set_subscribe(&self, value: bool) {
-        self.ctx.borrow_mut().subscribe = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().subscribe = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_subscribe(&self) -> bool {
-        check_boolean(self.ctx.borrow().subscribe)
+        pjdefault::check_boolean(self.ctx.borrow().subscribe)
     }
 }

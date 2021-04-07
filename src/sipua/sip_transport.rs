@@ -1,12 +1,12 @@
 
 
-use super::pj_sys::*;
-use super::pjsip_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjsip_sys::*;
+use pjsua_sys::*;
 
-use super::pjdefault::*;
+use crate::pjproject::pjdefault::{self, AutoCreate};
+use crate::pjproject::pjsua;
 
-use super::pjsua;
 use std::ptr;
 use std::ffi::CString;
 

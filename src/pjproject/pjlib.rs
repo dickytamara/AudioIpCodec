@@ -5,7 +5,7 @@
 use super::pjdefault::AutoCreate;
 use super::pjdefault::ToString;
 use super::pjdefault::FromString;
-use super::pj_sys::*;
+use pj_sys::*;
 
 use std::ffi::CStr;
 use std::ffi::CString;

@@ -1,10 +1,5 @@
 #![allow(dead_code, unused_variables, unused_imports, non_upper_case_globals)]
 
-extern crate pj_sys;
-extern crate pjmedia_sys;
-extern crate pjsip_simple_sys;
-extern crate pjsip_sys;
-extern crate pjsua_sys;
 
 pub mod sip_account;
 pub mod sip_buddy;
@@ -19,27 +14,16 @@ pub mod sip_transport;
 pub mod sip_ua;
 pub mod sip_wav;
 
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsip_sys::*;
-use super::pjsip_simple_sys::*;
-use super::pjsua_sys::*;
-use super::pjproject::*;
-
-use super::pjproject;
+use crate::pjproject::pjsua;
 
 
-use super::pjproject::pjdefault::{AutoCreate, ToString};
-use super::pjproject::pjlib::PjTimerEntry;
-use super::pjproject::pjsip::PjsipModuleCallback;
-use super::pjproject::pjsua::PjsuaCallback;
+use sip_core::{CURRENT_CALL, SIPCore, SIPCoreEventsExt, SIP_CORE};
 
-use super::pjproject::pjlib::*;
-use super::pjproject::pjmedia::*;
-use super::pjproject::pjsip::*;
-use super::pjproject::pjsua::*;
-
-use sip_core::*;
+use pj_sys::*;
+use pjmedia_sys::*;
+use pjsip_sys::*;
+use pjsip_simple_sys::*;
+use pjsua_sys::*;
 
 use std::ffi::CString;
 use std::ffi::CStr;
@@ -80,7 +64,7 @@ impl SIPUserAgent {
     pub fn new() -> SIPUserAgent {
         unsafe {
             SIP_CORE = Some(SIPCore::new());
-            CURRENT_CALL = Some(PJSUA_INVALID_ID);
+            CURRENT_CALL = Some(pjsua::PJSUA_INVALID_ID);
         }
 
         SIPUserAgent {}

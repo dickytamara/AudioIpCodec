@@ -1,15 +1,15 @@
 
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjdefault::*;
+use crate::pjproject::pjdefault::{self, AutoCreate};
+use crate::pjproject::pjsua;
 
 use std::ptr;
 use std::ffi::CString;
 use std::os::raw::c_void;
 use std::mem::MaybeUninit;
-use super::pjsua;
 
 
 pub struct SIPWavPlayer {

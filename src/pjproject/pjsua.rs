@@ -6,11 +6,11 @@
 use super::pjdefault::{AutoCreate, boolean_to_pjbool, check_boolean, check_status};
 use super::pjdefault::FromString;
 
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsip_sys::*;
-use super::pjsip_simple_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjmedia_sys::*;
+use pjsip_sys::*;
+use pjsip_simple_sys::*;
+use pjsua_sys::*;
 
 use std::{mem::MaybeUninit, os::raw::{c_int, c_uint, c_void}};
 use std::ffi::CString;
@@ -1689,7 +1689,30 @@ pub fn call_hangup_all () {
     unsafe { pjsua_call_hangup_all() }
 }
 
-// pj_status_t 	pjsua_call_dump (pjsua_call_id call_id, pj_bool_t with_media, char *buffer, unsigned maxlen, const char *indent)
+pub fn call_dump(
+    call_id: pjsua_call_id,
+    with_media: bool,
+    buffer: String,
+    maxlen: u32,
+    indent: String,
+) -> Result<(), pj_status_t> {
+
+    let buffer = CString::new(buffer.as_str()).expect("CString::pjsua_call_dump fail.").into_raw();
+    let indent = CString::new(indent.as_str()).expect("CString::pjsua_call_dump fail.").into_raw();
+
+    unsafe {
+
+        let status = pjsua_call_dump(
+            call_id,
+            boolean_to_pjbool(with_media),
+            buffer,
+            maxlen,
+            indent as *const _
+        );
+
+        check_status(status)
+    }
+}
 
 pub fn call_get_stream_info (call_id: pjsua_call_id, med_idx: u32, psi: &mut pjsua_stream_info) -> Result<(), pj_status_t> {
     unsafe {

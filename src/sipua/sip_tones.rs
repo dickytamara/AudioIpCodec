@@ -1,13 +1,14 @@
 
-use super::pj_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjdefault::*;
+use crate::pjproject::pjdefault::{self, AutoCreate};
+use crate::pjproject::pjmedia;
+use crate::pjproject::pjsua;
 
-use super::pjsua;
-use super::pjmedia;
-use std::{mem::MaybeUninit, ptr};
+
+use std::ptr;
 use std::ffi::CString;
 
 

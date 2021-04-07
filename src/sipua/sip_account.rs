@@ -1,16 +1,13 @@
-
 use std::cell::RefCell;
 
-use super::pj_sys::*;
-use super::pjsip_simple_sys::*;
-use super::pjsip_sys::*;
-use super::pjmedia_sys::*;
-use super::pjsua_sys::*;
+use pj_sys::*;
+use pjsip_simple_sys::*;
+use pjsip_sys::*;
+use pjmedia_sys::*;
+use pjsua_sys::*;
 
-use super::pjdefault::*;
-use super::pjsua::*;
-
-use super::pjsua;
+use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
+use crate::pjproject::pjsua;
 
 use std::ptr;
 use std::ffi::CString;
@@ -873,11 +870,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_mwi_enabled(&self, value: bool) {
-        self.ctx.borrow_mut().mwi_enabled = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().mwi_enabled = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_mwi_enabled(&self) -> bool {
-        check_boolean(self.ctx.borrow().mwi_enabled)
+        pjdefault::check_boolean(self.ctx.borrow().mwi_enabled)
     }
 
     fn set_mwi_expires(&self, value: u32) {
@@ -889,11 +886,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_publish_enabled(&self, value: bool) {
-        self.ctx.borrow_mut().publish_enabled = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().publish_enabled = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_publish_enabled(&self) -> bool {
-        check_boolean(self.ctx.borrow().publish_enabled)
+        pjdefault::check_boolean(self.ctx.borrow().publish_enabled)
     }
 
     fn set_publish_opt(&self, value: pjsip_publishc_opt) {
@@ -1068,11 +1065,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_allow_contact_rewrite(&self, value: bool) {
-        self.ctx.borrow_mut().allow_contact_rewrite = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().allow_contact_rewrite = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_allow_contact_rewrite(&self) -> bool {
-        check_boolean(self.ctx.borrow().allow_contact_rewrite)
+        pjdefault::check_boolean(self.ctx.borrow().allow_contact_rewrite)
     }
 
     fn set_contact_rewrite_method(&self, value: i32) {
@@ -1084,27 +1081,27 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_contact_use_src_port(&self, value: bool) {
-        self.ctx.borrow_mut().contact_use_src_port = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().contact_use_src_port = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_contact_use_src_port(&self) -> bool {
-        check_boolean(self.ctx.borrow().contact_use_src_port)
+        pjdefault::check_boolean(self.ctx.borrow().contact_use_src_port)
     }
 
     fn set_allow_via_rewrite(&self, value: bool) {
-        self.ctx.borrow_mut().allow_via_rewrite = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().allow_via_rewrite = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_allow_via_rewrite(&self) -> bool {
-        check_boolean(self.ctx.borrow().allow_via_rewrite)
+        pjdefault::check_boolean(self.ctx.borrow().allow_via_rewrite)
     }
 
     fn set_allow_sdp_nat_rewrite(&self, value: bool) {
-        self.ctx.borrow_mut().allow_sdp_nat_rewrite = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().allow_sdp_nat_rewrite = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_allow_sdp_nat_rewrite(&self) -> bool {
-        check_boolean(self.ctx.borrow().allow_sdp_nat_rewrite)
+        pjdefault::check_boolean(self.ctx.borrow().allow_sdp_nat_rewrite)
     }
 
     fn set_use_rfc5626(&self, value: u32) {
@@ -1188,19 +1185,19 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_use_loop_med_tp(&self, value: bool) {
-        self.ctx.borrow_mut().use_loop_med_tp = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().use_loop_med_tp = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_use_loop_med_tp(&self) -> bool {
-        check_boolean(self.ctx.borrow().use_loop_med_tp)
+        pjdefault::check_boolean(self.ctx.borrow().use_loop_med_tp)
     }
 
     fn set_enable_loopback(&self, value: bool) {
-        self.ctx.borrow_mut().enable_loopback = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().enable_loopback = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_enable_loopback(&self) -> bool {
-        check_boolean(self.ctx.borrow().enable_loopback)
+        pjdefault::check_boolean(self.ctx.borrow().enable_loopback)
     }
 
     fn set_ice_cfg_use(&self, value: pjsua_ice_config_use) {
@@ -1252,11 +1249,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_srtp_optional_dup_offer(&self, value: bool) {
-        self.ctx.borrow_mut().srtp_optional_dup_offer = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().srtp_optional_dup_offer = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_srtp_optional_dup_offer(&self) -> bool {
-        check_boolean(self.ctx.borrow().srtp_optional_dup_offer)
+        pjdefault::check_boolean(self.ctx.borrow().srtp_optional_dup_offer)
     }
 
     fn set_srtp_opt(&self, value: pjsua_srtp_opt) {
@@ -1292,11 +1289,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_drop_calls_on_reg_fail(&self, value: bool) {
-        self.ctx.borrow_mut().drop_calls_on_reg_fail = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().drop_calls_on_reg_fail = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_drop_calls_on_reg_fail(&self) -> bool {
-        check_boolean(self.ctx.borrow().drop_calls_on_reg_fail)
+        pjdefault::check_boolean(self.ctx.borrow().drop_calls_on_reg_fail)
     }
 
     fn set_reg_use_proxy(&self, value: u32) {
@@ -1316,11 +1313,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_register_on_acc_add(&self, value: bool) {
-        self.ctx.borrow_mut().register_on_acc_add = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().register_on_acc_add = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_register_on_acc_add(&self) -> bool {
-        check_boolean(self.ctx.borrow().register_on_acc_add)
+        pjdefault::check_boolean(self.ctx.borrow().register_on_acc_add)
     }
 
     fn set_ip_change_cfg(&self, value: pjsua_ip_change_acc_cfg) {
@@ -1332,11 +1329,11 @@ impl SIPAccountExt for SIPAccount {
     }
 
     fn set_enable_rtcp_mux(&self, value: bool) {
-        self.ctx.borrow_mut().enable_rtcp_mux = boolean_to_pjbool(value);
+        self.ctx.borrow_mut().enable_rtcp_mux = pjdefault::boolean_to_pjbool(value);
     }
 
     fn get_enable_rtcp_mux(&self) -> bool {
-        check_boolean(self.ctx.borrow().enable_rtcp_mux)
+        pjdefault::check_boolean(self.ctx.borrow().enable_rtcp_mux)
     }
 
     fn set_rtcp_fb_cfg(&self, value: pjmedia_rtcp_fb_setting) {
