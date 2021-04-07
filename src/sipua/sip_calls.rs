@@ -18,6 +18,54 @@ pub struct SIPCall {
     id: pjsua_call_id,
 }
 
+
+// void 	pjsua_call_setting_default (pjsua_call_setting *opt)
+// void 	pjsua_call_vid_strm_op_param_default (pjsua_call_vid_strm_op_param *param)
+// void 	pjsua_call_send_dtmf_param_default (pjsua_call_send_dtmf_param *param)
+// unsigned 	pjsua_call_get_max_count (void)
+// unsigned 	pjsua_call_get_count (void)
+// pj_status_t 	pjsua_enum_calls (pjsua_call_id ids[], unsigned *count)
+
+
+// pj_status_t 	pjsua_call_make_call (pjsua_acc_id acc_id, const pj_str_t *dst_uri, const pjsua_call_setting *opt, void *user_data, const pjsua_msg_data *msg_data, pjsua_call_id *p_call_id)
+// pj_bool_t 	pjsua_call_is_active (pjsua_call_id call_id)
+// pj_bool_t 	pjsua_call_has_media (pjsua_call_id call_id)
+// pjsua_conf_port_id 	pjsua_call_get_conf_port (pjsua_call_id call_id)
+// pjsua_vid_win_id 	pjsua_call_get_vid_win (pjsua_call_id call_id)
+// pjsua_conf_port_id 	pjsua_call_get_vid_conf_port (pjsua_call_id call_id, pjmedia_dir dir)
+// pj_status_t 	pjsua_call_get_info (pjsua_call_id call_id, pjsua_call_info *info)
+// pjsip_dialog_cap_status 	pjsua_call_remote_has_cap (pjsua_call_id call_id, int htype, const pj_str_t *hname, const pj_str_t *token)
+// pj_status_t 	pjsua_call_set_user_data (pjsua_call_id call_id, void *user_data)
+// void * 	pjsua_call_get_user_data (pjsua_call_id call_id)
+// pj_status_t 	pjsua_call_get_rem_nat_type (pjsua_call_id call_id, pj_stun_nat_type *p_type)
+// pj_status_t 	pjsua_call_answer (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_answer2 (pjsua_call_id call_id, const pjsua_call_setting *opt, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_answer_with_sdp (pjsua_call_id call_id, const pjmedia_sdp_session *sdp, const pjsua_call_setting *opt, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_hangup (pjsua_call_id call_id, unsigned code, const pj_str_t *reason, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_process_redirect (pjsua_call_id call_id, pjsip_redirect_op cmd)
+// pj_status_t 	pjsua_call_set_hold (pjsua_call_id call_id, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_set_hold2 (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_reinvite (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_reinvite2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_update (pjsua_call_id call_id, unsigned options, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_update2 (pjsua_call_id call_id, const pjsua_call_setting *opt, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_xfer (pjsua_call_id call_id, const pj_str_t *dest, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_xfer_replaces (pjsua_call_id call_id, pjsua_call_id dest_call_id, unsigned options, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_dial_dtmf (pjsua_call_id call_id, const pj_str_t *digits)
+// pj_status_t 	pjsua_call_send_dtmf (pjsua_call_id call_id, const pjsua_call_send_dtmf_param *param)
+// pj_status_t 	pjsua_call_send_im (pjsua_call_id call_id, const pj_str_t *mime_type, const pj_str_t *content, const pjsua_msg_data *msg_data, void *user_data)
+// pj_status_t 	pjsua_call_send_typing_ind (pjsua_call_id call_id, pj_bool_t is_typing, const pjsua_msg_data *msg_data)
+// pj_status_t 	pjsua_call_send_request (pjsua_call_id call_id, const pj_str_t *method, const pjsua_msg_data *msg_data)
+// void 	pjsua_call_hangup_all (void)
+// pj_status_t 	pjsua_call_dump (pjsua_call_id call_id, pj_bool_t with_media, char *buffer, unsigned maxlen, const char *indent)
+// int 	pjsua_call_get_vid_stream_idx (pjsua_call_id call_id)
+// pj_bool_t 	pjsua_call_vid_stream_is_running (pjsua_call_id call_id, int med_idx, pjmedia_dir dir)
+// pj_status_t 	pjsua_call_set_vid_strm (pjsua_call_id call_id, pjsua_call_vid_strm_op op, const pjsua_call_vid_strm_op_param *param)
+// pj_status_t 	pjsua_call_get_stream_info (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_info *psi)
+// pj_status_t 	pjsua_call_get_stream_stat (pjsua_call_id call_id, unsigned med_idx, pjsua_stream_stat *stat)
+// pj_status_t 	pjsua_call_get_med_transport_info (pjsua_call_id call_id, unsigned med_idx, pjmedia_transport_info *t)
+
+
 impl SIPCall {
 
     /// create new SIPCall
@@ -216,11 +264,7 @@ impl SIPCall {
 
 #[derive(Clone, Copy)]
 pub struct SIPCalls {
-    id_list: [pjsua_call_id; PJSUA_MAX_CALLS as usize],
-    call_data: [SIPCall; PJSUA_MAX_CALLS as usize],
     call_opt: pjsua_call_setting,
-    ringback_on: bool,
-    ring_on: bool,
 }
 
 // skiped procedure
@@ -234,11 +278,7 @@ impl SIPCalls {
 
     pub fn new() -> Self {
         SIPCalls {
-            id_list: [0; PJSUA_MAX_CALLS as usize],
-            call_data: [SIPCall::new(); PJSUA_MAX_CALLS as usize],
             call_opt: pjsua_call_setting::new(),
-            ringback_on: false,
-            ring_on: false,
         }
     }
 
@@ -270,10 +310,11 @@ impl SIPCalls {
 
         let mut ret: Vec<SIPCall> = Vec::new();
 
-        let mut id:[pjsua_call_id; PJSUA_MAX_CALLS as usize] = [-1i32; PJSUA_MAX_CALLS as usize];
+        let mut id= [-1i32; PJSUA_MAX_CALLS as usize];
         let mut count = 32u32;
 
-        pjsua::enum_calls(&mut id, &mut count).unwrap();
+        pjsua::enum_calls(&mut id, &mut count)
+        .expect("SIPCalls::pjsua_enum_calls");
 
         for i in 0..count as usize {
             ret.push(SIPCall::from(id[i]));
@@ -284,7 +325,6 @@ impl SIPCalls {
 
     pub fn get_current_call(&self) -> Option<SIPCall> {
         if self.get_count() > 0 {
-
             let calls = self.enum_calls();
             calls.last().cloned()
         } else {
@@ -300,7 +340,9 @@ impl SIPCalls {
         msg_data: Option<&mut pjsua_msg_data>,
         p_call_id: Option<&mut pjsua_call_id>
     ) {
-        pjsua::call_make_call(acc_id, dst_uri, opt, msg_data, p_call_id).unwrap();
+        pjsua::call_make_call(acc_id, dst_uri, opt, msg_data, p_call_id)
+        .expect("SIPCalls::pjsua_call_make_call");
     }
 
 }
+
