@@ -51,6 +51,7 @@ pub trait SIPBuddyExt {
 
 impl SIPBuddy {
 
+    /// create new SIPBuddy
     pub fn new() -> Self {
         SIPBuddy {
             id: -1,
@@ -58,6 +59,7 @@ impl SIPBuddy {
         }
     }
 
+    /// construct new SIPBuddy from given buddy_id
     pub fn from(buddy_id: pjsua_buddy_id) -> Self {
         SIPBuddy {
             id: buddy_id,

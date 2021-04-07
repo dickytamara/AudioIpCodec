@@ -3,7 +3,6 @@ use super::pj_sys::*;
 use super::pjmedia_sys::*;
 use super::pjsua_sys::*;
 
-use super::pjlib::PjTimerEntry;
 use super::pjdefault::*;
 
 use std::ptr;
@@ -91,13 +90,6 @@ impl SIPWavPlayerDone for SIPWavPlayer {
     }
 }
 
-impl PjTimerEntry for SIPWavPlayer {
-    unsafe extern "C" fn pj_timer_heap_callback(
-        timer_heap: *mut pj_timer_heap_t,
-        entry: *mut pj_timer_entry,
-    ) {
-    }
-}
 
 impl Drop for SIPWavPlayer {
     fn drop(&mut self) {

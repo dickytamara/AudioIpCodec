@@ -604,7 +604,6 @@ impl SIPAccount {
         let mut info = pjsua_acc_info::new();
 
         if let Err(e) = pjsua::acc_get_info( self.id, &mut info) {
-            println!("ERR cant get account info");
             return Err(e);
         }
 
@@ -618,10 +617,7 @@ impl SIPAccount {
 
         let mut rdata = pjsip_tx_data::new();
 
-        if let Err(e) = pjsua::acc_create_request( self.id, method, target,
-            &mut rdata) {
-
-            println!("ERR cant create request for account");
+        if let Err(e) = pjsua::acc_create_request( self.id, method, target, &mut rdata) {
             return Err(e);
         }
 

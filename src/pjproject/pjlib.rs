@@ -275,11 +275,5 @@ impl AutoCreate<pj_math_stat> for pj_math_stat {
 }
 
 
-pub trait PjTimerEntry {
-    unsafe extern "C" fn pj_timer_heap_callback(
-        timer_heap: *mut pj_timer_heap_t,
-        entry: *mut pj_timer_entry,
-    );
-}
 
 
