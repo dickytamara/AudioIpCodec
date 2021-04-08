@@ -6,10 +6,12 @@ use pjmedia_sys::*;
 use pjsip_simple_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::pjsip::{self, PjsipModuleCallback};
-use crate::pjproject::pjsua::{self, PjsuaCallback};
+use crate::pjproject::prelude::*;
+
+use crate::pjproject::utils;
+use crate::pjproject::pjsip;
+use crate::pjproject::pjsua;
 use crate::pjproject::pjmedia;
-use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
 
 use super::sip_account::*;
 use super::sip_buddy::*;
@@ -210,7 +212,7 @@ impl SIPCore {
 
 
         if let Err(e) = pjsua::start() {
-            pjsua::perror("sip_core.rs", "can't start pjsua.", e);
+            pjsua::perror(String::from("sip_core.rs"), String::from("can't start pjsua."), e);
         }
 
         // we don't need add account for this state

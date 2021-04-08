@@ -4,9 +4,11 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_snake_case)]
 
-use super::pjdefault::AutoCreate;
+
 use pj_sys::*;
 use pjsip_sys::*;
+
+use super::prelude::*;
 
 use std::ptr;
 
@@ -104,27 +106,13 @@ impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
 }
 
 pub trait PjsipModuleCallback {
-    unsafe extern "C" fn start() -> pj_status_t {
-        0
-    }
-    unsafe extern "C" fn stop() -> pj_status_t {
-        0
-    }
-    unsafe extern "C" fn unload() -> pj_status_t {
-        0
-    }
-    unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_bool_t {
-        0
-    }
-    unsafe extern "C" fn on_rx_response(rdata: *mut pjsip_rx_data) -> pj_bool_t {
-        0
-    }
-    unsafe extern "C" fn on_tx_request(tdata: *mut pjsip_tx_data) -> pj_status_t {
-        0
-    }
-    unsafe extern "C" fn on_tx_response(tdata: *mut pjsip_tx_data) -> pj_status_t {
-        0
-    }
+    unsafe extern "C" fn start() -> pj_status_t {0}
+    unsafe extern "C" fn stop() -> pj_status_t {0}
+    unsafe extern "C" fn unload() -> pj_status_t {0}
+    unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_bool_t {0}
+    unsafe extern "C" fn on_rx_response(rdata: *mut pjsip_rx_data) -> pj_bool_t {0}
+    unsafe extern "C" fn on_tx_request(tdata: *mut pjsip_tx_data) -> pj_status_t {0}
+    unsafe extern "C" fn on_tx_response(tdata: *mut pjsip_tx_data) -> pj_status_t {0}
     unsafe extern "C" fn on_tsx_state(tsx: *mut pjsip_transaction, event: *mut pjsip_event) {}
 }
 
@@ -342,25 +330,15 @@ impl AutoCreate<pjsip_media_type> for pjsip_media_type {
 
 // function helper
 // const pjsip_method * 	pjsip_get_invite_method (void)
-
 // const pjsip_method * 	pjsip_get_cancel_method (void)
-
 // const pjsip_method * 	pjsip_get_ack_method (void)
-
 // const pjsip_method * 	pjsip_get_bye_method (void)
-
 // const pjsip_method * 	pjsip_get_register_method (void)
-
 // const pjsip_method * 	pjsip_get_options_method (void)
-
 // void 	pjsip_method_init (pjsip_method *m, pj_pool_t *pool, const pj_str_t *str)
-
 // void 	pjsip_method_init_np (pjsip_method *m, pj_str_t *str)
-
 // void 	pjsip_method_set (pjsip_method *m, pjsip_method_e id)
-
 // void 	pjsip_method_copy (pj_pool_t *pool, pjsip_method *method, const pjsip_method *rhs)
-
 // int 	pjsip_method_cmp (const pjsip_method *m1, const pjsip_method *m2)
 pub fn method_cmp(m1: &pjsip_method, m2: &pjsip_method) -> i32 {
     unsafe {

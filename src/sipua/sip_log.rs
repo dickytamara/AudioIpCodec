@@ -4,7 +4,7 @@ use std::{borrow::BorrowMut, cell::{RefCell, RefMut}};
 use pj_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::pjdefault::{self, AutoCreate, ToString, FromString};
+use crate::pjproject::utils::{self, AutoCreate, ToString, FromString};
 use crate::pjproject::pjsua;
 
 
@@ -85,11 +85,11 @@ impl SIPLog {
 impl SIPLogExt for SIPLog {
 
     fn get_msg_logging(&self) -> bool {
-        pjdefault::check_boolean(self.ctx.borrow().msg_logging)
+        utils::check_boolean(self.ctx.borrow().msg_logging)
     }
 
     fn set_msg_logging(&self, value: bool) {
-        self.ctx.borrow_mut().msg_logging = pjdefault::boolean_to_pjbool(value);
+        self.ctx.borrow_mut().msg_logging = utils::boolean_to_pjbool(value);
     }
 
     fn get_level(&self) -> u32 {

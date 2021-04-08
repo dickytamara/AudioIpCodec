@@ -1,5 +1,5 @@
 
-use pj_sys::{PJ_FALSE, PJ_SUCCESS, PJ_TRUE, pj_bool_t, pj_status_t};
+use pj_sys::*;
 
 
 // global trait for new struct

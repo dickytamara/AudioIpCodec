@@ -2,14 +2,12 @@
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 
-use super::pjdefault::AutoCreate;
-use super::pjdefault::ToString;
-use super::pjdefault::FromString;
 use pj_sys::*;
+use super::prelude::*;
 
+use std::ptr;
 use std::ffi::CStr;
 use std::ffi::CString;
-use std::ptr;
 
 impl AutoCreate<pj_str_t> for pj_str_t {
     fn new() -> pj_str_t {
@@ -34,12 +32,8 @@ impl FromString<pj_str_t> for pj_str_t {
 
 impl ToString for pj_str_t {
     fn to_string(&self) -> String {
-
         // let mut tmp: Vec<i8> = Vec::new();
-
-
-        //let mut ret: String = String::new();
-
+        // let mut ret: String = String::new();
         // unsafe {
         //     let pointer = self.ptr;
         //     for i in 0..self.slen {
@@ -47,7 +41,6 @@ impl ToString for pj_str_t {
         //     }
         //     let ret = CStr::from_ptr(tmp.as_ptr()).to_str().expect("error").to_string().clone();
         // }
-
         unsafe {
             CStr::from_ptr(self.ptr).to_str().expect("error convert to_string").to_string().clone()
         }

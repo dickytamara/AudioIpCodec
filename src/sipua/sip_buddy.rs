@@ -4,7 +4,9 @@ use pj_sys::*;
 use pjsip_simple_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::pjdefault::{self, AutoCreate, FromString, ToString};
+use crate::pjproject::prelude::*;
+
+use crate::pjproject::utils;
 use crate::pjproject::pjsua;
 
 #[derive(Clone)]
@@ -170,10 +172,10 @@ impl SIPBuddyExt for SIPBuddy {
     }
 
     fn set_subscribe(&self, value: bool) {
-        self.ctx.borrow_mut().subscribe = pjdefault::boolean_to_pjbool(value);
+        self.ctx.borrow_mut().subscribe = utils::boolean_to_pjbool(value);
     }
 
     fn get_subscribe(&self) -> bool {
-        pjdefault::check_boolean(self.ctx.borrow().subscribe)
+        utils::check_boolean(self.ctx.borrow().subscribe)
     }
 }
