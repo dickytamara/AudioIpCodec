@@ -7,6 +7,7 @@ use glib::clone;
 use std::cell::RefCell;
 
 
+#[derive(Clone)]
 pub struct SettingsTurnWidgetStorage {
     lbl_use_turn: Label,
     lbl_turn_tcp: Label,
@@ -33,7 +34,7 @@ impl SettingsTurnWidgetStorage {
         SettingsTurnWidgetStorage {
             lbl_use_turn: gtk_builder.get_object("lbl_use_turn").unwrap(),
             lbl_turn_tcp: gtk_builder.get_object("lbl_turn_tcp").unwrap(),
-            lbl_turn_rtcp_multiplexing: gtk_builder.get_object("lbl_turn_rtcp_mutiplexing").unwrap(),
+            lbl_turn_rtcp_multiplexing: gtk_builder.get_object("lbl_turn_rtcp_multiplexing").unwrap(),
             lbl_turn_server: gtk_builder.get_object("lbl_turn_server").unwrap(),
             lbl_turn_port: gtk_builder.get_object("lbl_turn_port").unwrap(),
             lbl_turn_username: gtk_builder.get_object("lbl_turn_username").unwrap(),
@@ -54,26 +55,110 @@ impl SettingsTurnWidgetStorage {
 }
 
 
+#[derive(Clone)]
 pub struct SettingsTurnWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsTurnWidgetStorage>
 }
 
 impl SettingsTurnWidget {
-    // inner data just borrow not mutate
     pub fn new(gtk_builder: &Builder) -> Self {
-        SettingsTurnWidget {
+        let result = SettingsTurnWidget {
             ctx: RefCell::new(SettingsTurnWidgetStorage::new(gtk_builder)),
-        }
-    }
+        };
 
-    pub fn init(&self) {
-        let context = self.ctx.borrow();
         // set spin button turn port server
-        context.spn_turn_port.set_digits(0);
-        context.spn_turn_port.set_range(3478_f64, 65535_f64);
-        context.spn_turn_port.set_increments(1_f64, 5_f64);
+        result.ctx.borrow().spn_turn_port.set_digits(0);
+        result.ctx.borrow().spn_turn_port.set_range(3478_f64, 65535_f64);
+        result.ctx.borrow().spn_turn_port.set_increments(1_f64, 5_f64);
 
+        let this = result.clone();
+        result.ctx.borrow().swt_use_turn.connect_property_active_notify(move |s| {
+            this.set_use_turn(s.get_state())
+        });
+
+        result.set_use_turn(false);
+        result
     }
+
+    pub fn reset(&self) {
+        // set default value for turn properties
+        let context = self.ctx.borrow();
+        context.swt_use_turn.set_state(false);
+        context.swt_turn_tcp.set_state(false);
+        context.swt_turn_rtcp_multiplexing.set_state(false);
+
+        context.spn_turn_port.set_value(3478_f64);
+        context.ent_turn_server.set_text("");
+        context.ent_turn_username.set_text("");
+        context.ent_turn_password.set_text("");
+        context.cmb_turn_keyring.set_active_id(Some("SDES"));
+        self.set_use_turn(false);
+    }
+
+    pub fn set_use_turn(&self, value: bool) {
+        let context = self.ctx.borrow();
+        context.swt_turn_tcp.set_sensitive(value);
+        context.swt_turn_rtcp_multiplexing.set_sensitive(value);
+        context.ent_turn_server.set_sensitive(value);
+        context.spn_turn_port.set_sensitive(value);
+        context.ent_turn_username.set_sensitive(value);
+        context.ent_turn_password.set_sensitive(value);
+        context.cmb_turn_keyring.set_sensitive(value);
+    }
+
+    pub fn get_use_turn(&self) -> bool {
+        self.ctx.borrow().swt_use_turn.get_state()
+    }
+
+    pub fn set_turn_use_tcp(&self, value: bool) {
+        self.ctx.borrow().swt_turn_tcp.set_state(value);
+    }
+
+    pub fn get_turn_use_tcp(&self) -> bool {
+        self.ctx.borrow().swt_turn_tcp.get_state()
+    }
+
+    pub fn set_turn_use_rtcp_multiplexing(&self, value: bool) {
+        self.ctx.borrow().swt_turn_rtcp_multiplexing.set_state(value);
+    }
+
+    pub fn get_turn_use_rtcp_multiplexing(&self) -> bool {
+        self.ctx.borrow().swt_turn_rtcp_multiplexing.get_state()
+    }
+
+    pub fn get_stun_server(&self) -> String {
+        self.ctx.borrow().ent_turn_server.get_text().to_string().clone()
+    }
+
+    pub fn set_stun_server(&self, value: String) {
+        self.ctx.borrow().ent_turn_server.set_text(value.as_str());
+    }
+
+    pub fn get_stun_port(&self) -> f64 {
+        self.ctx.borrow().spn_turn_port.get_value()
+    }
+
+    pub fn set_stun_port(&self, value: f64) {
+        self.ctx.borrow().spn_turn_port.set_value(value);
+    }
+
+    pub fn set_stun_username(&self, value: String) {
+        self.ctx.borrow().ent_turn_username.set_text(value.as_str());
+    }
+
+    pub fn get_stun_username(&self) -> String {
+        self.ctx.borrow().ent_turn_username.get_text().to_string().clone()
+    }
+
+    pub fn set_stun_password(&self, value: String) {
+        self.ctx.borrow().ent_turn_password.set_text(value.as_str());
+    }
+
+    pub fn get_stun_password(&self) -> String {
+        self.ctx.borrow().ent_turn_password.get_text().to_string().clone()
+    }
+
 
 }
 

@@ -55,21 +55,16 @@ pub struct AccountWidget {
 impl AccountWidget {
 
     pub fn new (gtk_builder: &gtk::Builder) -> Self {
-        AccountWidget {
+        let result = AccountWidget {
             ctx: RefCell::new(AccountStorage::new(gtk_builder))
-        }
-    }
+        };
 
-    pub fn init(&self) {
-
-        // initialize default event
-        let this  = self.ctx.borrow();
-
-        let widget = self.clone();
-        this.btn_reset.connect_clicked( move |_| {
+        let widget = result.clone();
+        result.ctx.borrow().btn_reset.connect_clicked( move |_| {
             widget.reset();
         });
 
+        result
     }
 
     pub fn reset(&self) {

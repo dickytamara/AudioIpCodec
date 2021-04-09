@@ -1543,7 +1543,7 @@ TURN
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_ice_rtcp">
+                              <object class="GtkLabel" id="lbl_ice_use_rtcp">
                                 <property name="width-request">92</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>

@@ -87,13 +87,18 @@ pub struct DialpadWidget {
 impl DialpadWidget {
 
     pub fn new(gtk_builder: &gtk::Builder) -> Self {
-        DialpadWidget {
+        let result = DialpadWidget {
             // inner data just borrow not mutate
             ctx: RefCell::new(DialpadStorage::new(gtk_builder))
-        }
+        };
+
+        // fix this
+        result.init();
+
+        result
     }
 
-    pub fn init(&self) {
+    fn init(&self) {
 
         let widget = self.ctx.borrow();
         // col number

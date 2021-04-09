@@ -8,6 +8,7 @@ use glib::clone;
 use std::cell::RefCell;
 
 
+#[derive(Clone)]
 pub struct SettingsIceWidgetStorage {
     // ice section
     lbl_use_ice: Label,
@@ -40,6 +41,7 @@ impl SettingsIceWidgetStorage {
 }
 
 
+#[derive(Clone)]
 pub struct SettingsIceWidget {
     // inner data just borrow not mutate
     ctx: RefCell<SettingsIceWidgetStorage>
@@ -48,19 +50,23 @@ pub struct SettingsIceWidget {
 impl SettingsIceWidget {
 
     pub fn new(gtk_builder: &Builder) -> Self {
-        SettingsIceWidget {
+        let result = SettingsIceWidget {
             ctx: RefCell::new(SettingsIceWidgetStorage::new(gtk_builder))
-        }
-    }
+        };
 
-    pub fn init(&self) {
-        let context = self.ctx.borrow();
         // set spin button ice max hosts sever
-        context.spn_ice_max_hosts.set_digits(0);
-        context.spn_ice_max_hosts.set_range(-1_f64, 256_f64);
-        context.spn_ice_max_hosts.set_increments(1_f64, 5_f64);
-    }
+        result.ctx.borrow().spn_ice_max_hosts.set_digits(0);
+        result.ctx.borrow().spn_ice_max_hosts.set_range(-1_f64, 256_f64);
+        result.ctx.borrow().spn_ice_max_hosts.set_increments(1_f64, 5_f64);
 
+        let result_clone = result.clone();
+        result.ctx.borrow().swt_use_ice.connect_property_active_notify(move |s| {
+            result_clone.set_use_ice(s.get_state());
+        });
+
+        result.set_use_ice(false);
+        result
+    }
 
     pub fn reset(&self) {
         // set default value for ice properties
@@ -79,6 +85,18 @@ impl SettingsIceWidget {
         context.cmb_ice_reg_nomination.set_sensitive(value);
         context.cmb_ice_trickle_method.set_sensitive(value);
         context.spn_ice_max_hosts.set_sensitive(value);
+    }
+
+    pub fn get_use_ice(&self) -> bool {
+        self.ctx.borrow().swt_use_ice.get_state()
+    }
+
+    pub fn set_ice_use_rtcp(&self, value: bool) {
+        self.ctx.borrow().swt_ice_rtcp.set_state(value);
+    }
+
+    pub fn get_ice_use_rtcp(&self) -> bool {
+        self.ctx.borrow().swt_ice_rtcp.get_state()
     }
 
 }

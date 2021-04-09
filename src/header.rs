@@ -34,12 +34,10 @@ pub struct HeaderWidget {
 impl HeaderWidget {
 
     pub fn new(gtk_builder: &gtk::Builder) -> Self {
-        HeaderWidget {
+        let result = HeaderWidget {
             ctx: RefCell::new(HeaderStorage::new(gtk_builder))
-        }
-    }
+        };
 
-    pub fn init(&self) {
         // start update on thread
         let (sender, receiver) = MainContext::channel(glib::PRIORITY_DEFAULT);
         thread::spawn(move || {
@@ -68,7 +66,7 @@ impl HeaderWidget {
             }
         });
 
-        let cpu_level = self.ctx.borrow().cpu_lvl.clone();
+        let cpu_level = result.ctx.borrow().cpu_lvl.clone();
             receiver.attach(None, move |msg| {
                 match msg {
                     SystemLoadAverage::UpdateCpuAverage(x) => {
@@ -77,7 +75,9 @@ impl HeaderWidget {
                     }
                 }
 
-            glib::Continue(true)
+                glib::Continue(true)
         });
+
+        result
     }
 }

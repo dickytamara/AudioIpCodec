@@ -34,39 +34,39 @@ pub struct MaintabStorage {
  impl MaintabWidget {
 
      pub fn new(gtk_builder: &gtk::Builder) -> Self {
-        MaintabWidget{
+        let result =MaintabWidget{
             // inner data just borrow not mutate
             ctx: RefCell::new(MaintabStorage::new(gtk_builder))
-        }
-     }
+        };
 
-     pub fn init(&self) {
+        let stack_clone = result.ctx.borrow().stack.clone();
 
-        let this = self.ctx.borrow();
+        result.ctx.borrow().btn_sip.connect_clicked(
+          clone!( @weak stack_clone as stk => move |_| {
+              stk.set_visible_child_name("page0");
+        }));
 
-         self.ctx.borrow().btn_sip.connect_clicked(
-           clone!( @weak this.stack as stk => move |_| {
-               stk.set_visible_child_name("page0");
-         }));
+       result.ctx.borrow().btn_account.connect_clicked(
+          clone!( @weak stack_clone as stk => move |_| {
+              stk.set_visible_child_name("page1");
+        }));
 
-        self.ctx.borrow().btn_account.connect_clicked(
-           clone!( @weak this.stack as stk => move |_| {
-               stk.set_visible_child_name("page1");
-         }));
+        result.ctx.borrow().btn_settings.connect_clicked(
+          clone!( @weak stack_clone as stk => move |_| {
+              stk.set_visible_child_name("page2");
+        }));
 
-         self.ctx.borrow().btn_settings.connect_clicked(
-           clone!( @weak this.stack as stk => move |_| {
-               stk.set_visible_child_name("page2");
-         }));
+        result.ctx.borrow().btn_codec.connect_clicked(
+          clone!( @weak stack_clone as stk => move |_| {
+              stk.set_visible_child_name("page3");
+        }));
 
-         self.ctx.borrow().btn_codec.connect_clicked(
-           clone!( @weak this.stack as stk => move |_| {
-               stk.set_visible_child_name("page3");
-         }));
+        result.ctx.borrow().btn_about.connect_clicked(
+          clone!( @weak stack_clone as stk => move |_| {
+              stk.set_visible_child_name("page4");
+        }));
 
-         self.ctx.borrow().btn_about.connect_clicked(
-           clone!( @weak this.stack as stk => move |_| {
-               stk.set_visible_child_name("page4");
-         }));
+        result
+
      }
  }

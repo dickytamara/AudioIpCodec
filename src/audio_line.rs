@@ -1,27 +1,27 @@
 
 use super::gtk::prelude::*;
-use super::gtk::{Builder, Label, LevelBar, Button, Scale, ComboBoxText};
+use super::gtk::{Label, LevelBar, Button, Scale, ComboBoxText, ToggleButton, Builder};
 use super::glib::clone;
 
 use std::cell::RefCell;
 
 #[derive(Clone)]
 pub struct AudioLineStorage {
-    lbl_topbar: gtk::Label,
-    lbl_level_l: gtk::Label,
-    lbl_level_r: gtk::Label,
-    lvl_l: gtk::LevelBar,
-    lvl_r: gtk::LevelBar,
-    btn_level_dec: gtk::Button,
-    btn_level_inc: gtk::Button,
-    sldr_level: gtk::Scale,
-    lbl_device: gtk::Label,
-    cmb_device: gtk::ComboBoxText,
-    btn_mute: gtk::ToggleButton
+    lbl_topbar: Label,
+    lbl_level_l: Label,
+    lbl_level_r: Label,
+    lvl_l: LevelBar,
+    lvl_r: LevelBar,
+    btn_level_dec: Button,
+    btn_level_inc: Button,
+    sldr_level: Scale,
+    lbl_device: Label,
+    cmb_device: ComboBoxText,
+    btn_mute: ToggleButton
 }
 
 impl AudioLineStorage {
-    pub fn new (gtk_builder: &gtk::Builder,
+    pub fn new (gtk_builder: &Builder,
         lbl_topbar_id: &str,
         lbl_level_l_id: &str,
         lbl_level_r_id: &str,
@@ -32,7 +32,7 @@ impl AudioLineStorage {
         sldr_level_id: &str,
         lbl_device_id: &str,
         cmb_device_id: &str,
-        btn_mute_id: &str) -> AudioLineStorage
+        btn_mute_id: &str) -> Self
         {
             AudioLineStorage{
                 lbl_topbar: gtk_builder.get_object(lbl_topbar_id).unwrap(),
@@ -58,7 +58,7 @@ pub struct AudioLineWidget {
 
 impl AudioLineWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder,
+    pub fn new(gtk_builder: &Builder,
         lbl_topbar_id: &str,
         lbl_level_l_id: &str,
         lbl_level_r_id: &str,
@@ -70,54 +70,43 @@ impl AudioLineWidget {
         lbl_device_id: &str,
         cmb_device_id: &str,
         btn_mute_id: &str
-      ) -> AudioLineWidget {
-        AudioLineWidget{
+    ) -> Self {
+        let result = AudioLineWidget{
             ctx: RefCell::new(AudioLineStorage::new(
-                gtk_builder,
-                lbl_topbar_id,
-                lbl_level_l_id,
-                lbl_level_r_id,
-                lvl_l_id,
-                lvl_r_id,
-                btn_level_dec_id,
-                btn_level_inc_id,
-                sldr_level_id,
-                lbl_device_id,
-                cmb_device_id,
-                btn_mute_id
+                gtk_builder, lbl_topbar_id, lbl_level_l_id, lbl_level_r_id, lvl_l_id, lvl_r_id,
+                btn_level_dec_id, btn_level_inc_id, sldr_level_id, lbl_device_id, cmb_device_id, btn_mute_id
             ))
-        }
-    }
+        };
 
-    // init audio line widget
-    pub fn init(&self) {
         // adjust level bar
-        self.ctx.borrow().lvl_l.set_max_value(128.0);
-        self.ctx.borrow().lvl_l.set_min_value(0.0);
+        result.ctx.borrow().lvl_l.set_max_value(128.0);
+        result.ctx.borrow().lvl_l.set_min_value(0.0);
 
-        self.ctx.borrow().lvl_r.set_max_value(128.0);
-        self.ctx.borrow().lvl_r.set_min_value(0.0);
+        result.ctx.borrow().lvl_r.set_max_value(128.0);
+        result.ctx.borrow().lvl_r.set_min_value(0.0);
 
         // adjust slider
-        self.ctx.borrow().sldr_level.set_range(0.0, 100.0);
-        self.ctx.borrow().sldr_level.set_value(100.0);
-        self.ctx.borrow().sldr_level.set_increments(1.0, 5.0);
-        self.ctx.borrow().sldr_level.set_slider_size_fixed(true);
-        self.ctx.borrow().sldr_level.set_round_digits(0);
-        self.ctx.borrow().sldr_level.set_digits(0);
+        result.ctx.borrow().sldr_level.set_range(0.0, 100.0);
+        result.ctx.borrow().sldr_level.set_value(100.0);
+        result.ctx.borrow().sldr_level.set_increments(1.0, 5.0);
+        result.ctx.borrow().sldr_level.set_slider_size_fixed(true);
+        result.ctx.borrow().sldr_level.set_round_digits(0);
+        result.ctx.borrow().sldr_level.set_digits(0);
 
-        let sldr_level = self.ctx.borrow().sldr_level.clone();
-        self.ctx.borrow().btn_level_dec.connect_clicked(
-          clone!( @weak sldr_level as sldr => move |_| {
-              sldr.set_value(sldr.get_value() - 1.0);
-          }));
-
-        let sldr_level = self.ctx.borrow().sldr_level.clone();
-        self.ctx.borrow().btn_level_inc.connect_clicked(
-          clone!( @weak sldr_level as sldr => move |_| {
-              sldr.set_value(sldr.get_value() + 1.0);
+        let sldr_level = result.ctx.borrow().sldr_level.clone();
+        result.ctx.borrow().btn_level_dec.connect_clicked(
+        clone!( @weak sldr_level as sldr => move |_| {
+            sldr.set_value(sldr.get_value() - 1.0);
         }));
 
+        let sldr_level = result.ctx.borrow().sldr_level.clone();
+        result.ctx.borrow().btn_level_inc.connect_clicked(
+        clone!( @weak sldr_level as sldr => move |_| {
+            sldr.set_value(sldr.get_value() + 1.0);
+        }));
+
+
+        result
     }
 
     // set audio level status
