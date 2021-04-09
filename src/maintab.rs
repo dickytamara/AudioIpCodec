@@ -34,12 +34,10 @@ pub struct MaintabStorage {
  impl MaintabWidget {
 
      pub fn new(gtk_builder: &gtk::Builder) -> Self {
-
         MaintabWidget{
             // inner data just borrow not mutate
             ctx: RefCell::new(MaintabStorage::new(gtk_builder))
         }
-
      }
 
      pub fn init(&self) {

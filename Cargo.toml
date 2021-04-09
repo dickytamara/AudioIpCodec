@@ -7,13 +7,29 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-#lazy_static = "1.4.*"
-#mut_static = "5.*"
+#primitive_enum = "1.0.2"
 pj-sys = { path = "./pj-sys" }
 pjmedia-sys = { path = "./pjmedia-sys" }
 pjsip-sys = { path = "./pjsip-sys" }
 pjsip-simple-sys = { path = "./pjsip-simple-sys" }
 pjsua-sys = { path = "./pjsua-sys" }
+ini = "1.3.0"
+systemstat = "*"
 
+[dependencies.gtk]
+version = "0.9.0"
+features = ["v3_16"]
+
+[dependencies.gio]
+version = ""
+features = ["v2_44"]
+
+[dependencies.glib]
+version = ""
+features = ["v2_44"]
+
+[dependencies.gdk]
+version = ""
+features = ["v3_16"]
 
 [build-dependencies]
