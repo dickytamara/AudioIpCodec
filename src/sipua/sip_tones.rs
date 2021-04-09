@@ -3,13 +3,13 @@ use pj_sys::*;
 use pjmedia_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::utils::{self, AutoCreate};
+use crate::pjproject::utils::AutoCreate;
 use crate::pjproject::pjmedia;
 use crate::pjproject::pjsua;
 
 
 use std::ptr;
-use std::ffi::CString;
+// use std::ffi::CString;
 
 
 // basic implementation for SIPTonegen

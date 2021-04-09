@@ -3,13 +3,11 @@ use pj_sys::*;
 use pjmedia_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::utils::{self, AutoCreate};
+use crate::pjproject::utils::AutoCreate;
 use crate::pjproject::pjsua;
 
 use std::ptr;
-use std::ffi::CString;
 use std::os::raw::c_void;
-use std::mem::MaybeUninit;
 
 
 pub struct SIPWavPlayer {

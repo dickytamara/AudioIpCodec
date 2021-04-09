@@ -1,16 +1,10 @@
 
-use std::rc::Rc;
+
+
+use gtk::prelude::*;
+use gtk::{Builder, Label, Entry, Button, TreeView, TreeSelection, CellRendererText, ListStore, TreeViewColumn};
+use glib::clone;
 use std::cell::RefCell;
-
-use gio::ListStore;
-use gtk::{TreeModelExt, TreeViewColumn};
-
-use super::gtk::prelude::*;
-use super::gdk::prelude::*;
-use super::gtk::{Builder, Label, Entry, Button, TreeView, TreeSelection, CellRendererText};
-use super::glib::clone;
-
-use super::gdk::*;
 
 
 pub enum CallButtonState {
@@ -24,31 +18,31 @@ pub enum CallButtonState {
 
 #[derive(Clone)]
 pub struct DialpadStorage {
-    btn_dial_1: gtk::Button,
-    btn_dial_2: gtk::Button,
-    btn_dial_3: gtk::Button,
-    btn_dial_4: gtk::Button,
-    btn_dial_5: gtk::Button,
-    btn_dial_6: gtk::Button,
-    btn_dial_7: gtk::Button,
-    btn_dial_8: gtk::Button,
-    btn_dial_9: gtk::Button,
-    btn_dial_0: gtk::Button,
-    btn_dial_ast: gtk::Button,
-    btn_dial_hash: gtk::Button,
-    btn_call: gtk::Button,
-    btn_call_log_clear: gtk::Button,
-    lbl_call_address: gtk::Label,
-    btn_call_address_clear: gtk::Button,
-    ent_call_address: gtk::Entry,
-    tv_call_log: gtk::TreeView,
-    tv_call_log_selection: gtk::TreeSelection,
+    btn_dial_1: Button,
+    btn_dial_2: Button,
+    btn_dial_3: Button,
+    btn_dial_4: Button,
+    btn_dial_5: Button,
+    btn_dial_6: Button,
+    btn_dial_7: Button,
+    btn_dial_8: Button,
+    btn_dial_9: Button,
+    btn_dial_0: Button,
+    btn_dial_ast: Button,
+    btn_dial_hash: Button,
+    btn_call: Button,
+    btn_call_log_clear: Button,
+    lbl_call_address: Label,
+    btn_call_address_clear: Button,
+    ent_call_address: Entry,
+    tv_call_log: TreeView,
+    tv_call_log_selection: TreeSelection,
     ls_call_log: gtk::ListStore
 }
 
 impl DialpadStorage {
 
-    pub fn new (gtk_builder: &gtk::Builder) -> Self {
+    pub fn new (gtk_builder: &Builder) -> Self {
         // liststore types
         let list_types = [u32::static_type(), String::static_type()];
 
@@ -72,7 +66,7 @@ impl DialpadStorage {
             ent_call_address: gtk_builder.get_object("ent_call_address").unwrap(),
             tv_call_log: gtk_builder.get_object("tv_call_log").unwrap(),
             tv_call_log_selection: gtk_builder.get_object("tv_call_log_selection").unwrap(),
-            ls_call_log: gtk::ListStore::new(&list_types)
+            ls_call_log: ListStore::new(&list_types)
         }
     }
 }
@@ -86,7 +80,7 @@ pub struct DialpadWidget {
 
 impl DialpadWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder) -> Self {
+    pub fn new(gtk_builder: &Builder) -> Self {
         let result = DialpadWidget {
             // inner data just borrow not mutate
             ctx: RefCell::new(DialpadStorage::new(gtk_builder))
@@ -98,7 +92,7 @@ impl DialpadWidget {
         result
     }
 
-    fn init(&self) {
+    pub fn init(&self) {
 
         let widget = self.ctx.borrow();
         // col number

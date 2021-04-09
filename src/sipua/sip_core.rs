@@ -8,13 +8,13 @@ use pjsua_sys::*;
 
 use crate::pjproject::prelude::*;
 
-use crate::pjproject::utils;
+// use crate::pjproject::utils;
 use crate::pjproject::pjsip;
 use crate::pjproject::pjsua;
 use crate::pjproject::pjmedia;
 
 use super::sip_account::*;
-use super::sip_buddy::*;
+// use super::sip_buddy::*;
 use super::sip_calls::*;
 use super::sip_log::*;
 use super::sip_media::*;

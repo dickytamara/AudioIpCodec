@@ -1,26 +1,25 @@
 
-use glib::timeout_add_seconds;
 
-use super::gtk::prelude::*;
-use super::gtk::prelude::*;
+use gtk::prelude::*;
+use gtk::{Builder, LevelBar};
+use glib::MainContext;
+// use glib::timeout_add_seconds;
 
-use super::glib::MainContext;
-
-use std::thread::{self, JoinHandle};
+use std::thread;
 use std::time::Duration;
 use std::cell::RefCell;
-use super::systemstat::{System, Platform, saturating_sub_bytes};
+use systemstat::{System, Platform};
 
 enum SystemLoadAverage {
     UpdateCpuAverage(f32)
 }
 
 pub struct HeaderStorage{
-    cpu_lvl: gtk::LevelBar,
+    cpu_lvl: LevelBar,
 }
 
 impl HeaderStorage {
-    pub fn new (gtk_builder: &gtk::Builder) -> Self {
+    pub fn new (gtk_builder: &Builder) -> Self {
         HeaderStorage {
             cpu_lvl: gtk_builder.get_object("lvl_cpu").unwrap(),
         }
@@ -33,7 +32,7 @@ pub struct HeaderWidget {
 
 impl HeaderWidget {
 
-    pub fn new(gtk_builder: &gtk::Builder) -> Self {
+    pub fn new(gtk_builder: &Builder) -> Self {
         let result = HeaderWidget {
             ctx: RefCell::new(HeaderStorage::new(gtk_builder))
         };

@@ -1,9 +1,6 @@
 
 use gtk::prelude::*;
-
 use gtk::{Label, Button, SpinButton, ComboBoxText, Entry, Switch, Builder};
-use glib::clone;
-
 use std::cell::RefCell;
 
 

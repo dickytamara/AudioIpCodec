@@ -1,34 +1,29 @@
 
 
 use super::gtk::prelude::*;
-use super::gio::prelude::*;
-
-
 use super::gtk::{Label, Entry, Button, Builder};
-use super::glib::clone;
-
 use std::cell::RefCell;
 
 
 #[derive(Clone)]
 pub struct AccountStorage {
-    lbl_sip_url: gtk::Label,
-    lbl_registrar_url: gtk::Label,
-    lbl_realm: gtk::Label,
-    lbl_username: gtk::Label,
-    lbl_password: gtk::Label,
-    ent_sip_url: gtk::Entry,
-    ent_registrar_url: gtk::Entry,
-    ent_realm: gtk::Entry,
-    ent_username: gtk::Entry,
-    ent_password: gtk::Entry,
-    btn_connect: gtk::Button,
-    btn_save: gtk::Button,
-    btn_reset: gtk::Button
+    lbl_sip_url: Label,
+    lbl_registrar_url: Label,
+    lbl_realm: Label,
+    lbl_username: Label,
+    lbl_password: Label,
+    ent_sip_url: Entry,
+    ent_registrar_url: Entry,
+    ent_realm: Entry,
+    ent_username: Entry,
+    ent_password: Entry,
+    btn_connect: Button,
+    btn_save: Button,
+    btn_reset: Button
 }
 
 impl AccountStorage {
-    pub fn new (gtk_builder: &gtk::Builder) -> Self {
+    pub fn new (gtk_builder: &Builder) -> Self {
         AccountStorage {
             lbl_sip_url: gtk_builder.get_object("lbl_sip_url").unwrap(),
             lbl_registrar_url: gtk_builder.get_object("lbl_registrar_url").unwrap(),

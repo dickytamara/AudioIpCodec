@@ -1,6 +1,6 @@
 
-use super::gtk::prelude::*;
-use super::glib::clone;
+use gtk::prelude::*;
+use glib::clone;
 use std::cell::RefCell;
 
 pub struct MaintabStorage {

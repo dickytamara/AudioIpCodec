@@ -1,9 +1,6 @@
 
 use gtk::prelude::*;
-
 use gtk::{Switch, Label, Builder};
-use glib::clone;
-
 use std::cell::RefCell;
 
 

@@ -3,8 +3,6 @@
 use gtk::prelude::*;
 
 use gtk::{Label, Switch, ComboBoxText, SpinButton, Builder};
-use glib::clone;
-
 use std::cell::RefCell;
 
 

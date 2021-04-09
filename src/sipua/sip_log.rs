@@ -1,5 +1,5 @@
 
-use std::{borrow::BorrowMut, cell::{RefCell, RefMut}};
+use std::{cell::{RefCell, RefMut}};
 
 use pj_sys::*;
 use pjsua_sys::*;

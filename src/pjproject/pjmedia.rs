@@ -7,8 +7,6 @@ use pjmedia_sys::*;
 
 use super::prelude::*;
 use super::utils;
-use super::pjlib::*;
-use super::pjsua;
 
 use std::ptr;
 use std::ffi::CStr;

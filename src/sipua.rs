@@ -1,4 +1,4 @@
-#![allow(dead_code, unused_variables, unused_imports, non_upper_case_globals)]
+#![allow(dead_code, unused_variables, non_upper_case_globals)]
 
 
 pub mod prelude;
@@ -20,19 +20,19 @@ use crate::pjproject::pjsua;
 
 use sip_core::{CURRENT_CALL, SIPCore, SIPCoreEventsExt, SIP_CORE};
 
-use pj_sys::*;
-use pjmedia_sys::*;
-use pjsip_sys::*;
-use pjsip_simple_sys::*;
+// use pj_sys::*;
+// use pjmedia_sys::*;
+// use pjsip_sys::*;
+// use pjsip_simple_sys::*;
 use pjsua_sys::*;
 
-use std::ffi::CString;
-use std::ffi::CStr;
-use std::fmt::format;
-use std::mem;
+// use std::ffi::CString;
+// use std::ffi::CStr;
+// use std::fmt::format;
+// use std::mem;
 use std::ops::Drop;
-use std::os::raw::{c_char, c_int, c_uint, c_void};
-use std::ptr;
+// use std::os::raw::{c_char, c_int, c_uint, c_void};
+// use std::ptr;
 
 
 #[derive(Clone, Copy)]
