@@ -1024,10 +1024,8 @@ pub struct pjsua_media_config {
     pub vid_preview_enable_native: pj_bool_t,
     pub no_smart_media_update: pj_bool_t,
     pub no_rtcp_sdes_bye: pj_bool_t,
-    pub on_aud_prev_play_frame:
-        Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
-    pub on_aud_prev_rec_frame:
-        Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
+    pub on_aud_prev_play_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
+    pub on_aud_prev_rec_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
 }
 
 #[repr(C)]

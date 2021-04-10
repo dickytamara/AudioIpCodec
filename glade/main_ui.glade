@@ -1671,7 +1671,7 @@ ICE
                           <placeholder/>
                         </child>
                         <child>
-                          <object class="GtkButton" id="btn_turn_save">
+                          <object class="GtkButton" id="btn_settings_save">
                             <property name="label" translatable="yes">Save</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
@@ -1684,7 +1684,7 @@ ICE
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="btn_turn_reset">
+                          <object class="GtkButton" id="btn_settings_reset">
                             <property name="label" translatable="yes">Reset</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
