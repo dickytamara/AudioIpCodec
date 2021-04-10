@@ -3,12 +3,9 @@ use gtk::prelude::*;
 use gtk::{Builder, Notebook, Button};
 use std::cell::RefCell;
 
-
-
 use super::settings_call::SettingsCallWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
-
 
 #[derive(Clone, Copy)]
 pub enum SettingsCurrentActivePage {

@@ -3,6 +3,9 @@ use gtk::prelude::*;
 use gtk::{Switch, Label, Builder};
 use std::cell::RefCell;
 
+use super::helper::HelperFileSettings;
+use configparser::ini::Ini;
+
 
 #[derive(Clone)]
 pub struct SettingsCallWidgetStorage {
@@ -48,3 +51,31 @@ impl SettingsCallWidget {
         self.ctx.borrow().swt_autoanswer.get_state()
     }
 }
+
+
+impl HelperFileSettings for SettingsCallWidget {
+
+    // load from file
+    fn load(&self, path: &str) {
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let autoanswer = config.get("call", "autoanswer").unwrap();
+        self.set_autoanswer(autoanswer.parse().unwrap());
+    }
+
+    // save to file
+    fn save(&self, path: &str) {
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let autoanswer = self.get_autoanswer();
+        config.set("call", "autoanswer", Some(autoanswer.to_string()));
+
+        config.write(path).unwrap();
+    }
+}
+
+
+
+

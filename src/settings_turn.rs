@@ -3,6 +3,9 @@ use gtk::prelude::*;
 use gtk::{Label, SpinButton, ComboBoxText, Entry, Switch, Builder};
 use std::cell::RefCell;
 
+use super::helper::HelperFileSettings;
+use configparser::ini::Ini;
+
 
 #[derive(Clone)]
 pub struct SettingsTurnWidgetStorage {
@@ -22,8 +25,6 @@ pub struct SettingsTurnWidgetStorage {
     ent_turn_username: Entry,
     ent_turn_password: Entry,
     cmb_turn_keyring: ComboBoxText,
-    // btn_turn_save: Button,
-    // btn_turn_reset: Button,
 }
 
 impl SettingsTurnWidgetStorage {
@@ -45,8 +46,6 @@ impl SettingsTurnWidgetStorage {
             ent_turn_username: gtk_builder.get_object("ent_turn_username").unwrap(),
             ent_turn_password: gtk_builder.get_object("ent_turn_password").unwrap(),
             cmb_turn_keyring: gtk_builder.get_object("cmb_turn_keyring").unwrap(),
-            // btn_turn_save: gtk_builder.get_object("btn_turn_save").unwrap(),
-            // btn_turn_reset: gtk_builder.get_object("btn_turn_reset").unwrap(),
         }
     }
 }
@@ -156,20 +155,69 @@ impl SettingsTurnWidget {
         self.ctx.borrow().ent_turn_password.get_text().to_string().clone()
     }
 
-    pub fn get_keyring(&self) -> u32 {
+    pub fn get_srtp_keyring(&self) -> u32 {
         match self.ctx.borrow().cmb_turn_keyring.get_active() {
             Some(value) => value + 1,
             None => 0,
         }
     }
 
-    pub fn set_keyring(&self, value: u32) {
+    pub fn set_srtp_keyring(&self, value: u32) {
         self.ctx.borrow().cmb_turn_keyring.set_active(Some(value -1));
     }
 
 }
 
 
+impl HelperFileSettings for SettingsTurnWidget {
 
+    fn load(&self, path: &str) {
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let use_turn = config.get("turn", "use_turn").unwrap();
+        let use_tcp = config.get("turn", "use_tcp").unwrap();
+        let use_rtcp_multiplexing = config.get("stun", "use_rtcp_multiplexing").unwrap();
+        let server = config.get("stun", "server").unwrap();
+        let port = config.get("stun", "port").unwrap();
+        let username = config.get("stun", "username").unwrap();
+        let password = config.get("stun", "password").unwrap();
+        let srtp_keyring= config.get("stun", "srtp_keyring").unwrap();
+
+        self.set_use_turn(use_turn.parse().unwrap());
+        self.set_use_tcp(use_tcp.parse().unwrap());
+        self.set_use_rtcp_multiplexing(use_rtcp_multiplexing.parse().unwrap());
+        self.set_server(server);
+        self.set_port(port.parse().unwrap());
+        self.set_username(username);
+        self.set_password(password);
+        self.set_srtp_keyring(srtp_keyring.parse().unwrap());
+    }
+
+    fn save(&self, path: &str) {
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let use_turn = self.get_use_turn();
+        let use_tcp = self.get_use_tcp();
+        let use_rtcp_multiplexing = self.get_use_rtcp_multiplexing();
+        let server = self.get_server();
+        let port = self.get_port();
+        let username = self.get_username();
+        let password = self.get_password();
+        let srtp_keyring = self.get_srtp_keyring();
+
+        config.set("stun", "use_turn", Some(use_turn.to_string()));
+        config.set("stun", "use_tcp", Some(use_tcp.to_string()));
+        config.set("stun", "use_rtcp_multiplexing", Some(use_rtcp_multiplexing.to_string()));
+        config.set("stun", "server", Some(server));
+        config.set("stun", "port", Some(port.to_string()));
+        config.set("stun", "username", Some(username));
+        config.set("stun", "password", Some(password));
+        config.set("stun", "srtp_keyring", Some(srtp_keyring.to_string()));
+
+        config.write(path).unwrap();
+    }
+}
 
 

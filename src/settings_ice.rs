@@ -5,6 +5,9 @@ use gtk::prelude::*;
 use gtk::{Label, Switch, ComboBoxText, SpinButton, Builder};
 use std::cell::RefCell;
 
+use super::helper::HelperFileSettings;
+use configparser::ini::Ini;
+
 
 #[derive(Clone)]
 pub struct SettingsIceWidgetStorage {
@@ -127,4 +130,43 @@ impl SettingsIceWidget {
         self.ctx.borrow().spn_ice_max_hosts.get_value()
     }
 
+}
+
+
+impl HelperFileSettings for SettingsIceWidget {
+    fn load(&self, path: &str) {
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let use_ice = config.get("ice", "use_ice").unwrap();
+        let use_rtcp = config.get("ice", "use_srtp").unwrap();
+        let reg_nomination = config.get("ice", "reg_nomination").unwrap();
+        let trickle_method = config.get("ice", "trickle_method").unwrap();
+        let max_hosts = config.get("ice", "max_hosts").unwrap();
+
+        self.set_use_ice(use_ice.parse().unwrap());
+        self.set_use_rtcp(use_rtcp.parse().unwrap());
+        self.set_reg_nomination(reg_nomination.parse().unwrap());
+        self.set_trickle_method(trickle_method.parse().unwrap());
+        self.set_max_hosts(max_hosts.parse().unwrap());
+    }
+
+    fn save(&self, path: &str) {
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let use_ice = self.get_use_ice();
+        let use_rtcp = self.get_use_rtcp();
+        let reg_nomination = self.get_reg_nomination();
+        let trickle_method = self.get_trickle_method();
+        let max_hosts = self.get_max_hosts();
+
+        config.set("ice", "use_ice", Some(use_ice.to_string()));
+        config.set("ice", "use_rtcp", Some(use_rtcp.to_string()));
+        config.set("ice", "reg_nomination", Some(reg_nomination.to_string()));
+        config.set("ice", "trickle_method", Some(trickle_method.to_string()));
+        config.set("ice", "max_hosts", Some(max_hosts.to_string()));
+
+        config.write(path).unwrap();
+    }
 }

@@ -1,9 +1,11 @@
 
 
-use super::gtk::prelude::*;
-use super::gtk::{Label, Entry, Button, Builder};
+use gtk::prelude::*;
+use gtk::{Label, Entry, Button, Builder};
 use std::cell::RefCell;
 
+use super::helper::HelperFileSettings;
+use configparser::ini::Ini;
 
 #[derive(Clone)]
 pub struct AccountStorage {
@@ -113,19 +115,58 @@ impl AccountWidget {
 
     // event on btn save clicked pass closure
     // at outer level
-    pub fn on_btn_save_clicked<F: Fn() +'static> (&self, callback: F) {
+    pub fn save_connect_clicked<F> (&self, callback: F)
+    where
+        F: Fn() + 'static
+    {
         self.ctx.borrow().btn_save.connect_clicked( move |_| {
             callback();
         });
     }
 
     // event on btn connect clicked to pass closure at outer level
-    pub fn on_btn_connect_clicked<F: Fn() +'static> (&self, callback: F) {
+    pub fn on_btn_connect_clicked<F> (&self, callback: F)
+    where
+        F: Fn() + 'static
+    {
         self.ctx.borrow().btn_connect.connect_clicked( move |_| {
             callback();
         });
     }
+}
 
+impl HelperFileSettings for AccountWidget {
+    fn load(&self, path: &str) {
+        // load from file
+        let mut config = Ini::new();
+        config.load(path).unwrap();
+
+        let sip_url = config.get("account", "sip_url").unwrap();
+        let registrar_url = config.get("account", "registrar_url").unwrap();
+        let realm = config.get("account", "realm").unwrap();
+        let username = config.get("account", "username").unwrap();
+        let password = config.get("account", "password").unwrap();
+
+        self.set_sip_url(sip_url.as_str());
+        self.set_registrar_url(registrar_url.as_str());
+        self.set_realm(realm.as_str());
+        self.set_username(username.as_str());
+        self.set_password(password.as_str());
+    }
+
+    fn save(&self, path: &str) {
+        // save to file
+        let mut config = Ini::new();
+        // load from file
+        config.load(path).unwrap();
+        config.set("account", "sip_url", Some(self.get_sip_url()));
+        config.set("account", "registrar_url", Some(self.get_registrar_url()));
+        config.set("account", "realm", Some(self.get_realm()));
+        config.set("account", "username", Some(self.get_username()));
+        config.set("account", "password", Some(self.get_password()));
+        // save to file.
+        config.write(path).unwrap();
+    }
 }
 
 
