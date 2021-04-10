@@ -1,6 +1,6 @@
 
 use gtk::prelude::*;
-use gtk::{Label, Button, SpinButton, ComboBoxText, Entry, Switch, Builder};
+use gtk::{Label, SpinButton, ComboBoxText, Entry, Switch, Builder};
 use std::cell::RefCell;
 
 
@@ -22,8 +22,8 @@ pub struct SettingsTurnWidgetStorage {
     ent_turn_username: Entry,
     ent_turn_password: Entry,
     cmb_turn_keyring: ComboBoxText,
-    btn_turn_save: Button,
-    btn_turn_reset: Button,
+    // btn_turn_save: Button,
+    // btn_turn_reset: Button,
 }
 
 impl SettingsTurnWidgetStorage {
@@ -45,8 +45,8 @@ impl SettingsTurnWidgetStorage {
             ent_turn_username: gtk_builder.get_object("ent_turn_username").unwrap(),
             ent_turn_password: gtk_builder.get_object("ent_turn_password").unwrap(),
             cmb_turn_keyring: gtk_builder.get_object("cmb_turn_keyring").unwrap(),
-            btn_turn_save: gtk_builder.get_object("btn_turn_save").unwrap(),
-            btn_turn_reset: gtk_builder.get_object("btn_turn_reset").unwrap(),
+            // btn_turn_save: gtk_builder.get_object("btn_turn_save").unwrap(),
+            // btn_turn_reset: gtk_builder.get_object("btn_turn_reset").unwrap(),
         }
     }
 }
@@ -108,54 +108,61 @@ impl SettingsTurnWidget {
         self.ctx.borrow().swt_use_turn.get_state()
     }
 
-    pub fn set_turn_use_tcp(&self, value: bool) {
+    pub fn set_use_tcp(&self, value: bool) {
         self.ctx.borrow().swt_turn_tcp.set_state(value);
     }
 
-    pub fn get_turn_use_tcp(&self) -> bool {
+    pub fn get_use_tcp(&self) -> bool {
         self.ctx.borrow().swt_turn_tcp.get_state()
     }
 
-    pub fn set_turn_use_rtcp_multiplexing(&self, value: bool) {
+    pub fn set_use_rtcp_multiplexing(&self, value: bool) {
         self.ctx.borrow().swt_turn_rtcp_multiplexing.set_state(value);
     }
 
-    pub fn get_turn_use_rtcp_multiplexing(&self) -> bool {
+    pub fn get_use_rtcp_multiplexing(&self) -> bool {
         self.ctx.borrow().swt_turn_rtcp_multiplexing.get_state()
     }
 
-    pub fn get_stun_server(&self) -> String {
+    pub fn get_server(&self) -> String {
         self.ctx.borrow().ent_turn_server.get_text().to_string().clone()
     }
 
-    pub fn set_stun_server(&self, value: String) {
+    pub fn set_server(&self, value: String) {
         self.ctx.borrow().ent_turn_server.set_text(value.as_str());
     }
 
-    pub fn get_stun_port(&self) -> f64 {
+    pub fn get_port(&self) -> f64 {
         self.ctx.borrow().spn_turn_port.get_value()
     }
 
-    pub fn set_stun_port(&self, value: f64) {
+    pub fn set_port(&self, value: f64) {
         self.ctx.borrow().spn_turn_port.set_value(value);
     }
 
-    pub fn set_stun_username(&self, value: String) {
+    pub fn set_username(&self, value: String) {
         self.ctx.borrow().ent_turn_username.set_text(value.as_str());
     }
 
-    pub fn get_stun_username(&self) -> String {
+    pub fn get_username(&self) -> String {
         self.ctx.borrow().ent_turn_username.get_text().to_string().clone()
     }
 
-    pub fn set_stun_password(&self, value: String) {
+    pub fn set_password(&self, value: String) {
         self.ctx.borrow().ent_turn_password.set_text(value.as_str());
     }
 
-    pub fn get_stun_password(&self) -> String {
+    pub fn get_password(&self) -> String {
         self.ctx.borrow().ent_turn_password.get_text().to_string().clone()
     }
 
+    pub fn get_keyring(&self) -> f32 {
+        0.0
+    }
+
+    pub fn set_keyring(&self, value: f32) {
+
+    }
 
 }
 

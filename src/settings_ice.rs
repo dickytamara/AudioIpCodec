@@ -89,12 +89,36 @@ impl SettingsIceWidget {
         self.ctx.borrow().swt_use_ice.get_state()
     }
 
-    pub fn set_ice_use_rtcp(&self, value: bool) {
+    pub fn set_use_rtcp(&self, value: bool) {
         self.ctx.borrow().swt_ice_rtcp.set_state(value);
     }
 
-    pub fn get_ice_use_rtcp(&self) -> bool {
+    pub fn get_use_rtcp(&self) -> bool {
         self.ctx.borrow().swt_ice_rtcp.get_state()
+    }
+
+    pub fn set_reg_nomination(&self, value: f32) {
+
+    }
+
+    pub fn get_reg_nomination(&self) -> f32 {
+        0.0
+    }
+
+    pub fn set_trickle_method(&self, value: f32) {
+
+    }
+
+    pub fn get_trickle_method(&self) -> f32 {
+        0.0
+    }
+
+    pub fn set_max_hosts(&self, value: f32) {
+       
+    }
+
+    pub fn get_max_hosts(&self) -> f32 {
+        0.0
     }
 
 }

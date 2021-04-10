@@ -4,6 +4,7 @@ use gtk::{Switch, Label, Builder};
 use std::cell::RefCell;
 
 
+#[derive(Clone)]
 pub struct SettingsCallWidgetStorage {
     swt_autoanswer: Switch,
     lbl_autoanswer: Label,
@@ -18,7 +19,7 @@ impl SettingsCallWidgetStorage {
     }
 }
 
-
+#[derive(Clone)]
 pub struct SettingsCallWidget {
     // inner data just borrow not mutate
     ctx: RefCell<SettingsCallWidgetStorage>
