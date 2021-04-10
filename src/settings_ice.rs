@@ -97,28 +97,34 @@ impl SettingsIceWidget {
         self.ctx.borrow().swt_ice_rtcp.get_state()
     }
 
-    pub fn set_reg_nomination(&self, value: f32) {
-
+    pub fn set_reg_nomination(&self, value: u32) {
+        self.ctx.borrow().cmb_ice_reg_nomination.set_active(Some(value -1));
     }
 
-    pub fn get_reg_nomination(&self) -> f32 {
-        0.0
+    pub fn get_reg_nomination(&self) -> u32 {
+        match self.ctx.borrow().cmb_ice_reg_nomination.get_active() {
+            Some(value) => value +1,
+            None => 0,
+        }
     }
 
-    pub fn set_trickle_method(&self, value: f32) {
-
+    pub fn set_trickle_method(&self, value: u32) {
+        self.ctx.borrow().cmb_ice_trickle_method.set_active(Some(value -1));
     }
 
-    pub fn get_trickle_method(&self) -> f32 {
-        0.0
+    pub fn get_trickle_method(&self) -> u32 {
+        match self.ctx.borrow().cmb_ice_trickle_method.get_active() {
+            Some(value) => value + 1,
+            None => 0
+        }
     }
 
-    pub fn set_max_hosts(&self, value: f32) {
-       
+    pub fn set_max_hosts(&self, value: f64) {
+        self.ctx.borrow().spn_ice_max_hosts.set_value(value);
     }
 
-    pub fn get_max_hosts(&self) -> f32 {
-        0.0
+    pub fn get_max_hosts(&self) -> f64 {
+        self.ctx.borrow().spn_ice_max_hosts.get_value()
     }
 
 }

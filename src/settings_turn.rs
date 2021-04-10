@@ -156,12 +156,15 @@ impl SettingsTurnWidget {
         self.ctx.borrow().ent_turn_password.get_text().to_string().clone()
     }
 
-    pub fn get_keyring(&self) -> f32 {
-        0.0
+    pub fn get_keyring(&self) -> u32 {
+        match self.ctx.borrow().cmb_turn_keyring.get_active() {
+            Some(value) => value + 1,
+            None => 0,
+        }
     }
 
-    pub fn set_keyring(&self, value: f32) {
-
+    pub fn set_keyring(&self, value: u32) {
+        self.ctx.borrow().cmb_turn_keyring.set_active(Some(value -1));
     }
 
 }

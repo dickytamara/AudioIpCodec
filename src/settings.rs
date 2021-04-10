@@ -63,14 +63,14 @@ impl SettingsWidget {
     pub fn get_current_active_page(&self) -> Option<SettingsCurrentActivePage> {
         match self.ctx.borrow().ntbk_settings.get_current_page() {
             Some(idx) => {
-                return match idx {
+                match idx {
                     0 => Some(SettingsCurrentActivePage::Call),
                     1 => Some(SettingsCurrentActivePage::Turn),
                     2 => Some(SettingsCurrentActivePage::Ice),
                     3 => Some(SettingsCurrentActivePage::Buffer),
                     4 => Some(SettingsCurrentActivePage::Media),
                     _ => None
-                };
+                }
             },
             None => None
         }
