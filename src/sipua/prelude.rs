@@ -6,3 +6,4 @@ pub use super::sip_log::SIPLogExt;
 pub use super::sip_media::SIPMediaExt;
 pub use super::sip_ua::SIPUaExt;
 pub use super::sip_ua::SIPUaEventExt;
+pub use super::sip_module::SIPModuleExt;

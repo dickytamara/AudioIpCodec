@@ -163,4 +163,67 @@ impl SIPModule {
 }
 
 
+impl SIPModuleExt for SIPModule {
+    fn set_name(&self, value: String) {
+        self.ctx.borrow_mut().name = pj_str_t::from_string(value);
+    }
+
+    fn get_name(&self) -> String {
+        self.ctx.borrow().name.to_string()
+    }
+
+    fn set_id(&self, value: i32) {
+        self.ctx.borrow_mut().id = value;
+    }
+
+    fn get_id(&self) -> i32 {
+        self.ctx.borrow().id
+    }
+
+    fn set_priority(&self, value: i32) {
+        self.ctx.borrow_mut().priority = value;
+    }
+
+    fn get_priority(&self) -> i32 {
+        self.ctx.borrow().priority
+    }
+
+    fn connect_load(&self, callback: Option<unsafe extern "C" fn(endpt: *mut pjsip_endpoint) -> pj_status_t>) {
+        self.ctx.borrow_mut().load = callback;
+    }
+
+    fn connect_start(&self, callback: Option<unsafe extern "C" fn() -> pj_status_t>) {
+        self.ctx.borrow_mut().start = callback;
+    }
+
+    fn connect_stop(&self, callback: Option<unsafe extern "C" fn() -> pj_status_t>) {
+        self.ctx.borrow_mut().stop = callback;
+    }
+
+    fn connect_unload(&self, callback: Option<unsafe extern "C" fn() -> pj_status_t>) {
+        self.ctx.borrow_mut().unload = callback;
+    }
+
+    fn connect_on_rx_request(&self, callback: Option<unsafe extern "C" fn(rdata: *mut pjsip_rx_data) -> pj_bool_t>) {
+        self.ctx.borrow_mut().on_rx_request = callback;
+    }
+
+    fn connect_on_rx_response(&self, callback: Option<unsafe extern "C" fn(rdata: *mut pjsip_rx_data) -> pj_bool_t>) {
+        self.ctx.borrow_mut().on_rx_response = callback;
+    }
+
+    fn connect_on_tx_request(&self, callback: Option<unsafe extern "C" fn(tdata: *mut pjsip_tx_data) -> pj_status_t>) {
+        self.ctx.borrow_mut().on_tx_request = callback;
+    }
+
+    fn connect_on_tx_response(&self, callback: Option<unsafe extern "C" fn(tdata: *mut pjsip_tx_data) -> pj_status_t>) {
+        self.ctx.borrow_mut().on_tx_response = callback;
+    }
+
+    fn connect_on_tsx_state(&self, callback: Option<unsafe extern "C" fn(tsx: *mut pjsip_transaction, event: *mut pjsip_event)>) {
+        self.ctx.borrow_mut().on_tsx_state = callback;
+    }
+}
+
+
 
