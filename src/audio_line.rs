@@ -1,7 +1,7 @@
 
-use super::gtk::prelude::*;
-use super::gtk::{Label, LevelBar, Button, Scale, ComboBoxText, ToggleButton, Builder};
-use super::glib::clone;
+use gtk::prelude::*;
+use gtk::{Label, LevelBar, Button, Scale, ComboBoxText, ToggleButton, Builder};
+use glib::clone;
 
 use std::cell::RefCell;
 
@@ -33,21 +33,21 @@ impl AudioLineStorage {
         lbl_device_id: &str,
         cmb_device_id: &str,
         btn_mute_id: &str) -> Self
-        {
-            AudioLineStorage{
-                lbl_topbar: gtk_builder.get_object(lbl_topbar_id).unwrap(),
-                lbl_level_l: gtk_builder.get_object(lbl_level_l_id).unwrap(),
-                lbl_level_r: gtk_builder.get_object(lbl_level_r_id).unwrap(),
-                lvl_l: gtk_builder.get_object(lvl_l_id).unwrap(),
-                lvl_r: gtk_builder.get_object(lvl_r_id).unwrap(),
-                btn_level_dec: gtk_builder.get_object(btn_level_dec_id).unwrap(),
-                btn_level_inc: gtk_builder.get_object(btn_level_inc_id).unwrap(),
-                sldr_level: gtk_builder.get_object(sldr_level_id).unwrap(),
-                lbl_device: gtk_builder.get_object(lbl_device_id).unwrap(),
-                cmb_device: gtk_builder.get_object(cmb_device_id).unwrap(),
-                btn_mute: gtk_builder.get_object(btn_mute_id).unwrap()
-            }
+    {
+        AudioLineStorage{
+            lbl_topbar: gtk_builder.get_object(lbl_topbar_id).unwrap(),
+            lbl_level_l: gtk_builder.get_object(lbl_level_l_id).unwrap(),
+            lbl_level_r: gtk_builder.get_object(lbl_level_r_id).unwrap(),
+            lvl_l: gtk_builder.get_object(lvl_l_id).unwrap(),
+            lvl_r: gtk_builder.get_object(lvl_r_id).unwrap(),
+            btn_level_dec: gtk_builder.get_object(btn_level_dec_id).unwrap(),
+            btn_level_inc: gtk_builder.get_object(btn_level_inc_id).unwrap(),
+            sldr_level: gtk_builder.get_object(sldr_level_id).unwrap(),
+            lbl_device: gtk_builder.get_object(lbl_device_id).unwrap(),
+            cmb_device: gtk_builder.get_object(cmb_device_id).unwrap(),
+            btn_mute: gtk_builder.get_object(btn_mute_id).unwrap()
         }
+    }
 }
 
 #[derive(Clone)]
@@ -145,8 +145,8 @@ impl AudioLineWidget {
 }
 
 /// create transmit widget
-pub fn create_transmit_widget(builder: &gtk::Builder) -> AudioLineWidget {
-    AudioLineWidget::new(&builder,
+pub fn create_transmit_widget(builder: &Builder) -> AudioLineWidget {
+    AudioLineWidget::new(builder,
        "lbl_topbar_tx",
        "lbl_tx_l",
        "lbl_tx_r",
@@ -162,8 +162,8 @@ pub fn create_transmit_widget(builder: &gtk::Builder) -> AudioLineWidget {
 }
 
 /// create receive widget
-pub fn create_receive_widget(builder: &gtk::Builder) -> AudioLineWidget {
-    AudioLineWidget::new(&builder,
+pub fn create_receive_widget(builder: &Builder) -> AudioLineWidget {
+    AudioLineWidget::new(builder,
         "lbl_topbar_rx",
         "lbl_rx_l",
         "lbl_rx_r",

@@ -23,6 +23,7 @@ pub struct SettingsWidgetStorage {
     ntbk_settings: Notebook,
     btn_settings_reset: Button,
     btn_settings_save: Button,
+    btn_settings_apply: Button,
 }
 
 impl SettingsWidgetStorage {
@@ -31,6 +32,7 @@ impl SettingsWidgetStorage {
             ntbk_settings: gtk_builder.get_object("ntbk_settings").unwrap(),
             btn_settings_reset: gtk_builder.get_object("btn_settings_reset").unwrap(),
             btn_settings_save: gtk_builder.get_object("btn_settings_save").unwrap(),
+            btn_settings_apply: gtk_builder.get_object("btn_settings_apply").unwrap()
         }
     }
 }
@@ -91,6 +93,17 @@ impl SettingsWidget {
         let wid = self.clone();
         self.ctx.borrow()
         .btn_settings_save.connect_clicked( move |_| {
+            (callback)(wid.get_current_active_page());
+        });
+    }
+
+    pub fn apply_connect_clicked<F> (&self, callback: F)
+    where
+        F: Fn(Option<SettingsCurrentActivePage>) + 'static
+    {
+        let wid = self.clone();
+        self.ctx.borrow()
+        .btn_settings_apply.connect_clicked( move |_| {
             (callback)(wid.get_current_active_page());
         });
     }

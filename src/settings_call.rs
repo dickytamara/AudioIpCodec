@@ -37,7 +37,7 @@ impl SettingsCallWidget {
     }
 
     /// sub procedure reset state gui
-    pub fn default(&self) {
+    pub fn reset(&self) {
         self.ctx.borrow().swt_autoanswer.set_state(false);
     }
 

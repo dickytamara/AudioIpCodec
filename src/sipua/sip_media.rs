@@ -12,6 +12,25 @@ use std::cell::{RefCell, RefMut};
 use std::os::raw::c_uint;
 use std::ffi::CStr;
 
+// interesting code to solve problem
+// fn register_onconnect_callback<F>(&self, f: F) where F: Fn(){
+//     unsafe{
+//         mosquitto::mosquitto_connect_callback_set(self.mosquitto, Some(onconnect_wrapper::<F>));
+//     }
+//     extern "C" fn onconnect_wrapper<F>(mqtt: *mut mosquitto::Struct_mosquitto, closure: *mut libc::c_void, val: libc::c_int)
+//     where F:Fn(){
+//         let closure = closure as *mut F;
+//         unsafe{
+//             let res = (*closure)();
+//         }
+//     }
+// }
+
+
+// fn main(){
+// mqtt.register_onconnect_callback(||println!("@@@ On connect callback @@@"));
+// }
+
 
 // Media and sound device implementation Implementation
 pub struct SIPMedia {
