@@ -74,7 +74,6 @@ pub struct SIPCore {
 struct SIPCoreEvents {
     invite: Box<dyn FnMut(SIPInviteState)>,
     incoming_call: Box<dyn FnMut()>
-
 }
 
 impl SIPCoreEvents {
@@ -133,27 +132,27 @@ impl SIPCore {
 
         self.pool = pjsua::pool_create("ipcodec");
 
-        self.app_config.connect_on_call_state(Some(SIPCore::on_call_state));
-        self.app_config.connect_on_stream_destroyed(Some(SIPCore::on_stream_destroyed));
-        self.app_config.connect_on_call_media_state(Some(SIPCore::on_call_media_state));
-        self.app_config.connect_on_incoming_call(Some(SIPCore::on_incoming_call));
-        self.app_config.connect_on_call_redirected(Some(SIPCore::on_call_redirected));
-        self.app_config.connect_on_dtmf_digit2(Some(SIPCore::on_dtmf_digit2));
-        self.app_config.connect_on_reg_state(Some(SIPCore::on_reg_state));
-        self.app_config.connect_on_incoming_subscribe(Some(SIPCore::on_incoming_subscribe));
-        self.app_config.connect_on_buddy_state(Some(SIPCore::on_buddy_state));
-        self.app_config.connect_on_buddy_evsub_state(Some(SIPCore::on_buddy_evsub_state));
-        self.app_config.connect_on_pager(Some(SIPCore::on_pager));
-        self.app_config.connect_on_typing(Some(SIPCore::on_typing));
-        self.app_config.connect_on_call_transfer_status(Some(SIPCore::on_call_transfer_status));
-        self.app_config.connect_on_call_replaced(Some(SIPCore::on_call_replaced));
-        self.app_config.connect_on_nat_detect(Some(SIPCore::on_nat_detect));
-        self.app_config.connect_on_mwi_info(Some(SIPCore::on_mwi_info));
-        self.app_config.connect_on_transport_state(Some(SIPCore::on_transport_state));
-        self.app_config.connect_on_ice_transport_error(Some(SIPCore::on_ice_transport_error));
-        self.app_config.connect_on_snd_dev_operation(Some(SIPCore::on_snd_dev_operation));
-        self.app_config.connect_on_call_media_event(Some(SIPCore::on_call_media_event));
-        self.app_config.connect_on_ip_change_progress(Some(SIPCore::on_ip_change_progress));
+        self.app_config.connect_on_call_state(Some(on_call_state));
+        self.app_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
+        self.app_config.connect_on_call_media_state(Some(on_call_media_state));
+        self.app_config.connect_on_incoming_call(Some(on_incoming_call));
+        self.app_config.connect_on_call_redirected(Some(on_call_redirected));
+        self.app_config.connect_on_dtmf_digit2(Some(on_dtmf_digit2));
+        self.app_config.connect_on_reg_state(Some(on_reg_state));
+        self.app_config.connect_on_incoming_subscribe(Some(on_incoming_subscribe));
+        self.app_config.connect_on_buddy_state(Some(on_buddy_state));
+        self.app_config.connect_on_buddy_evsub_state(Some(on_buddy_evsub_state));
+        self.app_config.connect_on_pager(Some(on_pager));
+        self.app_config.connect_on_typing(Some(on_typing));
+        self.app_config.connect_on_call_transfer_status(Some(on_call_transfer_status));
+        self.app_config.connect_on_call_replaced(Some(on_call_replaced));
+        self.app_config.connect_on_nat_detect(Some(on_nat_detect));
+        self.app_config.connect_on_mwi_info(Some(on_mwi_info));
+        self.app_config.connect_on_transport_state(Some(on_transport_state));
+        self.app_config.connect_on_ice_transport_error(Some(on_ice_transport_error));
+        self.app_config.connect_on_snd_dev_operation(Some(on_snd_dev_operation));
+        self.app_config.connect_on_call_media_event(Some(on_call_media_event));
+        self.app_config.connect_on_ip_change_progress(Some(on_ip_change_progress));
 
         self.app_config.init(
             &mut self.log_config.get_context(),
@@ -796,206 +795,6 @@ impl SIPCore {
 
 }
 
-impl pjsua::PjsuaCallback for SIPCore {
-
-    // On Call State
-    unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_call_state(call_id, e),
-            _ => panic!("panic on_call_state"),
-        }
-    }
-
-    // On Stream Destroyed
-    unsafe extern "C" fn on_stream_destroyed(call_id: pjsua_call_id, strm: *mut pjmedia_stream, stream_idx: c_uint) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_stream_destroyed(call_id, strm, stream_idx),
-            _ => panic!("panic on_call_stream_destroyed")
-        }
-    }
-
-    // On Incoming Call
-    unsafe extern "C" fn on_incoming_call( acc_id: pjsua_acc_id, call_id: pjsua_call_id, rdata: *mut pjsip_rx_data) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_incomming_call(acc_id, call_id, rdata),
-            _ => panic!("panic on_incoming_call")
-        }
-    }
-
-    // On Call Media State
-    unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_call_media_state(call_id),
-            _ => panic!("panic on_call_media_state")
-        }
-    }
-
-    // On DTMF digit
-    unsafe extern "C" fn on_dtmf_digit2(call_id: pjsua_call_id, info: *const pjsua_dtmf_info) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_dtmf_digit2(call_id, info),
-            _ => panic!("panic on_dtmf_digit2")
-        }
-    }
-
-    // On Call Redirected
-    unsafe extern "C" fn on_call_redirected( call_id: pjsua_call_id, target: *const pjsip_uri, e: *const pjsip_event) -> pjsip_redirect_op {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_call_redirected(call_id, target, e),
-            _ => panic!("panic on_call_redirected"),
-        }
-    }
-
-    // On REG state
-    unsafe extern "C" fn on_reg_state(acc_id: pjsua_acc_id) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_reg_state(acc_id),
-            _ => panic!("panic on_reg_state"),
-        }
-    }
-
-    // On Incomming Subscribe
-    unsafe extern "C" fn on_incoming_subscribe(
-        acc_id: pjsua_acc_id,
-        srv_pres: *mut pjsua_srv_pres,
-        buddy_id: pjsua_buddy_id,
-        from: *const pj_str_t,
-        rdata: *mut pjsip_rx_data,
-        code: *mut pjsip_status_code,
-        reason: *mut pj_str_t,
-        msg_data: *mut pjsua_msg_data,
-    ) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_incoming_subscribe(acc_id, srv_pres, buddy_id, from, rdata, code, reason, msg_data),
-            _ => panic!("panic on_incoming_subscribe"),
-        }
-    }
-
-    // On Buddy State
-    unsafe extern "C" fn on_buddy_state(buddy_id: pjsua_buddy_id) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_buddy_state(buddy_id),
-            _ => panic!("panic on_buddy_state"),
-        }
-    }
-
-    // On Buddy evsub state
-    unsafe extern "C" fn on_buddy_evsub_state(buddy_id: pjsua_buddy_id, sub: *mut pjsip_evsub, event: *mut pjsip_event) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_buddy_evsub_state(buddy_id, sub, event),
-            _ => panic!("panic on_buddy_evsub_state"),
-        }
-    }
-
-    // On Pager
-    unsafe extern "C" fn on_pager(
-        call_id: pjsua_call_id,
-        from: *const pj_str_t,
-        to: *const pj_str_t,
-        contact: *const pj_str_t,
-        mime_type: *const pj_str_t,
-        body: *const pj_str_t,
-    ) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_pager(call_id, from, to, contact, mime_type, body),
-            _ => panic!("panic on_pager"),
-        }
-    }
-
-    // On Typing
-    unsafe extern "C" fn on_typing(
-        call_id: pjsua_call_id,
-        from: *const pj_str_t,
-        to: *const pj_str_t,
-        contact: *const pj_str_t,
-        is_typing: pj_bool_t,
-    ) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_typing(call_id, from, to, contact, is_typing),
-            _ => panic!("panic on_typing"),
-        }
-    }
-
-    // On Call transfer status
-    unsafe extern "C" fn on_call_transfer_status(
-        call_id: pjsua_call_id,
-        st_code: c_int,
-        st_text: *const pj_str_t,
-        final_: pj_bool_t,
-        p_cont: *mut pj_bool_t,
-    ) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_call_transfer_status(call_id, st_code, st_text, final_, p_cont),
-            _ => panic!("panic on_call_transfer_status"),
-        }
-    }
-
-    // On Call replaced
-    unsafe extern "C" fn on_call_replaced(old_call_id: pjsua_call_id, new_call_id: pjsua_call_id) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_call_replaced(old_call_id, new_call_id),
-            _ => panic!("panic on_call_replaced"),
-        }
-    }
-
-    // On NAT detect
-    unsafe extern "C" fn on_nat_detect(res: *const pj_stun_nat_detect_result) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_nat_detect(res),
-            _ => panic!("panic on_nat_detect"),
-        }
-    }
-
-    // On MWI info
-    unsafe extern "C" fn on_mwi_info(acc_id: pjsua_acc_id, mwi_info: *mut pjsua_mwi_info) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_mwi_info(acc_id, mwi_info),
-            _ => panic!("panic on_mwi_info"),
-        }
-    }
-
-    // On Transport state
-    unsafe extern "C" fn on_transport_state(tp: *mut pjsip_transport, state: pjsip_transport_state, info: *const pjsip_transport_state_info) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_transport_state(tp, state, info),
-            _ => panic!("panic on_transport_state"),
-        }
-    }
-
-    // On ICE transport error
-    unsafe extern "C" fn on_ice_transport_error(index: c_int, op: pj_ice_strans_op, status: pj_status_t, param: *mut c_void) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_ice_transport_error(index, op, status, param),
-            _ => panic!("panic on_ice_transport_error"),
-        }
-    }
-
-    // Sound device operation
-    unsafe extern "C" fn on_snd_dev_operation(operation: c_int) -> pj_status_t {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_snd_dev_operation(operation),
-            _ => panic!("pnaic on_snd_dev_operation"),
-        }
-    }
-
-    // Call media event
-    unsafe extern "C" fn on_call_media_event(call_id: pjsua_call_id, med_idx: c_uint, event: *mut pjmedia_event) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_call_media_event(call_id, med_idx, event),
-            _ => panic!("panic on_call_media_event"),
-        }
-    }
-
-    // IP change progress
-    unsafe extern "C" fn on_ip_change_progress(op: pjsua_ip_change_op,status: pj_status_t,info: *const pjsua_ip_change_op_info) {
-        match SIP_CORE {
-            Some(ref mut sipcore) => sipcore.callback_on_ip_change_progress(op, status, info),
-            _ => panic!("panic on_ip_change_progress"),
-        }
-    }
-
-}
-
 // trait to hold external event
 impl SIPCoreEventsExt for SIPCore {
 
@@ -1197,4 +996,206 @@ impl PjsipModuleCallback for SIPCore {
 
     unsafe extern "C" fn on_tsx_state(tsx: *mut pjsip_transaction, event: *mut pjsip_event) {}
 }
+
+
+
+
+
+
+// On Call State
+unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_call_state(call_id, e),
+        _ => panic!("panic on_call_state"),
+    }
+}
+
+// On Stream Destroyed
+unsafe extern "C" fn on_stream_destroyed(call_id: pjsua_call_id, strm: *mut pjmedia_stream, stream_idx: c_uint) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_stream_destroyed(call_id, strm, stream_idx),
+        _ => panic!("panic on_call_stream_destroyed")
+    }
+}
+
+// On Incoming Call
+unsafe extern "C" fn on_incoming_call( acc_id: pjsua_acc_id, call_id: pjsua_call_id, rdata: *mut pjsip_rx_data) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_incomming_call(acc_id, call_id, rdata),
+        _ => panic!("panic on_incoming_call")
+    }
+}
+
+// On Call Media State
+unsafe extern "C" fn on_call_media_state(call_id: pjsua_call_id) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_call_media_state(call_id),
+        _ => panic!("panic on_call_media_state")
+    }
+}
+
+// On DTMF digit
+unsafe extern "C" fn on_dtmf_digit2(call_id: pjsua_call_id, info: *const pjsua_dtmf_info) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_dtmf_digit2(call_id, info),
+        _ => panic!("panic on_dtmf_digit2")
+    }
+}
+
+// On Call Redirected
+unsafe extern "C" fn on_call_redirected( call_id: pjsua_call_id, target: *const pjsip_uri, e: *const pjsip_event) -> pjsip_redirect_op {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_call_redirected(call_id, target, e),
+        _ => panic!("panic on_call_redirected"),
+    }
+}
+
+// On REG state
+unsafe extern "C" fn on_reg_state(acc_id: pjsua_acc_id) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_reg_state(acc_id),
+        _ => panic!("panic on_reg_state"),
+    }
+}
+
+// On Incomming Subscribe
+unsafe extern "C" fn on_incoming_subscribe(
+    acc_id: pjsua_acc_id,
+    srv_pres: *mut pjsua_srv_pres,
+    buddy_id: pjsua_buddy_id,
+    from: *const pj_str_t,
+    rdata: *mut pjsip_rx_data,
+    code: *mut pjsip_status_code,
+    reason: *mut pj_str_t,
+    msg_data: *mut pjsua_msg_data,
+) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_incoming_subscribe(acc_id, srv_pres, buddy_id, from, rdata, code, reason, msg_data),
+        _ => panic!("panic on_incoming_subscribe"),
+    }
+}
+
+// On Buddy State
+unsafe extern "C" fn on_buddy_state(buddy_id: pjsua_buddy_id) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_buddy_state(buddy_id),
+        _ => panic!("panic on_buddy_state"),
+    }
+}
+
+// On Buddy evsub state
+unsafe extern "C" fn on_buddy_evsub_state(buddy_id: pjsua_buddy_id, sub: *mut pjsip_evsub, event: *mut pjsip_event) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_buddy_evsub_state(buddy_id, sub, event),
+        _ => panic!("panic on_buddy_evsub_state"),
+    }
+}
+
+// On Pager
+unsafe extern "C" fn on_pager(
+    call_id: pjsua_call_id,
+    from: *const pj_str_t,
+    to: *const pj_str_t,
+    contact: *const pj_str_t,
+    mime_type: *const pj_str_t,
+    body: *const pj_str_t,
+) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_pager(call_id, from, to, contact, mime_type, body),
+        _ => panic!("panic on_pager"),
+    }
+}
+
+// On Typing
+unsafe extern "C" fn on_typing(
+    call_id: pjsua_call_id,
+    from: *const pj_str_t,
+    to: *const pj_str_t,
+    contact: *const pj_str_t,
+    is_typing: pj_bool_t,
+) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_typing(call_id, from, to, contact, is_typing),
+        _ => panic!("panic on_typing"),
+    }
+}
+
+// On Call transfer status
+unsafe extern "C" fn on_call_transfer_status(
+    call_id: pjsua_call_id,
+    st_code: c_int,
+    st_text: *const pj_str_t,
+    final_: pj_bool_t,
+    p_cont: *mut pj_bool_t,
+) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_call_transfer_status(call_id, st_code, st_text, final_, p_cont),
+        _ => panic!("panic on_call_transfer_status"),
+    }
+}
+
+// On Call replaced
+unsafe extern "C" fn on_call_replaced(old_call_id: pjsua_call_id, new_call_id: pjsua_call_id) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_call_replaced(old_call_id, new_call_id),
+        _ => panic!("panic on_call_replaced"),
+    }
+}
+
+// On NAT detect
+unsafe extern "C" fn on_nat_detect(res: *const pj_stun_nat_detect_result) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_nat_detect(res),
+        _ => panic!("panic on_nat_detect"),
+    }
+}
+
+// On MWI info
+unsafe extern "C" fn on_mwi_info(acc_id: pjsua_acc_id, mwi_info: *mut pjsua_mwi_info) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_mwi_info(acc_id, mwi_info),
+        _ => panic!("panic on_mwi_info"),
+    }
+}
+
+// On Transport state
+unsafe extern "C" fn on_transport_state(tp: *mut pjsip_transport, state: pjsip_transport_state, info: *const pjsip_transport_state_info) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_transport_state(tp, state, info),
+        _ => panic!("panic on_transport_state"),
+    }
+}
+
+// On ICE transport error
+unsafe extern "C" fn on_ice_transport_error(index: c_int, op: pj_ice_strans_op, status: pj_status_t, param: *mut c_void) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_ice_transport_error(index, op, status, param),
+        _ => panic!("panic on_ice_transport_error"),
+    }
+}
+
+// Sound device operation
+unsafe extern "C" fn on_snd_dev_operation(operation: c_int) -> pj_status_t {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_snd_dev_operation(operation),
+        _ => panic!("pnaic on_snd_dev_operation"),
+    }
+}
+
+// Call media event
+unsafe extern "C" fn on_call_media_event(call_id: pjsua_call_id, med_idx: c_uint, event: *mut pjmedia_event) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_call_media_event(call_id, med_idx, event),
+        _ => panic!("panic on_call_media_event"),
+    }
+}
+
+// IP change progress
+unsafe extern "C" fn on_ip_change_progress(op: pjsua_ip_change_op,status: pj_status_t,info: *const pjsua_ip_change_op_info) {
+    match SIP_CORE {
+        Some(ref mut sipcore) => sipcore.callback_on_ip_change_progress(op, status, info),
+        _ => panic!("panic on_ip_change_progress"),
+    }
+}
+
 
