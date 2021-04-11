@@ -16,6 +16,7 @@ use crate::pjproject::pjmedia;
 use super::sip_account::*;
 // use super::sip_buddy::*;
 use super::sip_calls::*;
+use super::sip_ua::*;
 use super::sip_log::*;
 use super::sip_media::*;
 use super::sip_presence::*;
@@ -43,7 +44,8 @@ pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 
 pub struct SIPCore {
     pool: *mut pj_pool_t,
-    app_config: pjsua_config,
+    // app_config: pjsua_config,
+    app_config: SIPUa,
     log_config: SIPLog,
     pub media_config: SIPMedia,
     no_udp: bool,
@@ -97,7 +99,8 @@ impl SIPCore {
 
         let sip_core = SIPCore {
             pool: ptr::null_mut(),
-            app_config: pjsua_config::new(),
+            // app_config: pjsua_config::new(),
+            app_config: SIPUa::new(),
             log_config: SIPLog::new(),
             media_config: SIPMedia::new(),
             no_udp: true,
@@ -130,34 +133,32 @@ impl SIPCore {
 
         self.pool = pjsua::pool_create("ipcodec");
 
-        self.app_config.cb.on_call_state = Some(SIPCore::on_call_state);
-        self.app_config.cb.on_stream_destroyed = Some(SIPCore::on_stream_destroyed);
-        self.app_config.cb.on_call_media_state = Some(SIPCore::on_call_media_state);
-        self.app_config.cb.on_incoming_call = Some(SIPCore::on_incoming_call);
-        self.app_config.cb.on_dtmf_digit2 = Some(SIPCore::on_dtmf_digit2);
-        self.app_config.cb.on_call_redirected = Some(SIPCore::on_call_redirected);
-        self.app_config.cb.on_reg_state = Some(SIPCore::on_reg_state);
-        self.app_config.cb.on_incoming_subscribe = Some(SIPCore::on_incoming_subscribe);
-        self.app_config.cb.on_buddy_state = Some(SIPCore::on_buddy_state);
-        self.app_config.cb.on_buddy_evsub_state = Some(SIPCore::on_buddy_evsub_state);
-        self.app_config.cb.on_pager = Some(SIPCore::on_pager);
-        self.app_config.cb.on_typing = Some(SIPCore::on_typing);
-        self.app_config.cb.on_call_transfer_status = Some(SIPCore::on_call_transfer_status);
-        self.app_config.cb.on_call_replaced = Some(SIPCore::on_call_replaced);
-        self.app_config.cb.on_nat_detect = Some(SIPCore::on_nat_detect);
-        self.app_config.cb.on_mwi_info = Some(SIPCore::on_mwi_info);
-        self.app_config.cb.on_transport_state = Some(SIPCore::on_transport_state);
-        self.app_config.cb.on_ice_transport_error = Some(SIPCore::on_ice_transport_error);
-        self.app_config.cb.on_snd_dev_operation = Some(SIPCore::on_snd_dev_operation);
-        self.app_config.cb.on_call_media_event = Some(SIPCore::on_call_media_event);
-        self.app_config.cb.on_ip_change_progress = Some(SIPCore::on_ip_change_progress);
+        self.app_config.connect_on_call_state(Some(SIPCore::on_call_state));
+        self.app_config.connect_on_stream_destroyed(Some(SIPCore::on_stream_destroyed));
+        self.app_config.connect_on_call_media_state(Some(SIPCore::on_call_media_state));
+        self.app_config.connect_on_incoming_call(Some(SIPCore::on_incoming_call));
+        self.app_config.connect_on_call_redirected(Some(SIPCore::on_call_redirected));
+        self.app_config.connect_on_dtmf_digit2(Some(SIPCore::on_dtmf_digit2));
+        self.app_config.connect_on_reg_state(Some(SIPCore::on_reg_state));
+        self.app_config.connect_on_incoming_subscribe(Some(SIPCore::on_incoming_subscribe));
+        self.app_config.connect_on_buddy_state(Some(SIPCore::on_buddy_state));
+        self.app_config.connect_on_buddy_evsub_state(Some(SIPCore::on_buddy_evsub_state));
+        self.app_config.connect_on_pager(Some(SIPCore::on_pager));
+        self.app_config.connect_on_typing(Some(SIPCore::on_typing));
+        self.app_config.connect_on_call_transfer_status(Some(SIPCore::on_call_transfer_status));
+        self.app_config.connect_on_call_replaced(Some(SIPCore::on_call_replaced));
+        self.app_config.connect_on_nat_detect(Some(SIPCore::on_nat_detect));
+        self.app_config.connect_on_mwi_info(Some(SIPCore::on_mwi_info));
+        self.app_config.connect_on_transport_state(Some(SIPCore::on_transport_state));
+        self.app_config.connect_on_ice_transport_error(Some(SIPCore::on_ice_transport_error));
+        self.app_config.connect_on_snd_dev_operation(Some(SIPCore::on_snd_dev_operation));
+        self.app_config.connect_on_call_media_event(Some(SIPCore::on_call_media_event));
+        self.app_config.connect_on_ip_change_progress(Some(SIPCore::on_ip_change_progress));
 
-        // init pjsua
-        pjsua::init(
-            &mut self.app_config,
+        self.app_config.init(
             &mut self.log_config.get_context(),
-            &mut self.media_config.get_context()
-        ).unwrap();
+            &mut self.media_config.get_context(),
+        );
 
         // pjsip endpoint for unhadled error
         self.default_handler.priority = (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32;
@@ -209,11 +210,10 @@ impl SIPCore {
         self.media_config.init();
         // self.calls.set_audio_count(self.aud_cnt);
 
-
-
-        if let Err(e) = pjsua::start() {
-            pjsua::perror(String::from("sip_core.rs"), String::from("can't start pjsua."), e);
-        }
+        self.app_config.start();
+        // if let Err(e) = pjsua::start() {
+        //     pjsua::perror(String::from("sip_core.rs"), String::from("can't start pjsua."), e);
+        // }
 
         // we don't need add account for this state
         // so we create dynamicaly in addition

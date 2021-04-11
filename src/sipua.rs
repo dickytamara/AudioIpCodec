@@ -93,7 +93,6 @@ impl SIPUserAgent {
         }
     }
 
-
     pub fn get_input_device_list(&self) -> Vec<String> {
         unsafe {
             match SIP_CORE {
@@ -104,7 +103,6 @@ impl SIPUserAgent {
             }
         }
     }
-
 
     pub fn call(&self, call_addr: &str){
         unsafe {
@@ -133,6 +131,13 @@ impl SIPUserAgent {
         }
     }
 
+    pub fn set_autoanswer(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref sipua) => sipua.
+            }
+        }
+    }
 
     /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {

@@ -1,8 +1,9 @@
 
-use std::cell::{RefCell, RefMut};
+use std::{cell::{RefCell, RefMut}, ffi::c_void, os::raw::{c_int, c_uint}};
 
 
 use pj_sys::*;
+use pjsip_simple_sys::pjsip_evsub;
 use pjsip_sys::*;
 use pjmedia_sys::*;
 use pjsua_sys::*;
@@ -12,13 +13,16 @@ use crate::pjproject::utils;
 use crate::pjproject::pjsua;
 
 
+
+
 // high layer API
 // this API provide error message and
 // memory safety when interact with pjsua basic api
 
 pub struct SIPUa {
     // give mutable interior for ensure ctx not moved to anywhere.
-    ctx: RefCell<pjsua_config>
+    ctx: RefCell<pjsua_config>,
+    // on_call_state: Box<dyn Fn(pjsua_call_id, *mut pjsip_event)>
 }
 
 /// this trait handle all pjsua_config struct fields
@@ -231,7 +235,8 @@ impl SIPUa {
 
     pub fn new() -> Self {
         SIPUa {
-            ctx: RefCell::new(pjsua_config::new())
+            ctx: RefCell::new(pjsua_config::new()),
+            // on_call_state: Box::new(|x, y| {}),
         }
     }
 
@@ -492,6 +497,148 @@ impl SIPUa {
     ///            or continue the call by sending re-INVITE (configurable via pjsua_acc_config.ip_change_cfg.reinvite_flags).
     pub fn handle_ip_change(&self, param: &mut pjsua_ip_change_param) {
         pjsua::handle_ip_change(param).expect("SIPUa::pjsua_handle_ip_change");
+    }
+}
+
+pub trait SIPUaEventExt {
+    fn connect_on_call_state(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, e: *mut pjsip_event)>);
+    fn connect_on_stream_destroyed(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id,strm: *mut pjmedia_stream,stream_idx: c_uint)>);
+    fn connect_on_call_media_state(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id)>);
+    fn connect_on_incoming_call(&self, callback: Option<unsafe extern "C" fn( acc_id: pjsua_acc_id, call_id: pjsua_call_id, rdata: *mut pjsip_rx_data)>);
+    fn connect_on_dtmf_digit2(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, info: *const pjsua_dtmf_info)>);
+    fn connect_on_call_redirected(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, target: *const pjsip_uri, e: *const pjsip_event) -> pjsip_redirect_op>);
+    fn connect_on_reg_state(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id)>);
+    fn connect_on_incoming_subscribe(&self, callback: Option<unsafe extern "C" fn( acc_id: pjsua_acc_id, srv_pres: *mut pjsua_srv_pres, buddy_id: pjsua_buddy_id, from: *const pj_str_t, rdata: *mut pjsip_rx_data, code: *mut pjsip_status_code, reason: *mut pj_str_t, msg_data: *mut pjsua_msg_data)>);
+    fn connect_on_buddy_state(&self, callback: Option<unsafe extern "C" fn(buddy_id: pjsua_buddy_id)>);
+    fn connect_on_buddy_evsub_state(&self, callback: Option<unsafe extern "C" fn( buddy_id: pjsua_buddy_id, sub: *mut pjsip_evsub, event: *mut pjsip_event)>);
+    fn connect_on_pager(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, from: *const pj_str_t, to: *const pj_str_t, contact: *const pj_str_t, mime_type: *const pj_str_t, body: *const pj_str_t)>);
+    fn connect_on_typing(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id,from: *const pj_str_t,to: *const pj_str_t,contact: *const pj_str_t,is_typing: pj_bool_t)>);
+    fn connect_on_call_transfer_status(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, st_code: c_int, st_text: *const pj_str_t, final_: pj_bool_t, p_cont: *mut pj_bool_t)>);
+    fn connect_on_call_replaced(&self, callback: Option<unsafe extern "C" fn(old_call_id: pjsua_call_id, new_call_id: pjsua_call_id)>);
+    fn connect_on_nat_detect(&self, callback: Option<unsafe extern "C" fn(res: *const pj_stun_nat_detect_result)>);
+    fn connect_on_mwi_info(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id, mwi_info: *mut pjsua_mwi_info)>);
+    fn connect_on_transport_state(&self, callback: pjsip_tp_state_callback);
+    fn connect_on_ice_transport_error(&self, callback: Option<unsafe extern "C" fn( index: c_int, op: pj_ice_strans_op, status: pj_status_t, param: *mut c_void)>);
+    fn connect_on_snd_dev_operation(&self, callback: Option<unsafe extern "C" fn(operation: c_int) -> pj_status_t>);
+    fn connect_on_call_media_event(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id,med_idx: c_uint,event: *mut pjmedia_event)>);
+    fn connect_on_ip_change_progress(&self, callback: Option<unsafe extern "C" fn( op: pjsua_ip_change_op, status: pj_status_t, info: *const pjsua_ip_change_op_info)>);
+
+    // reserved
+    // fn connect_on_call_tsx_state(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, tsx: *mut pjsip_transaction, e: *mut pjsip_event)>);
+    // fn connect_on_call_sdp_created(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, sdp: *mut pjmedia_sdp_session, pool: *mut pj_pool_t, rem_sdp: *const pjmedia_sdp_session)>);
+    // fn connect_on_stream_precreate(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, param: *mut pjsua_on_stream_precreate_param)>);
+    // fn connect_on_stream_created(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, strm: *mut pjmedia_stream, stream_idx: c_uint, p_port: *mut *mut pjmedia_port)>);
+    // fn connect_on_stream_created2(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, param: *mut pjsua_on_stream_created_param)>);
+    // fn connect_on_dtmf_digit(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, digit: c_int)>);
+    // fn connect_on_dtmf_event(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, event: *const pjsua_dtmf_event)>);
+    // fn connect_on_call_transfer_request(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, dst: *const pj_str_t, code: *mut pjsip_status_code)>);
+    // fn connect_on_call_transfer_request2(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, dst: *const pj_str_t, code: *mut pjsip_status_code, opt: *mut pjsua_call_setting)>);
+    // fn connect_on_call_replace_request(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, rdata: *mut pjsip_rx_data, st_code: *mut c_int, st_text: *mut pj_str_t)>);
+    // fn connect_on_call_replace_request2(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, rdata: *mut pjsip_rx_data, st_code: *mut c_int, st_text: *mut pj_str_t, opt: *mut pjsua_call_setting)>);
+    // fn connect_on_call_rx_offer(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, offer: *const pjmedia_sdp_session, reserved: *mut c_void, code: *mut pjsip_status_code, opt: *mut pjsua_call_setting)>);
+    // fn connect_on_call_rx_reinvite(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, offer: *const pjmedia_sdp_session, rdata: *mut pjsip_rx_data, reserved: *mut c_void, async_: *mut pj_bool_t, code: *mut pjsip_status_code, opt: *mut pjsua_call_setting)>);
+    // fn connect_on_call_tx_offer(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, reserved: *mut c_void, opt: *mut pjsua_call_setting)>);
+    // fn connect_on_reg_started(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id, renew: pj_bool_t)>);
+    // fn connect_on_reg_started2(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id, info: *mut pjsua_reg_info)>);
+    // fn connect_on_reg_state2(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id, info: *mut pjsua_reg_info)>);
+    // fn connect_on_srv_subscribe_state(&self, callback: Option<unsafe extern "C" fn( acc_id: pjsua_acc_id, srv_pres: *mut pjsua_srv_pres, remote_uri: *const pj_str_t, state: pjsip_evsub_state, event: *mut pjsip_event)>);
+    // fn connect_on_pager2(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, from: *const pj_str_t, to: *const pj_str_t, contact: *const pj_str_t, mime_type: *const pj_str_t, body: *const pj_str_t, rdata: *mut pjsip_rx_data, acc_id: pjsua_acc_id)>);
+    // fn connect_on_pager_status(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, to: *const pj_str_t, body: *const pj_str_t, user_data: *mut c_void, status: pjsip_status_code, reason: *const pj_str_t)>);
+    // fn connect_on_pager_status2(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, to: *const pj_str_t, body: *const pj_str_t, user_data: *mut c_void, status: pjsip_status_code, reason: *const pj_str_t, tdata: *mut pjsip_tx_data, rdata: *mut pjsip_rx_data, acc_id: pjsua_acc_id)>);
+    // fn connect_on_typing2(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, from: *const pj_str_t, to: *const pj_str_t, contact: *const pj_str_t, is_typing: pj_bool_t, rdata: *mut pjsip_rx_data, acc_id: pjsua_acc_id)>);
+    // fn connect_on_mwi_state(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id, evsub: *mut pjsip_evsub)>);
+    // fn connect_on_call_media_transport_state(&self, callback: pjsua_med_tp_state_cb);
+    // fn connect_on_create_media_transport(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, media_idx: c_uint, base_tp: *mut pjmedia_transport, flags: c_uint) -> *mut pjmedia_transport>);
+    // fn connect_on_create_media_transport_srtp(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, media_idx: c_uint, srtp_opt: *mut pjmedia_srtp_setting)>);
+    // fn connect_on_acc_find_for_incoming(&self, callback: Option<unsafe extern "C" fn(rdata: *const pjsip_rx_data, acc_id: *mut pjsua_acc_id)>);
+    // fn connect_on_stun_resolution_complete(&self, callback: pj_stun_resolve_cb);
+    // fn connect_on_media_event(&self, callback: Option<unsafe extern "C" fn(event: *mut pjmedia_event)>);
+}
+
+impl SIPUaEventExt for SIPUa {
+
+    fn connect_on_call_state(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, e: *mut pjsip_event)>) {
+        self.ctx.borrow_mut().cb.on_call_state = callback;
+    }
+
+    fn connect_on_stream_destroyed(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id,strm: *mut pjmedia_stream,stream_idx: c_uint)>) {
+        self.ctx.borrow_mut().cb.on_stream_destroyed = callback;
+    }
+
+    fn connect_on_call_media_state(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id)>) {
+        self.ctx.borrow_mut().cb.on_call_media_state = callback;
+    }
+
+    fn connect_on_incoming_call(&self, callback: Option<unsafe extern "C" fn( acc_id: pjsua_acc_id, call_id: pjsua_call_id, rdata: *mut pjsip_rx_data)>) {
+        self.ctx.borrow_mut().cb.on_incoming_call = callback;
+    }
+
+    fn connect_on_dtmf_digit2(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, info: *const pjsua_dtmf_info)>) {
+        self.ctx.borrow_mut().cb.on_dtmf_digit2 = callback;
+    }
+
+    fn connect_on_call_redirected(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, target: *const pjsip_uri, e: *const pjsip_event) -> pjsip_redirect_op>) {
+        self.ctx.borrow_mut().cb.on_call_redirected = callback;
+    }
+
+    fn connect_on_reg_state(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id)>) {
+        self.ctx.borrow_mut().cb.on_reg_state = callback;
+    }
+
+    fn connect_on_incoming_subscribe(&self, callback: Option<unsafe extern "C" fn( acc_id: pjsua_acc_id, srv_pres: *mut pjsua_srv_pres, buddy_id: pjsua_buddy_id, from: *const pj_str_t, rdata: *mut pjsip_rx_data, code: *mut pjsip_status_code, reason: *mut pj_str_t, msg_data: *mut pjsua_msg_data)>) {
+        self.ctx.borrow_mut().cb.on_incoming_subscribe = callback;
+    }
+
+    fn connect_on_buddy_state(&self, callback: Option<unsafe extern "C" fn(buddy_id: pjsua_buddy_id)>) {
+        self.ctx.borrow_mut().cb.on_buddy_state = callback;
+    }
+
+    fn connect_on_buddy_evsub_state(&self, callback: Option<unsafe extern "C" fn( buddy_id: pjsua_buddy_id, sub: *mut pjsip_evsub, event: *mut pjsip_event)>) {
+        self.ctx.borrow_mut().cb.on_buddy_evsub_state = callback;
+    }
+
+    fn connect_on_pager(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, from: *const pj_str_t, to: *const pj_str_t, contact: *const pj_str_t, mime_type: *const pj_str_t, body: *const pj_str_t)>) {
+        self.ctx.borrow_mut().cb.on_pager = callback;
+    }
+
+    fn connect_on_typing(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id,from: *const pj_str_t,to: *const pj_str_t,contact: *const pj_str_t,is_typing: pj_bool_t)>) {
+        self.ctx.borrow_mut().cb.on_typing = callback;
+    }
+
+    fn connect_on_call_transfer_status(&self, callback: Option<unsafe extern "C" fn( call_id: pjsua_call_id, st_code: c_int, st_text: *const pj_str_t, final_: pj_bool_t, p_cont: *mut pj_bool_t)>) {
+        self.ctx.borrow_mut().cb.on_call_transfer_status = callback;
+    }
+
+    fn connect_on_call_replaced(&self, callback: Option<unsafe extern "C" fn(old_call_id: pjsua_call_id, new_call_id: pjsua_call_id)>) {
+        self.ctx.borrow_mut().cb.on_call_replaced = callback;
+    }
+
+    fn connect_on_nat_detect(&self, callback: Option<unsafe extern "C" fn(res: *const pj_stun_nat_detect_result)>) {
+        self.ctx.borrow_mut().cb.on_nat_detect = callback;
+    }
+
+    fn connect_on_mwi_info(&self, callback: Option<unsafe extern "C" fn(acc_id: pjsua_acc_id, mwi_info: *mut pjsua_mwi_info)>) {
+        self.ctx.borrow_mut().cb.on_mwi_info = callback;
+    }
+
+    fn connect_on_transport_state(&self, callback: pjsip_tp_state_callback) {
+        self.ctx.borrow_mut().cb.on_transport_state = callback;
+    }
+
+    fn connect_on_ice_transport_error(&self, callback: Option<unsafe extern "C" fn( index: c_int, op: pj_ice_strans_op, status: pj_status_t, param: *mut c_void)>) {
+        self.ctx.borrow_mut().cb.on_ice_transport_error = callback;
+    }
+
+    fn connect_on_snd_dev_operation(&self, callback: Option<unsafe extern "C" fn(operation: c_int) -> pj_status_t>) {
+        self.ctx.borrow_mut().cb.on_snd_dev_operation = callback;
+    }
+
+    fn connect_on_call_media_event(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id,med_idx: c_uint,event: *mut pjmedia_event)>) {
+        self.ctx.borrow_mut().cb.on_call_media_event = callback;
+    }
+
+    fn connect_on_ip_change_progress(&self, callback: Option<unsafe extern "C" fn( op: pjsua_ip_change_op, status: pj_status_t, info: *const pjsua_ip_change_op_info)>) {
+        self.ctx.borrow_mut().cb.on_ip_change_progress = callback;
     }
 }
 
