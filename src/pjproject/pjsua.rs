@@ -13,7 +13,7 @@ use super::prelude::*;
 use super::utils;
 
 
-use std::os::raw::{c_int, c_uint, c_void};
+use std::os::raw::{c_uint, c_void};
 use std::ffi::CString;
 use std::ptr;
 
