@@ -9,6 +9,7 @@ pub mod sip_codec;
 pub mod sip_core;
 pub mod sip_log;
 pub mod sip_media;
+pub mod sip_module;
 pub mod sip_presence;
 pub mod sip_tones;
 pub mod sip_transport;

@@ -6,5 +6,4 @@ pub use super::utils::ToString;
 
 
 pub use super::pjsip::PjsipModuleCallback;
-pub use super::pjsua::PjsuaCallback;
 
