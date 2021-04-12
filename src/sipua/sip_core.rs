@@ -130,8 +130,6 @@ impl SIPCore {
 
     pub fn start(&mut self) {
 
-        // self.pool = pjsua::pool_create("ipcodec");
-
         self.app_config.connect_on_call_state(Some(on_call_state));
         self.app_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
         self.app_config.connect_on_call_media_state(Some(on_call_media_state));
@@ -154,7 +152,7 @@ impl SIPCore {
         self.app_config.connect_on_call_media_event(Some(on_call_media_event));
         self.app_config.connect_on_ip_change_progress(Some(on_ip_change_progress));
 
-
+        // register sub module for unhandeled error
         self.app_config.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
         self.app_config.module.set_name(String::from("mod-default-handler"));
         self.app_config.module.connect_on_rx_request(Some(SIPCore::on_rx_request));
@@ -163,20 +161,6 @@ impl SIPCore {
             &mut self.log_config.get_context(),
             &mut self.media_config.get_context(),
         );
-
-        // pjsip endpoint for unhadled error
-        // self.default_handler.priority = (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32;
-        // self.default_handler.name = pj_str_t::from_string(String::from("mod-default-handler"));
-        // self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
-        // unsafe {
-        //     let status = pjsip_endpt_register_module(
-        //         pjsua::get_pjsip_endpt(),
-        //         &mut self.default_handler as *mut _,
-        //     );
-        //     if status != 0 {
-        //         panic!("cant register module");
-        //     }
-        // }
 
         // add optional tones
         // TODO fix code bellow
@@ -219,9 +203,6 @@ impl SIPCore {
         // self.calls.set_audio_count(self.aud_cnt);
 
         self.app_config.start();
-        // if let Err(e) = pjsua::start() {
-        //     pjsua::perror(String::from("sip_core.rs"), String::from("can't start pjsua."), e);
-        // }
 
         // we don't need add account for this state
         // so we create dynamicaly in addition
