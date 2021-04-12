@@ -148,7 +148,7 @@ impl SIPCore {
         // register sub module for unhandeled error
         self.app_config.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
         self.app_config.module.set_name(String::from("mod-default-handler"));
-        self.app_config.module.connect_on_rx_request(Some(SIPCore::on_rx_request));
+        self.app_config.module.connect_on_rx_request(Some(on_rx_request));
 
         self.app_config.init(
             &mut self.log_config.get_context(),
@@ -867,123 +867,91 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
     }
 }
 
-// handle for callback PjsipModule
-impl PjsipModuleCallback for SIPCore {
 
-    unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
-        println!("OnRxRequest");
-        // base rx request handle undefined state.
-        let mut tdata: *mut pjsip_tx_data = &mut pjsip_tx_data::new() as *mut _;
-        let status_code: pjsip_status_code;
-        let status: pj_status_t;
 
-        // let mut rdata = rdata;
-        let msg = (*rdata).msg_info.msg;
-        let method = (*msg).line.req.method;
+unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
+    println!("OnRxRequest");
+    // base rx request handle undefined state.
+    let mut tdata: *mut pjsip_tx_data = &mut pjsip_tx_data::new() as *mut _;
+    let status_code: pjsip_status_code;
+    let status: pj_status_t;
 
-        if pjsip::method_cmp(&method, &pjsip_ack_method) == 0 {
-            return PJ_TRUE as pj_status_t;
-        }
+    // let mut rdata = rdata;
+    let msg = (*rdata).msg_info.msg;
+    let method = (*msg).line.req.method;
 
-        if pjsip::method_cmp(&method , &pjsip_register_method) == 0 {
-            // call simple registrar pjsip_tx_data
-            simple_registrar(rdata as *mut _);
-            return PJ_TRUE as pj_status_t;
-        }
+    if pjsip::method_cmp(&method, &pjsip_ack_method) == 0 {
+        return PJ_TRUE as pj_status_t;
+    }
 
-        let mmethod = pjsip_notify_method;
-        if pjsip::method_cmp(&method, &mmethod) == 0 {
-            status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST;
-        } else {
-            status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
-        }
+    if pjsip::method_cmp(&method , &pjsip_register_method) == 0 {
+        // call simple registrar pjsip_tx_data
+        simple_registrar(rdata as *mut _);
+        return PJ_TRUE as pj_status_t;
+    }
 
-        status = pjsip_endpt_create_response(
+    let mmethod = pjsip_notify_method;
+    if pjsip::method_cmp(&method, &mmethod) == 0 {
+        status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST;
+    } else {
+        status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
+    }
+
+    status = pjsip_endpt_create_response(
+        pjsua_get_pjsip_endpt(),
+        rdata,
+        status_code as c_int,
+        ptr::null_mut() as *const _,
+        &mut tdata as *mut _,
+    );
+
+    if status != PJ_SUCCESS as pj_status_t {
+        return PJ_TRUE as pj_status_t;
+    }
+
+    let msg = (*tdata).msg;
+    let ahdr: *mut pjsip_hdr = &mut (*msg).hdr as *mut _;
+
+    if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
+
+
+        let cap_hdr = pjsip_endpt_get_capability(
             pjsua_get_pjsip_endpt(),
-            rdata,
-            status_code as c_int,
-            ptr::null_mut() as *const _,
-            &mut tdata as *mut _,
+            pjsip_hdr_e_PJSIP_H_ALLOW as i32,
+            ptr::null() as *const _,
         );
 
-        if status != PJ_SUCCESS as pj_status_t {
-            return PJ_TRUE as pj_status_t;
-        }
+        if !cap_hdr.is_null() {
+            let hdr_clone = pjsip_hdr_clone((*tdata).pool, cap_hdr as *const _) as *const pjsip_hdr;
 
-        let msg = (*tdata).msg;
-        let ahdr: *mut pjsip_hdr = &mut (*msg).hdr as *mut _;
-
-        if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
-
-
-            let cap_hdr = pjsip_endpt_get_capability(
-                pjsua_get_pjsip_endpt(),
-                pjsip_hdr_e_PJSIP_H_ALLOW as i32,
-                ptr::null() as *const _,
+            pj_list_insert_before(
+                ahdr as *mut _ ,
+                hdr_clone as *mut _,
             );
-
-            if !cap_hdr.is_null() {
-                let hdr_clone = pjsip_hdr_clone((*tdata).pool, cap_hdr as *const _) as *const pjsip_hdr;
-
-                pj_list_insert_before(
-                    ahdr as *mut _ ,
-                    hdr_clone as *mut _,
-                );
-            }
         }
-
-        // add user-agent header
-        let mut ua = pj_str_t::from_string(String::from("User-Agent"));
-        let mut agent = pj_str_t::from_string(String::from("IpCodec"));
-
-        let h = pjsip_generic_string_hdr_create(
-            (*tdata).pool,
-            &mut ua as *const _,
-            &mut agent as *const _,
-        ) as *mut pjsip_hdr;
-
-        pj_list_insert_before(ahdr as *mut _, h as *mut _);
-
-        pjsip_endpt_send_response2(pjsua::get_pjsip_endpt(),
-            rdata,
-            tdata,
-            ptr::null_mut(),
-            None
-        );
-
-        PJ_TRUE as pj_status_t
     }
 
-    unsafe extern "C" fn start() -> pj_status_t {
-        0
-    }
+    // add user-agent header
+    let mut ua = pj_str_t::from_string(String::from("User-Agent"));
+    let mut agent = pj_str_t::from_string(String::from("IpCodec"));
 
-    unsafe extern "C" fn stop() -> pj_status_t {
-        0
-    }
+    let h = pjsip_generic_string_hdr_create(
+        (*tdata).pool,
+        &mut ua as *const _,
+        &mut agent as *const _,
+    ) as *mut pjsip_hdr;
 
-    unsafe extern "C" fn unload() -> pj_status_t {
-        0
-    }
+    pj_list_insert_before(ahdr as *mut _, h as *mut _);
 
-    unsafe extern "C" fn on_rx_response(rdata: *mut pjsip_rx_data) -> pj_bool_t {
-        0
-    }
+    pjsip_endpt_send_response2(pjsua::get_pjsip_endpt(),
+        rdata,
+        tdata,
+        ptr::null_mut(),
+        None
+    );
 
-    unsafe extern "C" fn on_tx_request(tdata: *mut pjsip_tx_data) -> pj_status_t {
-        0
-    }
-
-    unsafe extern "C" fn on_tx_response(tdata: *mut pjsip_tx_data) -> pj_status_t {
-        0
-    }
-
-    unsafe extern "C" fn on_tsx_state(tsx: *mut pjsip_transaction, event: *mut pjsip_event) {}
+    PJ_TRUE as pj_status_t
 }
-
-
-
-
 
 
 // On Call State
