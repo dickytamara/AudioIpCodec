@@ -365,12 +365,7 @@ pub fn endpt_handle_events(endpt: &mut pjsip_endpoint, max_timeout: &mut pj_time
 
 pub fn endpt_handle_events2(endpt: &mut pjsip_endpoint, max_timeout: &mut pj_time_val, count: &mut u32) -> Result<(), i32> {
     unsafe {
-        check_status(
-            pjsip_endpt_handle_events2(
-                endpt as *mut _, max_timeout as *const _, count as *mut _
-            )
-        )
-    }
+        check_status(pjsip_endpt_handle_events2(endpt as *mut _, max_timeout as *const _, count as *mut _))}
 }
 
 // pj_status_t 	pjsip_endpt_schedule_timer (pjsip_endpoint *endpt, pj_timer_entry *entry, const pj_time_val *delay)
@@ -395,18 +390,18 @@ pub fn endpt_get_timer_heap(endpt: &mut pjsip_endpoint) -> *mut pj_timer_heap_t 
 }
 
 pub fn endpt_register_module(endpt: *mut pjsip_endpoint, module: &mut pjsip_module) -> Result<(), i32> {
-    unsafe {
-        check_status( pjsip_endpt_register_module(endpt, module as *mut _))
-     }
+    unsafe { check_status( pjsip_endpt_register_module(endpt, module as *mut _)) }
 }
 
 pub fn endpt_unregister_module(endpt: &mut pjsip_endpoint, module: &mut pjsip_module) -> Result<(), i32> {
-    unsafe {
-        check_status(pjsip_endpt_unregister_module(endpt as *mut _, module as *mut _))
-    }
+    unsafe { check_status(pjsip_endpt_unregister_module(endpt as *mut _, module as *mut _)) }
 }
 
 // void 	pjsip_process_rdata_param_default (pjsip_process_rdata_param *p)
+pub fn process_rdata_param_default(p: &mut pjsip_process_rdata_param) {
+    unsafe { pjsip_process_rdata_param_default(p as *mut _); }
+}
+
 // pj_status_t 	pjsip_endpt_process_rx_data (pjsip_endpoint *endpt, pjsip_rx_data *rdata, pjsip_process_rdata_param *p, pj_bool_t *p_handled)
 // pj_pool_t * 	pjsip_endpt_create_pool (pjsip_endpoint *endpt, const char *pool_name, pj_size_t initial, pj_size_t increment)
 // void 	pjsip_endpt_release_pool (pjsip_endpoint *endpt, pj_pool_t *pool)
@@ -416,9 +411,33 @@ pub fn endpt_unregister_module(endpt: &mut pjsip_endpoint, module: &mut pjsip_mo
 // void 	pjsip_endpt_destroy_tsx (pjsip_endpoint *endpt, pjsip_transaction *tsx)
 
 // pj_status_t 	pjsip_endpt_create_tdata (pjsip_endpoint *endpt, pjsip_tx_data **p_tdata)
+pub fn endpt_create_tdata(endpt: &mut pjsip_endpoint, p_tdata: &mut Box<*mut pjsip_tx_data> ) -> Result<(), i32> {
+    unsafe {
+        check_status( pjsip_endpt_create_tdata( endpt as *mut _, (p_tdata.as_mut() as *mut _) as *mut _))
+    }
+}
+
 // pj_status_t 	pjsip_endpt_create_resolver (pjsip_endpoint *endpt, pj_dns_resolver **p_resv)
+pub fn endpt_create_resolver(endpt: &mut pjsip_endpoint, p_resv: &mut Box<*mut pjsip_tx_data>) -> Result<(), i32> {
+    unsafe {
+        check_status( pjsip_endpt_create_resolver( endpt as *mut _, (p_resv.as_mut() as *mut _) as *mut _))
+    }
+}
+
+
 // pj_status_t 	pjsip_endpt_set_resolver (pjsip_endpoint *endpt, pj_dns_resolver *resv)
+pub fn endpt_set_resolver(endpt: &mut pjsip_endpoint, resv: &mut pj_dns_resolver) -> Result<(), i32> {
+    unsafe { check_status(pjsip_endpt_set_resolver( endpt as *mut _, resv as *mut _)) }
+}
+
 // pj_status_t 	pjsip_endpt_set_ext_resolver (pjsip_endpoint *endpt, pjsip_ext_resolver *ext_res)
+pub fn endpt_set_ext_resolver(endpt: &mut pjsip_endpoint, ext_res: &mut pjsip_ext_resolver) -> Result<(), i32> {
+    unsafe { check_status( pjsip_endpt_set_ext_resolver( endpt as *mut _, ext_res as *mut _))}
+}
+
+
+
+
 
 // pj_dns_resolver * 	pjsip_endpt_get_resolver (pjsip_endpoint *endpt)
 // void 	pjsip_endpt_resolve (pjsip_endpoint *endpt, pj_pool_t *pool, pjsip_host_info *target, void *token, pjsip_resolver_callback *cb)
