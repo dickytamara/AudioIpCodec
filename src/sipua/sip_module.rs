@@ -2,8 +2,8 @@
 use pj_sys::*;
 use pjsip_sys::*;
 
-use crate::pjproject::prelude::*;
-use std::cell::RefCell;
+use crate::pjproject::{pjsip, pjsua, prelude::*};
+use std::cell::{RefCell, RefMut};
 
 pub struct SIPModule {
     ctx: RefCell<pjsip_module>
@@ -135,8 +135,18 @@ impl SIPModule {
     // pj_status_t 	pjsip_endpt_schedule_timer_w_grp_lock (pjsip_endpoint *endpt, pj_timer_entry *entry, const pj_time_val *delay, int id_val, pj_grp_lock_t *grp_lock)
     // void 	pjsip_endpt_cancel_timer (pjsip_endpoint *endpt, pj_timer_entry *entry)
     // pj_timer_heap_t * 	pjsip_endpt_get_timer_heap (pjsip_endpoint *endpt)
+
+    pub fn get_context(&self) -> RefMut<pjsip_module> {
+        self.ctx.borrow_mut()
+    }
+
     // pj_status_t 	pjsip_endpt_register_module (pjsip_endpoint *endpt, pjsip_module *module)
+    pub fn register_module(&self) {
+        pjsip::endpt_register_module(pjsua::get_pjsip_endpt(), &mut self.ctx.borrow_mut())
+        .expect("SIPModule::pjsip_endpt_register_module");
+    }
     // pj_status_t 	pjsip_endpt_unregister_module (pjsip_endpoint *endpt, pjsip_module *module)
+
     // void 	pjsip_process_rdata_param_default (pjsip_process_rdata_param *p)
     // pj_status_t 	pjsip_endpt_process_rx_data (pjsip_endpoint *endpt, pjsip_rx_data *rdata, pjsip_process_rdata_param *p, pj_bool_t *p_handled)
     // pj_pool_t * 	pjsip_endpt_create_pool (pjsip_endpoint *endpt, const char *pool_name, pj_size_t initial, pj_size_t increment)

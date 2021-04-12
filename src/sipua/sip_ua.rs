@@ -12,7 +12,7 @@ use crate::pjproject::prelude::*;
 use crate::pjproject::utils;
 use crate::pjproject::pjsua;
 
-
+use super::sip_module::SIPModule;
 
 
 // high layer API
@@ -22,7 +22,8 @@ use crate::pjproject::pjsua;
 pub struct SIPUa {
     // give mutable interior for ensure ctx not moved to anywhere.
     ctx: RefCell<pjsua_config>,
-    // on_call_state: Box<dyn Fn(pjsua_call_id, *mut pjsip_event)>
+    pub module: SIPModule,
+    pool: *mut pj_pool_t
 }
 
 /// this trait handle all pjsua_config struct fields
@@ -236,7 +237,8 @@ impl SIPUa {
     pub fn new() -> Self {
         SIPUa {
             ctx: RefCell::new(pjsua_config::new()),
-            // on_call_state: Box::new(|x, y| {}),
+            module: SIPModule::new(),
+            pool: pjsua::pool_create("ipcodec")
         }
     }
 
@@ -292,11 +294,11 @@ impl SIPUa {
     /// and the default values will be used when the config is not specified.
     /// Note that create() MUST be called before calling this function.
     pub fn init(&self, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) {
-        pjsua::init(
-            &mut self.ctx.borrow_mut(),
-            log_cfg,
-            media_cfg
-        ).expect("SIPUa::pjsua_init");
+        // init pjsua
+        pjsua::init( &mut self.ctx.borrow_mut(), log_cfg,media_cfg)
+        .expect("SIPUa::pjsua_init");
+        // register default handler
+        self.module.register_module();
     }
 
     /// Application is recommended to call this function after all initialization is done,
@@ -497,6 +499,16 @@ impl SIPUa {
     ///            or continue the call by sending re-INVITE (configurable via pjsua_acc_config.ip_change_cfg.reinvite_flags).
     pub fn handle_ip_change(&self, param: &mut pjsua_ip_change_param) {
         pjsua::handle_ip_change(param).expect("SIPUa::pjsua_handle_ip_change");
+    }
+
+
+    pub fn get_pool(&self) -> *mut pj_pool_t {
+        self.pool
+    }
+
+    pub fn deinit(&mut self) {
+        pjsua::pool_release(self.pool);
+        pjsua::destroy().unwrap();
     }
 }
 
@@ -908,4 +920,5 @@ impl SIPUaExt for SIPUa {
         utils::check_boolean(self.ctx.borrow().hangup_forked_call)
     }
 }
+
 

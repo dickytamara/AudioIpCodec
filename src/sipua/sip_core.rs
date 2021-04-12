@@ -13,7 +13,7 @@ use crate::pjproject::pjsip;
 use crate::pjproject::pjsua;
 use crate::pjproject::pjmedia;
 
-use super::sip_account::*;
+use super::{sip_account::*, sip_module::SIPModuleExt};
 // use super::sip_buddy::*;
 use super::sip_calls::*;
 use super::sip_ua::*;
@@ -43,7 +43,7 @@ pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 // fix with disable inbandfec
 
 pub struct SIPCore {
-    pool: *mut pj_pool_t,
+    // pool: *mut pj_pool_t,
     // app_config: pjsua_config,
     app_config: SIPUa,
     log_config: SIPLog,
@@ -58,7 +58,7 @@ pub struct SIPCore {
     ringtone: SIPRingtone,
     wav_player: Option<SIPWavPlayer>,
     wav_recorder: Option<SIPWavRecorder>,
-    default_handler: pjsip_module,
+    // default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
     input_dev: i32,
     output_dev: i32,
@@ -97,7 +97,7 @@ impl SIPCore {
         pjsua::create().unwrap();
 
         let sip_core = SIPCore {
-            pool: ptr::null_mut(),
+            // pool: ptr::null_mut(),
             // app_config: pjsua_config::new(),
             app_config: SIPUa::new(),
             log_config: SIPLog::new(),
@@ -112,7 +112,7 @@ impl SIPCore {
             ringtone: SIPRingtone::new(),
             wav_player: None,
             wav_recorder: None,
-            default_handler: pjsip_module::new(),
+            // default_handler: pjsip_module::new(),
             redir_op: PJSIP_REDIRECT_ACCEPT_REPLACE,
             input_dev: pjsua::PJSUA_INVALID_ID,
             output_dev: pjsua::PJSUA_INVALID_ID,
@@ -130,7 +130,7 @@ impl SIPCore {
 
     pub fn start(&mut self) {
 
-        self.pool = pjsua::pool_create("ipcodec");
+        // self.pool = pjsua::pool_create("ipcodec");
 
         self.app_config.connect_on_call_state(Some(on_call_state));
         self.app_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
@@ -154,39 +154,48 @@ impl SIPCore {
         self.app_config.connect_on_call_media_event(Some(on_call_media_event));
         self.app_config.connect_on_ip_change_progress(Some(on_ip_change_progress));
 
+
+        self.app_config.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
+        self.app_config.module.set_name(String::from("mod-default-handler"));
+        self.app_config.module.connect_on_rx_request(Some(SIPCore::on_rx_request));
+
         self.app_config.init(
             &mut self.log_config.get_context(),
             &mut self.media_config.get_context(),
         );
 
         // pjsip endpoint for unhadled error
-        self.default_handler.priority = (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32;
-        self.default_handler.name = pj_str_t::from_string(String::from("mod-default-handler"));
-        self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
-        unsafe {
-            let status = pjsip_endpt_register_module(
-                pjsua::get_pjsip_endpt(),
-                &mut self.default_handler as *mut _,
-            );
-            if status != 0 {
-                panic!("cant register module");
-            }
-        }
+        // self.default_handler.priority = (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32;
+        // self.default_handler.name = pj_str_t::from_string(String::from("mod-default-handler"));
+        // self.default_handler.on_rx_request = Some(SIPCore::on_rx_request);
+        // unsafe {
+        //     let status = pjsip_endpt_register_module(
+        //         pjsua::get_pjsip_endpt(),
+        //         &mut self.default_handler as *mut _,
+        //     );
+        //     if status != 0 {
+        //         panic!("cant register module");
+        //     }
+        // }
 
         // add optional tones
+        // TODO fix code bellow
         for _ in 0..32 {
             let mut tones = SIPTones::new();
-            tones.init(self.pool, 440, 480);
+            tones.init(self.app_config.get_pool(), 440, 480);
             self.tones.push(tones);
         }
 
         // init ringback
-        self.ringback.init(self.pool, *self.media_config.get_context());
+        // TODO fix code bellow
+        self.ringback.init(self.app_config.get_pool(), *self.media_config.get_context());
 
         // init ringtone
-        self.ringtone.init(self.pool, *self.media_config.get_context());
+        // TODO fix code bellow
+        self.ringtone.init(self.app_config.get_pool(), *self.media_config.get_context());
 
         // Initialize UDP Transport
+
         if !self.no_udp {
             self.transports
                 .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
@@ -222,8 +231,9 @@ impl SIPCore {
     }
 
     pub fn deinit(&mut self) {
-        pjsua::pool_release(self.pool);
-        pjsua::destroy().unwrap();
+        self.app_config.deinit();
+        // pjsua::pool_release(self.pool);
+        // pjsua::destroy().unwrap();
     }
 
     pub fn call(&self, call_addr: &str) {
@@ -282,7 +292,6 @@ impl SIPCore {
     pub fn ring_start(&self, call_id: pjsua_call_id) {
         // ring start on incomming call
     }
-
 
     pub fn auto_answer(&self, value: bool) {
         todo!();
