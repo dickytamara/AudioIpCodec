@@ -286,7 +286,7 @@ impl SIPUa {
     /// before calling any other functions, to make sure that the underlying
     /// libraries are properly initialized. Once this function has returned success,
     /// application must call destroy() before quitting.
-    pub fn create() {
+    pub fn create(&self) {
         pjsua::create().expect("SIPUa::pjsua_create");
     }
 

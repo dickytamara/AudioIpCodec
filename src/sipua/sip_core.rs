@@ -43,8 +43,6 @@ pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 // fix with disable inbandfec
 
 pub struct SIPCore {
-    // pool: *mut pj_pool_t,
-    // app_config: pjsua_config,
     app_config: SIPUa,
     log_config: SIPLog,
     pub media_config: SIPMedia,
@@ -58,7 +56,6 @@ pub struct SIPCore {
     ringtone: SIPRingtone,
     wav_player: Option<SIPWavPlayer>,
     wav_recorder: Option<SIPWavRecorder>,
-    // default_handler: pjsip_module,
     redir_op: pjsip_redirect_op,
     input_dev: i32,
     output_dev: i32,
@@ -93,12 +90,8 @@ pub trait SIPCoreEventsExt {
 impl SIPCore {
 
     pub fn new() -> Self {
-        // create default data
-        pjsua::create().unwrap();
-
-        let sip_core = SIPCore {
-            // pool: ptr::null_mut(),
-            // app_config: pjsua_config::new(),
+        pjsua::create().expect("SIPCore::pjsua_create");
+        SIPCore {
             app_config: SIPUa::new(),
             log_config: SIPLog::new(),
             media_config: SIPMedia::new(),
@@ -112,7 +105,6 @@ impl SIPCore {
             ringtone: SIPRingtone::new(),
             wav_player: None,
             wav_recorder: None,
-            // default_handler: pjsip_module::new(),
             redir_op: PJSIP_REDIRECT_ACCEPT_REPLACE,
             input_dev: pjsua::PJSUA_INVALID_ID,
             output_dev: pjsua::PJSUA_INVALID_ID,
@@ -123,13 +115,14 @@ impl SIPCore {
             current_call: -1,
             auto_answer: 0,
             events: SIPCoreEvents::new()
-        };
-
-        sip_core
+        }
     }
 
     pub fn start(&mut self) {
 
+        // self.app_config.create();
+
+        // set all default media event
         self.app_config.connect_on_call_state(Some(on_call_state));
         self.app_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
         self.app_config.connect_on_call_media_state(Some(on_call_media_state));
@@ -181,21 +174,17 @@ impl SIPCore {
         // Initialize UDP Transport
 
         if !self.no_udp {
-            self.transports
-                .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP);
+            self.transports.add(PJSIP_TRANSPORT_UDP);
             if self.use_ipv6 == true {
-                self.transports
-                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6);
+                self.transports.add(PJSIP_TRANSPORT_UDP6);
             }
         }
 
         // initialize TCP transport
         if !self.no_tcp {
-            self.transports
-                .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP);
+            self.transports.add(PJSIP_TRANSPORT_TCP);
             if self.use_ipv6 {
-                self.transports
-                    .add(pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6);
+                self.transports.add(PJSIP_TRANSPORT_TCP6);
             }
         }
 

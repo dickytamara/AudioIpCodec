@@ -46,8 +46,8 @@ impl SIPTransport {
 
         unsafe {
             acc_cfg.rtp_cfg = *rtp_config;
-            if type_ == pjsip_transport_type_e_PJSIP_TRANSPORT_TCP6
-                || type_ == pjsip_transport_type_e_PJSIP_TRANSPORT_UDP6
+            if type_ == PJSIP_TRANSPORT_TCP6
+                || type_ == PJSIP_TRANSPORT_UDP6
             {
                 acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
             }
