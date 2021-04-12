@@ -2,6 +2,8 @@
 use gtk::prelude::*;
 use gtk::{Switch, Label, Builder};
 use std::cell::RefCell;
+use std::path::PathBuf;
+
 
 use super::helper::HelperFileSettings;
 use configparser::ini::Ini;
@@ -56,23 +58,23 @@ impl SettingsCallWidget {
 impl HelperFileSettings for SettingsCallWidget {
 
     // load from file
-    fn load(&self, path: &str) {
+    fn load(&self, path: PathBuf) {
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let autoanswer = config.get("call", "autoanswer").unwrap();
         self.set_autoanswer(autoanswer.parse().unwrap());
     }
 
     // save to file
-    fn save(&self, path: &str) {
+    fn save(&self, path: PathBuf) {
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let autoanswer = self.get_autoanswer();
         config.set("call", "autoanswer", Some(autoanswer.to_string()));
 
-        config.write(path).unwrap();
+        config.write(path.to_str().unwrap()).unwrap();
     }
 }
 

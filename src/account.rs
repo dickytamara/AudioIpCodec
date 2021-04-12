@@ -3,9 +3,11 @@
 use gtk::prelude::*;
 use gtk::{Label, Entry, Button, Builder};
 use std::cell::RefCell;
+use std::path::PathBuf;
 
 use super::helper::HelperFileSettings;
 use configparser::ini::Ini;
+
 
 #[derive(Clone)]
 pub struct AccountStorage {
@@ -136,10 +138,10 @@ impl AccountWidget {
 }
 
 impl HelperFileSettings for AccountWidget {
-    fn load(&self, path: &str) {
+    fn load(&self, path: PathBuf) {
         // load from file
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let sip_url = config.get("account", "sip_url").unwrap();
         let registrar_url = config.get("account", "registrar_url").unwrap();
@@ -154,18 +156,18 @@ impl HelperFileSettings for AccountWidget {
         self.set_password(password.as_str());
     }
 
-    fn save(&self, path: &str) {
+    fn save(&self, path: PathBuf) {
         // save to file
         let mut config = Ini::new();
         // load from file
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
         config.set("account", "sip_url", Some(self.get_sip_url()));
         config.set("account", "registrar_url", Some(self.get_registrar_url()));
         config.set("account", "realm", Some(self.get_realm()));
         config.set("account", "username", Some(self.get_username()));
         config.set("account", "password", Some(self.get_password()));
         // save to file.
-        config.write(path).unwrap();
+        config.write(path.to_str().unwrap()).unwrap();
     }
 }
 

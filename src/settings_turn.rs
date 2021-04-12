@@ -2,6 +2,7 @@
 use gtk::prelude::*;
 use gtk::{Label, SpinButton, ComboBoxText, Entry, Switch, Builder};
 use std::cell::RefCell;
+use std::path::PathBuf;
 
 use super::helper::HelperFileSettings;
 use configparser::ini::Ini;
@@ -171,9 +172,9 @@ impl SettingsTurnWidget {
 
 impl HelperFileSettings for SettingsTurnWidget {
 
-    fn load(&self, path: &str) {
+    fn load(&self, path: PathBuf) {
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let use_turn = config.get("turn", "use_turn").unwrap();
         let use_tcp = config.get("turn", "use_tcp").unwrap();
@@ -194,9 +195,9 @@ impl HelperFileSettings for SettingsTurnWidget {
         self.set_srtp_keyring(srtp_keyring.parse().unwrap());
     }
 
-    fn save(&self, path: &str) {
+    fn save(&self, path: PathBuf) {
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let use_turn = self.get_use_turn();
         let use_tcp = self.get_use_tcp();
@@ -216,7 +217,7 @@ impl HelperFileSettings for SettingsTurnWidget {
         config.set("stun", "password", Some(password));
         config.set("stun", "srtp_keyring", Some(srtp_keyring.to_string()));
 
-        config.write(path).unwrap();
+        config.write(path.to_str().unwrap()).unwrap();
     }
 }
 

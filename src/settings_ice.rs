@@ -4,6 +4,7 @@ use gtk::prelude::*;
 
 use gtk::{Label, Switch, ComboBoxText, SpinButton, Builder};
 use std::cell::RefCell;
+use std::path::PathBuf;
 
 use super::helper::HelperFileSettings;
 use configparser::ini::Ini;
@@ -134,9 +135,9 @@ impl SettingsIceWidget {
 
 
 impl HelperFileSettings for SettingsIceWidget {
-    fn load(&self, path: &str) {
+    fn load(&self, path: PathBuf) {
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let use_ice = config.get("ice", "use_ice").unwrap();
         let use_rtcp = config.get("ice", "use_srtp").unwrap();
@@ -151,9 +152,9 @@ impl HelperFileSettings for SettingsIceWidget {
         self.set_max_hosts(max_hosts.parse().unwrap());
     }
 
-    fn save(&self, path: &str) {
+    fn save(&self, path: PathBuf) {
         let mut config = Ini::new();
-        config.load(path).unwrap();
+        config.load(path.to_str().unwrap()).unwrap();
 
         let use_ice = self.get_use_ice();
         let use_rtcp = self.get_use_rtcp();
@@ -167,6 +168,6 @@ impl HelperFileSettings for SettingsIceWidget {
         config.set("ice", "trickle_method", Some(trickle_method.to_string()));
         config.set("ice", "max_hosts", Some(max_hosts.to_string()));
 
-        config.write(path).unwrap();
+        config.write(path.to_str().unwrap()).unwrap();
     }
 }
