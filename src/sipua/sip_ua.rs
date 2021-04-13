@@ -15,10 +15,6 @@ use crate::pjproject::pjsua;
 use super::sip_module::SIPModule;
 
 
-// high layer API
-// this API provide error message and
-// memory safety when interact with pjsua basic api
-
 pub struct SIPUa {
     // give mutable interior for ensure ctx not moved to anywhere.
     ctx: RefCell<pjsua_config>,
@@ -33,29 +29,35 @@ pub trait SIPUaExt {
     /// To increase this limit, the library must be recompiled with new PJSUA_MAX_CALLS value.
     fn set_max_calls (&self, max_calls: u32);
     fn get_max_calls (&self) -> u32;
+
     /// Number of worker threads. Normally application will want to have at least one worker thread,
     /// unless when it wants to poll the library periodically,
     /// which in this case the worker thread can be set to zero.
     fn set_thread_cnt(&self, value: u32);
     fn get_thread_cnt(&self) -> u32;
+
     /// Number of nameservers. If no name server is configured,
     /// the SIP SRV resolution would be disabled,
     /// and domain will be resolved with standard pj_gethostbyname() function.
     fn set_nameserver_count(&self, value: u32);
     fn get_nameserver_count(&self) -> u32;
+
     /// Array of nameservers to be used by the SIP resolver subsystem.
     /// The order of the name server specifies the priority
     /// (first name server will be used first, unless it is not reachable).
     fn set_nameserver(&self, nameserver: [String; 4usize]);
     fn get_nameserver(&self) -> [String; 4usize];
+
     /// Force loose-route to be used in all route/proxy URIs (outbound_proxy and account's proxy settings).
     /// When this setting is enabled, the library will check all the route/proxy
     /// URIs specified in the settings and append ";lr" parameter to the URI if the parameter is not present.
     fn set_force_lr(&self, value: bool);
     fn get_force_lr(&self) -> bool;
+
     /// Number of outbound proxies in the outbound_proxy array.
     fn set_outbound_proxy_cnt(&self, value: u32);
     fn get_outbound_proxy_cnt(&self) -> u32;
+
     /// Specify the URL of outbound proxies to visit for all outgoing requests.
     /// The outbound proxies will be used for all accounts,
     /// and it will be used to build the route set for outgoing requests.
@@ -63,6 +65,7 @@ pub trait SIPUaExt {
     /// proxies and the proxy configured in the account.
     fn set_outbound_proxy(&self, value: [String; 4usize]);
     fn get_outbound_proxy(&self) -> [String; 4usize];
+
     /// Warning: deprecated, please use stun_srv field instead.
     /// To maintain backward compatibility, if stun_srv_cnt is zero then
     /// the value of this field will be copied to stun_srv field, if present.
@@ -75,6 +78,7 @@ pub trait SIPUaExt {
     /// performed only if stun_host is specified.
     fn set_stun_domain(&self, value: String);
     fn get_stun_domain(&self) -> String;
+
     /// Warning: deprecated, please use stun_srv field instead.
     /// To maintain backward compatibility, if stun_srv_cnt is zero then the
     /// value of this field will be copied to stun_srv field, if present.
@@ -83,9 +87,11 @@ pub trait SIPUaExt {
     /// If port is not specified, default port 3478 will be used.
     fn set_stun_host(&self, value: String);
     fn get_stun_host(&self) -> String;
+
     /// Get Number of STUN server entries in stun_srv array.
     fn set_stun_srv_cnt(&self, value: u32);
     fn get_stun_srv_cnt(&self) -> u32;
+
     /// Array of STUN servers to try. The library will try to resolve and contact each of the
     /// STUN server entry until it finds one that is usable. Each entry may be a domain name,
     /// host name, IP address, and it may contain an optional port number. For example:
@@ -106,6 +112,7 @@ pub trait SIPUaExt {
     /// if the server is not listening in standard STUN port.
     fn set_stun_srv(&self, value: [String; 8usize]);
     fn get_stun_srv(&self) -> [String; 8usize];
+
     /// This specifies if the library should try to do an IPv6 resolution of
     /// the STUN servers if the IPv4 resolution fails. It can be useful in an
     /// IPv6-only environment, including on NAT64.
@@ -114,6 +121,7 @@ pub trait SIPUaExt {
     /// PJ_FALSE
     fn set_stun_try_ipv6(&self, value: bool);
     fn get_stun_try_ipv6(&self) -> bool;
+
     /// This specifies if the library should ignore failure with the STUN servers.
     /// If this is set to PJ_FALSE, the library will refuse to start if it fails
     /// to resolve or contact any of the STUN servers.
@@ -126,6 +134,7 @@ pub trait SIPUaExt {
     /// PJ_TRUE
     fn set_stun_ignore_failure(&self, value: bool);
     fn get_stun_ignore_failure(&self) -> bool;
+
     /// This specifies whether STUN requests for resolving socket mapped address should use the new format,
     /// i.e: having STUN magic cookie in its transaction ID.
     ///
@@ -133,6 +142,7 @@ pub trait SIPUaExt {
     /// PJ_FALSE
     fn set_stun_map_use_stun2(&self, value: bool);
     fn get_stun_map_use_stun2(&self) -> bool;
+
     /// Support for adding and parsing NAT type in the SDP to assist troubleshooting. The valid values are:
     ///
     /// - 0: no information will be added in SDP, and parsing is disabled.
@@ -143,12 +153,14 @@ pub trait SIPUaExt {
     /// 1
     fn set_nat_type_in_sdp(&self, value: i32);
     fn get_nat_type_in_sdp(&self) -> i32;
+
     /// Specify how the support for reliable provisional response (100rel/ PRACK) should be used by default.
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
     ///
     /// [Default] PJSUA_100REL_NOT_USED
     fn set_require_100rel(&self, value: pjsua_100rel_use);
     fn get_require_100rel(&self) -> pjsua_100rel_use;
+
     /// Specify the usage of Session Timers for all sessions. See the pjsua_sip_timer_use for possible values.
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
     ///
@@ -156,6 +168,7 @@ pub trait SIPUaExt {
     /// PJSUA_SIP_TIMER_OPTIONAL
     fn set_use_timer(&self, value: pjsua_sip_timer_use);
     fn get_use_timer(&self) -> pjsua_sip_timer_use;
+
     /// Handle unsolicited NOTIFY requests containing message waiting indication (MWI) info.
     /// Unsolicited MWI is incoming NOTIFY requests which are not requested by client with SUBSCRIBE request.
     ///
@@ -168,13 +181,16 @@ pub trait SIPUaExt {
     /// PJ_TRUE
     fn set_enable_unsolicited_mwi(&self, value: bool);
     fn get_enable_unsolicited_mwi(&self) -> bool;
+
     /// Specify Session Timer settings, see pjsip_timer_setting.
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
     fn set_timer_setting(&self, value: pjsip_timer_setting);
     fn get_timer_setting(&self) -> pjsip_timer_setting;
+
     /// Number of credentials in the credential array.
     fn set_cred_count(&self, value: u32);
     fn get_cred_count(&self) -> u32;
+
     /// Array of credentials. These credentials will be used by all accounts,
     /// and can be used to authenticate against outbound proxies.
     /// If the credential is specific to the account, then application should
@@ -190,6 +206,7 @@ pub trait SIPUaExt {
     /// If it's empty, no User-Agent header will be sent with outgoing requests.
     fn set_user_agent(&self, value: String);
     fn get_user_agent(&self) -> String;
+
     /// Specify default value of secure media transport usage.
     /// Valid values are PJMEDIA_SRTP_DISABLED, PJMEDIA_SRTP_OPTIONAL, and PJMEDIA_SRTP_MANDATORY.
     ///
@@ -199,6 +216,7 @@ pub trait SIPUaExt {
     /// PJSUA_DEFAULT_USE_SRTP`
     fn set_use_srtp(&self, value: pjmedia_srtp_use);
     fn get_use_srtp(&self) -> pjmedia_srtp_use;
+
     /// Specify whether SRTP requires secure signaling to be used. This option is only used when use_srtp option above is non-zero.
     ///
     /// Valid values are:
@@ -212,13 +230,16 @@ pub trait SIPUaExt {
     /// PJSUA_DEFAULT_SRTP_SECURE_SIGNALING
     fn set_srtp_secure_signaling(&self, value: i32);
     fn get_srtp_secure_signaling(&self) -> i32;
+
     /// This setting has been deprecated and will be ignored.
     fn set_srtp_optional_dup_offer(&self, value: bool);
     fn get_srtp_optional_dup_offer(&self) -> bool;
+
     /// Specify SRTP transport setting. Application can initialize it with
     /// default values using pjsua_srtp_opt_default().
     fn set_srtp_opt(&self, value: pjsua_srtp_opt);
     fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+
     /// Disconnect other call legs when more than one 2xx responses for outgoing INVITE
     /// are received due to forking. Currently the library is not able to handle simultaneous
     /// forked media, so disconnecting the other call legs is necessary.
