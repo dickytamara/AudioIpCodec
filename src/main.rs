@@ -269,9 +269,7 @@ fn main() {
     sipua.start();
 
     // builder
-    let main_src = include_str!("../glade/main_ui.glade");
-    let builder= Builder::from_string(main_src);
-
+    let builder= Builder::from_string("../glade/main_ui.glade");
     let main_window: gtk::ApplicationWindow = builder.get_object("main_ui").unwrap();
 
     let rx_widget = audio_line::create_transmit_widget(&builder);
