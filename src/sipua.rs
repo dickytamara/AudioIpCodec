@@ -135,7 +135,7 @@ impl SIPUserAgent {
     pub fn set_autoanswer(&self, value: bool) {
         unsafe {
             match SIP_CORE {
-                Some(ref sipua) => sipua.auto_answer(value),
+                Some(ref mut sipua) => sipua.auto_answer(value),
                 _ => panic!("")
             }
         }

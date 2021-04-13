@@ -3,7 +3,7 @@
 #![allow(non_upper_case_globals)]
 
 use pj_sys::*;
-use super::prelude::*;
+use super::{prelude::*, utils::{check_boolean, check_status}};
 
 use std::ptr;
 use std::ffi::CStr;
@@ -269,4 +269,69 @@ impl AutoCreate<pj_math_stat> for pj_math_stat {
 
 
 
+pub fn getpid() -> u32 {
+    unsafe { pj_getpid() }
+}
+// pj_status_t 	pj_thread_create (pj_pool_t *pool, const char *thread_name, pj_thread_proc *proc, void *arg, pj_size_t stack_size, unsigned flags, pj_thread_t **thread)
 
+pub fn thread_register(thread_name: Option<String>, desc: &mut pj_thread_desc, thread: &mut Box<*mut pj_thread_t>) -> Result<(), i32> {
+
+    let thread_name = match thread_name {
+        Some(value) => CString::new(value.as_str())
+            .expect("Error::pj_thread_register").into_raw(),
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        check_status(
+            pj_thread_register( thread_name, desc.as_mut_ptr(),
+                (thread.as_mut() as *mut _) as *mut _
+            )
+        )
+    }
+}
+
+pub fn thread_is_registerad() -> bool {
+    unsafe { check_boolean(pj_thread_is_registered()) }
+}
+
+pub fn thread_get_prio(thread: &mut pj_thread_t) -> i32 {
+    unsafe { pj_thread_get_prio(thread as *mut _) }
+}
+
+pub fn thread_set_prio(thread: &mut pj_thread_t, prio: i32) -> Result<(), i32> {
+    unsafe {
+        check_status(pj_thread_set_prio(thread as *mut _, prio))
+     }
+}
+
+pub fn thread_get_prio_min(thread: &mut pj_thread_t) -> i32 {
+    unsafe { pj_thread_get_prio_min(thread as *mut _) }
+}
+
+pub fn thread_get_prio_max(thread: &mut pj_thread_t) -> i32 {
+    unsafe { pj_thread_get_prio_max(thread as *mut _) }
+}
+
+// void * 	pj_thread_get_os_handle (pj_thread_t *thread)
+// const char * 	pj_thread_get_name (pj_thread_t *thread)
+
+pub fn thread_this() -> *mut pj_thread_t {
+    unsafe { pj_thread_this() }
+}
+
+pub fn thread_resume(thread: &mut pj_thread_t) -> Result<(), i32> {
+    unsafe { check_status(pj_thread_resume(thread as *mut _)) }
+}
+
+pub fn thread_join(thread: &mut pj_thread_t) -> Result<(), i32> {
+    unsafe { check_status(pj_thread_join(thread as *mut _)) }
+}
+
+pub fn thread_destroy(thread: &mut pj_thread_t) -> Result<(), i32> {
+    unsafe { check_status(pj_thread_destroy(thread as *mut _)) }
+}
+
+pub fn thread_sleep(msec: u32) -> Result<(), i32> {
+    unsafe { check_status(pj_thread_sleep(msec)) }
+}

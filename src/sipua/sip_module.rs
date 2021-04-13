@@ -147,6 +147,11 @@ impl SIPModule {
     }
     // pj_status_t 	pjsip_endpt_unregister_module (pjsip_endpoint *endpt, pjsip_module *module)
 
+    pub fn unregister_module(&self) {
+        pjsip::endpt_unregister_module(pjsua::get_pjsip_endpt(), &mut self.ctx.borrow_mut())
+        .expect("SIPModule::pjsip_endpt_unregister_module");
+    }
+
     // void 	pjsip_process_rdata_param_default (pjsip_process_rdata_param *p)
     // pj_status_t 	pjsip_endpt_process_rx_data (pjsip_endpoint *endpt, pjsip_rx_data *rdata, pjsip_process_rdata_param *p, pj_bool_t *p_handled)
     // pj_pool_t * 	pjsip_endpt_create_pool (pjsip_endpoint *endpt, const char *pool_name, pj_size_t initial, pj_size_t increment)

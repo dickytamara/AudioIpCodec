@@ -263,8 +263,12 @@ impl SIPCore {
         // ring start on incomming call
     }
 
-    pub fn auto_answer(&self, value: bool) {
-        todo!();
+    pub fn auto_answer(&mut self, value: bool) {
+        if value {
+            self.auto_answer = 200;
+        } else {
+            self.auto_answer = 0;
+        }
     }
 
     pub fn on_call_audio_state(&mut self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {

@@ -382,8 +382,8 @@ pub fn endpt_register_module(endpt: *mut pjsip_endpoint, module: &mut pjsip_modu
     unsafe { check_status( pjsip_endpt_register_module(endpt, module as *mut _)) }
 }
 
-pub fn endpt_unregister_module(endpt: &mut pjsip_endpoint, module: &mut pjsip_module) -> Result<(), i32> {
-    unsafe { check_status(pjsip_endpt_unregister_module(endpt as *mut _, module as *mut _)) }
+pub fn endpt_unregister_module(endpt: *mut pjsip_endpoint, module: &mut pjsip_module) -> Result<(), i32> {
+    unsafe { check_status(pjsip_endpt_unregister_module(endpt, module as *mut _)) }
 }
 
 // void 	pjsip_process_rdata_param_default (pjsip_process_rdata_param *p)
@@ -413,7 +413,6 @@ pub fn endpt_create_resolver(endpt: &mut pjsip_endpoint, p_resv: &mut Box<*mut p
     }
 }
 
-
 // pj_status_t 	pjsip_endpt_set_resolver (pjsip_endpoint *endpt, pj_dns_resolver *resv)
 pub fn endpt_set_resolver(endpt: &mut pjsip_endpoint, resv: &mut pj_dns_resolver) -> Result<(), i32> {
     unsafe { check_status(pjsip_endpt_set_resolver( endpt as *mut _, resv as *mut _)) }
@@ -423,10 +422,6 @@ pub fn endpt_set_resolver(endpt: &mut pjsip_endpoint, resv: &mut pj_dns_resolver
 pub fn endpt_set_ext_resolver(endpt: &mut pjsip_endpoint, ext_res: &mut pjsip_ext_resolver) -> Result<(), i32> {
     unsafe { check_status( pjsip_endpt_set_ext_resolver( endpt as *mut _, ext_res as *mut _))}
 }
-
-
-
-
 
 // pj_dns_resolver * 	pjsip_endpt_get_resolver (pjsip_endpoint *endpt)
 // void 	pjsip_endpt_resolve (pjsip_endpoint *endpt, pj_pool_t *pool, pjsip_host_info *target, void *token, pjsip_resolver_callback *cb)
