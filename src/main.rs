@@ -245,11 +245,9 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
     settings.apply_connect_clicked(move |page| {
         match page.unwrap() {
             SettingsCurrentActivePage::Call => {
-
-            },
-            SettingsCurrentActivePage::Turn => {
                 ua.set_autoanswer(settings_clone.call.get_autoanswer());
             },
+            SettingsCurrentActivePage::Turn => { todo!(); },
             SettingsCurrentActivePage::Ice => { todo!(); },
             SettingsCurrentActivePage::Buffer => { todo!(); },
             SettingsCurrentActivePage::Media => { todo!(); },
