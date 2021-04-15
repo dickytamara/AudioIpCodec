@@ -62,8 +62,7 @@ impl HelperFileSettings for SettingsCallWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        let autoanswer = config.get("call", "autoanswer").unwrap();
-        self.set_autoanswer(autoanswer.parse().unwrap());
+        self.set_autoanswer(config.get("call", "autoanswer").unwrap().parse().unwrap());
     }
 
     // save to file
@@ -71,8 +70,7 @@ impl HelperFileSettings for SettingsCallWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        let autoanswer = self.get_autoanswer();
-        config.set("call", "autoanswer", Some(autoanswer.to_string()));
+        config.set("call", "autoanswer", Some(self.get_autoanswer().to_string()));
 
         config.write(path.to_str().unwrap()).unwrap();
     }

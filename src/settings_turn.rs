@@ -176,23 +176,14 @@ impl HelperFileSettings for SettingsTurnWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        let use_turn = config.get("turn", "use_turn").unwrap();
-        let use_tcp = config.get("turn", "use_tcp").unwrap();
-        let use_rtcp_multiplexing = config.get("stun", "use_rtcp_multiplexing").unwrap();
-        let server = config.get("stun", "server").unwrap();
-        let port = config.get("stun", "port").unwrap();
-        let username = config.get("stun", "username").unwrap();
-        let password = config.get("stun", "password").unwrap();
-        let srtp_keyring= config.get("stun", "srtp_keyring").unwrap();
-
-        self.set_use_turn(use_turn.parse().unwrap());
-        self.set_use_tcp(use_tcp.parse().unwrap());
-        self.set_use_rtcp_multiplexing(use_rtcp_multiplexing.parse().unwrap());
-        self.set_server(server);
-        self.set_port(port.parse().unwrap());
-        self.set_username(username);
-        self.set_password(password);
-        self.set_srtp_keyring(srtp_keyring.parse().unwrap());
+        self.set_use_turn(config.get("turn", "use_turn").unwrap().parse().unwrap());
+        self.set_use_tcp(config.get("turn", "use_tcp").unwrap().parse().unwrap());
+        self.set_use_rtcp_multiplexing(config.get("stun", "use_rtcp_multiplexing").unwrap().parse().unwrap());
+        self.set_server(config.get("turn", "server").unwrap());
+        self.set_port(config.get("turn", "port").unwrap().parse().unwrap());
+        self.set_username(config.get("turn", "username").unwrap());
+        self.set_password(config.get("turn", "password").unwrap());
+        self.set_srtp_keyring(config.get("turn", "srtp_keyring").unwrap().parse().unwrap());
     }
 
     fn save(&self, path: PathBuf) {
@@ -208,14 +199,14 @@ impl HelperFileSettings for SettingsTurnWidget {
         let password = self.get_password();
         let srtp_keyring = self.get_srtp_keyring();
 
-        config.set("stun", "use_turn", Some(use_turn.to_string()));
-        config.set("stun", "use_tcp", Some(use_tcp.to_string()));
-        config.set("stun", "use_rtcp_multiplexing", Some(use_rtcp_multiplexing.to_string()));
-        config.set("stun", "server", Some(server));
-        config.set("stun", "port", Some(port.to_string()));
-        config.set("stun", "username", Some(username));
-        config.set("stun", "password", Some(password));
-        config.set("stun", "srtp_keyring", Some(srtp_keyring.to_string()));
+        config.set("stun", "use_turn", Some(self.get_use_turn().to_string()));
+        config.set("stun", "use_tcp", Some(self.get_use_tcp().to_string()));
+        config.set("stun", "use_rtcp_multiplexing", Some(self.get_use_rtcp_multiplexing().to_string()));
+        config.set("stun", "server", Some(self.get_server()));
+        config.set("stun", "port", Some(self.get_port().to_string()));
+        config.set("stun", "username", Some(self.get_username()));
+        config.set("stun", "password", Some(self.get_password()));
+        config.set("stun", "srtp_keyring", Some(self.get_srtp_keyring().to_string()));
 
         config.write(path.to_str().unwrap()).unwrap();
     }
