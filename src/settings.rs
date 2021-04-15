@@ -7,6 +7,8 @@ use super::settings_call::SettingsCallWidget;
 use super::settings_stun::SettingsStunWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
+use super::settings_buffer::SettingsBufferWidget;
+use super::settings_media::SettingsMediaWidget;
 use super::settings_proxy::SettingsProxyWidget;
 use super::settings_dns::SettingsDnsWidget;
 
@@ -51,6 +53,8 @@ pub struct SettingsWidget {
     pub stun: SettingsStunWidget,
     pub turn: SettingsTurnWidget,
     pub ice: SettingsIceWidget,
+    pub buffer: SettingsBufferWidget,
+    pub media: SettingsMediaWidget,
     pub proxy: SettingsProxyWidget,
     pub dns: SettingsDnsWidget,
 }
@@ -64,6 +68,8 @@ impl SettingsWidget {
             stun: SettingsStunWidget::new(gtk_builder),
             turn: SettingsTurnWidget::new(gtk_builder),
             ice: SettingsIceWidget::new(gtk_builder),
+            buffer: SettingsBufferWidget::new(gtk_builder),
+            media: SettingsMediaWidget::new(gtk_builder),
             proxy: SettingsProxyWidget::new(gtk_builder),
             dns: SettingsDnsWidget::new(gtk_builder),
         }

@@ -127,6 +127,10 @@ impl SettingsProxyWidget {
 
         result
     }
+
+    pub fn reset(&self) {
+        todo!();
+    }
 }
 
 impl HelperFileSettings for SettingsProxyWidget {
