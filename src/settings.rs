@@ -7,6 +7,7 @@ use super::settings_call::SettingsCallWidget;
 use super::settings_stun::SettingsStunWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
+use super::settings_proxy::SettingsProxyWidget;
 
 #[derive(Clone, Copy)]
 pub enum SettingsCurrentActivePage {
@@ -15,7 +16,8 @@ pub enum SettingsCurrentActivePage {
     Turn,
     Ice,
     Buffer,
-    Media
+    Media,
+    Proxy
 }
 
 
@@ -44,8 +46,10 @@ pub struct SettingsWidget {
     // inner data just borrow not mutate
     ctx: RefCell<SettingsWidgetStorage>,
     pub call: SettingsCallWidget,
+    pub stun: SettingsStunWidget,
     pub turn: SettingsTurnWidget,
     pub ice: SettingsIceWidget,
+    pub proxy: SettingsProxyWidget
 
 }
 
@@ -55,8 +59,10 @@ impl SettingsWidget {
         SettingsWidget {
             ctx: RefCell::new(SettingsWidgetStorage::new(gtk_builder)),
             call: SettingsCallWidget::new(gtk_builder),
+            stun: SettingsStunWidget::new(gtk_builder),
             turn: SettingsTurnWidget::new(gtk_builder),
             ice: SettingsIceWidget::new(gtk_builder),
+            proxy: SettingsProxyWidget::new(gtk_builder)
         }
     }
 

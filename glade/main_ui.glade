@@ -2001,7 +2001,7 @@ MEDIA
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="ent_stun_server6">
+                              <object class="GtkEntry" id="ent_outbound_proxy2">
                                 <property name="width-request">370</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
@@ -2014,7 +2014,7 @@ MEDIA
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="ent_stun_server7">
+                              <object class="GtkEntry" id="ent_outbound_proxy3">
                                 <property name="width-request">369</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
@@ -2027,7 +2027,7 @@ MEDIA
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkEntry" id="ent_stun_server8">
+                              <object class="GtkEntry" id="ent_outbound_proxy4">
                                 <property name="width-request">370</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
