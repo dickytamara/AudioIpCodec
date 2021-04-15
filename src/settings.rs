@@ -8,6 +8,7 @@ use super::settings_stun::SettingsStunWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
 use super::settings_proxy::SettingsProxyWidget;
+use super::settings_dns::SettingsDnsWidget;
 
 #[derive(Clone, Copy)]
 pub enum SettingsCurrentActivePage {
@@ -17,7 +18,8 @@ pub enum SettingsCurrentActivePage {
     Ice,
     Buffer,
     Media,
-    Proxy
+    Proxy,
+    Dns
 }
 
 
@@ -49,8 +51,8 @@ pub struct SettingsWidget {
     pub stun: SettingsStunWidget,
     pub turn: SettingsTurnWidget,
     pub ice: SettingsIceWidget,
-    pub proxy: SettingsProxyWidget
-
+    pub proxy: SettingsProxyWidget,
+    pub dns: SettingsDnsWidget,
 }
 
 
@@ -62,7 +64,8 @@ impl SettingsWidget {
             stun: SettingsStunWidget::new(gtk_builder),
             turn: SettingsTurnWidget::new(gtk_builder),
             ice: SettingsIceWidget::new(gtk_builder),
-            proxy: SettingsProxyWidget::new(gtk_builder)
+            proxy: SettingsProxyWidget::new(gtk_builder),
+            dns: SettingsDnsWidget::new(gtk_builder),
         }
     }
 
@@ -77,6 +80,8 @@ impl SettingsWidget {
                     3 => Some(SettingsCurrentActivePage::Ice),
                     4 => Some(SettingsCurrentActivePage::Buffer),
                     5 => Some(SettingsCurrentActivePage::Media),
+                    6 => Some(SettingsCurrentActivePage::Proxy),
+                    7 => Some(SettingsCurrentActivePage::Dns),
                     _ => None
                 }
             },

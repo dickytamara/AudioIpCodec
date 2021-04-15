@@ -1242,7 +1242,7 @@ CALL
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host1.audioip.org:1000</property>
+                                <property name="placeholder-text" translatable="yes">Example: stun1.audioip.org:1000</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -1255,7 +1255,7 @@ CALL
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host2.audioip.org:1001</property>
+                                <property name="placeholder-text" translatable="yes">Example: stun2.audioip.org:1001</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -1268,7 +1268,7 @@ CALL
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host3.audioip.org:1003</property>
+                                <property name="placeholder-text" translatable="yes">Example: stun3.audioip.org:1003</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -1281,7 +1281,7 @@ CALL
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host4.audioip.org:1004</property>
+                                <property name="placeholder-text" translatable="yes">Example: stun4.audioip.org:1004</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -1993,7 +1993,7 @@ MEDIA
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host1.audioip.org:1000</property>
+                                <property name="placeholder-text" translatable="yes">Example: proxy1.audioip.org:443</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -2006,7 +2006,7 @@ MEDIA
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host2.audioip.org:1001</property>
+                                <property name="placeholder-text" translatable="yes">Example: proxy2.audioip.org:443</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -2019,7 +2019,7 @@ MEDIA
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host3.audioip.org:1003</property>
+                                <property name="placeholder-text" translatable="yes">Example: proxy3.audioip.org:443</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -2032,7 +2032,7 @@ MEDIA
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="placeholder-text" translatable="yes">Example: host4.audioip.org:1004</property>
+                                <property name="placeholder-text" translatable="yes">Example: proxy4.audioip.org:443</property>
                               </object>
                               <packing>
                                 <property name="x">100</property>
@@ -2236,6 +2236,180 @@ OUTBOUND PROXY
                           </object>
                           <packing>
                             <property name="position">6</property>
+                            <property name="tab-fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkFixed">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="lbl_nameserver1">
+                                <property name="width-request">63</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">SERVER 1</property>
+                              </object>
+                              <packing>
+                                <property name="x">22</property>
+                                <property name="y">50</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_nameserver2">
+                                <property name="width-request">20</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">SERVER 2</property>
+                              </object>
+                              <packing>
+                                <property name="x">22</property>
+                                <property name="y">110</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_nameserver1">
+                                <property name="width-request">370</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">Example: 8.8.8.8 (xxx.xxx.xxx.xxx)</property>
+                              </object>
+                              <packing>
+                                <property name="x">100</property>
+                                <property name="y">45</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_nameserver2">
+                                <property name="width-request">370</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">Example: 8.8.8.8 (xxx.xxx.xxx.xxx)</property>
+                              </object>
+                              <packing>
+                                <property name="x">100</property>
+                                <property name="y">105</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_nameserver3">
+                                <property name="width-request">369</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">Example: 8.8.8.8 (xxx.xxx.xxx.xxx)</property>
+                              </object>
+                              <packing>
+                                <property name="x">100</property>
+                                <property name="y">165</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="ent_nameserver4">
+                                <property name="width-request">370</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">Example: 8.8.8.8 (xxx.xxx.xxx.xxx)</property>
+                              </object>
+                              <packing>
+                                <property name="x">100</property>
+                                <property name="y">225</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_nameserver3">
+                                <property name="width-request">20</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">SERVER 3</property>
+                              </object>
+                              <packing>
+                                <property name="x">22</property>
+                                <property name="y">175</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_nameserver4">
+                                <property name="width-request">20</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">SERVER 4</property>
+                              </object>
+                              <packing>
+                                <property name="x">22</property>
+                                <property name="y">230</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_nameserver1">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">494</property>
+                                <property name="y">50</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_nameserver2">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">494</property>
+                                <property name="y">110</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_nameserver3">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">494</property>
+                                <property name="y">170</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_nameserver4">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">494</property>
+                                <property name="y">230</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">7</property>
+                          </packing>
+                        </child>
+                        <child type="tab">
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">
+DNS
+</property>
+                          </object>
+                          <packing>
+                            <property name="position">7</property>
                             <property name="tab-fill">False</property>
                           </packing>
                         </child>
