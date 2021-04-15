@@ -4,12 +4,14 @@ use gtk::{Builder, Notebook, Button};
 use std::cell::RefCell;
 
 use super::settings_call::SettingsCallWidget;
+use super::settings_stun::SettingsStunWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
 
 #[derive(Clone, Copy)]
 pub enum SettingsCurrentActivePage {
     Call,
+    Stun,
     Turn,
     Ice,
     Buffer,
@@ -64,10 +66,11 @@ impl SettingsWidget {
             Some(idx) => {
                 match idx {
                     0 => Some(SettingsCurrentActivePage::Call),
-                    1 => Some(SettingsCurrentActivePage::Turn),
-                    2 => Some(SettingsCurrentActivePage::Ice),
-                    3 => Some(SettingsCurrentActivePage::Buffer),
-                    4 => Some(SettingsCurrentActivePage::Media),
+                    1 => Some(SettingsCurrentActivePage::Stun),
+                    2 => Some(SettingsCurrentActivePage::Turn),
+                    3 => Some(SettingsCurrentActivePage::Ice),
+                    4 => Some(SettingsCurrentActivePage::Buffer),
+                    5 => Some(SettingsCurrentActivePage::Media),
                     _ => None
                 }
             },
