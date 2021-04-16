@@ -7,7 +7,7 @@ use super::settings_call::SettingsCallWidget;
 use super::settings_stun::SettingsStunWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
-use super::settings_buffer::SettingsBufferWidget;
+use super::settings_audio::SettingsAudioWidget;
 use super::settings_media::SettingsMediaWidget;
 use super::settings_proxy::SettingsProxyWidget;
 use super::settings_dns::SettingsDnsWidget;
@@ -18,7 +18,7 @@ pub enum SettingsCurrentActivePage {
     Stun,
     Turn,
     Ice,
-    Buffer,
+    Audio,
     Media,
     Proxy,
     Dns
@@ -53,7 +53,7 @@ pub struct SettingsWidget {
     pub stun: SettingsStunWidget,
     pub turn: SettingsTurnWidget,
     pub ice: SettingsIceWidget,
-    pub buffer: SettingsBufferWidget,
+    pub audio: SettingsAudioWidget,
     pub media: SettingsMediaWidget,
     pub proxy: SettingsProxyWidget,
     pub dns: SettingsDnsWidget,
@@ -68,7 +68,7 @@ impl SettingsWidget {
             stun: SettingsStunWidget::new(gtk_builder),
             turn: SettingsTurnWidget::new(gtk_builder),
             ice: SettingsIceWidget::new(gtk_builder),
-            buffer: SettingsBufferWidget::new(gtk_builder),
+            audio: SettingsAudioWidget::new(gtk_builder),
             media: SettingsMediaWidget::new(gtk_builder),
             proxy: SettingsProxyWidget::new(gtk_builder),
             dns: SettingsDnsWidget::new(gtk_builder),
@@ -84,7 +84,7 @@ impl SettingsWidget {
                     1 => Some(SettingsCurrentActivePage::Stun),
                     2 => Some(SettingsCurrentActivePage::Turn),
                     3 => Some(SettingsCurrentActivePage::Ice),
-                    4 => Some(SettingsCurrentActivePage::Buffer),
+                    4 => Some(SettingsCurrentActivePage::Audio),
                     5 => Some(SettingsCurrentActivePage::Media),
                     6 => Some(SettingsCurrentActivePage::Proxy),
                     7 => Some(SettingsCurrentActivePage::Dns),
