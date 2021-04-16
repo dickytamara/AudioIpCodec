@@ -262,22 +262,22 @@ impl HelperFileSettings for SettingsStunWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        self.set_server1(config.get("stun", "server1").unwrap());
-        self.set_server2(config.get("stun", "server2").unwrap());
-        self.set_server3(config.get("stun", "server3").unwrap());
-        self.set_server4(config.get("stun", "server4").unwrap());
-        self.set_username1(config.get("stun", "username1").unwrap());
-        self.set_username2(config.get("stun", "username2").unwrap());
-        self.set_username3(config.get("stun", "username3").unwrap());
-        self.set_username4(config.get("stun", "username4").unwrap());
-        self.set_password1(config.get("stun", "password1").unwrap());
-        self.set_password2(config.get("stun", "password2").unwrap());
-        self.set_password3(config.get("stun", "password3").unwrap());
-        self.set_password4(config.get("stun", "password4").unwrap());
-        self.set_state_server1(config.get("stun", "state_server1").unwrap().parse().unwrap());
-        self.set_state_server2(config.get("stun", "state_server2").unwrap().parse().unwrap());
-        self.set_state_server3(config.get("stun", "state_server3").unwrap().parse().unwrap());
-        self.set_state_server4(config.get("stun", "state_server4").unwrap().parse().unwrap());
+        self.set_server1(config.get("stun", "server1").unwrap_or(String::new()));
+        self.set_server2(config.get("stun", "server2").unwrap_or(String::new()));
+        self.set_server3(config.get("stun", "server3").unwrap_or(String::new()));
+        self.set_server4(config.get("stun", "server4").unwrap_or(String::new()));
+        self.set_username1(config.get("stun", "username1").unwrap_or(String::new()));
+        self.set_username2(config.get("stun", "username2").unwrap_or(String::new()));
+        self.set_username3(config.get("stun", "username3").unwrap_or(String::new()));
+        self.set_username4(config.get("stun", "username4").unwrap_or(String::new()));
+        self.set_password1(config.get("stun", "password1").unwrap_or(String::new()));
+        self.set_password2(config.get("stun", "password2").unwrap_or(String::new()));
+        self.set_password3(config.get("stun", "password3").unwrap_or(String::new()));
+        self.set_password4(config.get("stun", "password4").unwrap_or(String::new()));
+        self.set_state_server1(config.get("stun", "state_server1").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_state_server2(config.get("stun", "state_server2").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_state_server3(config.get("stun", "state_server3").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_state_server4(config.get("stun", "state_server4").unwrap_or(String::from("false")).parse().unwrap());
     }
 
     fn save(&self, path: PathBuf) {

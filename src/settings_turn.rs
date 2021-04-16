@@ -11,13 +11,13 @@ use configparser::ini::Ini;
 #[derive(Clone)]
 pub struct SettingsTurnWidgetStorage {
     lbl_use_turn: Label,
-    lbl_turn_tcp: Label,
-    lbl_turn_rtcp_multiplexing: Label,
-    lbl_turn_server: Label,
-    lbl_turn_port: Label,
-    lbl_turn_username: Label,
-    lbl_turn_password: Label,
-    lbl_turn_keyring: Label,
+    lbl_tcp: Label,
+    lbl_rtcp_multiplexing: Label,
+    lbl_server: Label,
+    lbl_port: Label,
+    lbl_username: Label,
+    lbl_password: Label,
+    lbl_keyring: Label,
     swt_use_turn: Switch,
     swt_turn_tcp: Switch,
     swt_turn_rtcp_multiplexing: Switch,
@@ -32,13 +32,13 @@ impl SettingsTurnWidgetStorage {
     pub fn new(gtk_builder: &Builder) -> Self {
         SettingsTurnWidgetStorage {
             lbl_use_turn: gtk_builder.get_object("lbl_use_turn").unwrap(),
-            lbl_turn_tcp: gtk_builder.get_object("lbl_turn_tcp").unwrap(),
-            lbl_turn_rtcp_multiplexing: gtk_builder.get_object("lbl_turn_rtcp_multiplexing").unwrap(),
-            lbl_turn_server: gtk_builder.get_object("lbl_turn_server").unwrap(),
-            lbl_turn_port: gtk_builder.get_object("lbl_turn_port").unwrap(),
-            lbl_turn_username: gtk_builder.get_object("lbl_turn_username").unwrap(),
-            lbl_turn_password: gtk_builder.get_object("lbl_turn_password").unwrap(),
-            lbl_turn_keyring: gtk_builder.get_object("lbl_turn_keyring").unwrap(),
+            lbl_tcp: gtk_builder.get_object("lbl_turn_tcp").unwrap(),
+            lbl_rtcp_multiplexing: gtk_builder.get_object("lbl_turn_rtcp_multiplexing").unwrap(),
+            lbl_server: gtk_builder.get_object("lbl_turn_server").unwrap(),
+            lbl_port: gtk_builder.get_object("lbl_turn_port").unwrap(),
+            lbl_username: gtk_builder.get_object("lbl_turn_username").unwrap(),
+            lbl_password: gtk_builder.get_object("lbl_turn_password").unwrap(),
+            lbl_keyring: gtk_builder.get_object("lbl_turn_keyring").unwrap(),
             swt_use_turn: gtk_builder.get_object("swt_use_turn").unwrap(),
             swt_turn_tcp: gtk_builder.get_object("swt_turn_tcp").unwrap(),
             swt_turn_rtcp_multiplexing: gtk_builder.get_object("swt_turn_rtcp_multiplexing").unwrap(),
@@ -95,6 +95,16 @@ impl SettingsTurnWidget {
 
     pub fn set_use_turn(&self, value: bool) {
         let context = self.ctx.borrow();
+
+        // label update
+        context.lbl_tcp.set_sensitive(value);
+        context.lbl_rtcp_multiplexing.set_sensitive(value);
+        context.lbl_server.set_sensitive(value);
+        context.lbl_port.set_sensitive(value);
+        context.lbl_username.set_sensitive(value);
+        context.lbl_password.set_sensitive(value);
+        context.lbl_keyring.set_sensitive(value);
+
         context.swt_turn_tcp.set_sensitive(value);
         context.swt_turn_rtcp_multiplexing.set_sensitive(value);
         context.ent_turn_server.set_sensitive(value);
@@ -176,8 +186,8 @@ impl HelperFileSettings for SettingsTurnWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        self.set_use_turn(config.get("turn", "use_turn").unwrap().parse().unwrap());
-        self.set_use_tcp(config.get("turn", "use_tcp").unwrap().parse().unwrap());
+        self.set_use_turn(config.get("turn", "use_turn").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_use_tcp(config.get("turn", "use_tcp").unwrap_or(String::from("false")).parse().unwrap());
         self.set_use_rtcp_multiplexing(config.get("stun", "use_rtcp_multiplexing").unwrap().parse().unwrap());
         self.set_server(config.get("turn", "server").unwrap());
         self.set_port(config.get("turn", "port").unwrap().parse().unwrap());
