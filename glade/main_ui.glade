@@ -1191,6 +1191,63 @@
                                 <property name="y">27</property>
                               </packing>
                             </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_turn_rtcp_multiplexing">
+                                <property name="width-request">121</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">RTCP Multiplexing.</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">23</property>
+                                <property name="y">69</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_turn_rtcp_multiplexing">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">188</property>
+                                <property name="y">66</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_turn_keyring">
+                                <property name="width-request">89</property>
+                                <property name="height-request">20</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">SRTP Keyring.</property>
+                                <property name="single-line-mode">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">23</property>
+                                <property name="y">125</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="cmb_turn_keyring">
+                                <property name="width-request">74</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="active">0</property>
+                                <items>
+                                  <item id="SDES" translatable="yes">SDES</item>
+                                  <item id="DTLS" translatable="yes">DTLS</item>
+                                </items>
+                              </object>
+                              <packing>
+                                <property name="x">189</property>
+                                <property name="y">111</property>
+                              </packing>
+                            </child>
                           </object>
                         </child>
                         <child type="tab">
@@ -1523,12 +1580,12 @@ STUN
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">Server :</property>
+                                <property name="label" translatable="yes">TURN Server :</property>
                                 <property name="single-line-mode">True</property>
                               </object>
                               <packing>
-                                <property name="x">24</property>
-                                <property name="y">108</property>
+                                <property name="x">25</property>
+                                <property name="y">132</property>
                               </packing>
                             </child>
                             <child>
@@ -1537,10 +1594,11 @@ STUN
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">username</property>
                               </object>
                               <packing>
                                 <property name="x">190</property>
-                                <property name="y">191</property>
+                                <property name="y">175</property>
                               </packing>
                             </child>
                             <child>
@@ -1549,115 +1607,39 @@ STUN
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">password</property>
+                                <property name="input-purpose">password</property>
                               </object>
                               <packing>
                                 <property name="x">190</property>
-                                <property name="y">239</property>
+                                <property name="y">222</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkEntry" id="ent_turn_server">
-                                <property name="width-request">437</property>
+                                <property name="width-request">432</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
+                                <property name="placeholder-text" translatable="yes">Example: turn.audioip.org:443</property>
                               </object>
                               <packing>
                                 <property name="x">190</property>
-                                <property name="y">102</property>
+                                <property name="y">126</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSpinButton" id="spn_turn_port">
-                                <property name="width-request">179</property>
-                                <property name="height-request">34</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="numeric">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">190</property>
-                                <property name="y">148</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="lbl_turn_tcp">
-                                <property name="width-request">84</property>
+                              <object class="GtkLabel" id="lbl_turn_transport">
+                                <property name="width-request">64</property>
                                 <property name="height-request">20</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">Use TCP Turn</property>
+                                <property name="label" translatable="yes">Transport:</property>
                                 <property name="single-line-mode">True</property>
                               </object>
                               <packing>
                                 <property name="x">25</property>
-                                <property name="y">66</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSwitch" id="swt_turn_tcp">
-                                <property name="width-request">50</property>
-                                <property name="height-request">26</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">191</property>
-                                <property name="y">63</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkSwitch" id="swt_turn_rtcp_multiplexing">
-                                <property name="width-request">50</property>
-                                <property name="height-request">26</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">469</property>
-                                <property name="y">66</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="lbl_turn_rtcp_multiplexing">
-                                <property name="width-request">121</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">RTCP Multiplexing.</property>
-                                <property name="single-line-mode">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">296</property>
-                                <property name="y">69</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="lbl_turn_keyring">
-                                <property name="width-request">89</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">SRTP Keyring.</property>
-                                <property name="single-line-mode">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">452</property>
-                                <property name="y">153</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="lbl_turn_port">
-                                <property name="width-request">30</property>
-                                <property name="height-request">20</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">Port.</property>
-                                <property name="single-line-mode">True</property>
-                              </object>
-                              <packing>
-                                <property name="x">25</property>
-                                <property name="y">153</property>
+                                <property name="y">76</property>
                               </packing>
                             </child>
                             <child>
@@ -1670,8 +1652,8 @@ STUN
                                 <property name="single-line-mode">True</property>
                               </object>
                               <packing>
-                                <property name="x">21</property>
-                                <property name="y">246</property>
+                                <property name="x">25</property>
+                                <property name="y">232</property>
                               </packing>
                             </child>
                             <child>
@@ -1684,25 +1666,26 @@ STUN
                                 <property name="single-line-mode">True</property>
                               </object>
                               <packing>
-                                <property name="x">23</property>
-                                <property name="y">199</property>
+                                <property name="x">25</property>
+                                <property name="y">183</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cmb_turn_keyring">
-                                <property name="width-request">147</property>
+                              <object class="GtkComboBoxText" id="cmb_turn_transport">
+                                <property name="width-request">123</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="active">0</property>
                                 <items>
-                                  <item id="SDES" translatable="yes">SDES</item>
-                                  <item id="DTLS" translatable="yes">DTLS</item>
+                                  <item translatable="yes">UDP</item>
+                                  <item translatable="yes">TCP</item>
+                                  <item translatable="yes">TLS</item>
                                 </items>
                               </object>
                               <packing>
-                                <property name="x">453</property>
-                                <property name="y">175</property>
+                                <property name="x">190</property>
+                                <property name="y">70</property>
                               </packing>
                             </child>
                           </object>
