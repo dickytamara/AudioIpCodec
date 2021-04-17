@@ -2076,7 +2076,7 @@ AUDIO
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
-                              <object class="GtkLabel" id="lbl_turn_rtcp_multiplexing">
+                              <object class="GtkLabel" id="lbl_media_rtcp_multiplexing">
                                 <property name="width-request">178</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
@@ -2090,7 +2090,7 @@ multiplexing  (default: no) :</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkSwitch" id="swt_turn_rtcp_multiplexing">
+                              <object class="GtkSwitch" id="swt_media_rtcp_multiplexing">
                                 <property name="width-request">50</property>
                                 <property name="height-request">26</property>
                                 <property name="visible">True</property>
@@ -2102,7 +2102,7 @@ multiplexing  (default: no) :</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="lbl_turn_keyring">
+                              <object class="GtkLabel" id="lbl_media_keyring">
                                 <property name="width-request">27</property>
                                 <property name="height-request">33</property>
                                 <property name="visible">True</property>
@@ -2116,7 +2116,7 @@ for outgoing SDP offer :</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="cmb_turn_keyring">
+                              <object class="GtkComboBoxText" id="cmb_media_keyring">
                                 <property name="width-request">121</property>
                                 <property name="height-request">34</property>
                                 <property name="visible">True</property>
