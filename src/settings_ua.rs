@@ -53,6 +53,9 @@ impl SettingsUaWidget {
     /// sub procedure reset state gui
     pub fn reset(&self) {
         self.ctx.borrow().swt_autoanswer.set_state(false);
+        self.ctx.borrow().swt_no_refersub.set_state(false);
+        self.ctx.borrow().swt_compact_form.set_state(false);
+        self.ctx.borrow().swt_no_forcelr.set_state(false);
     }
 
     // set autoanswer state
