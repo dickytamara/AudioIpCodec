@@ -8,17 +8,6 @@ use std::path::PathBuf;
 use super::helper::HelperFileSettings;
 use configparser::ini::Ini;
 
-// User Agent options:
-//   --auto-answer=code  Automatically answer incoming calls with code (e.g. 200)		optional
-//   --max-calls=N       Maximum number of concurrent calls (default:4, max:255)		hardcoded
-//   --thread-cnt=N      Number of worker threads (default:1)				            unimplemented
-//   --duration=SEC      Set maximum call duration (default:no limit)			        unimplemented
-//   --norefersub        Suppress event subscription when transferring calls		    optional
-//   --use-compact-form  Minimize SIP message size						                optional
-//   --no-force-lr       Allow strict-route to be used (i.e. do not force lr)		    optional
-//   --accept-redirect=N Specify how to handle call redirect (3xx) response.		    optional
-//                       0: reject, 1: follow automatically,
-//                       2: follow + replace To header (default), 3: ask
 
 #[derive(Clone)]
 pub struct SettingsUaWidgetStorage {
