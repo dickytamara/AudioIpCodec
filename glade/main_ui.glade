@@ -1870,17 +1870,167 @@ ICE
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <child>
-                              <object class="GtkButton">
-                                <property name="label" translatable="yes">button</property>
-                                <property name="width-request">100</property>
-                                <property name="height-request">80</property>
+                              <object class="GtkSpinButton" id="spn_audio_max_jitter">
+                                <property name="width-request">152</property>
+                                <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
-                                <property name="receives-default">True</property>
                               </object>
                               <packing>
-                                <property name="x">212</property>
-                                <property name="y">87</property>
+                                <property name="x">238</property>
+                                <property name="y">37</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_audio_max_jitter">
+                                <property name="width-request">105</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Jitter Buffer
+Maximum Size :</property>
+                              </object>
+                              <packing>
+                                <property name="x">31</property>
+                                <property name="y">40</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_audio_ptime">
+                                <property name="width-request">167</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Audio Buffer 
+Processing Time (ptime) :</property>
+                              </object>
+                              <packing>
+                                <property name="x">31</property>
+                                <property name="y">93</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spn_audio_ptime">
+                                <property name="width-request">153</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">238</property>
+                                <property name="y">95</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_audio_quality">
+                                <property name="width-request">109</property>
+                                <property name="height-request">46</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Enc/Dec quality some audio 
+codec have quality when 
+processing buffer :</property>
+                              </object>
+                              <packing>
+                                <property name="x">28</property>
+                                <property name="y">151</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spn_audio_quality">
+                                <property name="width-request">152</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">239</property>
+                                <property name="y">164</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_audio_no_vad">
+                                <property name="width-request">192</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Disable VAD/silence detector 
+(default=vad enabled)</property>
+                              </object>
+                              <packing>
+                                <property name="x">454</property>
+                                <property name="y">38</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="swt_audio_no_vad">
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">678</property>
+                                <property name="y">46</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_audio_ec_tail">
+                                <property name="width-request">189</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Set echo canceller tail length
+(default=200) :</property>
+                              </object>
+                              <packing>
+                                <property name="x">454</property>
+                                <property name="y">95</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="lbl_audio_ec_algo">
+                                <property name="width-request">142</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="label" translatable="yes">Select echo canceller 
+algorithm :</property>
+                              </object>
+                              <packing>
+                                <property name="x">454</property>
+                                <property name="y">165</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSpinButton" id="spn_audio_ec_tail">
+                                <property name="width-request">149</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="x">679</property>
+                                <property name="y">95</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkComboBoxText" id="cmb_audio_ec_algo">
+                                <property name="width-request">147</property>
+                                <property name="height-request">34</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="active">0</property>
+                                <items>
+                                  <item translatable="yes">Default</item>
+                                  <item translatable="yes">Speex</item>
+                                  <item translatable="yes">Supressor</item>
+                                  <item translatable="yes">WebRtc</item>
+                                </items>
+                              </object>
+                              <packing>
+                                <property name="x">677</property>
+                                <property name="y">163</property>
                               </packing>
                             </child>
                           </object>
