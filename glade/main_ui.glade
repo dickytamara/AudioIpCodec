@@ -2077,42 +2077,42 @@ AUDIO
                             <property name="can-focus">False</property>
                             <child>
                               <object class="GtkLabel" id="lbl_turn_rtcp_multiplexing">
-                                <property name="width-request">60</property>
-                                <property name="height-request">20</property>
+                                <property name="width-request">178</property>
+                                <property name="height-request">34</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">RTCP Multiplexing.</property>
-                                <property name="single-line-mode">True</property>
+                                <property name="label" translatable="yes">Enable RTP &amp; RTCP 
+multiplexing  (default: no) :</property>
                               </object>
                               <packing>
-                                <property name="x">362</property>
-                                <property name="y">25</property>
+                                <property name="x">30</property>
+                                <property name="y">39</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkSwitch" id="swt_turn_rtcp_multiplexing">
-                                <property name="width-request">20</property>
-                                <property name="height-request">20</property>
+                                <property name="width-request">50</property>
+                                <property name="height-request">26</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                               </object>
                               <packing>
-                                <property name="x">563</property>
-                                <property name="y">30</property>
+                                <property name="x">229</property>
+                                <property name="y">46</property>
                               </packing>
                             </child>
                             <child>
                               <object class="GtkLabel" id="lbl_turn_keyring">
-                                <property name="width-request">45</property>
-                                <property name="height-request">20</property>
+                                <property name="width-request">27</property>
+                                <property name="height-request">33</property>
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">SRTP Keyring.</property>
-                                <property name="single-line-mode">True</property>
+                                <property name="label" translatable="yes">SRTP keying method 
+for outgoing SDP offer :</property>
                               </object>
                               <packing>
-                                <property name="x">366</property>
-                                <property name="y">78</property>
+                                <property name="x">29</property>
+                                <property name="y">93</property>
                               </packing>
                             </child>
                             <child>
@@ -2128,8 +2128,8 @@ AUDIO
                                 </items>
                               </object>
                               <packing>
-                                <property name="x">563</property>
-                                <property name="y">71</property>
+                                <property name="x">230</property>
+                                <property name="y">92</property>
                               </packing>
                             </child>
                           </object>

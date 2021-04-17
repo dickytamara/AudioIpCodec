@@ -64,6 +64,30 @@ impl SettingsUaWidget {
     pub fn get_autoanswer(&self) -> bool {
         self.ctx.borrow().swt_autoanswer.get_state()
     }
+
+    pub fn set_no_refersub(&self, value: bool) {
+        self.ctx.borrow_mut().swt_no_refersub.set_state(value);
+    }
+
+    pub fn get_no_refersub(&self) -> bool {
+        self.ctx.borrow().swt_no_refersub.get_state()
+    }
+
+    pub fn set_compact_form(&self, value: bool) {
+        self.ctx.borrow_mut().swt_compact_form.set_state(value);
+    }
+
+    pub fn get_compact_form(&self) -> bool {
+        self.ctx.borrow().swt_compact_form.get_state()
+    }
+
+    pub fn set_no_forcelr(&self, value: bool) {
+        self.ctx.borrow_mut().swt_no_forcelr.set_state(value);
+    }
+
+    pub fn get_no_forcelr(&self) -> bool {
+        self.ctx.borrow().swt_no_forcelr.get_state()
+    }
 }
 
 
@@ -74,7 +98,10 @@ impl HelperFileSettings for SettingsUaWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        self.set_autoanswer(config.get("call", "autoanswer").unwrap().parse().unwrap());
+        self.set_autoanswer(config.get("ua", "autoanswer").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_no_refersub(config.get("ua", "no_refersub").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_compact_form(config.get("ua", "compact_form").unwrap_or(String::from("false")).parse().unwrap());
+        self.set_no_forcelr(config.get("ua", "no_force_lr").unwrap_or(String::from("false")).parse().unwrap());
     }
 
     // save to file
@@ -82,7 +109,10 @@ impl HelperFileSettings for SettingsUaWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        config.set("call", "autoanswer", Some(self.get_autoanswer().to_string()));
+        config.set("ua", "autoanswer", Some(self.get_autoanswer().to_string()));
+        config.set("ua", "no_refersub", Some(self.get_no_refersub().to_string()));
+        config.set("ua", "compact_form", Some(self.get_compact_form().to_string()));
+        config.set("ua", "no_forcelr", Some(self.get_no_forcelr().to_string()));
 
         config.write(path.to_str().unwrap()).unwrap();
     }
