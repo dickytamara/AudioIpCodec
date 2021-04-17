@@ -44,6 +44,9 @@ impl SettingsMediaWidget {
 
 impl HelperFileSettings for SettingsMediaWidget {
     fn load(&self, path: PathBuf) {
+        let mut config = Ini::new();
+        config.load(path.to_str().unwrap()).unwrap();
+
         todo!()
     }
 

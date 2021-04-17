@@ -14,7 +14,9 @@ pub struct SettingsTlsStorage {
 
 impl SettingsTlsStorage {
     pub fn new(gtk_builder: &Builder) -> Self {
+        SettingsTlsStorage {
 
+        }
     }
 }
 

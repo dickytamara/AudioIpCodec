@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use gtk::{Builder, Notebook, Button};
 use std::cell::RefCell;
 
-use super::settings_call::SettingsCallWidget;
+use super::settings_ua::SettingsUaWidget;
 use super::settings_stun::SettingsStunWidget;
 use super::settings_turn::SettingsTurnWidget;
 use super::settings_ice::SettingsIceWidget;
@@ -14,7 +14,7 @@ use super::settings_dns::SettingsDnsWidget;
 
 #[derive(Clone, Copy)]
 pub enum SettingsCurrentActivePage {
-    Call,
+    Ua,
     Stun,
     Turn,
     Ice,
@@ -49,7 +49,7 @@ impl SettingsWidgetStorage {
 pub struct SettingsWidget {
     // inner data just borrow not mutate
     ctx: RefCell<SettingsWidgetStorage>,
-    pub call: SettingsCallWidget,
+    pub call: SettingsUaWidget,
     pub stun: SettingsStunWidget,
     pub turn: SettingsTurnWidget,
     pub ice: SettingsIceWidget,
@@ -64,7 +64,7 @@ impl SettingsWidget {
     pub fn new(gtk_builder: &gtk::Builder) -> Self {
         SettingsWidget {
             ctx: RefCell::new(SettingsWidgetStorage::new(gtk_builder)),
-            call: SettingsCallWidget::new(gtk_builder),
+            call: SettingsUaWidget::new(gtk_builder),
             stun: SettingsStunWidget::new(gtk_builder),
             turn: SettingsTurnWidget::new(gtk_builder),
             ice: SettingsIceWidget::new(gtk_builder),
@@ -80,7 +80,7 @@ impl SettingsWidget {
         match self.ctx.borrow().ntbk_settings.get_current_page() {
             Some(idx) => {
                 match idx {
-                    0 => Some(SettingsCurrentActivePage::Call),
+                    0 => Some(SettingsCurrentActivePage::Ua),
                     1 => Some(SettingsCurrentActivePage::Stun),
                     2 => Some(SettingsCurrentActivePage::Turn),
                     3 => Some(SettingsCurrentActivePage::Ice),
