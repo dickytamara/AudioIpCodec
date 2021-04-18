@@ -81,14 +81,13 @@ impl HelperFileSettings for CodecWidget {
     fn load(&self, path: PathBuf) {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
-
+        todo!();
     }
 
     fn save(&self, path: PathBuf) {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
-
-
+        todo!();
         // config.write(path.to_str().unwrap()).unwrap();
     }
 }
