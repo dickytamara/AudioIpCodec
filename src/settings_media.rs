@@ -20,7 +20,7 @@ impl SettingsMediaStorage {
     pub fn new(gtk_builder: &Builder) -> Self {
         SettingsMediaStorage {
             lbl_rtcp_multiplexing: gtk_builder.get_object("lbl_media_rtcp_multiplexing").unwrap(),
-            lbl_keyring: gtk_builder.get_object("lbl_keyring").unwrap(),
+            lbl_keyring: gtk_builder.get_object("lbl_media_keyring").unwrap(),
             swt_rtcp_multiplexing: gtk_builder.get_object("swt_media_rtcp_multiplexing").unwrap(),
             cmb_keyring: gtk_builder.get_object("cmb_media_keyring").unwrap()
         }
