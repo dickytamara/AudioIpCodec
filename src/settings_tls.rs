@@ -1,5 +1,5 @@
-use gtk::prelude::*;
-use gtk::{Label, Entry, Switch, Builder};
+// use gtk::prelude::*;
+use gtk::{Builder};
 use std::cell::RefCell;
 use std::path::PathBuf;
 
@@ -37,11 +37,16 @@ impl SettingsTlsWidget {
 
 impl HelperFileSettings for SettingsTlsWidget {
     fn load(&self, path: PathBuf) {
-        todo!()
+        let mut config = Ini::new();
+        config.load(path.to_str().unwrap()).unwrap();
+
     }
 
     fn save(&self, path: PathBuf) {
-        todo!()
+        let mut config = Ini::new();
+        config.load(path.to_str().unwrap()).unwrap();
+
+        // config.write(path.to_str().unwrap()).unwrap();
     }
 }
 

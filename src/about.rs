@@ -1,5 +1,5 @@
-use gtk::prelude::*;
-use gtk::{Label, Entry, Switch, Builder};
+// use gtk::prelude::*;
+use gtk::{Builder};
 use std::cell::RefCell;
 use std::path::PathBuf;
 
