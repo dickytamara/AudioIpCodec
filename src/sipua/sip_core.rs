@@ -36,15 +36,10 @@ use super::SIPInviteState;
 pub static mut SIP_CORE: Option<SIPCore> = None;
 pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 
-// todo create tune parameter for codec
-// because default pjsua only support mono channels
-// so we need create opus tune parameter.
-// opus have bad inbandfec (forward error correction)
-// fix with disable inbandfec
 
 pub struct SIPCore {
-    app_config: SIPUa,
-    log_config: SIPLog,
+    pub app_config: SIPUa,
+    pub log_config: SIPLog,
     pub media_config: SIPMedia,
     no_udp: bool,
     no_tcp: bool,
@@ -65,7 +60,9 @@ pub struct SIPCore {
     duration: u32,
     current_call: i32,
     auto_answer: u32,
-    events: SIPCoreEvents
+    events: SIPCoreEvents,
+    no_refersub: bool,
+    compact_form: bool,
 }
 // struct to hold invite event function
 struct SIPCoreEvents {
@@ -114,7 +111,9 @@ impl SIPCore {
             duration: 0,
             current_call: -1,
             auto_answer: 0,
-            events: SIPCoreEvents::new()
+            events: SIPCoreEvents::new(),
+            no_refersub: false,
+            compact_form: false,
         }
     }
 
@@ -144,6 +143,10 @@ impl SIPCore {
         self.app_config.connect_on_snd_dev_operation(Some(on_snd_dev_operation));
         self.app_config.connect_on_call_media_event(Some(on_call_media_event));
         self.app_config.connect_on_ip_change_progress(Some(on_ip_change_progress));
+
+        // set only one call per seassons
+        self.app_config.set_max_calls(1);
+        self.app_config.set_force_lr(true);
 
         // register sub module for unhandeled error
         self.app_config.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
@@ -269,6 +272,18 @@ impl SIPCore {
         } else {
             self.auto_answer = 0;
         }
+    }
+
+    pub fn set_no_refersub(&mut self, value: bool) {
+        self.no_refersub = value;
+    }
+
+    pub fn set_no_forcelr(&self, value: bool) {
+        self.app_config.set_force_lr(!value);
+    }
+
+    pub fn set_compact_form(&mut self, value: bool) {
+        self.compact_form = value;
     }
 
     pub fn on_call_audio_state(&mut self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {

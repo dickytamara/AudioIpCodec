@@ -132,11 +132,45 @@ impl SIPUserAgent {
         }
     }
 
+    // User Agent settings part
+
     pub fn set_autoanswer(&self, value: bool) {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => sipua.auto_answer(value),
                 _ => panic!("")
+            }
+        }
+    }
+
+    pub fn set_no_refersub(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.set_no_refersub(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_no_forcelr(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.set_no_forcelr(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_compact_form(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.set_compact_form(value);
+                }
             }
         }
     }
