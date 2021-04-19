@@ -170,7 +170,8 @@ impl SIPUserAgent {
             match SIP_CORE {
                 Some(ref mut sipua) => {
                     sipua.set_compact_form(value);
-                }
+                },
+                None => panic!("")
             }
         }
     }

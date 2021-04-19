@@ -26,15 +26,19 @@ mod header;
 mod status;
 mod account;
 mod settings;
-mod settings_buffer;
-mod settings_call;
+mod settings_audio;
+mod settings_ua;
 mod settings_ice;
 mod settings_media;
+mod settings_stun;
 mod settings_turn;
+mod settings_proxy;
+mod settings_dns;
 
 // sipua module
 pub mod pjproject;
 pub mod sipua;
+mod settings_tls;
 
 
 use gtk::prelude::*;
@@ -54,6 +58,7 @@ use maintab::MaintabWidget;
 use header::HeaderWidget;
 use status::StatusbarWidget;
 use account::AccountWidget;
+use codec::CodecWidget;
 use settings::{SettingsCurrentActivePage, SettingsWidget};
 use helper::{HelperFileSettings, application_config_path};
 
@@ -219,11 +224,14 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
     settings.save_connect_clicked(move |page| {
         let config_path = application_config_path();
         match page.unwrap() {
-            SettingsCurrentActivePage::Call => settings_clone.call.save(config_path),
+            SettingsCurrentActivePage::Ua => settings_clone.call.save(config_path),
+            SettingsCurrentActivePage::Stun => settings_clone.stun.save(config_path),
             SettingsCurrentActivePage::Turn => settings_clone.turn.save(config_path),
             SettingsCurrentActivePage::Ice => settings_clone.ice.save(config_path),
-            SettingsCurrentActivePage::Buffer => todo!(),
-            SettingsCurrentActivePage::Media => todo!(),
+            SettingsCurrentActivePage::Audio => settings_clone.audio.save(config_path),
+            SettingsCurrentActivePage::Media => settings_clone.media.save(config_path),
+            SettingsCurrentActivePage::Proxy => settings_clone.proxy.save(config_path),
+            SettingsCurrentActivePage::Dns => settings_clone.dns.save(config_path),
         };
     });
 
@@ -231,11 +239,14 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
     let settings_clone = settings.clone();
     settings.reset_connect_clicked(move |page| {
         match page.unwrap() {
-            SettingsCurrentActivePage::Call => settings_clone.call.reset(),
+            SettingsCurrentActivePage::Ua => settings_clone.call.reset(),
+            SettingsCurrentActivePage::Stun => settings_clone.stun.reset(),
             SettingsCurrentActivePage::Turn => settings_clone.turn.reset(),
             SettingsCurrentActivePage::Ice => settings_clone.ice.reset(),
-            SettingsCurrentActivePage::Buffer => todo!(),
-            SettingsCurrentActivePage::Media => todo!(),
+            SettingsCurrentActivePage::Audio => settings_clone.audio.reset(),
+            SettingsCurrentActivePage::Media => settings_clone.media.reset(),
+            SettingsCurrentActivePage::Proxy => settings_clone.proxy.reset(),
+            SettingsCurrentActivePage::Dns => settings_clone.dns.reset(),
         };
     });
 
@@ -244,15 +255,180 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
     let ua = sipua.clone();
     settings.apply_connect_clicked(move |page| {
         match page.unwrap() {
-            SettingsCurrentActivePage::Call => {
+            SettingsCurrentActivePage::Ua => {
                 ua.set_autoanswer(settings_clone.call.get_autoanswer());
+                ua.set_no_refersub(settings_clone.call.get_no_refersub());
+                ua.set_compact_form(settings_clone.call.get_compact_form());
+                ua.set_no_forcelr(settings_clone.call.get_no_forcelr());
             },
-            SettingsCurrentActivePage::Turn => { todo!(); },
+            SettingsCurrentActivePage::Stun => {
+                let mut stun_server: Vec<String> = Vec::new();
+                let mut stun_user: Vec<String> = Vec::new();
+                let mut stun_passwd: Vec<String> = Vec::new();
+
+                if settings_clone.stun.get_state_server1() {
+                    if !settings_clone.stun.get_server1().is_empty() {
+                        stun_server.push(settings_clone.stun.get_server1());
+
+                        if !settings_clone.stun.get_username1().is_empty() &
+                            !settings_clone.stun.get_password1().is_empty()
+                        {
+                            stun_user.push(settings_clone.stun.get_username1());
+                            stun_passwd.push(settings_clone.stun.get_password1());
+                        }
+                    }
+                }
+
+                if settings_clone.stun.get_state_server2() {
+                    if !settings_clone.stun.get_server2().is_empty() {
+                        stun_server.push(settings_clone.stun.get_server2());
+
+                        if !settings_clone.stun.get_username2().is_empty() &
+                            !settings_clone.stun.get_password2().is_empty()
+                        {
+                            stun_user.push(settings_clone.stun.get_username2());
+                            stun_passwd.push(settings_clone.stun.get_password2());
+                        }
+                    }
+                }
+
+                if settings_clone.stun.get_state_server3() {
+                    if !settings_clone.stun.get_server3().is_empty() {
+                        stun_server.push(settings_clone.stun.get_server2());
+
+                        if !settings_clone.stun.get_username3().is_empty() &
+                            !settings_clone.stun.get_password3().is_empty()
+                        {
+                            stun_user.push(settings_clone.stun.get_username3());
+                            stun_passwd.push(settings_clone.stun.get_password3());
+                        }
+                    }
+                }
+
+                if settings_clone.stun.get_state_server4() {
+                    if !settings_clone.stun.get_server4().is_empty() {
+                        stun_server.push(settings_clone.stun.get_server4());
+
+                        if !settings_clone.stun.get_username4().is_empty() &
+                            !settings_clone.stun.get_password4().is_empty()
+                        {
+                            stun_user.push(settings_clone.stun.get_username4());
+                            stun_passwd.push(settings_clone.stun.get_password4());
+                        }
+                    }
+                }
+
+                // update stun server
+                todo!();
+
+            },
+            SettingsCurrentActivePage::Turn => { todo!(); }
             SettingsCurrentActivePage::Ice => { todo!(); },
-            SettingsCurrentActivePage::Buffer => { todo!(); },
+            SettingsCurrentActivePage::Audio => { todo!(); },
             SettingsCurrentActivePage::Media => { todo!(); },
+            SettingsCurrentActivePage::Proxy => {
+                let mut server: Vec<String> = Vec::new();
+                let mut user: Vec<String> = Vec::new();
+                let mut password: Vec<String> = Vec::new();
+
+                // update proxy server 1
+                if settings_clone.proxy.get_state_proxy1() {
+                    if !settings_clone.proxy.get_proxy1().is_empty() {
+                        server.push(settings_clone.proxy.get_proxy1());
+                        if !settings_clone.proxy.get_username1().is_empty() &
+                            !settings_clone.proxy.get_password1().is_empty()
+                        {
+                            user.push(settings_clone.proxy.get_username1());
+                            password.push(settings_clone.proxy.get_password1());
+                        }
+                    }
+                }
+
+                // update proxy server 2
+                if settings_clone.proxy.get_state_proxy2() {
+                    if !settings_clone.proxy.get_proxy2().is_empty() {
+                        server.push(settings_clone.proxy.get_proxy1());
+                        if !settings_clone.proxy.get_username2().is_empty() &
+                            !settings_clone.proxy.get_password2().is_empty()
+                        {
+                            user.push(settings_clone.proxy.get_username2());
+                            password.push(settings_clone.proxy.get_password2());
+                        }
+                    }
+                }
+
+                // update proxy server 3
+                if settings_clone.proxy.get_state_proxy3() {
+                    if !settings_clone.proxy.get_proxy3().is_empty() {
+                        server.push(settings_clone.proxy.get_proxy3());
+                        if !settings_clone.proxy.get_username3().is_empty() &
+                            !settings_clone.proxy.get_password3().is_empty()
+                        {
+                            user.push(settings_clone.proxy.get_username3());
+                            password.push(settings_clone.proxy.get_password3());
+                        }
+                    }
+                }
+
+                // update proxy server 4
+                if settings_clone.proxy.get_state_proxy4() {
+                    if !settings_clone.proxy.get_proxy4().is_empty() {
+                        server.push(settings_clone.proxy.get_proxy4());
+                        if !settings_clone.proxy.get_username4().is_empty() &
+                            !settings_clone.proxy.get_password4().is_empty()
+                        {
+                            user.push(settings_clone.proxy.get_username4());
+                            password.push(settings_clone.proxy.get_password4());
+                        }
+                    }
+                }
+
+                // update outbound proxy server
+                todo!();
+
+
+            },
+            SettingsCurrentActivePage::Dns => {
+
+                let mut server: Vec<String> = Vec::new();
+
+                // update nameserver 1
+                if settings_clone.dns.get_state_nameserver1() {
+                    if !settings_clone.dns.get_nameserver1().is_empty() {
+                        server.push(settings_clone.dns.get_nameserver1());
+                    }
+                }
+
+                // update namserver 2
+                if settings_clone.dns.get_state_nameserver2() {
+                    if !settings_clone.dns.get_nameserver2().is_empty() {
+                        server.push(settings_clone.dns.get_nameserver2());
+                    }
+                }
+
+                // update nameserver 3
+                if settings_clone.dns.get_state_nameserver3() {
+                    if !settings_clone.dns.get_nameserver3().is_empty() {
+                        server.push(settings_clone.dns.get_nameserver3());
+                    }
+                }
+
+                // update nameserver 4
+                if settings_clone.dns.get_state_nameserver4() {
+                    if !settings_clone.dns.get_nameserver4().is_empty() {
+                        server.push(settings_clone.dns.get_nameserver4());
+                    }
+                }
+
+                // update dns
+                todo!();
+            }
         }
     });
+}
+
+fn callback_codec_widget(sipua: &mut SIPUserAgent, settings: &CodecWidget) {
+
 }
 
 
@@ -280,12 +456,14 @@ fn main() {
     let dialpad_widget = DialpadWidget::new(&builder);
     let account_widget = AccountWidget::new(&builder);
     let settings_widget= SettingsWidget::new(&builder);
+    let codec_widget = CodecWidget::new(&builder);
 
     // set callback
     callback_audio_line_widget(&mut sipua, &rx_widget, &tx_widget);
     callback_dialpad_widget(&mut sipua, &dialpad_widget);
     callback_account_widget(&mut sipua, &account_widget);
     callback_settings_widget(&mut sipua, &settings_widget);
+    callback_codec_widget(&mut sipua, &codec_widget);
 
     // test call data
     dialpad_widget.set_call_address_text(String::from("sip://@27.50.19.174"));
@@ -299,6 +477,19 @@ fn main() {
     account_widget.set_realm("asterisk");
     account_widget.set_username("ipcodec01");
     account_widget.set_password("12345678");
+
+    // test google stun server
+    settings_widget.stun.set_server1("stun1.l.google.com:19302".to_string());
+    settings_widget.stun.set_server2("stun2.l.google.com:19302".to_string());
+    settings_widget.stun.set_server3("stun3.l.google.com:19302".to_string());
+    settings_widget.stun.set_server4("stun4.l.google.com:19302".to_string());
+
+
+    // test public dns nameserver
+    settings_widget.dns.set_nameserver1("8.8.8.8".to_string()); // google main dns
+    settings_widget.dns.set_nameserver2("8.8.4.4".to_string()); // google backup dns
+    settings_widget.dns.set_nameserver3("1.1.1.1".to_string()); // cloudflare main dns
+    settings_widget.dns.set_nameserver4("1.0.0.1".to_string()); // cloudflare backup dns
 
     // init application
     application.connect_activate(move |app| {
