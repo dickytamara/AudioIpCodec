@@ -1,5 +1,6 @@
 
-use std::{cell::{RefCell, RefMut}, ffi::c_void, os::raw::{c_int, c_uint}};
+use std::cell::{RefCell, RefMut};
+use std::os::raw::{c_int, c_uint, c_void};
 
 
 use pj_sys::*;

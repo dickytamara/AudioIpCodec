@@ -1,6 +1,5 @@
 #![allow(dead_code, unused_variables, non_upper_case_globals)]
 
-
 pub mod prelude;
 pub mod sip_account;
 pub mod sip_buddy;
@@ -16,24 +15,9 @@ pub mod sip_transport;
 pub mod sip_ua;
 pub mod sip_wav;
 
-use crate::pjproject::pjsua;
-
-
-use sip_core::{CURRENT_CALL, SIPCore, SIPCoreEventsExt, SIP_CORE};
-
-// use pj_sys::*;
-// use pjmedia_sys::*;
-// use pjsip_sys::*;
-// use pjsip_simple_sys::*;
+use sip_core::{SIPCore, SIPCoreEventsExt, SIP_CORE};
 use pjsua_sys::*;
-
-// use std::ffi::CString;
-// use std::ffi::CStr;
-// use std::fmt::format;
-// use std::mem;
 use std::ops::Drop;
-// use std::os::raw::{c_char, c_int, c_uint, c_void};
-// use std::ptr;
 
 
 #[derive(Clone, Copy)]
@@ -66,7 +50,6 @@ impl SIPUserAgent {
     pub fn new() -> SIPUserAgent {
         unsafe {
             SIP_CORE = Some(SIPCore::new());
-            CURRENT_CALL = Some(pjsua::PJSUA_INVALID_ID);
         }
 
         SIPUserAgent {}

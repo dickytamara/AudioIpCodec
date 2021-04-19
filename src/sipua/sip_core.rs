@@ -13,8 +13,9 @@ use crate::pjproject::pjsip;
 use crate::pjproject::pjsua;
 use crate::pjproject::pjmedia;
 
-use super::{sip_account::*, sip_module::SIPModuleExt};
-// use super::sip_buddy::*;
+use super::sip_account::*;
+use super::sip_module::SIPModuleExt;
+
 use super::sip_calls::*;
 use super::sip_ua::*;
 use super::sip_log::*;
@@ -24,9 +25,6 @@ use super::sip_tones::*;
 use super::sip_transport::*;
 use super::sip_wav::*;
 
-// use super::pjsua;
-// use super::pjmedia;
-// use super::pjsip;
 use std::ptr;
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_int, c_void, c_uint, c_char};
@@ -147,6 +145,7 @@ impl SIPCore {
         // set only one call per seassons
         self.app_config.set_max_calls(1);
         self.app_config.set_force_lr(true);
+        self.app_config.set_user_agent(String::from("IpCodec"));
 
         // register sub module for unhandeled error
         self.app_config.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);

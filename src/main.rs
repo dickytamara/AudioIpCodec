@@ -75,6 +75,9 @@ use sip_account::SIPAccountExt;
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
 
 
+// TODO: Check BBC reference sip application
+// with comparable like apple to apple
+
 /// update receive transmit level bar
 fn thread_update_level_bar(sipua_clone: SIPUserAgent, rx_widget_clone: AudioLineWidget, tx_widget_clone: AudioLineWidget) {
 

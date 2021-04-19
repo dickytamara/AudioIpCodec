@@ -9,7 +9,6 @@ use crate::pjproject::pjsua;
 
 
 use std::ptr;
-// use std::ffi::CString;
 
 
 // basic implementation for SIPTonegen
