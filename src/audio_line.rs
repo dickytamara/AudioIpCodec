@@ -126,14 +126,20 @@ impl AudioLineWidget {
     }
 
     /// on slider level change value
-    pub fn on_scale_changed_value<F: Fn(i32) + 'static> (&self, call: F) {
+    pub fn on_scale_changed_value<F> (&self, call: F)
+    where
+        F: Fn(i32) + 'static
+    {
         self.ctx.borrow().sldr_level.connect_value_changed(move |s| {
             call(s.get_value() as i32);
         });
     }
 
     /// on button mute clicked
-    pub fn on_button_mute_clicked<F: Fn(bool) +'static> (&self, callback: F) {
+    pub fn on_button_mute_clicked<F> (&self, callback: F)
+    where
+        F: Fn(bool) + 'static
+    {
         let widget = self.ctx.borrow();
         widget.btn_mute.connect_toggled(
             clone!(@weak widget.btn_mute as mute => move | btn | {
