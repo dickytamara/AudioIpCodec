@@ -350,7 +350,7 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                 // update proxy server 2
                 if settings_clone.proxy.get_state_proxy2() {
                     if !settings_clone.proxy.get_proxy2().is_empty() {
-                        server.push(settings_clone.proxy.get_proxy1());
+                        server.push(settings_clone.proxy.get_proxy2());
                         if !settings_clone.proxy.get_username2().is_empty() &
                             !settings_clone.proxy.get_password2().is_empty()
                         {
