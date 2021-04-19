@@ -143,24 +143,12 @@ impl HelperFileSettings for AccountWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        let sip_url = config.get("account", "sip_url").unwrap();
-        let registrar_url = config.get("account", "registrar_url").unwrap();
-        let realm = config.get("account", "realm").unwrap();
-        let username = config.get("account", "username").unwrap();
-        let password = config.get("account", "password").unwrap();
-
         self.set_sip_url(config.get("account", "sip_url").unwrap().as_str());
         self.set_registrar_url(config.get("account", "registrar_url").unwrap().as_str());
         self.set_realm(config.get("account", "realm").unwrap().as_str());
         self.set_username(config.get("account", "username").unwrap().as_str());
         self.set_password(config.get("account", "password").unwrap().as_str());
 
-
-        self.set_sip_url(sip_url.as_str());
-        self.set_registrar_url(registrar_url.as_str());
-        self.set_realm(realm.as_str());
-        self.set_username(username.as_str());
-        self.set_password(password.as_str());
     }
 
     fn save(&self, path: PathBuf) {
