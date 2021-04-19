@@ -238,7 +238,10 @@ impl DialpadWidget {
     }
 
     /// event on button call clicked
-    pub fn on_button_call_clicked<F: Fn(&str, CallButtonState) + 'static> (&self, callback: F) {
+    pub fn on_button_call_clicked<F> (&self, callback: F)
+    where
+        F: Fn(&str, CallButtonState) + 'static
+    {
         let wid = self.clone();
         self.ctx.borrow().btn_call.connect_clicked( move | b | {
 

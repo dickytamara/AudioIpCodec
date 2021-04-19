@@ -38,7 +38,6 @@ pub enum SIPInviteState {
 pub struct SIPUserAgent {}
 
 
-
 trait SIPUserAgentInternal {
     fn get_config(&mut self) -> &mut pjsua_config;
     fn get_log_config(&mut self) -> &mut pjsua_logging_config;
@@ -237,7 +236,10 @@ impl SIPUserAgent {
         }
     }
 
-    pub fn connect_invite<F: FnMut(SIPInviteState) + 'static> (&self, f: F){
+    pub fn connect_invite<F> (&self, f: F)
+    where
+        F: FnMut(SIPInviteState) + 'static
+    {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
@@ -248,7 +250,10 @@ impl SIPUserAgent {
         }
     }
 
-    pub fn connect_incoming_call<F: Fn() + 'static> (&self, f: F) {
+    pub fn connect_incoming_call<F> (&self, f: F)
+    where
+        F: Fn() + 'static
+    {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
@@ -258,7 +263,6 @@ impl SIPUserAgent {
             }
         }
     }
-
 }
 
 
