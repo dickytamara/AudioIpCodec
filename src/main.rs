@@ -269,55 +269,46 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                 let mut stun_data: Vec<SIPStunServerData> = Vec::new();
 
                 if settings_clone.stun.get_state_server1() {
-                    if !settings_clone.stun.get_server1().is_empty() {
-                        stun_data.push(
-                            SIPStunServerData::new(
-                                settings_clone.stun.get_server1(),
-                                settings_clone.stun.get_username1(),
-                                settings_clone.stun.get_password1()
-                            )
-                        );
-                    }
+                    stun_data.push(
+                        SIPStunServerData::new(
+                            settings_clone.stun.get_server1(),
+                            settings_clone.stun.get_username1(),
+                            settings_clone.stun.get_password1()
+                        )
+                    );
                 }
 
                 if settings_clone.stun.get_state_server2() {
-                    if !settings_clone.stun.get_server2().is_empty() {
-                        stun_data.push(
-                            SIPStunServerData::new(
-                                settings_clone.stun.get_server2(),
-                                settings_clone.stun.get_username2(),
-                                settings_clone.stun.get_password2()
-                            )
-                        );
-                    }
+                    stun_data.push(
+                        SIPStunServerData::new(
+                            settings_clone.stun.get_server2(),
+                            settings_clone.stun.get_username2(),
+                            settings_clone.stun.get_password2()
+                        )
+                    );
                 }
 
                 if settings_clone.stun.get_state_server3() {
-                    if !settings_clone.stun.get_server3().is_empty() {
-                        stun_data.push(
-                            SIPStunServerData::new(
-                                settings_clone.stun.get_server3(),
-                                settings_clone.stun.get_username3(),
-                                settings_clone.stun.get_password3()
-                            )
-                        );
-                    }
+                    stun_data.push(
+                        SIPStunServerData::new(
+                            settings_clone.stun.get_server3(),
+                            settings_clone.stun.get_username3(),
+                            settings_clone.stun.get_password3()
+                        )
+                    );
                 }
 
                 if settings_clone.stun.get_state_server4() {
-                    if !settings_clone.stun.get_server4().is_empty() {
-                        stun_data.push(
-                            SIPStunServerData::new(
-                                settings_clone.stun.get_server4(),
-                                settings_clone.stun.get_username4(),
-                                settings_clone.stun.get_password4()
-                            )
-                        );
-                    }
+                    stun_data.push(
+                        SIPStunServerData::new(
+                            settings_clone.stun.get_server4(),
+                            settings_clone.stun.get_username4(),
+                            settings_clone.stun.get_password4()
+                        )
+                    );
                 }
-
+                // update default stun server
                 ua.set_stun_server(stun_data);
-
             },
             SettingsCurrentActivePage::Turn => { todo!(); }
             SettingsCurrentActivePage::Ice => { todo!(); },
