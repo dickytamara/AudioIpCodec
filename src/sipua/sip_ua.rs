@@ -78,8 +78,8 @@ pub trait SIPUaExt {
     /// Array of nameservers to be used by the SIP resolver subsystem.
     /// The order of the name server specifies the priority
     /// (first name server will be used first, unless it is not reachable).
-    fn set_nameserver(&self, nameserver: [String; 4usize]);
-    fn get_nameserver(&self) -> [String; 4usize];
+    fn set_nameserver(&self, nameserver: Vec<String>) -> Result<(), i32>;
+    fn get_nameserver(&self) -> Option<Vec<String>>;
 
     /// Force loose-route to be used in all route/proxy URIs (outbound_proxy and account's proxy settings).
     /// When this setting is enabled, the library will check all the route/proxy
@@ -98,28 +98,6 @@ pub trait SIPUaExt {
     /// proxies and the proxy configured in the account.
     fn set_outbound_proxy(&self, value: Vec<SIPOutboundProxyServerData>) -> Result<(), i32>;
     // fn get_outbound_proxy(&self) -> [String; 4usize];
-
-    /// Warning: deprecated, please use stun_srv field instead.
-    /// To maintain backward compatibility, if stun_srv_cnt is zero then
-    /// the value of this field will be copied to stun_srv field, if present.
-    ///
-    /// Get Specify domain name to be resolved with DNS SRV
-    /// resolution to get the address of the STUN server.
-    /// Alternatively application may specify stun_host instead.
-    ///
-    /// If DNS SRV resolution failed for this domain, then DNS A resolution will be
-    /// performed only if stun_host is specified.
-    fn set_stun_domain(&self, value: String);
-    fn get_stun_domain(&self) -> String;
-
-    /// Warning: deprecated, please use stun_srv field instead.
-    /// To maintain backward compatibility, if stun_srv_cnt is zero then the
-    /// value of this field will be copied to stun_srv field, if present.
-    ///
-    /// Get Specify STUN server to be used, in "HOST\[:PORT\]" format.
-    /// If port is not specified, default port 3478 will be used.
-    fn set_stun_host(&self, value: String);
-    fn get_stun_host(&self) -> String;
 
     /// Get Number of STUN server entries in stun_srv array.
     fn set_stun_srv_cnt(&self, value: u32);
@@ -738,27 +716,36 @@ impl SIPUaExt for SIPUa {
         self.ctx.borrow().nameserver_count
     }
 
-    fn set_nameserver(&self, nameserver: [String; 4usize]) {
+    fn set_nameserver(&self, nameserver: Vec<String>) -> Result<(), i32> {
 
-        let mut tmp = [pj_str_t::new(); 4usize];
-
-        for (idx, value) in nameserver.iter().enumerate() {
-            tmp[idx] = pj_str_t::from_string(value.clone());
+        if nameserver.len() > 4 {
+            return Err(0);
         }
 
-        self.ctx.borrow_mut().nameserver = tmp;
+        for (idx, data) in nameserver.iter().enumerate() {
+            if !data.is_empty() {
+                self.ctx.borrow_mut().nameserver[idx] = pj_str_t::from_string(data.clone());
+                self.set_nameserver_count((idx+1) as u32);
+            }
+        }
+
+        Ok(())
     }
 
-    fn get_nameserver(&self) -> [String; 4usize] {
-        // something not good to see.
-        let mut tmp= [String::new(), String::new(), String::new(), String::new()];
-        let nameserver = self.ctx.borrow().nameserver;
+    fn get_nameserver(&self) -> Option<Vec<String>> {
 
-        for idx in 0..4usize {
-            tmp[idx] = nameserver[idx].to_string();
+        if self.get_nameserver_count() == 0 {
+            return None;
         }
 
-        tmp
+        let mut nameserver: Vec<String> = Vec::new();
+        for i in 0..self.get_nameserver_count() as usize {
+            if i < 4 {
+                nameserver.push(self.ctx.borrow().nameserver[i].to_string());
+            }
+        }
+
+        Some(nameserver)
     }
 
     fn set_force_lr(&self, value: bool) {
@@ -799,22 +786,6 @@ impl SIPUaExt for SIPUa {
         }
 
         Ok(())
-    }
-
-    fn set_stun_domain(&self, value: String) {
-        self.ctx.borrow_mut().stun_domain = pj_str_t::from_string(value);
-    }
-
-    fn get_stun_domain(&self) -> String {
-        self.ctx.borrow().stun_domain.to_string()
-    }
-
-    fn set_stun_host(&self, value: String) {
-        self.ctx.borrow_mut().stun_host = pj_str_t::from_string(value);
-    }
-
-    fn get_stun_host(&self) -> String {
-        self.ctx.borrow().stun_host.to_string()
     }
 
     fn set_stun_srv_cnt(&self, value: u32) {

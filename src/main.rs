@@ -315,7 +315,7 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
             SettingsCurrentActivePage::Audio => { todo!(); },
             SettingsCurrentActivePage::Media => { todo!(); },
             SettingsCurrentActivePage::Proxy => {
-                
+
                 let mut proxy: Vec<SIPOutboundProxyServerData> = Vec::new();
                 // update proxy server 1
                 if settings_clone.proxy.get_state_proxy1() {
@@ -370,34 +370,26 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
 
                 // update nameserver 1
                 if settings_clone.dns.get_state_nameserver1() {
-                    if !settings_clone.dns.get_nameserver1().is_empty() {
-                        server.push(settings_clone.dns.get_nameserver1());
-                    }
+                    server.push(settings_clone.dns.get_nameserver1());
                 }
 
                 // update namserver 2
                 if settings_clone.dns.get_state_nameserver2() {
-                    if !settings_clone.dns.get_nameserver2().is_empty() {
-                        server.push(settings_clone.dns.get_nameserver2());
-                    }
+                    server.push(settings_clone.dns.get_nameserver2());
                 }
 
                 // update nameserver 3
                 if settings_clone.dns.get_state_nameserver3() {
-                    if !settings_clone.dns.get_nameserver3().is_empty() {
-                        server.push(settings_clone.dns.get_nameserver3());
-                    }
+                    server.push(settings_clone.dns.get_nameserver3());
                 }
 
                 // update nameserver 4
                 if settings_clone.dns.get_state_nameserver4() {
-                    if !settings_clone.dns.get_nameserver4().is_empty() {
-                        server.push(settings_clone.dns.get_nameserver4());
-                    }
+                    server.push(settings_clone.dns.get_nameserver4());
                 }
 
                 // update dns
-                todo!();
+                ua.set_nameserver(server);
             }
         }
     });
