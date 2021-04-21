@@ -15,6 +15,7 @@ pub mod sip_transport;
 pub mod sip_ua;
 pub mod sip_wav;
 
+use prelude::*;
 use sip_core::{SIPCore, SIPCoreEventsExt, SIP_CORE};
 use pjsua_sys::*;
 use std::ops::Drop;
@@ -152,6 +153,18 @@ impl SIPUserAgent {
             match SIP_CORE {
                 Some(ref mut sipua) => {
                     sipua.set_compact_form(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_stun_server(&self, value: Vec<SIPStunServerData>) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.app_config.set_stun_srv(value)
+                    .expect("SIPUserAgent:: Set stun server failed.");
                 },
                 None => panic!("")
             }

@@ -62,7 +62,7 @@ use codec::CodecWidget;
 use settings::{SettingsCurrentActivePage, SettingsWidget};
 use helper::{HelperFileSettings, application_config_path};
 
-
+use sipua::prelude::*;
 use sipua::sip_account::SIPAccount;
 use sipua::SIPInviteState;
 use pjproject::utils::AutoCreate;
@@ -265,64 +265,58 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                 ua.set_no_forcelr(settings_clone.call.get_no_forcelr());
             },
             SettingsCurrentActivePage::Stun => {
-                let mut stun_server: Vec<String> = Vec::new();
-                let mut stun_user: Vec<String> = Vec::new();
-                let mut stun_passwd: Vec<String> = Vec::new();
+
+                let mut stun_data: Vec<SIPStunServerData> = Vec::new();
 
                 if settings_clone.stun.get_state_server1() {
                     if !settings_clone.stun.get_server1().is_empty() {
-                        stun_server.push(settings_clone.stun.get_server1());
-
-                        if !settings_clone.stun.get_username1().is_empty() &
-                            !settings_clone.stun.get_password1().is_empty()
-                        {
-                            stun_user.push(settings_clone.stun.get_username1());
-                            stun_passwd.push(settings_clone.stun.get_password1());
-                        }
+                        stun_data.push(
+                            SIPStunServerData::new(
+                                settings_clone.stun.get_server1(),
+                                settings_clone.stun.get_username1(),
+                                settings_clone.stun.get_password1()
+                            )
+                        );
                     }
                 }
 
                 if settings_clone.stun.get_state_server2() {
                     if !settings_clone.stun.get_server2().is_empty() {
-                        stun_server.push(settings_clone.stun.get_server2());
-
-                        if !settings_clone.stun.get_username2().is_empty() &
-                            !settings_clone.stun.get_password2().is_empty()
-                        {
-                            stun_user.push(settings_clone.stun.get_username2());
-                            stun_passwd.push(settings_clone.stun.get_password2());
-                        }
+                        stun_data.push(
+                            SIPStunServerData::new(
+                                settings_clone.stun.get_server2(),
+                                settings_clone.stun.get_username2(),
+                                settings_clone.stun.get_password2()
+                            )
+                        );
                     }
                 }
 
                 if settings_clone.stun.get_state_server3() {
                     if !settings_clone.stun.get_server3().is_empty() {
-                        stun_server.push(settings_clone.stun.get_server2());
-
-                        if !settings_clone.stun.get_username3().is_empty() &
-                            !settings_clone.stun.get_password3().is_empty()
-                        {
-                            stun_user.push(settings_clone.stun.get_username3());
-                            stun_passwd.push(settings_clone.stun.get_password3());
-                        }
+                        stun_data.push(
+                            SIPStunServerData::new(
+                                settings_clone.stun.get_server3(),
+                                settings_clone.stun.get_username3(),
+                                settings_clone.stun.get_password3()
+                            )
+                        );
                     }
                 }
 
                 if settings_clone.stun.get_state_server4() {
                     if !settings_clone.stun.get_server4().is_empty() {
-                        stun_server.push(settings_clone.stun.get_server4());
-
-                        if !settings_clone.stun.get_username4().is_empty() &
-                            !settings_clone.stun.get_password4().is_empty()
-                        {
-                            stun_user.push(settings_clone.stun.get_username4());
-                            stun_passwd.push(settings_clone.stun.get_password4());
-                        }
+                        stun_data.push(
+                            SIPStunServerData::new(
+                                settings_clone.stun.get_server4(),
+                                settings_clone.stun.get_username4(),
+                                settings_clone.stun.get_password4()
+                            )
+                        );
                     }
                 }
 
-                // update stun server
-                todo!();
+                ua.set_stun_server(stun_data);
 
             },
             SettingsCurrentActivePage::Turn => { todo!(); }

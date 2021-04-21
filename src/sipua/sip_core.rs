@@ -285,6 +285,7 @@ impl SIPCore {
         self.compact_form = value;
     }
 
+
     pub fn on_call_audio_state(&mut self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
 
         let media = ci.media[mi as usize];

@@ -15,6 +15,22 @@ use crate::pjproject::pjsua;
 
 use super::sip_module::SIPModule;
 
+#[derive(Clone)]
+pub struct SIPStunServerData {
+    server: String,
+    username: String,
+    password: String
+}
+
+impl SIPStunServerData {
+    pub fn new(svr: String, user: String, pass: String) -> Self {
+        SIPStunServerData {
+            server: svr,
+            username: user,
+            password: pass
+        }
+    }
+}
 
 pub struct SIPUa {
     // give mutable interior for ensure ctx not moved to anywhere.
@@ -111,8 +127,11 @@ pub trait SIPUaExt {
     /// When nameserver is not configured, entries will be resolved with pj_gethostbyname()
     /// if it's not an IP address. Port number may be specified
     /// if the server is not listening in standard STUN port.
-    fn set_stun_srv(&self, value: [String; 8usize]);
-    fn get_stun_srv(&self) -> [String; 8usize];
+    // fn set_stun_srv(&self, value: [String; 8usize]);
+    // fn get_stun_srv(&self) -> [String; 8usize];
+
+    fn set_stun_srv(&self, value: Vec<SIPStunServerData>) -> Result<(), i32>;
+    // fn get_stun_srv(&self) -> Option<Vec<SIPStunServerData>>;
 
     /// This specifies if the library should try to do an IPv6 resolution of
     /// the STUN servers if the IPv4 resolution fails. It can be useful in an
@@ -788,31 +807,44 @@ impl SIPUaExt for SIPUa {
         self.ctx.borrow().stun_srv_cnt
     }
 
-    fn set_stun_srv(&self, value: [String; 8usize]) {
-        let mut tmp = [pj_str_t::new(); 8usize];
+    fn set_stun_srv(&self, value: Vec<SIPStunServerData>) -> Result<(), i32> {
 
-        for (idx, value) in value.iter().enumerate() {
-            tmp[idx] = pj_str_t::from_string(value.clone());
+        if value.len() > 4 {
+            return Err(0);
         }
 
-        self.ctx.borrow_mut().stun_srv = tmp;
-    }
+        for (idx, data) in value.iter().enumerate() {
+            if !data.server.is_empty() {
+                self.ctx.borrow_mut().stun_srv[idx] = pj_str_t::from_string(data.server.clone());
+                self.set_stun_srv_cnt(idx as u32);
 
-    fn get_stun_srv(&self) -> [String; 8usize] {
-        // something not good to see.
-        let mut tmp= [
-            String::new(), String::new(), String::new(), String::new(),
-            String::new(), String::new(), String::new(), String::new(),
-        ];
+                if !data.username.is_empty() & !data.password.is_empty() {
+                    let cred_idx = self.get_cred_count() as usize;
 
-        let stun_srv = self.ctx.borrow().stun_srv;
-
-        for idx in 0..8usize {
-            tmp[idx] = stun_srv[idx].to_string();
+                    self.ctx.borrow_mut().cred_info[cred_idx].username = pj_str_t::from_string(data.username.clone());
+                    self.ctx.borrow_mut().cred_info[cred_idx].data = pj_str_t::from_string(data.password.clone());
+                    self.set_cred_count((cred_idx +1) as u32);
+                }
+            }
         }
 
-        tmp
+        Ok(())
     }
+
+    // fn get_stun_srv(&self) -> Option<Vec<String>> {
+
+    //     if self.get_stun_srv_cnt() == 0 {
+    //         return None;
+    //     }
+
+    //     let server: Vec<String> = Vec::new();
+    //     for idx in 0..self.get_stun_srv_cnt() as usize {
+    //         server.push(self.ctx.borrow().stun_srv[idx].to_string());
+    //     }
+
+    //     Some(server)
+    // }
+
 
     fn set_stun_try_ipv6(&self, value: bool) {
         self.ctx.borrow_mut().stun_try_ipv6 = utils::boolean_to_pjbool(value);
