@@ -116,7 +116,6 @@ impl SIPUserAgent {
     }
 
     // User Agent settings part
-
     pub fn set_autoanswer(&self, value: bool) {
         unsafe {
             match SIP_CORE {
@@ -159,6 +158,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// set default stun server
     pub fn set_stun_server(&self, value: Vec<SIPStunServerData>) {
         unsafe {
             match SIP_CORE {
@@ -171,6 +171,7 @@ impl SIPUserAgent {
         }
     }
 
+    /// set default outbound proxy
     pub fn set_outbound_proxy(&self, value: Vec<SIPOutboundProxyServerData>) {
         unsafe {
             match SIP_CORE {
@@ -183,12 +184,47 @@ impl SIPUserAgent {
         }
     }
 
+    /// set default nameserver DNS
     pub fn set_nameserver(&self, value: Vec<String>) {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
                     sipua.app_config.set_nameserver(value)
                     .expect("SIPUserAgent:: Set nameserver failed.")
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    // turn settings part
+    pub fn set_use_turn(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_enable_turn(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_turn_conn_type(&self, value: u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_turn_conn_type(value);
+                },
+                None => panic!("")
+            }
+        }
+    } 
+
+    pub fn set_turn_server(&self, value: SIPTurnServerData) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_turn_server(value);
                 },
                 None => panic!("")
             }

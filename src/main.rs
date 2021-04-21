@@ -310,7 +310,23 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                 // update default stun server
                 ua.set_stun_server(stun_data);
             },
-            SettingsCurrentActivePage::Turn => { todo!(); }
+            SettingsCurrentActivePage::Turn => {
+                ua.set_use_turn(settings_clone.turn.get_use_turn());
+
+                // set transport type
+                match settings_clone.turn.get_transport() {
+                    1 => ua.set_turn_conn_type(PJ_TURN_TP_UDP),
+                    2 => ua.set_turn_conn_type(PJ_TURN_TP_TCP),
+                    3 => ua.set_turn_conn_type(PJ_TURN_TP_TLS),
+                    _ => ()
+                }
+
+                ua.set_turn_server(SIPTurnServerData::new(
+                    settings_clone.turn.get_server(),
+                    settings_clone.turn.get_username(),
+                    settings_clone.turn.get_password()
+                ));
+            }
             SettingsCurrentActivePage::Ice => { todo!(); },
             SettingsCurrentActivePage::Audio => { todo!(); },
             SettingsCurrentActivePage::Media => { todo!(); },

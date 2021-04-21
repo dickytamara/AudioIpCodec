@@ -13,6 +13,22 @@ use std::os::raw::c_uint;
 use std::ffi::CStr;
 
 
+pub struct SIPTurnServerData {
+    server: String,
+    username: String,
+    password: String
+}
+
+impl SIPTurnServerData {
+    pub fn new(srv: String, user: String, pass: String) -> Self {
+        SIPTurnServerData {
+            server: srv,
+            username: user,
+            password: pass
+        }
+    }
+}
+
 // Media and sound device implementation Implementation
 pub struct SIPMedia {
     ctx: RefCell<pjsua_media_config>,
@@ -215,7 +231,7 @@ pub trait SIPMediaExt {
     fn get_enable_turn(&self) -> bool;
 
     /// Specify TURN domain name or host name, in in "DOMAIN:PORT" or "HOST:PORT" format.
-    fn set_turn_server(&self, value: String);
+    fn set_turn_server(&self, value: SIPTurnServerData);
     fn get_turn_server(&self) -> String;
 
     /// Specify the connection type to be used to the TURN server.
@@ -652,8 +668,14 @@ impl SIPMediaExt for SIPMedia {
         utils::check_boolean(self.ctx.borrow().enable_turn)
     }
 
-    fn set_turn_server(&self, value: String) {
-        self.ctx.borrow_mut().turn_server = pj_str_t::from_string(value);
+    fn set_turn_server(&self, value: SIPTurnServerData) {
+        if !value.server.is_empty() {
+            self.ctx.borrow_mut().turn_server = pj_str_t::from_string(value.server);
+            if !value.username.is_empty() & !value.password.is_empty() {
+                self.ctx.borrow_mut().turn_auth_cred.data.static_cred.username = pj_str_t::from_string(value.username);
+                self.ctx.borrow_mut().turn_auth_cred.data.static_cred.data = pj_str_t::from_string(value.password);
+            }
+        }
     }
 
     fn get_turn_server(&self) -> String {
