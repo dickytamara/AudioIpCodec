@@ -34,8 +34,7 @@ pub struct MaintabStorage {
  impl MaintabWidget {
 
      pub fn new(gtk_builder: &gtk::Builder) -> Self {
-        let result =MaintabWidget{
-            // inner data just borrow not mutate
+        let result = MaintabWidget{
             ctx: RefCell::new(MaintabStorage::new(gtk_builder))
         };
 

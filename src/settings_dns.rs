@@ -48,6 +48,7 @@ impl SettingsDnsStorage {
 
 #[derive(Clone)]
 pub struct SettingsDnsWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsDnsStorage>
 }
 

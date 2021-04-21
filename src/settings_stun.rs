@@ -61,6 +61,7 @@ impl SettingsStunStorage {
 
 #[derive(Clone)]
 pub struct SettingsStunWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsStunStorage>
 }
 

@@ -27,7 +27,6 @@ pub enum SettingsCurrentActivePage {
 
 #[derive(Clone)]
 pub struct SettingsWidgetStorage {
-    // gtk notebook
     ntbk_settings: Notebook,
     btn_settings_reset: Button,
     btn_settings_save: Button,

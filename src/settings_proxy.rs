@@ -64,6 +64,7 @@ impl SettingsProxyStorage {
 
 #[derive(Clone)]
 pub struct SettingsProxyWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsProxyStorage>
 }
 

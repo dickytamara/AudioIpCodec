@@ -21,6 +21,7 @@ impl SettingsTlsStorage {
 }
 
 pub struct SettingsTlsWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsTlsStorage>
 }
 

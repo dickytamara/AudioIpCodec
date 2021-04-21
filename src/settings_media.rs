@@ -29,6 +29,7 @@ impl SettingsMediaStorage {
 
 #[derive(Clone)]
 pub struct SettingsMediaWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsMediaStorage>
 }
 

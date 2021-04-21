@@ -38,7 +38,7 @@ pub fn application_config_path() -> PathBuf {
             todo!();
         }
 
-    } 
+    }
 
     result
 }

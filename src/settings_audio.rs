@@ -45,6 +45,7 @@ impl SettingsAudioStorage {
 
 #[derive(Clone)]
 pub struct SettingsAudioWidget {
+    // inner data just borrow not mutate
     ctx: RefCell<SettingsAudioStorage>
 }
 
