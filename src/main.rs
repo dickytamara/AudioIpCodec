@@ -315,66 +315,54 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
             SettingsCurrentActivePage::Audio => { todo!(); },
             SettingsCurrentActivePage::Media => { todo!(); },
             SettingsCurrentActivePage::Proxy => {
-                let mut server: Vec<String> = Vec::new();
-                let mut user: Vec<String> = Vec::new();
-                let mut password: Vec<String> = Vec::new();
-
+                
+                let mut proxy: Vec<SIPOutboundProxyServerData> = Vec::new();
                 // update proxy server 1
                 if settings_clone.proxy.get_state_proxy1() {
-                    if !settings_clone.proxy.get_proxy1().is_empty() {
-                        server.push(settings_clone.proxy.get_proxy1());
-                        if !settings_clone.proxy.get_username1().is_empty() &
-                            !settings_clone.proxy.get_password1().is_empty()
-                        {
-                            user.push(settings_clone.proxy.get_username1());
-                            password.push(settings_clone.proxy.get_password1());
-                        }
-                    }
+                    proxy.push(
+                        SIPOutboundProxyServerData::new(
+                            settings_clone.proxy.get_proxy1(),
+                            settings_clone.proxy.get_username1(),
+                            settings_clone.proxy.get_password1()
+                        )
+                    );
                 }
 
                 // update proxy server 2
                 if settings_clone.proxy.get_state_proxy2() {
-                    if !settings_clone.proxy.get_proxy2().is_empty() {
-                        server.push(settings_clone.proxy.get_proxy2());
-                        if !settings_clone.proxy.get_username2().is_empty() &
-                            !settings_clone.proxy.get_password2().is_empty()
-                        {
-                            user.push(settings_clone.proxy.get_username2());
-                            password.push(settings_clone.proxy.get_password2());
-                        }
-                    }
+                    proxy.push(
+                        SIPOutboundProxyServerData::new(
+                            settings_clone.proxy.get_proxy2(),
+                            settings_clone.proxy.get_username2(),
+                            settings_clone.proxy.get_password2()
+                        )
+                    );
                 }
 
                 // update proxy server 3
                 if settings_clone.proxy.get_state_proxy3() {
-                    if !settings_clone.proxy.get_proxy3().is_empty() {
-                        server.push(settings_clone.proxy.get_proxy3());
-                        if !settings_clone.proxy.get_username3().is_empty() &
-                            !settings_clone.proxy.get_password3().is_empty()
-                        {
-                            user.push(settings_clone.proxy.get_username3());
-                            password.push(settings_clone.proxy.get_password3());
-                        }
-                    }
+                    proxy.push(
+                        SIPOutboundProxyServerData::new(
+                            settings_clone.proxy.get_proxy3(),
+                            settings_clone.proxy.get_username3(),
+                            settings_clone.proxy.get_password3()
+                        )
+                    );
                 }
 
                 // update proxy server 4
                 if settings_clone.proxy.get_state_proxy4() {
-                    if !settings_clone.proxy.get_proxy4().is_empty() {
-                        server.push(settings_clone.proxy.get_proxy4());
-                        if !settings_clone.proxy.get_username4().is_empty() &
-                            !settings_clone.proxy.get_password4().is_empty()
-                        {
-                            user.push(settings_clone.proxy.get_username4());
-                            password.push(settings_clone.proxy.get_password4());
-                        }
-                    }
+                    proxy.push(
+                        SIPOutboundProxyServerData::new(
+                            settings_clone.proxy.get_proxy4(),
+                            settings_clone.proxy.get_username4(),
+                            settings_clone.proxy.get_password4()
+                        )
+                    );
                 }
 
                 // update outbound proxy server
-                todo!();
-
-
+                ua.set_outbound_proxy(proxy);
             },
             SettingsCurrentActivePage::Dns => {
 

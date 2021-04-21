@@ -171,6 +171,18 @@ impl SIPUserAgent {
         }
     }
 
+    pub fn set_outbound_proxy(&self, value: Vec<SIPOutboundProxyServerData>) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.app_config.set_outbound_proxy(value)
+                    .expect("SIPUserAgent:: Set outbound proxy server failed.")
+                },
+                None => panic!("")
+            }
+        }
+    }
+
     /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {
         unsafe {

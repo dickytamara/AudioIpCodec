@@ -32,6 +32,22 @@ impl SIPStunServerData {
     }
 }
 
+pub struct SIPOutboundProxyServerData {
+    server: String,
+    username: String,
+    password: String
+}
+
+impl SIPOutboundProxyServerData {
+    pub fn new(svr: String, user: String, pass: String) -> Self {
+        SIPOutboundProxyServerData {
+            server: svr,
+            username: user,
+            password: pass
+        }
+    }
+}
+
 pub struct SIPUa {
     // give mutable interior for ensure ctx not moved to anywhere.
     ctx: RefCell<pjsua_config>,
@@ -80,8 +96,8 @@ pub trait SIPUaExt {
     /// and it will be used to build the route set for outgoing requests.
     /// The final route set for outgoing requests will consists of the outbound
     /// proxies and the proxy configured in the account.
-    fn set_outbound_proxy(&self, value: [String; 4usize]);
-    fn get_outbound_proxy(&self) -> [String; 4usize];
+    fn set_outbound_proxy(&self, value: Vec<SIPOutboundProxyServerData>) -> Result<(), i32>;
+    // fn get_outbound_proxy(&self) -> [String; 4usize];
 
     /// Warning: deprecated, please use stun_srv field instead.
     /// To maintain backward compatibility, if stun_srv_cnt is zero then
@@ -761,26 +777,28 @@ impl SIPUaExt for SIPUa {
         self.ctx.borrow().outbound_proxy_cnt
     }
 
-    fn set_outbound_proxy(&self, value: [String; 4usize]) {
-        let mut tmp = [pj_str_t::new(); 4usize];
+    fn set_outbound_proxy(&self, value: Vec<SIPOutboundProxyServerData>) -> Result<(), i32> {
 
-        for (idx, value) in value.iter().enumerate() {
-            tmp[idx] = pj_str_t::from_string(value.clone());
+        if value.len() > 4 {
+            return Err(0);
         }
 
-        self.ctx.borrow_mut().outbound_proxy = tmp;
-    }
+        for (idx, data) in value.iter().enumerate() {
+            if !data.server.is_empty() {
+                self.ctx.borrow_mut().outbound_proxy[idx] = pj_str_t::from_string(data.server.clone());
+                self.set_outbound_proxy_cnt((idx+1) as u32);
 
-    fn get_outbound_proxy(&self) -> [String; 4usize] {
-        // something not good to see
-        let mut tmp= [String::new(), String::new(), String::new(), String::new()];
-        let outbound_proxy = self.ctx.borrow().outbound_proxy;
+                if !data.username.is_empty() & !data.password.is_empty() {
+                    let cred_idx = self.get_cred_count() as usize;
+                    self.ctx.borrow_mut().cred_info[cred_idx].username = pj_str_t::from_string(data.username.clone());
+                    self.ctx.borrow_mut().cred_info[cred_idx].data = pj_str_t::from_string(data.password.clone());
+                    self.set_cred_count((cred_idx +1) as u32);
+                }
 
-        for idx in 0..4usize {
-            tmp[idx] = outbound_proxy[idx].to_string();
+            }
         }
 
-        tmp
+        Ok(())
     }
 
     fn set_stun_domain(&self, value: String) {
@@ -816,7 +834,7 @@ impl SIPUaExt for SIPUa {
         for (idx, data) in value.iter().enumerate() {
             if !data.server.is_empty() {
                 self.ctx.borrow_mut().stun_srv[idx] = pj_str_t::from_string(data.server.clone());
-                self.set_stun_srv_cnt(idx as u32);
+                self.set_stun_srv_cnt((idx + 1) as u32);
 
                 if !data.username.is_empty() & !data.password.is_empty() {
                     let cred_idx = self.get_cred_count() as usize;
@@ -830,21 +848,6 @@ impl SIPUaExt for SIPUa {
 
         Ok(())
     }
-
-    // fn get_stun_srv(&self) -> Option<Vec<String>> {
-
-    //     if self.get_stun_srv_cnt() == 0 {
-    //         return None;
-    //     }
-
-    //     let server: Vec<String> = Vec::new();
-    //     for idx in 0..self.get_stun_srv_cnt() as usize {
-    //         server.push(self.ctx.borrow().stun_srv[idx].to_string());
-    //     }
-
-    //     Some(server)
-    // }
-
 
     fn set_stun_try_ipv6(&self, value: bool) {
         self.ctx.borrow_mut().stun_try_ipv6 = utils::boolean_to_pjbool(value);
