@@ -95,7 +95,15 @@ impl SettingsDnsWidget {
     }
 
     pub fn reset(&self) {
-        todo!();
+        self.ctx.borrow().ent_nameserver1.set_text("");
+        self.ctx.borrow().ent_nameserver2.set_text("");
+        self.ctx.borrow().ent_nameserver3.set_text("");
+        self.ctx.borrow().ent_nameserver4.set_text("");
+
+        self.ctx.borrow().swt_nameserver1.set_state(false);
+        self.ctx.borrow().swt_nameserver2.set_state(false);
+        self.ctx.borrow().swt_nameserver3.set_state(false);
+        self.ctx.borrow().swt_nameserver4.set_state(false);
     }
 
 
