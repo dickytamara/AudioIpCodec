@@ -231,6 +231,30 @@ impl SIPUserAgent {
         }
     }
 
+
+    // ICE Settings part
+    pub fn set_use_ice(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_enable_ice(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_no_rtcp(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_ice_no_rtcp(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
     /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {
         unsafe {
