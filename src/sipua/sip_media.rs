@@ -203,8 +203,8 @@ pub trait SIPMediaExt {
     ///
     /// # Default
     /// -1 (maximum not set)
-    fn set_ice_max_host_cands(&self, value: bool);
-    fn get_ice_max_host_cands(&self) -> bool;
+    fn set_ice_max_host_cands(&self, value: i32);
+    fn get_ice_max_host_cands(&self) -> i32;
 
     /// ICE session options.
     fn set_ice_opt(&self, value: pj_ice_sess_options);
@@ -628,12 +628,12 @@ impl SIPMediaExt for SIPMedia {
         utils::check_boolean(self.ctx.borrow().enable_ice)
     }
 
-    fn set_ice_max_host_cands(&self, value: bool) {
-        self.ctx.borrow_mut().ice_max_host_cands = utils::boolean_to_pjbool(value);
+    fn set_ice_max_host_cands(&self, value: i32) {
+        self.ctx.borrow_mut().ice_max_host_cands = value;
     }
 
-    fn get_ice_max_host_cands(&self) -> bool {
-        utils::check_boolean(self.ctx.borrow().ice_max_host_cands)
+    fn get_ice_max_host_cands(&self) -> i32 {
+        self.ctx.borrow().ice_max_host_cands
     }
 
     fn set_ice_opt(&self, value: pj_ice_sess_options) {

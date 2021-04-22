@@ -255,6 +255,77 @@ impl SIPUserAgent {
         }
     }
 
+    // set deprecated for this almost ice
+    // settings wtih aggresive config
+    pub fn set_aggressive_nomination(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    todo!();
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    // deprecated
+    pub fn set_trickle_method(&self, value: u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    todo!();
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_ice_max_host_cands(&self, value: i32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_ice_max_host_cands(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+
+    // audio Settings part
+    pub fn set_jb_max(&self, value: i32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_jb_max(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_ptime(&self, value: u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_ptime(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_quality(&self, value: u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_quality(value)
+                },
+                None => panic!("")
+            }
+        }
+    }
+
     /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {
         unsafe {
