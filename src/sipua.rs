@@ -326,6 +326,39 @@ impl SIPUserAgent {
         }
     }
 
+    pub fn set_no_vad(&self, value: bool) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_no_vad(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_ec_tail_len(&self, value: u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_ec_tail_len(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
+    pub fn set_ec_options(&self, value: u32) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.media_config.set_ec_options(value);
+                },
+                None => panic!("")
+            }
+        }
+    }
+
     /// get input port 0 level
     pub fn get_input_level(&self) -> i32 {
         unsafe {

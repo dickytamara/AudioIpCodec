@@ -68,6 +68,7 @@ use sipua::SIPInviteState;
 use pjproject::utils::AutoCreate;
 
 use pj_sys::*;
+use pjmedia_sys::*;
 use sipua::*;
 
 use sip_account::SIPAccountExt;
@@ -345,6 +346,15 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                 ua.set_jb_max(settings_clone.audio.get_jb_max() as i32);
                 ua.set_ptime(settings_clone.audio.get_ptime() as u32);
                 ua.set_quality(settings_clone.audio.get_quality() as u32);
+                ua.set_no_vad(settings_clone.audio.get_no_vad());
+                ua.set_ec_tail_len(settings_clone.audio.get_ec_tail_len() as u32);
+                match settings_clone.audio.get_ec_options() {
+                    1 => ua.set_ec_options(PJMEDIA_ECHO_DEFAULT),
+                    2 => ua.set_ec_options(PJMEDIA_ECHO_SPEEX),
+                    3 => ua.set_ec_options(PJMEDIA_ECHO_SIMPLE),
+                    4 => ua.set_ec_options(PJMEDIA_ECHO_WEBRTC),
+                    _ => ()
+                }
             },
             SettingsCurrentActivePage::Media => { todo!(); },
             SettingsCurrentActivePage::Proxy => {

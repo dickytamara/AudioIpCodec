@@ -21,7 +21,7 @@ pub struct SettingsAudioStorage {
     spn_quality: SpinButton,
     swt_no_vad: Switch,
     spn_ec_tail: SpinButton,
-    swt_ec_algo: ComboBoxText
+    cmb_ec_algo: ComboBoxText
 }
 
 impl SettingsAudioStorage {
@@ -38,7 +38,7 @@ impl SettingsAudioStorage {
             spn_quality: gtk_builder.get_object("spn_audio_quality").unwrap(),
             swt_no_vad: gtk_builder.get_object("swt_audio_no_vad").unwrap(),
             spn_ec_tail: gtk_builder.get_object("spn_audio_ec_tail").unwrap(),
-            swt_ec_algo: gtk_builder.get_object("cmb_audio_ec_algo").unwrap(),
+            cmb_ec_algo: gtk_builder.get_object("cmb_audio_ec_algo").unwrap(),
         }
     }
 }
@@ -84,6 +84,33 @@ impl SettingsAudioWidget {
 
     pub fn get_quality(&self) -> f64 {
         self.ctx.borrow().spn_quality.get_value()
+    }
+
+    pub fn set_no_vad(&self, value: bool) {
+        self.ctx.borrow().swt_no_vad.set_state(value);
+    }
+
+    pub fn get_no_vad(&self) -> bool {
+        self.ctx.borrow().swt_no_vad.get_state()
+    }
+
+    pub fn set_ec_tail_len(&self, value: f64) {
+        self.ctx.borrow().spn_ec_tail.set_value(value);
+    }
+
+    pub fn get_ec_tail_len(&self) -> f64 {
+        self.ctx.borrow().spn_ec_tail.get_value()
+    }
+
+    pub fn set_ec_options(&self, value: u32) {
+        self.ctx.borrow().cmb_ec_algo.set_active(Some(value -1));
+    }
+
+    pub fn get_ec_options(&self) -> u32 {
+        match self.ctx.borrow().cmb_ec_algo.get_active() {
+            Some(value) => value +1,
+            None => 0
+        }
     }
 
 }
