@@ -88,6 +88,7 @@ impl SettingsStunWidget {
         result.ctx.borrow().ent_password3.set_sensitive(false);
         result.ctx.borrow().ent_password4.set_sensitive(false);
 
+
         let result_clone = result.clone();
         result.ctx.borrow().swt_server1.connect_property_active_notify(move |swt| {
             result_clone.ctx.borrow().lbl_server1.set_sensitive(swt.get_state());
@@ -124,7 +125,25 @@ impl SettingsStunWidget {
     }
 
     pub fn reset(&self) {
-        todo!();
+        self.ctx.borrow().ent_server1.set_text("");
+        self.ctx.borrow().ent_server2.set_text("");
+        self.ctx.borrow().ent_server3.set_text("");
+        self.ctx.borrow().ent_server4.set_text("");
+
+        self.ctx.borrow().ent_username1.set_text("");
+        self.ctx.borrow().ent_username2.set_text("");
+        self.ctx.borrow().ent_username3.set_text("");
+        self.ctx.borrow().ent_username4.set_text("");
+
+        self.ctx.borrow().ent_password1.set_text("");
+        self.ctx.borrow().ent_password2.set_text("");
+        self.ctx.borrow().ent_password3.set_text("");
+        self.ctx.borrow().ent_password4.set_text("");
+
+        self.ctx.borrow().swt_server1.set_state(false);
+        self.ctx.borrow().swt_server2.set_state(false);
+        self.ctx.borrow().swt_server3.set_state(false);
+        self.ctx.borrow().swt_server4.set_state(false);
     }
 
     pub fn set_server1(&self, value: String) {
