@@ -126,11 +126,31 @@ impl SettingsProxyWidget {
 
         });
 
+        result.reset();
+
         result
     }
 
     pub fn reset(&self) {
-        todo!();
+        self.ctx.borrow().ent_proxy1.set_text("");
+        self.ctx.borrow().ent_proxy2.set_text("");
+        self.ctx.borrow().ent_proxy3.set_text("");
+        self.ctx.borrow().ent_proxy4.set_text("");
+
+        self.ctx.borrow().ent_username1.set_text("");
+        self.ctx.borrow().ent_username2.set_text("");
+        self.ctx.borrow().ent_username3.set_text("");
+        self.ctx.borrow().ent_username4.set_text("");
+
+        self.ctx.borrow().ent_password1.set_text("");
+        self.ctx.borrow().ent_password2.set_text("");
+        self.ctx.borrow().ent_password3.set_text("");
+        self.ctx.borrow().ent_password4.set_text("");
+
+        self.ctx.borrow().swt_proxy1.set_state(false);
+        self.ctx.borrow().swt_proxy2.set_state(false);
+        self.ctx.borrow().swt_proxy3.set_state(false);
+        self.ctx.borrow().swt_proxy4.set_state(false);
     }
 
     pub fn set_proxy1(&self, value: String) {
