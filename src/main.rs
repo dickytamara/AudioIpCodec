@@ -326,9 +326,26 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                     settings_clone.turn.get_username(),
                     settings_clone.turn.get_password()
                 ));
-            }
-            SettingsCurrentActivePage::Ice => { todo!(); },
-            SettingsCurrentActivePage::Audio => { todo!(); },
+            },
+            SettingsCurrentActivePage::Ice => {
+                ua.set_use_ice(settings_clone.ice.get_use_ice());
+                ua.set_no_rtcp(settings_clone.ice.get_no_rtcp());
+                // deprecated
+                // unable to find any doc in broadcasting tools
+                // ua.set_aggressive_nomination(settings_clone.ice.get_aggressive());
+                // match settings_clone.ice.get_trickle_method() {
+                //     1 => ua.set_trickle_method(PJ_ICE_SESS_TRICKLE_DISABLED),
+                //     2 => ua.set_trickle_method(PJ_ICE_SESS_TRICKLE_HALF),
+                //     3 => ua.set_trickle_method(PJ_ICE_SESS_TRICKLE_FULL),
+                //     _ => ()
+                // }
+                ua.set_ice_max_host_cands(settings_clone.ice.get_max_hosts() as i32);
+            },
+            SettingsCurrentActivePage::Audio => {
+                ua.set_jb_max(settings_clone.audio.get_jb_max() as i32);
+                ua.set_ptime(settings_clone.audio.get_ptime() as u32);
+                ua.set_quality(settings_clone.audio.get_quality() as u32);
+            },
             SettingsCurrentActivePage::Media => { todo!(); },
             SettingsCurrentActivePage::Proxy => {
 

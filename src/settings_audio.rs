@@ -61,6 +61,31 @@ impl SettingsAudioWidget {
     pub fn reset(&self) {
         todo!();
     }
+
+    pub fn set_jb_max(&self, value: f64) {
+        self.ctx.borrow().spn_max_jitter.set_value(value);
+    }
+
+    pub fn get_jb_max(&self) -> f64 {
+        self.ctx.borrow().spn_max_jitter.get_value()
+    }
+
+    pub fn set_ptime(&self, value: f64) {
+        self.ctx.borrow().spn_ptime.set_value(value);
+    }
+
+    pub fn get_ptime(&self) -> f64 {
+        self.ctx.borrow().spn_ptime.get_value()
+    }
+
+    pub fn set_quality(&self, value: f64) {
+        self.ctx.borrow().spn_quality.set_value(value);
+    }
+
+    pub fn get_quality(&self) -> f64 {
+        self.ctx.borrow().spn_quality.get_value()
+    }
+
 }
 
 
