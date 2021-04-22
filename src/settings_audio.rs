@@ -121,16 +121,26 @@ impl HelperFileSettings for SettingsAudioWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        todo!();
+        self.set_jb_max(config.get("audio", "jb_max").unwrap().parse().unwrap());
+        self.set_ptime(config.get("audio", "ptime").unwrap().parse().unwrap());
+        self.set_quality(config.get("audio", "quality").unwrap().parse().unwrap());
+        self.set_no_vad(config.get("audio", "no_vad").unwrap().parse().unwrap());
+        self.set_ec_tail_len(config.get("audio", "ec_tail_len").unwrap().parse().unwrap());
+        self.set_ec_options(config.get("audio", "ec_options").unwrap().parse().unwrap());
     }
 
     fn save(&self, path: PathBuf) {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        todo!();
+        config.set("audio", "jb_max", Some(self.get_jb_max().to_string()));
+        config.set("audio", "ptime", Some(self.get_ptime().to_string()));
+        config.set("audio", "quality", Some(self.get_quality().to_string()));
+        config.set("audio", "no_vad", Some(self.get_no_vad().to_string()));
+        config.set("audio", "ec_tail_len", Some(self.get_ec_tail_len().to_string()));
+        config.set("audio", "ec_options", Some(self.get_ec_options().to_string()));
 
-        // config.write(path.to_str().unwrap()).unwrap();
+        config.write(path.to_str().unwrap()).unwrap();
     }
 }
 
