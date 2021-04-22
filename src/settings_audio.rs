@@ -16,7 +16,7 @@ pub struct SettingsAudioStorage {
     lbl_no_vad: Label,
     lbl_ec_tail: Label,
     lbl_ec_algo: Label,
-    spn_max_jitter: SpinButton,
+    spn_jb_max: SpinButton,
     spn_ptime: SpinButton,
     spn_quality: SpinButton,
     swt_no_vad: Switch,
@@ -33,7 +33,7 @@ impl SettingsAudioStorage {
             lbl_no_vad: gtk_builder.get_object("lbl_audio_no_vad").unwrap(),
             lbl_ec_tail: gtk_builder.get_object("lbl_audio_ec_tail").unwrap(),
             lbl_ec_algo: gtk_builder.get_object("lbl_audio_ec_algo").unwrap(),
-            spn_max_jitter: gtk_builder.get_object("spn_audio_max_jitter").unwrap(),
+            spn_jb_max: gtk_builder.get_object("spn_audio_max_jitter").unwrap(),
             spn_ptime: gtk_builder.get_object("spn_audio_ptime").unwrap(),
             spn_quality: gtk_builder.get_object("spn_audio_quality").unwrap(),
             swt_no_vad: gtk_builder.get_object("swt_audio_no_vad").unwrap(),
@@ -55,19 +55,42 @@ impl SettingsAudioWidget {
             ctx: RefCell::new(SettingsAudioStorage::new(gtk_builder)),
         };
 
+        result.ctx.borrow().spn_jb_max.set_digits(0);
+        result.ctx.borrow().spn_jb_max.set_range(0_f64, 65535_f64);
+        result.ctx.borrow().spn_jb_max.set_increments(1_f64, 5_f64);
+
+        result.ctx.borrow().spn_ptime.set_digits(0);
+        result.ctx.borrow().spn_ptime.set_range(0_f64, 140_f64);
+        result.ctx.borrow().spn_ptime.set_increments(1_f64, 5_f64);
+
+        result.ctx.borrow().spn_quality.set_digits(0);
+        result.ctx.borrow().spn_quality.set_range(1_f64, 10_f64);
+        result.ctx.borrow().spn_quality.set_increments(1_f64, 5_f64);
+
+        result.ctx.borrow().spn_ec_tail.set_digits(0);
+        result.ctx.borrow().spn_ec_tail.set_range(0_f64, 140_f64);
+        result.ctx.borrow().spn_ec_tail.set_increments(1_f64, 5_f64);
+
+        result.reset();
+
         result
     }
 
     pub fn reset(&self) {
-        todo!();
+        self.ctx.borrow().spn_jb_max.set_value(3840_f64);
+        self.ctx.borrow().spn_ptime.set_value(20_f64);
+        self.ctx.borrow().spn_quality.set_value(10_f64);
+        self.ctx.borrow().swt_no_vad.set_state(false);
+        self.ctx.borrow().spn_ec_tail.set_value(0_f64);
+        self.ctx.borrow().cmb_ec_algo.set_active(Some(0));
     }
 
     pub fn set_jb_max(&self, value: f64) {
-        self.ctx.borrow().spn_max_jitter.set_value(value);
+        self.ctx.borrow().spn_jb_max.set_value(value);
     }
 
     pub fn get_jb_max(&self) -> f64 {
-        self.ctx.borrow().spn_max_jitter.get_value()
+        self.ctx.borrow().spn_jb_max.get_value()
     }
 
     pub fn set_ptime(&self, value: f64) {

@@ -356,7 +356,9 @@ fn callback_settings_widget(sipua: &mut SIPUserAgent, settings: &SettingsWidget)
                     _ => ()
                 }
             },
-            SettingsCurrentActivePage::Media => { todo!(); },
+            SettingsCurrentActivePage::Media => {
+                todo!();
+            },
             SettingsCurrentActivePage::Proxy => {
 
                 let mut proxy: Vec<SIPOutboundProxyServerData> = Vec::new();
