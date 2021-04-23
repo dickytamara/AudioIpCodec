@@ -59,7 +59,7 @@ pub trait SIPTransportConfigExt {
 // Transport wrapper
 pub struct SIPTransport {
     id: i32,
-    pub config: SIPTransportConfig
+    config: SIPTransportConfig
 }
 
 impl SIPTransport {

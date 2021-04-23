@@ -17,7 +17,6 @@ pub mod sip_wav;
 
 use prelude::*;
 use sip_core::{SIPCore, SIPCoreEventsExt, SIP_CORE};
-use pjsua_sys::*;
 use std::ops::Drop;
 
 
@@ -38,12 +37,6 @@ pub enum SIPInviteState {
 #[derive(Clone)]
 pub struct SIPUserAgent {}
 
-
-trait SIPUserAgentInternal {
-    fn get_config(&mut self) -> &mut pjsua_config;
-    fn get_log_config(&mut self) -> &mut pjsua_logging_config;
-    fn get_media_config(&mut self) -> &mut pjsua_media_config;
-}
 
 impl SIPUserAgent {
     // create sip user sip user agent with default ivalue
@@ -70,17 +63,6 @@ impl SIPUserAgent {
             match SIP_CORE {
                 Some(ref mut sipcore) => sipcore.restart(),
                 _ => panic!(""),
-            }
-        }
-    }
-
-    pub fn stop(&self) {
-        unsafe {
-            match SIP_CORE {
-                Some(ref mut sipua) => {
-                    sipua.stop();
-                },
-                None => panic!("")
             }
         }
     }
@@ -183,7 +165,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
-                    sipua.app_config.set_stun_srv(value)
+                    sipua.ua_config.set_stun_srv(value)
                     .expect("SIPUserAgent:: Set stun server failed.");
                 },
                 None => panic!("")
@@ -196,7 +178,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
-                    sipua.app_config.set_outbound_proxy(value)
+                    sipua.ua_config.set_outbound_proxy(value)
                     .expect("SIPUserAgent:: Set outbound proxy server failed.")
                 },
                 None => panic!("")
@@ -209,7 +191,7 @@ impl SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipua) => {
-                    sipua.app_config.set_nameserver(value)
+                    sipua.ua_config.set_nameserver(value)
                     .expect("SIPUserAgent:: Set nameserver failed.")
                 },
                 None => panic!("")

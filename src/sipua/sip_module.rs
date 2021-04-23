@@ -141,13 +141,13 @@ impl SIPModule {
     }
 
     // pj_status_t 	pjsip_endpt_register_module (pjsip_endpoint *endpt, pjsip_module *module)
-    pub fn register_module(&self) {
+    pub fn register(&self) {
         pjsip::endpt_register_module(pjsua::get_pjsip_endpt(), &mut self.ctx.borrow_mut())
         .expect("SIPModule::pjsip_endpt_register_module");
     }
     // pj_status_t 	pjsip_endpt_unregister_module (pjsip_endpoint *endpt, pjsip_module *module)
 
-    pub fn unregister_module(&self) {
+    pub fn unregister(&self) {
         pjsip::endpt_unregister_module(pjsua::get_pjsip_endpt(), &mut self.ctx.borrow_mut())
         .expect("SIPModule::pjsip_endpt_unregister_module");
     }

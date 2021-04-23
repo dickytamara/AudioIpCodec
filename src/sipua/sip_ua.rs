@@ -13,7 +13,7 @@ use crate::pjproject::prelude::*;
 use crate::pjproject::utils;
 use crate::pjproject::pjsua;
 
-use super::sip_module::SIPModule;
+use super::{sip_log::SIPLogConfig, sip_media::SIPMediaConfig, sip_module::SIPModule};
 
 #[derive(Clone)]
 pub struct SIPStunServerData {
@@ -48,9 +48,37 @@ impl SIPOutboundProxyServerData {
     }
 }
 
-pub struct SIPUa {
+pub struct SIPUaConfig {
     // give mutable interior for ensure ctx not moved to anywhere.
-    ctx: RefCell<pjsua_config>,
+    ctx: RefCell<pjsua_config>
+}
+
+impl SIPUaConfig {
+
+    pub fn new() -> Self {
+        SIPUaConfig {
+            ctx: RefCell::new(pjsua_config::new())
+        }
+    }
+
+    pub fn get_context(&self) -> RefMut<pjsua_config> {
+        self.ctx.borrow_mut()
+    }
+
+    pub fn set_default(&self) {
+        pjsua::config_default(&mut self.ctx.borrow_mut());
+    }
+
+    pub fn init(&self, log_cfg: &SIPLogConfig, media_cfg: &SIPMediaConfig) {
+        // init pjsua
+        SIPUa::init( self, log_cfg, media_cfg);
+    }
+
+}
+
+pub struct SIPUa {
+    // ctx: RefCell<pjsua_config>,
+    pub config: SIPUaConfig,
     pub module: SIPModule,
     pool: *mut pj_pool_t
 }
@@ -271,35 +299,32 @@ impl SIPUa {
 
     pub fn new() -> Self {
         SIPUa {
-            ctx: RefCell::new(pjsua_config::new()),
+            // config: RefCell::new(pjsua_config::new()),
+            config: SIPUaConfig::new(),
             module: SIPModule::new(),
             pool: pjsua::pool_create("ipcodec")
         }
     }
 
-    pub fn get_context(&self) -> RefMut<pjsua_config> {
-        self.ctx.borrow_mut()
-    }
+    // /// Use this function to initialize logging config.
+    // pub fn logging_config_default(&self, cfg: &mut pjsua_logging_config) {
+    //     pjsua::logging_config_default(cfg);
+    // }
 
-    /// Use this function to initialize logging config.
-    pub fn logging_config_default(&self, cfg: &mut pjsua_logging_config) {
-        pjsua::logging_config_default(cfg);
-    }
-
-    /// Use this function to duplicate logging config.
-    pub fn logging_config_dup(&self, dst: &mut pjsua_logging_config, src: &mut pjsua_logging_config) {
-        pjsua::logging_config_dup(dst, src);
-    }
+    // /// Use this function to duplicate logging config.
+    // pub fn logging_config_dup(&self, dst: &mut pjsua_logging_config, src: &mut pjsua_logging_config) {
+    //     pjsua::logging_config_dup(dst, src);
+    // }
 
     /// Use this function to initialize pjsua config.
-    pub fn config_default (&self, cfg: &mut pjsua_config) {
-        pjsua::config_default(cfg)
-    }
+    // pub fn config_default (&self, cfg: &mut pjsua_config) {
+    //     pjsua::config_default(cfg)
+    // }
 
-    /// Duplicate pjsua_config.
-    pub fn config_dup(&self, dst: &mut pjsua_config, src: &mut pjsua_config) {
-        pjsua::config_dup(dst, src)
-    }
+    // Duplicate pjsua_config.
+    // pub fn config_dup(dst: &mut pjsua_config, src: &mut pjsua_config) {
+    //     pjsua::config_dup(dst, src)
+    // }
 
     /// Initialize message data.
     pub fn msg_data_init(&self, msg_data: &mut pjsua_msg_data) {
@@ -321,25 +346,32 @@ impl SIPUa {
     /// before calling any other functions, to make sure that the underlying
     /// libraries are properly initialized. Once this function has returned success,
     /// application must call destroy() before quitting.
-    pub fn create(&self) {
+    pub fn create() {
         pjsua::create().expect("SIPUa::pjsua_create");
     }
 
     /// Initialize pjsua with the specified settings. All the settings are optional,
     /// and the default values will be used when the config is not specified.
     /// Note that create() MUST be called before calling this function.
-    pub fn init(&self, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) {
+    // pub fn init(&self, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) {
+    //     // init pjsua
+    //     pjsua::init( &mut self.ctx.borrow_mut(), log_cfg, media_cfg)
+    //     .expect("SIPUa::pjsua_init");
+    // }
+
+    pub fn init(ua_cfg: &SIPUaConfig, log_cfg: &SIPLogConfig, media_cfg: &SIPMediaConfig) {
         // init pjsua
-        pjsua::init( &mut self.ctx.borrow_mut(), log_cfg,media_cfg)
+        pjsua::init(
+            &mut ua_cfg.get_context(),
+            &mut log_cfg.get_context(),
+            &mut media_cfg.get_context())
         .expect("SIPUa::pjsua_init");
-        // register default handler
-        self.module.register_module();
     }
 
     /// Application is recommended to call this function after all initialization is done,
     /// so that the library can do additional checking set up additional
     /// Application may call this function anytime after init().
-    pub fn start(&self) {
+    pub fn start() {
         pjsua::start().expect("SIPUa::pjsua_start");
     }
 
@@ -354,17 +386,17 @@ impl SIPUa {
     /// See also
     ///
     /// [`SIPUa::destroy2`]
-    pub fn destroy(&self) {
+    pub fn destroy() {
         pjsua::destroy().expect("SIPUa::pjsua_destroy");
     }
 
     /// Retrieve pjsua state.
-    pub fn get_state(&self) -> pjsua_state {
+    pub fn get_state() -> pjsua_state {
         pjsua::get_state()
     }
 
     /// Variant of destroy with additional flags.
-    pub fn destroy2(&self, flags: u32) {
+    pub fn destroy2(flags: u32) {
         pjsua::destroy2(flags).expect("SIPUa::pjsua_destroy2");
     }
 
@@ -374,24 +406,24 @@ impl SIPUa {
     /// Application doesn't normally need to call this function if it has configured worker
     /// thread (thread_cnt field) in pjsua_config structure, because polling then will be done
     /// by these worker threads instead.
-    pub fn handle_events(&self, msec_timeout: u32) -> i32 {
+    pub fn handle_events(msec_timeout: u32) -> i32 {
         pjsua::handle_events(msec_timeout)
     }
 
     /// Signal all worker threads to quit. This will only wait until internal threads are done.
-    pub fn stop_worker_threads(&self) {
+    pub fn stop_worker_threads() {
         pjsua::stop_worker_threads();
     }
 
     /// Create memory pool to be used by the application. Once application finished using the pool,
     /// it must be released with pj_pool_release().
-    pub fn pool_create(&self, name: &str) -> *mut pj_pool_t {
+    pub fn pool_create(name: &str) -> *mut pj_pool_t {
         pjsua::pool_create(name)
     }
 
     /// Application can call this function at any time (after create(), of course)
     /// to change logging settings.
-    pub fn reconfigure_logging(&self, c: &mut pjsua_logging_config) {
+    pub fn reconfigure_logging(c: &mut pjsua_logging_config) {
         pjsua::reconfigure_logging(c).expect("SIPUa::pjsua_reconfigure_logging");
     }
 
@@ -602,7 +634,7 @@ pub trait SIPUaEventExt {
     // fn connect_on_media_event(&self, callback: Option<unsafe extern "C" fn(event: *mut pjmedia_event)>);
 }
 
-impl SIPUaEventExt for SIPUa {
+impl SIPUaEventExt for SIPUaConfig {
 
     fn connect_on_call_state(&self, callback: Option<unsafe extern "C" fn(call_id: pjsua_call_id, e: *mut pjsip_event)>) {
         self.ctx.borrow_mut().cb.on_call_state = callback;
@@ -689,8 +721,7 @@ impl SIPUaEventExt for SIPUa {
     }
 }
 
-
-impl SIPUaExt for SIPUa {
+impl SIPUaExt for SIPUaConfig {
 
     fn set_max_calls (&self, max_calls: u32) {
         self.ctx.borrow_mut().max_calls = max_calls;

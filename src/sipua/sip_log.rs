@@ -8,7 +8,7 @@ use crate::pjproject::utils::{self, AutoCreate, ToString, FromString};
 use crate::pjproject::pjsua;
 
 
-pub struct SIPLog {
+pub struct SIPLogConfig {
     ctx: RefCell<pjsua_logging_config>
 }
 
@@ -51,15 +51,15 @@ pub trait SIPLogExt {
     // pub cb: Option< unsafe extern "C" fn( level: c_int, data: *const c_char, len: c_int, ) >
 }
 
-impl SIPLog {
+impl SIPLogConfig {
 
     pub fn new() -> Self {
-        SIPLog {
+        SIPLogConfig {
             ctx: RefCell::new(pjsua_logging_config::new())
         }
     }
 
-    pub fn get_context(&mut self) -> RefMut<pjsua_logging_config> {
+    pub fn get_context(&self) -> RefMut<pjsua_logging_config> {
         self.ctx.borrow_mut()
     }
 
@@ -82,7 +82,7 @@ impl SIPLog {
 
 }
 
-impl SIPLogExt for SIPLog {
+impl SIPLogExt for SIPLogConfig {
 
     fn get_msg_logging(&self) -> bool {
         utils::check_boolean(self.ctx.borrow().msg_logging)

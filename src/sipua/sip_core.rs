@@ -13,7 +13,7 @@ use crate::pjproject::pjsip;
 use crate::pjproject::pjsua;
 use crate::pjproject::pjmedia;
 
-use super::sip_account::*;
+use super::{sip_account::*, sip_module::SIPModule};
 use super::sip_module::SIPModuleExt;
 
 use super::sip_calls::*;
@@ -36,9 +36,10 @@ pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
 
 
 pub struct SIPCore {
-    pub app_config: SIPUa,
-    pub log_config: SIPLog,
-    pub media_config: SIPMedia,
+    pub ua_config: SIPUaConfig,
+    pub log_config: SIPLogConfig,
+    pub media_config: SIPMediaConfig,
+    module: SIPModule,
     no_udp: bool,
     no_tcp: bool,
     use_ipv6: bool,
@@ -85,11 +86,13 @@ pub trait SIPCoreEventsExt {
 impl SIPCore {
 
     pub fn new() -> Self {
-        pjsua::create().expect("SIPCore::pjsua_create");
+        // pjsua::create().expect("SIPCore::pjsua_create");
+        //SIPUa::create();
         SIPCore {
-            app_config: SIPUa::new(),
-            log_config: SIPLog::new(),
-            media_config: SIPMedia::new(),
+            ua_config: SIPUaConfig::new(),
+            log_config: SIPLogConfig::new(),
+            media_config: SIPMediaConfig::new(),
+            module: SIPModule::new(),
             no_udp: false,
             no_tcp: false,
             use_ipv6: false,
@@ -118,60 +121,61 @@ impl SIPCore {
     pub fn init(&mut self) {
 
         // self.app_config.create();
-
+        //self.ua_config = SIPUaConfig::new();
+        SIPUa::create();
         // set all default media event
-        self.app_config.connect_on_call_state(Some(on_call_state));
-        self.app_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
-        self.app_config.connect_on_call_media_state(Some(on_call_media_state));
-        self.app_config.connect_on_incoming_call(Some(on_incoming_call));
-        self.app_config.connect_on_call_redirected(Some(on_call_redirected));
-        self.app_config.connect_on_dtmf_digit2(Some(on_dtmf_digit2));
-        self.app_config.connect_on_reg_state(Some(on_reg_state));
-        self.app_config.connect_on_incoming_subscribe(Some(on_incoming_subscribe));
-        self.app_config.connect_on_buddy_state(Some(on_buddy_state));
-        self.app_config.connect_on_buddy_evsub_state(Some(on_buddy_evsub_state));
-        self.app_config.connect_on_pager(Some(on_pager));
-        self.app_config.connect_on_typing(Some(on_typing));
-        self.app_config.connect_on_call_transfer_status(Some(on_call_transfer_status));
-        self.app_config.connect_on_call_replaced(Some(on_call_replaced));
-        self.app_config.connect_on_nat_detect(Some(on_nat_detect));
-        self.app_config.connect_on_mwi_info(Some(on_mwi_info));
-        self.app_config.connect_on_transport_state(Some(on_transport_state));
-        self.app_config.connect_on_ice_transport_error(Some(on_ice_transport_error));
-        self.app_config.connect_on_snd_dev_operation(Some(on_snd_dev_operation));
-        self.app_config.connect_on_call_media_event(Some(on_call_media_event));
-        self.app_config.connect_on_ip_change_progress(Some(on_ip_change_progress));
+        self.ua_config.connect_on_call_state(Some(on_call_state));
+        self.ua_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
+        self.ua_config.connect_on_call_media_state(Some(on_call_media_state));
+        self.ua_config.connect_on_incoming_call(Some(on_incoming_call));
+        self.ua_config.connect_on_call_redirected(Some(on_call_redirected));
+        self.ua_config.connect_on_dtmf_digit2(Some(on_dtmf_digit2));
+        self.ua_config.connect_on_reg_state(Some(on_reg_state));
+        self.ua_config.connect_on_incoming_subscribe(Some(on_incoming_subscribe));
+        self.ua_config.connect_on_buddy_state(Some(on_buddy_state));
+        self.ua_config.connect_on_buddy_evsub_state(Some(on_buddy_evsub_state));
+        self.ua_config.connect_on_pager(Some(on_pager));
+        self.ua_config.connect_on_typing(Some(on_typing));
+        self.ua_config.connect_on_call_transfer_status(Some(on_call_transfer_status));
+        self.ua_config.connect_on_call_replaced(Some(on_call_replaced));
+        self.ua_config.connect_on_nat_detect(Some(on_nat_detect));
+        self.ua_config.connect_on_mwi_info(Some(on_mwi_info));
+        self.ua_config.connect_on_transport_state(Some(on_transport_state));
+        self.ua_config.connect_on_ice_transport_error(Some(on_ice_transport_error));
+        self.ua_config.connect_on_snd_dev_operation(Some(on_snd_dev_operation));
+        self.ua_config.connect_on_call_media_event(Some(on_call_media_event));
+        self.ua_config.connect_on_ip_change_progress(Some(on_ip_change_progress));
 
         // set only one call per seassons
-        self.app_config.set_max_calls(1);
-        self.app_config.set_force_lr(true);
-        self.app_config.set_user_agent(String::from("IpCodec"));
+        self.ua_config.set_max_calls(1);
+        self.ua_config.set_force_lr(true);
+        self.ua_config.set_user_agent(String::from("IpCodec"));
 
         // register sub module for unhandeled error
-        self.app_config.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
-        self.app_config.module.set_name(String::from("mod-default-handler"));
-        self.app_config.module.connect_on_rx_request(Some(on_rx_request));
+        self.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
+        self.module.set_name(String::from("mod-default-handler"));
+        self.module.connect_on_rx_request(Some(on_rx_request));
+        self.module.register();
 
-        self.app_config.init(
-            &mut self.log_config.get_context(),
-            &mut self.media_config.get_context(),
-        );
+
+        // SIPUa::init(&self.ua_config, &self.log_config, &self.media_config);
+        self.ua_config.init(&self.log_config, &self.media_config);
 
         // add optional tones
         // TODO fix code bellow
-        for _ in 0..32 {
-            let mut tones = SIPTones::new();
-            tones.init(self.app_config.get_pool(), 440, 480);
-            self.tones.push(tones);
-        }
+        // for _ in 0..32 {
+        //     let mut tones = SIPTones::new();
+        //     tones.init(self.ua_config.get_pool(), 440, 480);
+        //     self.tones.push(tones);
+        // }
 
         // init ringback
         // TODO fix code bellow
-        self.ringback.init(self.app_config.get_pool(), *self.media_config.get_context());
+        // self.ringback.init(self.ua_config.get_pool(), *self.media_config.get_context());
 
         // init ringtone
         // TODO fix code bellow
-        self.ringtone.init(self.app_config.get_pool(), *self.media_config.get_context());
+        // self.ringtone.init(self.ua_config.get_pool(), *self.media_config.get_context());
 
         // Initialize UDP Transport
         if !self.no_udp {
@@ -190,29 +194,6 @@ impl SIPCore {
         }
 
         // TODO create local account
-
-        // todo this trasports api is not general
-
-        // pjsua::acc_add_local( self.id, true, &mut self.acc_id,)
-        // .expect("SIPTransport::acc_add_local");
-
-        // assert_ne!(self.acc_id, -1);
-
-        // let mut acc_cfg = pjsua_acc_config::new();
-        // pjsua::acc_get_config(self.acc_id, &mut acc_cfg).unwrap();
-
-        // unsafe {
-        //     acc_cfg.rtp_cfg = *rtp_config;
-        //     if type_ == PJSIP_TRANSPORT_TCP6
-        //         || type_ == PJSIP_TRANSPORT_UDP6
-        //     {
-        //         acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
-        //     }
-        // }
-
-        // pjsua::acc_modify(self.acc_id, &mut acc_cfg).unwrap();
-        // pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
-
         for tp in self.transports.list.iter() {
             let tid = tp.get_id();
             let mut acc_id: pjsua_acc_id = -1;
@@ -220,44 +201,31 @@ impl SIPCore {
             pjsua::acc_add_local( tid, true, &mut acc_id)
             .expect("SIPTransport::acc_add_local");
 
-            // assert_ne!(self.acc_id, -1);
-
             let mut acc_cfg = pjsua_acc_config::new();
             pjsua::acc_get_config(acc_id, &mut acc_cfg).unwrap();
 
-            // unsafe {
-                acc_cfg.rtp_cfg.port = 4000;
-                acc_cfg.ipv6_media_use = boolean_to_pjbool(self.use_ipv6) as u32;
-                // = *rtp_config;
-                // if type_ == PJSIP_TRANSPORT_TCP6
-                //     || type_ == PJSIP_TRANSPORT_UDP6
-                // {
-                //     acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
-                // }
-            // }
+            acc_cfg.rtp_cfg.port = 4000;
+            acc_cfg.ipv6_media_use = boolean_to_pjbool(self.use_ipv6) as u32;
+
 
             pjsua::acc_modify(acc_id, &mut acc_cfg).unwrap();
             pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
         }
 
         self.media_config.init();
-        // self.calls.set_audio_count(self.aud_cnt);
 
 
-        self.app_config.start();
-        // we don't need add account for this state
-        // so we create dynamicaly in addition
-        // self.accounts.set_rtp_config(self.transports.get_rtp_config());
-        // self.accounts.set_reg_retry_interval(300);
-        // self.accounts.set_reg_first_retry_interval(60);
+        SIPUa::start();
     }
 
-    pub fn restart(&self) {
-        todo!();
+    pub fn restart(&mut self) {
+        self.stop();
+        self.init();
     }
 
     pub fn stop(&mut self) {
-        self.app_config.deinit();
+        SIPUa::destroy();
+        // self.ua_config.deinit();
     }
 
     pub fn call(&self, call_addr: &str) {
@@ -271,7 +239,6 @@ impl SIPCore {
         let mut msg_data = pjsua_msg_data::new();
 
         default_acc.call(String::from(call_addr), None, Some(&mut msg_data), None);
-        // default_acc.call(String::from(call_addr), None, None, None);
     }
 
     pub fn call_hangup(&self) {
@@ -331,7 +298,7 @@ impl SIPCore {
     }
 
     pub fn set_no_forcelr(&self, value: bool) {
-        self.app_config.set_force_lr(!value);
+        self.ua_config.set_force_lr(!value);
     }
 
     pub fn set_compact_form(&mut self, value: bool) {

@@ -30,7 +30,7 @@ impl SIPTurnServerData {
 }
 
 // Media and sound device implementation Implementation
-pub struct SIPMedia {
+pub struct SIPMediaConfig {
     ctx: RefCell<pjsua_media_config>,
     capture_dev: i32,
     playback_dev: i32,
@@ -292,11 +292,11 @@ pub trait SIPMediaExt {
 
 }
 
-impl SIPMedia {
+impl SIPMediaConfig {
 
     // Create new SIP Media.
     pub fn new() -> Self {
-        let cfg = SIPMedia {
+        let cfg = SIPMediaConfig {
             ctx: RefCell::new(pjsua_media_config::new()),
             capture_dev: -1,
             playback_dev: -2,
@@ -321,7 +321,7 @@ impl SIPMedia {
 
         //ptime
         cfg.set_ptime(20);
-        cfg.set_jb_max(3840);
+        //cfg.set_jb_max(3840);
         cfg.set_jb_discard_algo(0);
 
         cfg
@@ -330,7 +330,6 @@ impl SIPMedia {
     pub fn init(&self) {
         pjsua::set_snd_dev(self.capture_dev, self.playback_dev)
         .expect("SIPMedia::pjsua_set_snd_dev");
-
     }
 
     pub fn get_input_device_list(&self) -> Vec<String> {
@@ -442,7 +441,7 @@ impl SIPMedia {
     }
 }
 
-impl SIPMediaExt for SIPMedia {
+impl SIPMediaExt for SIPMediaConfig {
 
     fn set_clock_rate(&self, value: u32) {
         self.ctx.borrow_mut().clock_rate = value;
