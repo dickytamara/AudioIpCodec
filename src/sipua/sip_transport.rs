@@ -11,28 +11,6 @@ use std::cell::{RefCell, RefMut};
 use std::path::PathBuf;
 
 
-// todo this trasports api is not general
-
-// pjsua::acc_add_local( self.id, true, &mut self.acc_id,)
-// .expect("SIPTransport::acc_add_local");
-
-// assert_ne!(self.acc_id, -1);
-
-// let mut acc_cfg = pjsua_acc_config::new();
-// pjsua::acc_get_config(self.acc_id, &mut acc_cfg).unwrap();
-
-// unsafe {
-//     acc_cfg.rtp_cfg = *rtp_config;
-//     if type_ == PJSIP_TRANSPORT_TCP6
-//         || type_ == PJSIP_TRANSPORT_UDP6
-//     {
-//         acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
-//     }
-// }
-
-// pjsua::acc_modify(self.acc_id, &mut acc_cfg).unwrap();
-// pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
-
 #[derive(Clone)]
 pub struct SIPTransportConfig {
     ctx: RefCell<pjsua_transport_config>
@@ -125,6 +103,11 @@ impl SIPTransport {
         pjsua::transport_set_enable(self.id, enabled)
         .expect("SIPTransport::pjsua_set_enable");
     }
+
+
+    pub fn get_id(&self) -> i32 {
+        self.id
+    }
 }
 
 // void 	pjsua_transport_config_default (pjsua_transport_config *cfg)
@@ -147,7 +130,7 @@ impl Drop for SIPTransport {
 }
 
 pub struct SIPTransports {
-    transport_list: Vec<SIPTransport>,
+    pub list: Vec<SIPTransport>,
     config: SIPTransportConfig,
 }
 
@@ -155,7 +138,7 @@ impl SIPTransports {
 
     pub fn new() -> Self {
         SIPTransports {
-            transport_list: Vec::<SIPTransport>::new(),
+            list: Vec::<SIPTransport>::new(),
             config: SIPTransportConfig::new(),
         }
     }
@@ -165,7 +148,7 @@ impl SIPTransports {
             transport_type,
             Some(&self.config)
         );
-        self.transport_list.push(transport);
+        self.list.push(transport);
     }
 
     pub fn delete(&mut self, transport_id: i32) {

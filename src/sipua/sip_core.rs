@@ -6,7 +6,7 @@ use pjmedia_sys::*;
 use pjsip_simple_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::prelude::*;
+use crate::pjproject::{prelude::*, utils::boolean_to_pjbool};
 
 // use crate::pjproject::utils;
 use crate::pjproject::pjsip;
@@ -90,7 +90,7 @@ impl SIPCore {
             app_config: SIPUa::new(),
             log_config: SIPLog::new(),
             media_config: SIPMedia::new(),
-            no_udp: true,
+            no_udp: false,
             no_tcp: false,
             use_ipv6: false,
             transports: SIPTransports::new(),
@@ -189,6 +189,57 @@ impl SIPCore {
             }
         }
 
+        // TODO create local account
+
+        // todo this trasports api is not general
+
+        // pjsua::acc_add_local( self.id, true, &mut self.acc_id,)
+        // .expect("SIPTransport::acc_add_local");
+
+        // assert_ne!(self.acc_id, -1);
+
+        // let mut acc_cfg = pjsua_acc_config::new();
+        // pjsua::acc_get_config(self.acc_id, &mut acc_cfg).unwrap();
+
+        // unsafe {
+        //     acc_cfg.rtp_cfg = *rtp_config;
+        //     if type_ == PJSIP_TRANSPORT_TCP6
+        //         || type_ == PJSIP_TRANSPORT_UDP6
+        //     {
+        //         acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
+        //     }
+        // }
+
+        // pjsua::acc_modify(self.acc_id, &mut acc_cfg).unwrap();
+        // pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
+
+        for tp in self.transports.list.iter() {
+            let tid = tp.get_id();
+            let mut acc_id: pjsua_acc_id = -1;
+
+            pjsua::acc_add_local( tid, true, &mut acc_id)
+            .expect("SIPTransport::acc_add_local");
+
+            // assert_ne!(self.acc_id, -1);
+
+            let mut acc_cfg = pjsua_acc_config::new();
+            pjsua::acc_get_config(acc_id, &mut acc_cfg).unwrap();
+
+            // unsafe {
+                acc_cfg.rtp_cfg.port = 4000;
+                acc_cfg.ipv6_media_use = boolean_to_pjbool(self.use_ipv6) as u32;
+                // = *rtp_config;
+                // if type_ == PJSIP_TRANSPORT_TCP6
+                //     || type_ == PJSIP_TRANSPORT_UDP6
+                // {
+                //     acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
+                // }
+            // }
+
+            pjsua::acc_modify(acc_id, &mut acc_cfg).unwrap();
+            pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
+        }
+
         self.media_config.init();
         // self.calls.set_audio_count(self.aud_cnt);
 
@@ -220,6 +271,7 @@ impl SIPCore {
         let mut msg_data = pjsua_msg_data::new();
 
         default_acc.call(String::from(call_addr), None, Some(&mut msg_data), None);
+        // default_acc.call(String::from(call_addr), None, None, None);
     }
 
     pub fn call_hangup(&self) {

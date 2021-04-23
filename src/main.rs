@@ -515,7 +515,7 @@ fn main() {
 
     // thread procedure to update level bar
     // Transmit and Receive
-    // thread_update_level_bar(sipua.clone(), rx_widget.clone(), tx_widget.clone());
+    thread_update_level_bar(sipua.clone(), rx_widget.clone(), tx_widget.clone());
 
     // sub testing gui
     application.run(&env::args().collect::<Vec<_>>());
