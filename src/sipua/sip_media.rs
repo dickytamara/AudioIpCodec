@@ -313,14 +313,14 @@ impl SIPMedia {
         cfg.set_quality(10);
 
         // disable voice activity detection
-        cfg.set_no_vad(true);
+        cfg.set_no_vad(false);
 
         // disable echo cancelar
         cfg.set_ec_tail_len(0);
         cfg.set_ec_options(0);
 
         //ptime
-        cfg.set_ptime(10);
+        cfg.set_ptime(20);
         cfg.set_jb_max(3840);
         cfg.set_jb_discard_algo(0);
 

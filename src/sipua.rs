@@ -59,8 +59,28 @@ impl SIPUserAgent {
     pub fn start(&self) {
         unsafe {
             match SIP_CORE {
-                Some(ref mut sipcore) => sipcore.start(),
+                Some(ref mut sipcore) => sipcore.init(),
                 _ => panic!(""),
+            }
+        }
+    }
+
+    pub fn restart(&self) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipcore) => sipcore.restart(),
+                _ => panic!(""),
+            }
+        }
+    }
+
+    pub fn stop(&self) {
+        unsafe {
+            match SIP_CORE {
+                Some(ref mut sipua) => {
+                    sipua.stop();
+                },
+                None => panic!("")
             }
         }
     }
@@ -472,7 +492,7 @@ impl Drop for SIPUserAgent {
         unsafe {
             match SIP_CORE {
                 Some(ref mut sipcore) => {
-                    sipcore.deinit();
+                    sipcore.stop();
                 }
                 _ => (),
             }

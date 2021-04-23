@@ -115,7 +115,7 @@ impl SIPCore {
         }
     }
 
-    pub fn start(&mut self) {
+    pub fn init(&mut self) {
 
         // self.app_config.create();
 
@@ -174,7 +174,6 @@ impl SIPCore {
         self.ringtone.init(self.app_config.get_pool(), *self.media_config.get_context());
 
         // Initialize UDP Transport
-
         if !self.no_udp {
             self.transports.add(PJSIP_TRANSPORT_UDP);
             if self.use_ipv6 == true {
@@ -193,8 +192,8 @@ impl SIPCore {
         self.media_config.init();
         // self.calls.set_audio_count(self.aud_cnt);
 
-        self.app_config.start();
 
+        self.app_config.start();
         // we don't need add account for this state
         // so we create dynamicaly in addition
         // self.accounts.set_rtp_config(self.transports.get_rtp_config());
@@ -202,10 +201,12 @@ impl SIPCore {
         // self.accounts.set_reg_first_retry_interval(60);
     }
 
-    pub fn deinit(&mut self) {
+    pub fn restart(&self) {
+        todo!();
+    }
+
+    pub fn stop(&mut self) {
         self.app_config.deinit();
-        // pjsua::pool_release(self.pool);
-        // pjsua::destroy().unwrap();
     }
 
     pub fn call(&self, call_addr: &str) {

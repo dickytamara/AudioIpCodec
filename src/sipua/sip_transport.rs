@@ -4,185 +4,254 @@ use pj_sys::*;
 use pjsip_sys::*;
 use pjsua_sys::*;
 
-use crate::pjproject::utils::AutoCreate;
+use crate::pjproject::utils::{AutoCreate, FromString, ToString, boolean_to_pjbool};
 use crate::pjproject::pjsua;
 
-use std::ptr;
-use std::ffi::CString;
+use std::cell::{RefCell, RefMut};
+use std::path::PathBuf;
+
+
+// todo this trasports api is not general
+
+// pjsua::acc_add_local( self.id, true, &mut self.acc_id,)
+// .expect("SIPTransport::acc_add_local");
+
+// assert_ne!(self.acc_id, -1);
+
+// let mut acc_cfg = pjsua_acc_config::new();
+// pjsua::acc_get_config(self.acc_id, &mut acc_cfg).unwrap();
+
+// unsafe {
+//     acc_cfg.rtp_cfg = *rtp_config;
+//     if type_ == PJSIP_TRANSPORT_TCP6
+//         || type_ == PJSIP_TRANSPORT_UDP6
+//     {
+//         acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
+//     }
+// }
+
+// pjsua::acc_modify(self.acc_id, &mut acc_cfg).unwrap();
+// pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
+
+#[derive(Clone)]
+pub struct SIPTransportConfig {
+    ctx: RefCell<pjsua_transport_config>
+}
+
+impl SIPTransportConfig {
+    pub fn new() -> Self {
+        SIPTransportConfig {
+            ctx: RefCell::new(pjsua_transport_config::new())
+        }
+    }
+
+    pub fn default(&self) {
+        pjsua::transport_config_default(&mut self.ctx.borrow_mut());
+        self.ctx.borrow_mut().port = 5060;
+    }
+
+    pub fn get_context(&self) -> RefMut<pjsua_transport_config> {
+        self.ctx.borrow_mut()
+    }
+}
+
+pub trait SIPTransportConfigExt {
+
+    fn set_port(&self, value: u32);
+    fn get_port(&self) -> u32;
+
+    fn set_port_range(&self, value: u32);
+    fn get_port_range(&self) -> u32;
+
+    fn set_public_addr(&self, value: String);
+    fn get_public_addr(&self) -> String;
+
+    fn set_bound_addr(&self, value: String);
+    fn get_bound_addr(&self) -> String;
+
+    fn set_qos_type(&self, value: u32);
+    fn get_qos_type(&self) -> u32;
+
+    // pub tls_setting: pjsip_tls_setting,
+    // pub qos_params: pj_qos_params,
+    // pub sockopt_params: pj_sockopt_params,
+}
 
 
 // Transport wrapper
 pub struct SIPTransport {
     id: i32,
-    acc_id: i32,
+    pub config: SIPTransportConfig
 }
 
 impl SIPTransport {
 
-    pub fn new() -> Self {
-        SIPTransport { id: -1, acc_id: -1 }
-    }
-
-    // start create the transport
-    pub fn init(
-        &mut self,
+    pub fn new(
         type_: pjsip_transport_type_e,
-        config: &mut pjsua_transport_config,
-        rtp_config: *const pjsua_transport_config,
-    ) {
+        config: Option<&SIPTransportConfig>
+    ) -> Self {
 
-        pjsua::transport_create(type_, config, Some(&mut self.id))
+        let mut transport = SIPTransport{
+            id: -1_i32,
+            config: SIPTransportConfig::new()
+        };
+
+        transport.config.default();
+
+        match config {
+            Some(tp_cfg) => {
+                transport.config = tp_cfg.clone();
+            }, None => ()
+        }
+
+        pjsua::transport_create(type_, &mut transport.config.get_context(), Some(&mut transport.id))
         .expect("SIPTransport::transport_create");
 
-        assert_ne!(self.id, -1);
-
-        pjsua::acc_add_local( self.id, true, &mut self.acc_id,)
-        .expect("SIPTransport::acc_add_local");
-
-        assert_ne!(self.acc_id, -1);
-
-        let mut acc_cfg = pjsua_acc_config::new();
-        pjsua::acc_get_config(self.acc_id, &mut acc_cfg).unwrap();
-
-        unsafe {
-            acc_cfg.rtp_cfg = *rtp_config;
-            if type_ == PJSIP_TRANSPORT_TCP6
-                || type_ == PJSIP_TRANSPORT_UDP6
-            {
-                acc_cfg.ipv6_media_use = pjsua_ipv6_use_PJSUA_IPV6_ENABLED;
-            }
-        }
-
-        pjsua::acc_modify(self.acc_id, &mut acc_cfg).unwrap();
-        pjsua::acc_set_online_status(pjsua::acc_get_default(), true).unwrap();
+        transport
     }
 
+    // pub fn from()
+
     pub fn get_info(&self) -> Result<*const pjsua_transport_info, i32> {
-        unsafe {
-            let info: *mut pjsua_transport_info = ptr::null_mut();
-            let status: pj_status_t = pjsua_transport_get_info(self.id, info);
+        let mut info: pjsua_transport_info = pjsua_transport_info::new();
 
-            // pjsua::transport_get_info(self.id, &mut info)
-            // .expect("SIPTransport::pjsua_get_info");
+        pjsua::transport_get_info(self.id, &mut info)
+        .expect("SIPTransport::pjsua_get_info");
 
-            if status != PJ_SUCCESS as i32 {
-                return Err(status);
-            }
-
-            Ok(info)
-        }
+        Ok(&mut info as *const _)
     }
 
     pub fn set_enable(&self, enabled: bool) {
-        unsafe {
-            let mut e = PJ_FALSE;
-            if enabled {
-                e = PJ_TRUE;
-            }
-
-            let status = pjsua_transport_set_enable(self.id, e as i32);
-
-            if status != PJ_SUCCESS as i32 {
-                panic!("cant set enable transport");
-            }
-        }
+        pjsua::transport_set_enable(self.id, enabled)
+        .expect("SIPTransport::pjsua_set_enable");
     }
 }
 
+// void 	pjsua_transport_config_default (pjsua_transport_config *cfg)
+// pj_status_t 	pjsua_transport_set_enable (pjsua_transport_id id, pj_bool_t enabled)
+// pj_status_t 	pjsua_transport_get_info (pjsua_transport_id id, pjsua_transport_info *info)
+// pj_status_t 	pjsua_transport_close (pjsua_transport_id id, pj_bool_t force)
+// void 	pjsua_transport_config_dup (pj_pool_t *pool, pjsua_transport_config *dst, const pjsua_transport_config *src)
+
+// pj_status_t 	pjsua_transport_create (pjsip_transport_type_e type, const pjsua_transport_config *cfg, pjsua_transport_id *p_id)
+// pj_status_t 	pjsua_transport_register (pjsip_transport *tp, pjsua_transport_id *p_id)
+// pj_status_t 	pjsua_tpfactory_register (pjsip_tpfactory *tf, pjsua_transport_id *p_id)
+// pj_status_t 	pjsua_enum_transports (pjsua_transport_id id[], unsigned *count)
+// pj_status_t 	pjsua_transport_lis_start (pjsua_transport_id id, const pjsua_transport_config *cfg)
+
 impl Drop for SIPTransport {
     fn drop(&mut self) {
-        unsafe {
-            pjsua_transport_close(self.id, PJ_TRUE as i32);
-        }
+        pjsua::transport_close(self.id, true)
+        .expect("SIPTransport::pjsua_trasport_close");
     }
 }
 
 pub struct SIPTransports {
     transport_list: Vec<SIPTransport>,
-    udp_cfg: pjsua_transport_config,
-    rtp_cfg: pjsua_transport_config,
+    config: SIPTransportConfig,
 }
 
 impl SIPTransports {
 
     pub fn new() -> Self {
-
-        let mut sip_transports = SIPTransports {
+        SIPTransports {
             transport_list: Vec::<SIPTransport>::new(),
-            udp_cfg: pjsua_transport_config::new(),
-            rtp_cfg: pjsua_transport_config::new(),
-        };
-
-        sip_transports.udp_cfg.port = 5060;
-        sip_transports.rtp_cfg.port = 4000;
-
-        sip_transports
+            config: SIPTransportConfig::new(),
+        }
     }
 
     pub fn add(&mut self, transport_type: u32) {
-        let mut transport = SIPTransport::new();
-        transport.init(
+        let transport = SIPTransport::new(
             transport_type,
-            &mut self.udp_cfg,
-            &mut self.rtp_cfg as *const _,
+            Some(&self.config)
         );
         self.transport_list.push(transport);
-    }
-
-    pub fn get_rtp_config(&self) -> pjsua_transport_config {
-        self.rtp_cfg
     }
 
     pub fn delete(&mut self, transport_id: i32) {
         // TODO
     }
 
-    pub fn set_ca_list_file(&mut self, file_path: &str) {
-        unsafe {
-            self.udp_cfg.tls_setting.ca_list_file =
-                pj_str(CString::new(file_path).expect("error").into_raw());
-        }
+
+    pub fn set_ca_list_file(&self, path: PathBuf) {
+        self.config.ctx.borrow_mut()
+        .tls_setting.ca_list_file = pj_str_t::from_string(
+            path.to_str().unwrap().to_string()
+        );
     }
 
-    pub fn set_cert_file(&mut self, file_path: &str) {
-        unsafe {
-            self.udp_cfg.tls_setting.cert_file =
-                pj_str(CString::new(file_path).expect("error").into_raw());
-        }
+    pub fn set_cert_file(&self, path: PathBuf) {
+        self.config.ctx.borrow_mut()
+        .tls_setting.cert_file = pj_str_t::from_string(
+            path.to_str().unwrap().to_string()
+        );
     }
 
-    pub fn set_privkey_file(&mut self, file_path: &str) {
-        unsafe {
-            self.udp_cfg.tls_setting.privkey_file =
-                pj_str(CString::new(file_path).expect("error").into_raw());
-        }
+    pub fn set_privkey_file(&self, path: PathBuf) {
+        self.config.ctx.borrow_mut()
+        .tls_setting.privkey_file = pj_str_t::from_string(
+            path.to_str().unwrap().to_string()
+        );
     }
 
-    pub fn set_password(&mut self, password: &str) {
-        unsafe {
-            self.udp_cfg.tls_setting.password =
-                pj_str(CString::new(password).expect("error").into_raw());
-        }
+    pub fn set_password(&self, password: String) {
+        self.config.ctx.borrow_mut()
+            .tls_setting.password = pj_str_t::from_string(password);
     }
 
-    pub fn set_tls_verify_server(&mut self, value: bool) {
-        self.udp_cfg.tls_setting.verify_server = if value {
-            PJ_TRUE as pj_bool_t
-        } else {
-            PJ_FALSE as pj_bool_t
-        }
+    pub fn set_tls_verify_server(&self, value: bool) {
+        self.config.ctx.borrow_mut()
+        .tls_setting.verify_server = boolean_to_pjbool(value);
     }
 
-    pub fn set_tls_verify_client(&mut self, value: bool) {
-        let val = if value {
-            PJ_TRUE as pj_bool_t
-        } else {
-            PJ_FALSE as pj_bool_t
-        };
+    pub fn set_tls_verify_client(&self, value: bool) {
+        self.config.ctx.borrow_mut()
+        .tls_setting.verify_client = boolean_to_pjbool(value);
 
-        self.udp_cfg.tls_setting.verify_client = val;
-        self.udp_cfg.tls_setting.require_client_cert = val;
+        self.config.ctx.borrow_mut()
+        .tls_setting.require_client_cert = boolean_to_pjbool(value);
     }
-
 }
 
+
+impl SIPTransportConfigExt for SIPTransportConfig {
+    fn set_port(&self, value: u32) {
+        self.ctx.borrow_mut().port = value;
+    }
+
+    fn get_port(&self) -> u32 {
+        self.ctx.borrow().port
+    }
+
+    fn set_port_range(&self, value: u32) {
+        self.ctx.borrow_mut().port_range = value;
+    }
+
+    fn get_port_range(&self) -> u32 {
+        self.ctx.borrow().port_range
+    }
+
+    fn set_public_addr(&self, value: String) {
+        self.ctx.borrow_mut().public_addr = pj_str_t::from_string(value);
+    }
+
+    fn get_public_addr(&self) -> String {
+        self.ctx.borrow().public_addr.to_string()
+    }
+
+    fn set_bound_addr(&self, value: String) {
+        self.ctx.borrow_mut().bound_addr = pj_str_t::from_string(value);
+    }
+
+    fn get_bound_addr(&self) -> String {
+        self.ctx.borrow().bound_addr.to_string()
+    }
+
+    fn set_qos_type(&self, value: u32) {
+        self.ctx.borrow_mut().qos_type = value;
+    }
+
+    fn get_qos_type(&self) -> u32 {
+        self.ctx.borrow().qos_type
+    }
+}
