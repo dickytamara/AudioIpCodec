@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
+extern crate pjproject;
 extern crate pjsua_sys;
 extern crate pjmedia_sys;
 extern crate pjsip_sys;
@@ -36,7 +37,6 @@ mod settings_proxy;
 mod settings_dns;
 
 // sipua module
-pub mod pjproject;
 pub mod sipua;
 mod settings_tls;
 

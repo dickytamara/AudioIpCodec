@@ -840,7 +840,7 @@ pub fn resolve_stun_servers<T> (
             count,
             srv.as_mut_ptr(),
             utils::boolean_to_pjbool(wait),
-            ptr::null_mut(),
+            token,
             cb
         );
 

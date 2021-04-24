@@ -6,5 +6,3 @@ pub mod pjmedia;
 pub mod pjsip;
 pub mod pjsua;
 pub mod prelude;
-
-
