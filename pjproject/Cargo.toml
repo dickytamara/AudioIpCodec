@@ -7,8 +7,13 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-pj-sys = { path = "../pj-sys" }
+pj-sys = { path = "../pj-sys"}
+pjlib-util-sys = { path = "../pjlib-util-sys" }
+pjnath-sys = { path = "../pjnath-sys" }
 pjmedia-sys = { path = "../pjmedia-sys" }
+pjmedia-audiodev-sys = { path = "../pjmedia-audiodev-sys" }
+pjmedia-codec-sys = { path = "../pjmedia-codec-sys" }
 pjsip-sys = { path = "../pjsip-sys" }
+pjsip-ua-sys = { path = "../pjsip-ua-sys" }
 pjsip-simple-sys = { path = "../pjsip-simple-sys" }
 pjsua-sys = { path = "../pjsua-sys" }

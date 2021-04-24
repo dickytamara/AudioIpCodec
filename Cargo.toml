@@ -10,7 +10,10 @@ edition = "2018"
 pjproject = { path = "./pjproject" }
 pj-sys = { path = "./pj-sys" }
 pjmedia-sys = { path = "./pjmedia-sys" }
+pjmedia-audiodev-sys = { path = "./pjmedia-audiodev-sys" }
+pjmedia-codec-sys = { path = "./pjmedia-codec-sys" }
 pjsip-sys = { path = "./pjsip-sys" }
+pjsip-ua-sys = { path = "./pjsip-ua-sys" }
 pjsip-simple-sys = { path = "./pjsip-simple-sys" }
 pjsua-sys = { path = "./pjsua-sys" }
 configparser = "1.0.0"
