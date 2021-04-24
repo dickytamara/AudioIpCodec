@@ -134,8 +134,6 @@ impl<T> ::std::cmp::PartialEq for __BindgenUnionField<T> {
     }
 }
 impl<T> ::std::cmp::Eq for __BindgenUnionField<T> {}
-pub const PJ_CC_NAME: &'static [u8; 4usize] = b"gcc\0";
-pub const PJ_HAS_INT64: u32 = 1;
 pub const PJMEDIA_POOL_LEN_ENDPT: u32 = 512;
 pub const PJMEDIA_POOL_INC_ENDPT: u32 = 512;
 pub const PJMEDIA_POOL_LEN_EVTMGR: u32 = 500;
