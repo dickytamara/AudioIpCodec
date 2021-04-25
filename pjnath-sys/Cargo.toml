@@ -9,7 +9,6 @@ build = "build.rs"
 
 [dependencies]
 pj-sys = { path = "../pj-sys" }
-pjlib-util-sys = { path = "../pjlib-util-sys"}
 
 [build-dependencies]
 bindgen = "0.58.0"

@@ -5,27 +5,14 @@ fn main () {
 
     println!("cargo:rustc-link-lib=pjnath");
     println!("cargo:rustc-link-search=native=/usr/lib");
-    // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
-    let pjnath = bindgen::Builder::default()
-        .header("wrapper.h")
-        // .clang_arg("-I/usr/local/include")
-        // .clang_arg("-I/usr/lib/llvm-11/lib/clang/11.0.1/include")
-        // .clang_arg("-I/usr/include/x86_64-linux-gnu")
-        // .clang_arg("-I/usr/include")
-        // .clang_arg("-lstdc++")
-
+    let pjnath = bindgen::Builder::default().header("wrapper.h")
         .raw_line("#![allow(non_upper_case_globals)]")
         .raw_line("#![allow(non_camel_case_types)]")
         .raw_line("#![allow(non_snake_case)]")
         .raw_line("extern crate pj_sys;")
-        // .raw_line("extern crate pjlib_util_sys;")
         .raw_line("use pj_sys::*;")
-        // .raw_line("use pjlib_util_sys::*;")
 
         // pj-sys
         // struct

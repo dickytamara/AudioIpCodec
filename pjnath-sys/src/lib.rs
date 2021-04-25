@@ -221,7 +221,6 @@ pub struct pj_stun_errcode_attr {
 }
 pub type pj_stun_realm_attr = pj_stun_string_attr;
 pub type pj_stun_nonce_attr = pj_stun_string_attr;
-
 #[repr(C)]
 pub struct pj_stun_unknown_attr {
     pub hdr: pj_stun_attr_hdr,
@@ -258,7 +257,6 @@ pub type pj_stun_timer_val_attr = pj_stun_uint_attr;
 pub type pj_stun_ice_controlling_attr = pj_stun_uint64_attr;
 pub type pj_stun_ice_controlled_attr = pj_stun_uint64_attr;
 pub type pj_stun_icmp_attr = pj_stun_uint_attr;
-
 #[repr(C)]
 pub struct pj_stun_msg {
     pub hdr: pj_stun_msg_hdr,

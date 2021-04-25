@@ -5,31 +5,10 @@ fn main () {
 
     println!("cargo:rustc-link-lib=pj");
     println!("cargo:rustc-link-search=native=/usr/lib");
-    // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
-    let pj = bindgen::Builder::default()
-        // The input header we would like to generate
-        // bindings for.
-        // -lpjsua2 -lstdc++
-        // -lpjsua -lpjsip-ua -lpjsip-simple -lpjsip
-        // -lpjmedia-codec -lpjmedia -lpjmedia-videodev
-        // -lpjmedia-audiodev -lpjmedia -lpjnath -lpjlib-util -lpj
-        // -lsrtp -lresample -lilbccodec -lg7221codec  -lopus
-        // -lssl -lcrypto -lm -lrt -lpthread  -lasound
-        // -lopencore-amrnb -lopencore-amrwb -lvo-amrwbenc
-        .header("wrapper.h")
+    let pj = bindgen::Builder::default().header("wrapper.h")
         // .dynamic_library_name("pj")
-        // .clang_arg("-I/usr/local/include")
-        // .clang_arg("-I/usr/lib/llvm-11/lib/clang/11.0.1/include")
-        // .clang_arg("-I/usr/include/x86_64-linux-gnu")
-        // .clang_arg("-I/usr/include")
-        // .clang_arg("-lstdc++")
-        // .parse_callbacks(Box::new(bindgen::CargoCallbacks))
-
         .raw_line("#![allow(non_upper_case_globals)]")
         .raw_line("#![allow(non_camel_case_types)]")
         .raw_line("#![allow(non_snake_case)]")
@@ -510,11 +489,10 @@ fn main () {
 
         .allowlist_type("PJ.*")
         .allowlist_type("pj.*")
-
         .allowlist_var("pj.*")
         .allowlist_var("PJ.*")
+
         .allowlist_recursively(true)
-        //.blocklist_item("PJ_HAS_.*")
         .translate_enum_integer_types(true)
         .layout_tests(false)
         .prepend_enum_name(false)
