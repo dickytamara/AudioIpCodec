@@ -1,1 +1,0 @@
-/home/tamara/Documents/IpCodec/OpenAudioIpCodecs/pjlib-util-sys/target/debug/libpjlib_util_sys.rlib: /home/tamara/Documents/IpCodec/OpenAudioIpCodecs/pj-sys/src/lib.rs /home/tamara/Documents/IpCodec/OpenAudioIpCodecs/pjlib-util-sys/src/lib.rs
