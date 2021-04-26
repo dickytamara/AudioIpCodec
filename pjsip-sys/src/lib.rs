@@ -5,8 +5,10 @@
 #![allow(non_snake_case)]
 extern crate pj_sys;
 extern crate pjlib_util_sys;
+extern crate pjmedia_sys;
 use pj_sys::*;
 use pjlib_util_sys::*;
+use pjmedia_sys::*;
 
 #[repr(C)]
 pub struct __BindgenUnionField<T>(::std::marker::PhantomData<T>);

@@ -16,8 +16,10 @@ fn main () {
         .raw_line("#![allow(non_snake_case)]")
         .raw_line("extern crate pj_sys;")
         .raw_line("extern crate pjlib_util_sys;")
+        .raw_line("extern crate pjmedia_sys;")
         .raw_line("use pj_sys::*;")
         .raw_line("use pjlib_util_sys::*;")
+        .raw_line("use pjmedia_sys::*;")
         // .parse_callbacks(Box::new(bindgen::CargoCallbacks))
 
         // pj-sys
