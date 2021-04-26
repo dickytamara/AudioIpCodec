@@ -391,6 +391,7 @@ fn main () {
         .blocklist_type("pjsip_dlg_party")
         .blocklist_type("pjsip_dialog")
         .blocklist_type("pjsip_dlg_create_uac_param")
+        .blocklist_type("pjsip_tpselector__bindgen_ty_1")
 
         .allowlist_function("pjsip_100rel_attach")
         .allowlist_function("pjsip_100rel_create_prack")

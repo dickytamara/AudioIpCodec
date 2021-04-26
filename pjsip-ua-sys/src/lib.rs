@@ -10,13 +10,6 @@ use pj_sys::*;
 use pjsip_sys::*;
 use pjmedia_sys::*;
 
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union pjsip_tpselector__bindgen_ty_1 {
-    pub transport: *mut pjsip_transport,
-    pub listener: *mut pjsip_tpfactory,
-    pub ptr: *mut ::std::os::raw::c_void,
-}
 pub const PJSIP_REDIRECT_REJECT: pjsip_redirect_op = 0;
 pub const PJSIP_REDIRECT_ACCEPT: pjsip_redirect_op = 1;
 pub const PJSIP_REDIRECT_ACCEPT_REPLACE: pjsip_redirect_op = 2;
