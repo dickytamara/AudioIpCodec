@@ -2760,11 +2760,6 @@ pub struct pjmedia_vid_dev_info {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pjmedia_vid_dev_stream {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
 pub struct pjmedia_vid_dev_cb {
     pub capture_cb: ::std::option::Option<
         unsafe extern "C" fn(
@@ -2797,11 +2792,6 @@ pub struct pjmedia_vid_dev_param {
     pub orient: pjmedia_orient,
     pub window_flags: ::std::os::raw::c_uint,
     pub window_fullscreen: pj_bool_t,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjmedia_vid_dev_factory {
-    _unused: [u8; 0],
 }
 pub type pjmedia_vid_dev_factory_create_func_ptr = ::std::option::Option<
     unsafe extern "C" fn(arg1: *mut pj_pool_factory) -> *mut pjmedia_vid_dev_factory,
@@ -6119,4 +6109,113 @@ extern "C" {
         buf2_cnt: ::std::os::raw::c_uint,
         erase_cnt: *mut ::std::os::raw::c_uint,
     ) -> pj_status_t;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_factory_op {
+    pub init:
+        ::std::option::Option<unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> pj_status_t>,
+    pub destroy:
+        ::std::option::Option<unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> pj_status_t>,
+    pub get_dev_count: ::std::option::Option<
+        unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> ::std::os::raw::c_uint,
+    >,
+    pub get_dev_info: ::std::option::Option<
+        unsafe extern "C" fn(
+            f: *mut pjmedia_vid_dev_factory,
+            index: ::std::os::raw::c_uint,
+            info: *mut pjmedia_vid_dev_info,
+        ) -> pj_status_t,
+    >,
+    pub default_param: ::std::option::Option<
+        unsafe extern "C" fn(
+            pool: *mut pj_pool_t,
+            f: *mut pjmedia_vid_dev_factory,
+            index: ::std::os::raw::c_uint,
+            param: *mut pjmedia_vid_dev_param,
+        ) -> pj_status_t,
+    >,
+    pub create_stream: ::std::option::Option<
+        unsafe extern "C" fn(
+            f: *mut pjmedia_vid_dev_factory,
+            param: *mut pjmedia_vid_dev_param,
+            cb: *const pjmedia_vid_dev_cb,
+            user_data: *mut ::std::os::raw::c_void,
+            p_vid_strm: *mut *mut pjmedia_vid_dev_stream,
+        ) -> pj_status_t,
+    >,
+    pub refresh:
+        ::std::option::Option<unsafe extern "C" fn(f: *mut pjmedia_vid_dev_factory) -> pj_status_t>,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_factory {
+    pub sys: pjmedia_vid_dev_factory__bindgen_ty_1,
+    pub op: *mut pjmedia_vid_dev_factory_op,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_factory__bindgen_ty_1 {
+    pub drv_idx: ::std::os::raw::c_uint,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjmedia_vid_dev_stream_op {
+    pub get_param: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            param: *mut pjmedia_vid_dev_param,
+        ) -> pj_status_t,
+    >,
+    pub get_cap: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            cap: pjmedia_vid_dev_cap,
+            value: *mut ::std::os::raw::c_void,
+        ) -> pj_status_t,
+    >,
+    pub set_cap: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            cap: pjmedia_vid_dev_cap,
+            value: *const ::std::os::raw::c_void,
+        ) -> pj_status_t,
+    >,
+    pub start: ::std::option::Option<
+        unsafe extern "C" fn(strm: *mut pjmedia_vid_dev_stream) -> pj_status_t,
+    >,
+    pub get_frame: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            frame: *mut pjmedia_frame,
+        ) -> pj_status_t,
+    >,
+    pub put_frame: ::std::option::Option<
+        unsafe extern "C" fn(
+            strm: *mut pjmedia_vid_dev_stream,
+            frame: *const pjmedia_frame,
+        ) -> pj_status_t,
+    >,
+    pub stop: ::std::option::Option<
+        unsafe extern "C" fn(strm: *mut pjmedia_vid_dev_stream) -> pj_status_t,
+    >,
+    pub destroy: ::std::option::Option<
+        unsafe extern "C" fn(strm: *mut pjmedia_vid_dev_stream) -> pj_status_t,
+    >,
+}
+#[repr(C)]
+pub struct pjmedia_vid_dev_stream {
+    pub sys: pjmedia_vid_dev_stream__bindgen_ty_1,
+    pub op: *mut pjmedia_vid_dev_stream_op,
+}
+#[repr(C)]
+pub struct pjmedia_vid_dev_stream__bindgen_ty_1 {
+    pub drv_idx: ::std::os::raw::c_uint,
+    pub is_running: pj_bool_t,
+}
+#[repr(C)]
+pub struct pjmedia_avi_dev_param {
+    pub path: pj_str_t,
+    pub title: pj_str_t,
+    pub avi_streams: *mut pjmedia_avi_streams,
 }

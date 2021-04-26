@@ -5,12 +5,8 @@ use std::env;
 fn main() {
     println!("cargo:rustc-link-lib=pjmedia");
     println!("cargo:rustc-link-search=native=/usr/lib");
-    // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
 
-    // The bindgen::Builder is the main entry point
-    // to bindgen, and lets you build up options for
-    // the resulting bindings.
     let pjmedia = bindgen::Builder::default().header("wrapper.h")
         // .dynamic_library_name("pjmedia")
         .raw_line("#![allow(non_upper_case_globals)]")
@@ -90,6 +86,8 @@ fn main() {
         .blocklist_type("pj_cli_front_end_type")
         .blocklist_type("pj_cli_telnet_on_started")
 
+
+
         // pjnath-sys
         // pub type
         .blocklist_type("pj_stun_method_e").blocklist_type("pj_stun_msg_class_e").blocklist_type("pj_stun_msg_type").blocklist_type("pj_stun_attr_type")
@@ -127,6 +125,26 @@ fn main() {
         .blocklist_type("pj_turn_session_on_rx_pkt_param").blocklist_type("pj_turn_sock").blocklist_type("pj_turn_sock_cb").blocklist_type("pj_turn_sock_tls_cfg")
         .blocklist_type("pj_turn_sock_cfg").blocklist_type("pj_ice_strans").blocklist_type("pj_ice_strans_cb").blocklist_type("pj_ice_strans_stun_cfg")
         .blocklist_type("pj_ice_strans_turn_cfg").blocklist_type("pj_ice_strans_cfg").blocklist_type("pj_stun_nat_detect_result")
+
+        .blocklist_type("pj_stun_msg_hdr").blocklist_type("pj_stun_attr_hdr").blocklist_type("pj_stun_sockaddr_attr").blocklist_type("pj_stun_empty_attr")
+        .blocklist_type("pj_stun_string_attr").blocklist_type("pj_stun_uint_attr").blocklist_type("pj_stun_uint64_attr").blocklist_type("pj_stun_binary_attr")
+        .blocklist_type("pj_stun_msgint_attr").blocklist_type("pj_stun_errcode_attr").blocklist_type("pj_stun_unknown_attr").blocklist_type("pj_stun_msg")
+        .blocklist_type("pj_stun_auth_cred").blocklist_type("pj_stun_auth_cred__bindgen_ty_1").blocklist_type("pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1").blocklist_type("pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2")
+        .blocklist_type("pj_stun_req_cred_info").blocklist_type("pj_stun_config").blocklist_type("pj_stun_client_tsx").blocklist_type("pj_stun_tsx_cb")
+        .blocklist_type("pj_stun_session").blocklist_type("pj_stun_session_cb").blocklist_type("pj_stun_rx_data").blocklist_type("pj_stun_tx_data")
+        .blocklist_type("pj_ice_sess_comp").blocklist_type("pj_ice_msg_data").blocklist_type("pj_ice_msg_data_data_request_data").blocklist_type("pj_ice_sess_cand")
+        .blocklist_type("pj_ice_sess_check").blocklist_type("pj_ice_sess_checklist").blocklist_type("pj_ice_sess_cb").blocklist_type("pj_ice_rx_check")
+        .blocklist_type("pj_ice_sess_options").blocklist_type("pj_ice_sess").blocklist_type("pj_dns_hdr").blocklist_type("pj_dns_parsed_query")
+        .blocklist_type("pj_dns_parsed_rr").blocklist_type("pj_dns_parsed_rr_rdata").blocklist_type("pj_dns_parsed_rr_rdata_srv").blocklist_type("pj_dns_parsed_rr_rdata_cname")
+        .blocklist_type("pj_dns_parsed_rr_rdata_ns").blocklist_type("pj_dns_parsed_rr_rdata_ptr").blocklist_type("pj_dns_parsed_rr_rdata_a").blocklist_type("pj_dns_parsed_rr_rdata_aaaa")
+        .blocklist_type("pj_dns_parsed_packet").blocklist_type("pj_dns_resolver").blocklist_type("pj_dns_async_query").blocklist_type("pj_dns_settings")
+        .blocklist_type("pj_dns_a_record").blocklist_type("pj_dns_addr_record").blocklist_type("pj_dns_addr_record__bindgen_ty_1").blocklist_type("pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1")
+        .blocklist_type("pj_stun_sock").blocklist_type("pj_stun_sock_cb").blocklist_type("pj_stun_sock_info").blocklist_type("pj_stun_sock_cfg")
+        .blocklist_type("pj_turn_session").blocklist_type("pj_turn_channel_data").blocklist_type("pj_turn_session_cb").blocklist_type("pj_turn_alloc_param")
+        .blocklist_type("pj_turn_session_info").blocklist_type("pj_turn_session_on_rx_pkt_param").blocklist_type("pj_turn_sock").blocklist_type("pj_turn_sock_cb")
+        .blocklist_type("pj_turn_sock_tls_cfg").blocklist_type("pj_turn_sock_cfg").blocklist_type("pj_ice_strans").blocklist_type("pj_ice_strans_cb")
+        .blocklist_type("pj_ice_strans_stun_cfg").blocklist_type("pj_ice_strans_turn_cfg").blocklist_type("pj_ice_strans_cfg").blocklist_type("pj_ice_strans_cfg__bindgen_ty_1")
+        .blocklist_type("pj_stun_nat_detect_result")
 
         .blocklist_type("pj_stun_auth_cred__bindgen_ty_1")
         .blocklist_type("pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1")
@@ -579,8 +597,6 @@ fn main() {
         // Unwrap the Result and panic on failure.
         .expect("Unable to generate bindings");
 
-    // Write the bindings to the $OUT_DIR/bindings.rs file.
-    // let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let out_path = env::current_dir().unwrap();
     pjmedia.write_to_file(out_path.join("src/lib.rs")).expect("Error write src/lib.rs");
 }

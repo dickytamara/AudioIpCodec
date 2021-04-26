@@ -4,7 +4,9 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 extern crate pj_sys;
+extern crate pjlib_util_sys;
 use pj_sys::*;
+use pjlib_util_sys::*;
 
 #[repr(C)]
 pub struct __BindgenUnionField<T>(::std::marker::PhantomData<T>);
@@ -1263,15 +1265,6 @@ extern "C" {
         src_addr_len: ::std::os::raw::c_int,
     ) -> pj_status_t;
 }
-#[repr(C)]
-pub struct pj_dns_hdr {
-    pub id: pj_uint16_t,
-    pub flags: pj_uint16_t,
-    pub qdcount: pj_uint16_t,
-    pub anscount: pj_uint16_t,
-    pub nscount: pj_uint16_t,
-    pub arcount: pj_uint16_t,
-}
 pub const PJ_DNS_RCODE_FORMERR: pj_dns_rcode = 1;
 pub const PJ_DNS_RCODE_SERVFAIL: pj_dns_rcode = 2;
 pub const PJ_DNS_RCODE_NXDOMAIN: pj_dns_rcode = 3;
@@ -1283,119 +1276,11 @@ pub const PJ_DNS_RCODE_NXRRSET: pj_dns_rcode = 8;
 pub const PJ_DNS_RCODE_NOTAUTH: pj_dns_rcode = 9;
 pub const PJ_DNS_RCODE_NOTZONE: pj_dns_rcode = 10;
 pub type pj_dns_rcode = u32;
-#[repr(C)]
-pub struct pj_dns_parsed_query {
-    pub name: pj_str_t,
-    pub type_: pj_uint16_t,
-    pub dnsclass: pj_uint16_t,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr {
-    pub name: pj_str_t,
-    pub type_: pj_uint16_t,
-    pub dnsclass: pj_uint16_t,
-    pub ttl: pj_uint32_t,
-    pub rdlength: pj_uint16_t,
-    pub data: *mut ::std::os::raw::c_void,
-    pub rdata: pj_dns_parsed_rr_rdata,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata {
-    pub srv: __BindgenUnionField<pj_dns_parsed_rr_rdata_srv>,
-    pub cname: __BindgenUnionField<pj_dns_parsed_rr_rdata_cname>,
-    pub ns: __BindgenUnionField<pj_dns_parsed_rr_rdata_ns>,
-    pub ptr: __BindgenUnionField<pj_dns_parsed_rr_rdata_ptr>,
-    pub a: __BindgenUnionField<pj_dns_parsed_rr_rdata_a>,
-    pub aaaa: __BindgenUnionField<pj_dns_parsed_rr_rdata_aaaa>,
-    pub bindgen_union_field: [u64; 3usize],
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata_srv {
-    pub prio: pj_uint16_t,
-    pub weight: pj_uint16_t,
-    pub port: pj_uint16_t,
-    pub target: pj_str_t,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata_cname {
-    pub name: pj_str_t,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata_ns {
-    pub name: pj_str_t,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata_ptr {
-    pub name: pj_str_t,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata_a {
-    pub ip_addr: pj_in_addr,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_rr_rdata_aaaa {
-    pub ip_addr: pj_in6_addr,
-}
-#[repr(C)]
-pub struct pj_dns_parsed_packet {
-    pub hdr: pj_dns_hdr,
-    pub q: *mut pj_dns_parsed_query,
-    pub ans: *mut pj_dns_parsed_rr,
-    pub ns: *mut pj_dns_parsed_rr,
-    pub arr: *mut pj_dns_parsed_rr,
-}
 pub const PJ_DNS_NO_QD: pj_dns_dup_options = 1;
 pub const PJ_DNS_NO_ANS: pj_dns_dup_options = 2;
 pub const PJ_DNS_NO_NS: pj_dns_dup_options = 4;
 pub const PJ_DNS_NO_AR: pj_dns_dup_options = 8;
 pub type pj_dns_dup_options = u32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_dns_resolver {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_dns_async_query {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_dns_settings {
-    pub options: ::std::os::raw::c_uint,
-    pub qretr_delay: ::std::os::raw::c_uint,
-    pub qretr_count: ::std::os::raw::c_uint,
-    pub cache_max_ttl: ::std::os::raw::c_uint,
-    pub good_ns_ttl: ::std::os::raw::c_uint,
-    pub bad_ns_ttl: ::std::os::raw::c_uint,
-}
-#[repr(C)]
-pub struct pj_dns_a_record {
-    pub name: pj_str_t,
-    pub alias: pj_str_t,
-    pub addr_count: ::std::os::raw::c_uint,
-    pub addr: [pj_in_addr; 8usize],
-    pub buf_: [::std::os::raw::c_char; 128usize],
-}
-#[repr(C)]
-pub struct pj_dns_addr_record {
-    pub name: pj_str_t,
-    pub alias: pj_str_t,
-    pub addr_count: ::std::os::raw::c_uint,
-    pub addr: [pj_dns_addr_record__bindgen_ty_1; 8usize],
-    pub buf_: [::std::os::raw::c_char; 128usize],
-}
-#[repr(C)]
-pub struct pj_dns_addr_record__bindgen_ty_1 {
-    pub af: ::std::os::raw::c_int,
-    pub ip: pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1,
-}
-#[repr(C)]
-pub struct pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1 {
-    pub v4: __BindgenUnionField<pj_in_addr>,
-    pub v6: __BindgenUnionField<pj_in6_addr>,
-    pub bindgen_union_field: [u32; 4usize],
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_stun_sock {
