@@ -9,7 +9,7 @@ build = "build.rs"
 
 [dependencies]
 pj-sys = { path = "../pj-sys" }
-# pjlib-util-sys = { path = "../pjlib-util-sys"}
+pjsip-sys = { path = "../pjsip-sys"}
 pjmedia-sys = { path = "../pjmedia-sys" }
 
 
