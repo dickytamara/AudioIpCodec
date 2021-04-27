@@ -176,6 +176,8 @@ fn main () {
         .blocklist_type("pj_cli_cmd_handler")
         .blocklist_type("pj_cli_front_end_type")
         .blocklist_type("pj_cli_telnet_on_started")
+        .blocklist_type("pj_scanner")
+        .blocklist_type("pj_cis_t")
 
         .allowlist_function("create_uas_dialog")
         .allowlist_function("deinit_sip_parser")
@@ -572,12 +574,12 @@ fn main () {
         .allowlist_var("pjsip_URI_STR")
         .allowlist_var("pjsip_USERNAME_STR")
 
-        // .whitelisted_type("PJSIP_.*")
-        // .whitelisted_type("pjsip_.*")
+        .allowlist_type("PJSIP.*")
+        .allowlist_type("pjsip.*")
         // .whitelisted_function("PJSIP_.*")
         // .whitelisted_function("pjsip_.*")
-        // .whitelisted_var("PJSIP_.*")
-        // .whitelisted_var("pjsip_.*")
+        .allowlist_var("PJSIP.*")
+        .allowlist_var("pjsip.*")
 
 
 

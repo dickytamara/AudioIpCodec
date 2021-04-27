@@ -51,6 +51,197 @@ impl<T> ::std::cmp::PartialEq for __BindgenUnionField<T> {
     }
 }
 impl<T> ::std::cmp::Eq for __BindgenUnionField<T> {}
+pub const PJSIP_MAX_TSX_COUNT: u32 = 1023;
+pub const PJSIP_MAX_DIALOG_COUNT: u32 = 511;
+pub const PJSIP_MAX_TRANSPORTS: u32 = 64;
+pub const PJSIP_TPMGR_HTABLE_SIZE: u32 = 31;
+pub const PJSIP_MAX_URL_SIZE: u32 = 256;
+pub const PJSIP_MAX_MODULE: u32 = 32;
+pub const PJSIP_MAX_PKT_LEN: u32 = 4000;
+pub const PJSIP_DONT_SWITCH_TO_TCP: u32 = 0;
+pub const PJSIP_DONT_SWITCH_TO_TLS: u32 = 0;
+pub const PJSIP_HANDLE_EVENTS_HAS_SLEEP_ON_ERR: u32 = 1;
+pub const PJSIP_ACCEPT_REPLACE_IN_EARLY_STATE: u32 = 0;
+pub const PJSIP_UDP_SIZE_THRESHOLD: u32 = 1300;
+pub const PJSIP_ENCODE_SHORT_HNAME: u32 = 0;
+pub const PJSIP_INCLUDE_ALLOW_HDR_IN_DLG: u32 = 1;
+pub const PJSIP_SAFE_MODULE: u32 = 1;
+pub const PJSIP_CHECK_VIA_SENT_BY: u32 = 0;
+pub const PJSIP_UNESCAPE_IN_PLACE: u32 = 0;
+pub const PJSIP_ALLOW_PORT_IN_FROMTO_HDR: u32 = 0;
+pub const PJSIP_MAX_NET_EVENTS: u32 = 1;
+pub const PJSIP_MAX_TIMED_OUT_ENTRIES: u32 = 10;
+pub const PJSIP_TRANSPORT_IDLE_TIME: u32 = 33;
+pub const PJSIP_TRANSPORT_SERVER_IDLE_TIME: u32 = 600;
+pub const PJSIP_TCP_TRANSPORT_BACKLOG: u32 = 5;
+pub const PJSIP_TCP_TRANSPORT_REUSEADDR: u32 = 1;
+pub const PJSIP_TCP_TRANSPORT_DONT_CREATE_LISTENER: u32 = 0;
+pub const PJSIP_TLS_TRANSPORT_DONT_CREATE_LISTENER: u32 = 0;
+pub const PJSIP_TCP_KEEP_ALIVE_INTERVAL: u32 = 90;
+pub const PJSIP_TCP_INITIAL_TIMEOUT: u32 = 0;
+pub const PJSIP_TLS_KEEP_ALIVE_INTERVAL: u32 = 90;
+pub const PJSIP_HAS_RESOLVER: u32 = 1;
+pub const PJSIP_MAX_RESOLVED_ADDRESSES: u32 = 16;
+pub const PJSIP_HAS_TLS_TRANSPORT: u32 = 0;
+pub const PJSIP_TLS_TRANSPORT_BACKLOG: u32 = 5;
+pub const PJSIP_TLS_TRANSPORT_REUSEADDR: u32 = 1;
+pub const PJSIP_POOL_LEN_ENDPT: u32 = 4000;
+pub const PJSIP_POOL_INC_ENDPT: u32 = 4000;
+pub const PJSIP_POOL_RDATA_LEN: u32 = 4000;
+pub const PJSIP_POOL_RDATA_INC: u32 = 4000;
+pub const PJSIP_POOL_LEN_TRANSPORT: u32 = 512;
+pub const PJSIP_POOL_INC_TRANSPORT: u32 = 512;
+pub const PJSIP_POOL_LEN_TDATA: u32 = 4000;
+pub const PJSIP_POOL_INC_TDATA: u32 = 4000;
+pub const PJSIP_POOL_LEN_UA: u32 = 512;
+pub const PJSIP_POOL_INC_UA: u32 = 512;
+pub const PJSIP_POOL_EVSUB_LEN: u32 = 512;
+pub const PJSIP_POOL_EVSUB_INC: u32 = 512;
+pub const PJSIP_MAX_FORWARDS_VALUE: u32 = 70;
+pub const PJSIP_RFC3261_BRANCH_ID: &'static [u8; 8usize] = b"z9hG4bK\0";
+pub const PJSIP_RFC3261_BRANCH_LEN: u32 = 7;
+pub const PJSIP_POOL_TSX_LAYER_LEN: u32 = 512;
+pub const PJSIP_POOL_TSX_LAYER_INC: u32 = 512;
+pub const PJSIP_POOL_TSX_LEN: u32 = 1536;
+pub const PJSIP_POOL_TSX_INC: u32 = 256;
+pub const PJSIP_TSX_1XX_RETRANS_DELAY: u32 = 60;
+pub const PJSIP_MAX_TSX_KEY_LEN: u32 = 512;
+pub const PJSIP_POOL_LEN_USER_AGENT: u32 = 1024;
+pub const PJSIP_POOL_INC_USER_AGENT: u32 = 1024;
+pub const PJSIP_MAX_HNAME_LEN: u32 = 64;
+pub const PJSIP_POOL_LEN_DIALOG: u32 = 1200;
+pub const PJSIP_POOL_INC_DIALOG: u32 = 512;
+pub const PJSIP_MAX_HEADER_TYPES: u32 = 72;
+pub const PJSIP_MAX_URI_TYPES: u32 = 4;
+pub const PJSIP_T1_TIMEOUT: u32 = 500;
+pub const PJSIP_T2_TIMEOUT: u32 = 4000;
+pub const PJSIP_T4_TIMEOUT: u32 = 5000;
+pub const PJSIP_TD_TIMEOUT: u32 = 32000;
+pub const PJSIP_AUTH_HEADER_CACHING: u32 = 0;
+pub const PJSIP_AUTH_AUTO_SEND_NEXT: u32 = 0;
+pub const PJSIP_AUTH_QOP_SUPPORT: u32 = 1;
+pub const PJSIP_MAX_STALE_COUNT: u32 = 3;
+pub const PJSIP_HAS_DIGEST_AKA_AUTH: u32 = 0;
+pub const PJSIP_REGISTER_CLIENT_DELAY_BEFORE_REFRESH: u32 = 5;
+pub const PJSIP_REGISTER_CLIENT_CHECK_CONTACT: u32 = 1;
+pub const PJSIP_REGISTER_CLIENT_ADD_XUID_PARAM: u32 = 0;
+pub const PJSIP_AUTH_CACHED_POOL_MAX_SIZE: u32 = 20480;
+pub const PJSIP_AUTH_CNONCE_USE_DIGITS_ONLY: u32 = 1;
+pub const PJSIP_EVSUB_TIME_UAC_REFRESH: u32 = 5;
+pub const PJSIP_PUBLISHC_DELAY_BEFORE_REFRESH: u32 = 5;
+pub const PJSIP_EVSUB_TIME_UAC_TERMINATE: u32 = 5;
+pub const PJSIP_EVSUB_TIME_UAC_WAIT_NOTIFY: u32 = 5;
+pub const PJSIP_PRES_DEFAULT_EXPIRES: u32 = 600;
+pub const PJSIP_PRES_BAD_CONTENT_RESPONSE: u32 = 488;
+pub const PJSIP_PRES_PIDF_ADD_TIMESTAMP: u32 = 1;
+pub const PJSIP_SESS_TIMER_DEF_SE: u32 = 1800;
+pub const PJSIP_SESS_TIMER_RETRY_DELAY: u32 = 10;
+pub const PJSIP_PUBLISHC_QUEUE_REQUEST: u32 = 1;
+pub const PJSIP_MWI_DEFAULT_EXPIRES: u32 = 3600;
+pub const PJSIP_HAS_TX_DATA_LIST: u32 = 0;
+pub const PJSIP_ERRNO_START: u32 = 170000;
+pub const PJSIP_ERRNO_START_PJSIP: u32 = 171000;
+pub const PJSIP_EBUSY: u32 = 171001;
+pub const PJSIP_ETYPEEXISTS: u32 = 171002;
+pub const PJSIP_ESHUTDOWN: u32 = 171003;
+pub const PJSIP_ENOTINITIALIZED: u32 = 171004;
+pub const PJSIP_ENOROUTESET: u32 = 171005;
+pub const PJSIP_EINVALIDMSG: u32 = 171020;
+pub const PJSIP_ENOTREQUESTMSG: u32 = 171021;
+pub const PJSIP_ENOTRESPONSEMSG: u32 = 171022;
+pub const PJSIP_EMSGTOOLONG: u32 = 171023;
+pub const PJSIP_EPARTIALMSG: u32 = 171024;
+pub const PJSIP_EINVALIDSTATUS: u32 = 171030;
+pub const PJSIP_EINVALIDURI: u32 = 171039;
+pub const PJSIP_EINVALIDSCHEME: u32 = 171040;
+pub const PJSIP_EMISSINGREQURI: u32 = 171041;
+pub const PJSIP_EINVALIDREQURI: u32 = 171042;
+pub const PJSIP_EURITOOLONG: u32 = 171043;
+pub const PJSIP_EMISSINGHDR: u32 = 171050;
+pub const PJSIP_EINVALIDHDR: u32 = 171051;
+pub const PJSIP_EINVALIDVIA: u32 = 171052;
+pub const PJSIP_EMULTIPLEVIA: u32 = 171053;
+pub const PJSIP_EMISSINGBODY: u32 = 171054;
+pub const PJSIP_EINVALIDMETHOD: u32 = 171055;
+pub const PJSIP_EUNSUPTRANSPORT: u32 = 171060;
+pub const PJSIP_EPENDINGTX: u32 = 171061;
+pub const PJSIP_ERXOVERFLOW: u32 = 171062;
+pub const PJSIP_EBUFDESTROYED: u32 = 171063;
+pub const PJSIP_ETPNOTSUITABLE: u32 = 171064;
+pub const PJSIP_ETPNOTAVAIL: u32 = 171065;
+pub const PJSIP_ETSXDESTROYED: u32 = 171070;
+pub const PJSIP_ENOTSX: u32 = 171071;
+pub const PJSIP_ECMPSCHEME: u32 = 171080;
+pub const PJSIP_ECMPUSER: u32 = 171081;
+pub const PJSIP_ECMPPASSWD: u32 = 171082;
+pub const PJSIP_ECMPHOST: u32 = 171083;
+pub const PJSIP_ECMPPORT: u32 = 171084;
+pub const PJSIP_ECMPTRANSPORTPRM: u32 = 171085;
+pub const PJSIP_ECMPTTLPARAM: u32 = 171086;
+pub const PJSIP_ECMPUSERPARAM: u32 = 171087;
+pub const PJSIP_ECMPMETHODPARAM: u32 = 171088;
+pub const PJSIP_ECMPMADDRPARAM: u32 = 171089;
+pub const PJSIP_ECMPOTHERPARAM: u32 = 171090;
+pub const PJSIP_ECMPHEADERPARAM: u32 = 171091;
+pub const PJSIP_EFAILEDCREDENTIAL: u32 = 171100;
+pub const PJSIP_ENOCREDENTIAL: u32 = 171101;
+pub const PJSIP_EINVALIDALGORITHM: u32 = 171102;
+pub const PJSIP_EINVALIDQOP: u32 = 171103;
+pub const PJSIP_EINVALIDAUTHSCHEME: u32 = 171104;
+pub const PJSIP_EAUTHNOPREVCHAL: u32 = 171105;
+pub const PJSIP_EAUTHNOAUTH: u32 = 171106;
+pub const PJSIP_EAUTHACCNOTFOUND: u32 = 171107;
+pub const PJSIP_EAUTHACCDISABLED: u32 = 171108;
+pub const PJSIP_EAUTHINVALIDREALM: u32 = 171109;
+pub const PJSIP_EAUTHINVALIDDIGEST: u32 = 171110;
+pub const PJSIP_EAUTHSTALECOUNT: u32 = 171111;
+pub const PJSIP_EAUTHINNONCE: u32 = 171112;
+pub const PJSIP_EAUTHINAKACRED: u32 = 171113;
+pub const PJSIP_EAUTHNOCHAL: u32 = 171114;
+pub const PJSIP_EMISSINGTAG: u32 = 171120;
+pub const PJSIP_ENOTREFER: u32 = 171121;
+pub const PJSIP_ENOREFERSESSION: u32 = 171122;
+pub const PJSIP_ESESSIONTERMINATED: u32 = 171140;
+pub const PJSIP_ESESSIONSTATE: u32 = 171141;
+pub const PJSIP_ESESSIONINSECURE: u32 = 171142;
+pub const PJSIP_TLS_EUNKNOWN: u32 = 171160;
+pub const PJSIP_TLS_EINVMETHOD: u32 = 171161;
+pub const PJSIP_TLS_ECACERT: u32 = 171162;
+pub const PJSIP_TLS_ECERTFILE: u32 = 171163;
+pub const PJSIP_TLS_EKEYFILE: u32 = 171164;
+pub const PJSIP_TLS_ECIPHER: u32 = 171165;
+pub const PJSIP_TLS_ECTX: u32 = 171166;
+pub const PJSIP_TLS_ESSLCONN: u32 = 171167;
+pub const PJSIP_TLS_ECONNECT: u32 = 171168;
+pub const PJSIP_TLS_EACCEPT: u32 = 171169;
+pub const PJSIP_TLS_ESEND: u32 = 171170;
+pub const PJSIP_TLS_EREAD: u32 = 171171;
+pub const PJSIP_TLS_ETIMEDOUT: u32 = 171172;
+pub const PJSIP_TLS_ECERTVERIF: u32 = 171173;
+pub const PJSIP_GENERIC_ARRAY_MAX_COUNT: u32 = 32;
+pub const PJSIP_MAX_ACCEPT_COUNT: u32 = 32;
+pub const PJSIP_MIN_CONTENT_LENGTH: u32 = 0;
+pub const PJSIP_MIN_PORT: u32 = 0;
+pub const PJSIP_MIN_TTL: u32 = 0;
+pub const PJSIP_MIN_STATUS_CODE: u32 = 100;
+pub const PJSIP_MAX_STATUS_CODE: u32 = 999;
+pub const PJSIP_MIN_Q1000: u32 = 0;
+pub const PJSIP_MIN_EXPIRES: u32 = 0;
+pub const PJSIP_MIN_CSEQ: u32 = 0;
+pub const PJSIP_MIN_RETRY_AFTER: u32 = 0;
+pub const PJSIP_MD5STRLEN: u32 = 32;
+pub const PJSIP_AUTH_SRV_IS_PROXY: u32 = 1;
+pub const PJSIP_AKA_AKLEN: u32 = 6;
+pub const PJSIP_AKA_AMFLEN: u32 = 2;
+pub const PJSIP_AKA_AUTNLEN: u32 = 16;
+pub const PJSIP_AKA_CKLEN: u32 = 16;
+pub const PJSIP_AKA_IKLEN: u32 = 16;
+pub const PJSIP_AKA_KLEN: u32 = 16;
+pub const PJSIP_AKA_MACLEN: u32 = 8;
+pub const PJSIP_AKA_OPLEN: u32 = 16;
+pub const PJSIP_AKA_RANDLEN: u32 = 16;
+pub const PJSIP_AKA_RESLEN: u32 = 8;
+pub const PJSIP_AKA_SQNLEN: u32 = 6;
 #[repr(C)]
 pub struct pjsip_cfg_t {
     pub endpt: pjsip_cfg_t__bindgen_ty_1,
@@ -161,22 +352,6 @@ extern "C" {
         buffer: *mut ::std::os::raw::c_char,
         bufsize: pj_size_t,
     ) -> pj_str_t;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pj_cis_t {
-    pub cis_buf: *mut pj_cis_elem_t,
-    pub cis_id: ::std::os::raw::c_int,
-}
-#[repr(C)]
-pub struct pj_scanner {
-    pub begin: *mut ::std::os::raw::c_char,
-    pub end: *mut ::std::os::raw::c_char,
-    pub curptr: *mut ::std::os::raw::c_char,
-    pub line: ::std::os::raw::c_int,
-    pub start_line: *mut ::std::os::raw::c_char,
-    pub skip_ws: ::std::os::raw::c_int,
-    pub callback: pj_syn_err_func_ptr,
 }
 #[repr(C)]
 pub struct pjsip_param {
@@ -1172,6 +1347,26 @@ extern "C" {
         status: pj_status_t,
     ) -> *mut pjsip_warning_hdr;
 }
+pub type pjsip_accept_encoding_hdr = pjsip_generic_string_hdr;
+pub type pjsip_accept_lang_hdr = pjsip_generic_string_hdr;
+pub type pjsip_alert_info_hdr = pjsip_generic_string_hdr;
+pub type pjsip_auth_info_hdr = pjsip_generic_string_hdr;
+pub type pjsip_call_info_hdr = pjsip_generic_string_hdr;
+pub type pjsip_content_disposition_hdr = pjsip_generic_string_hdr;
+pub type pjsip_content_encoding_hdr = pjsip_generic_string_hdr;
+pub type pjsip_content_lang_hdr = pjsip_generic_string_hdr;
+pub type pjsip_date_hdr = pjsip_generic_string_hdr;
+pub type pjsip_err_info_hdr = pjsip_generic_string_hdr;
+pub type pjsip_in_reply_to_hdr = pjsip_generic_string_hdr;
+pub type pjsip_mime_version_hdr = pjsip_generic_string_hdr;
+pub type pjsip_organization_hdr = pjsip_generic_string_hdr;
+pub type pjsip_priority_hdr = pjsip_generic_string_hdr;
+pub type pjsip_proxy_require_hdr = pjsip_generic_string_hdr;
+pub type pjsip_reply_to_hdr = pjsip_generic_string_hdr;
+pub type pjsip_server_hdr = pjsip_generic_string_hdr;
+pub type pjsip_subject_hdr = pjsip_generic_string_hdr;
+pub type pjsip_timestamp_hdr = pjsip_generic_string_hdr;
+pub type pjsip_user_agent_hdr = pjsip_generic_string_hdr;
 #[repr(C)]
 pub struct pjsip_multipart_part {
     pub prev: *mut pjsip_multipart_part,
@@ -1234,6 +1429,9 @@ extern "C" {
         raw_data: *mut pj_str_t,
     ) -> pj_status_t;
 }
+pub const PJSIP_PARSE_URI_AS_NAMEADDR: u32 = 1;
+pub const PJSIP_PARSE_URI_IN_FROM_TO_HDR: u32 = 2;
+pub type _bindgen_ty_3 = u32;
 extern "C" {
     pub static mut PJSIP_SYN_ERR_EXCEPTION: ::std::os::raw::c_int;
 }
@@ -1379,6 +1577,8 @@ pub struct pjsip_parser_const_t {
 extern "C" {
     pub fn pjsip_parser_const() -> *const pjsip_parser_const_t;
 }
+pub const PJSIP_PARSE_REMOVE_QUOTE: u32 = 1;
+pub type _bindgen_ty_4 = u32;
 extern "C" {
     pub fn pjsip_parse_param_imp(
         scanner: *mut pj_scanner,
@@ -1512,6 +1712,12 @@ pub struct pjsip_module {
         unsafe extern "C" fn(tsx: *mut pjsip_transaction, event: *mut pjsip_event),
     >,
 }
+pub const PJSIP_MOD_PRIORITY_TRANSPORT_LAYER: pjsip_module_priority = 8;
+pub const PJSIP_MOD_PRIORITY_TSX_LAYER: pjsip_module_priority = 16;
+pub const PJSIP_MOD_PRIORITY_UA_PROXY_LAYER: pjsip_module_priority = 32;
+pub const PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
+pub const PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
+pub type pjsip_module_priority = u32;
 #[repr(C)]
 pub struct pjsip_server_addresses {
     pub count: ::std::os::raw::c_uint,
@@ -1578,6 +1784,10 @@ extern "C" {
         cb: pjsip_resolver_callback,
     );
 }
+pub const PJSIP_TRANSPORT_RELIABLE: pjsip_transport_flags_e = 1;
+pub const PJSIP_TRANSPORT_SECURE: pjsip_transport_flags_e = 2;
+pub const PJSIP_TRANSPORT_DATAGRAM: pjsip_transport_flags_e = 4;
+pub type pjsip_transport_flags_e = u32;
 extern "C" {
     pub fn pjsip_transport_register_type(
         tp_flag: ::std::os::raw::c_uint,
@@ -2317,6 +2527,12 @@ pub struct pjsip_target_set {
     pub head: pjsip_target,
     pub current: *mut pjsip_target,
 }
+pub const PJSIP_REDIRECT_REJECT: pjsip_redirect_op = 0;
+pub const PJSIP_REDIRECT_ACCEPT: pjsip_redirect_op = 1;
+pub const PJSIP_REDIRECT_ACCEPT_REPLACE: pjsip_redirect_op = 2;
+pub const PJSIP_REDIRECT_PENDING: pjsip_redirect_op = 3;
+pub const PJSIP_REDIRECT_STOP: pjsip_redirect_op = 4;
+pub type pjsip_redirect_op = u32;
 extern "C" {
     pub fn pjsip_target_set_add_uri(
         tset: *mut pjsip_target_set,
@@ -2557,6 +2773,9 @@ extern "C" {
 extern "C" {
     pub fn pjsip_calculate_branch_id(rdata: *mut pjsip_rx_data) -> pj_str_t;
 }
+pub const PJSIP_UDP_TRANSPORT_KEEP_SOCKET: u32 = 1;
+pub const PJSIP_UDP_TRANSPORT_DESTROY_SOCKET: u32 = 2;
+pub type _bindgen_ty_15 = u32;
 #[repr(C)]
 pub struct pjsip_udp_transport_cfg {
     pub af: ::std::os::raw::c_int,
@@ -2791,6 +3010,11 @@ pub struct pjsip_tls_setting {
     pub on_accept_fail_cb:
         ::std::option::Option<unsafe extern "C" fn(param: *const pjsip_tls_on_accept_fail_param)>,
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct pjsip_tls_state_info {
+    pub ssl_sock_info: *mut pj_ssl_sock_info,
+}
 extern "C" {
     pub fn pjsip_tls_setting_wipe_keys(opt: *mut pjsip_tls_setting);
 }
@@ -2945,6 +3169,10 @@ extern "C" {
         pool: *mut pj_pool_t,
     ) -> *mut pjsip_proxy_authenticate_hdr;
 }
+pub const PJSIP_CRED_DATA_PLAIN_PASSWD: pjsip_cred_data_type = 0;
+pub const PJSIP_CRED_DATA_DIGEST: pjsip_cred_data_type = 1;
+pub const PJSIP_CRED_DATA_EXT_AKA: pjsip_cred_data_type = 16;
+pub type pjsip_cred_data_type = u32;
 pub const PJSIP_AUTH_QOP_NONE: pjsip_auth_qop_type = 0;
 pub const PJSIP_AUTH_QOP_AUTH: pjsip_auth_qop_type = 1;
 pub const PJSIP_AUTH_QOP_AUTH_INT: pjsip_auth_qop_type = 2;
@@ -2979,6 +3207,13 @@ pub struct pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {
     pub op: pj_str_t,
     pub amf: pj_str_t,
     pub cb: pjsip_cred_cb,
+}
+#[repr(C)]
+pub struct pjsip_cached_auth_hdr {
+    pub prev: *mut pjsip_cached_auth_hdr,
+    pub next: *mut pjsip_cached_auth_hdr,
+    pub method: pjsip_method,
+    pub hdr: *mut pjsip_authorization_hdr,
 }
 #[repr(C)]
 pub struct pjsip_cached_auth {

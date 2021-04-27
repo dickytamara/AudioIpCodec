@@ -4,6 +4,8 @@
 
 use pj_sys::*;
 use pjmedia_sys::*;
+use pjmedia_codec_sys::*;
+use pjmedia_audiodev_sys::*;
 
 use super::prelude::*;
 use super::utils;
