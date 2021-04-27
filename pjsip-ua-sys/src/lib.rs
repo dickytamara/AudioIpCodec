@@ -5,17 +5,26 @@
 #![allow(non_snake_case)]
 extern crate pj_sys;
 extern crate pjsip_sys;
+extern crate pjsip_simple_sys;
 extern crate pjmedia_sys;
 use pj_sys::*;
 use pjsip_sys::*;
+use pjsip_simple_sys::*;
 use pjmedia_sys::*;
 
-pub const PJSIP_REDIRECT_REJECT: pjsip_redirect_op = 0;
-pub const PJSIP_REDIRECT_ACCEPT: pjsip_redirect_op = 1;
-pub const PJSIP_REDIRECT_ACCEPT_REPLACE: pjsip_redirect_op = 2;
-pub const PJSIP_REDIRECT_PENDING: pjsip_redirect_op = 3;
-pub const PJSIP_REDIRECT_STOP: pjsip_redirect_op = 4;
-pub type pjsip_redirect_op = u32;
+pub const PJSIP_SESS_TIMER_DEF_SE: u32 = 1800;
+pub const PJSIP_SESS_TIMER_RETRY_DELAY: u32 = 10;
+pub const PJSIP_MIN_CONTENT_LENGTH: u32 = 0;
+pub const PJSIP_MIN_PORT: u32 = 0;
+pub const PJSIP_MIN_TTL: u32 = 0;
+pub const PJSIP_MIN_STATUS_CODE: u32 = 100;
+pub const PJSIP_MIN_Q1000: u32 = 0;
+pub const PJSIP_MIN_EXPIRES: u32 = 0;
+pub const PJSIP_MIN_CSEQ: u32 = 0;
+pub const PJSIP_MIN_RETRY_AFTER: u32 = 0;
+pub const PJSIP_REGC_MAX_CONTACT: u32 = 10;
+pub const PJSIP_REGC_CONTACT_BUF_SIZE: u32 = 512;
+pub type pjsip_min_expires_hdr = pjsip_generic_int_hdr;
 pub const PJSIP_INV_STATE_NULL: pjsip_inv_state = 0;
 pub const PJSIP_INV_STATE_CALLING: pjsip_inv_state = 1;
 pub const PJSIP_INV_STATE_INCOMING: pjsip_inv_state = 2;
@@ -79,6 +88,17 @@ pub struct pjsip_inv_callback {
         ) -> pjsip_redirect_op,
     >,
 }
+pub const PJSIP_INV_SUPPORT_100REL: pjsip_inv_option = 1;
+pub const PJSIP_INV_SUPPORT_TIMER: pjsip_inv_option = 2;
+pub const PJSIP_INV_SUPPORT_UPDATE: pjsip_inv_option = 4;
+pub const PJSIP_INV_SUPPORT_ICE: pjsip_inv_option = 8;
+pub const PJSIP_INV_REQUIRE_ICE: pjsip_inv_option = 16;
+pub const PJSIP_INV_REQUIRE_100REL: pjsip_inv_option = 32;
+pub const PJSIP_INV_REQUIRE_TIMER: pjsip_inv_option = 64;
+pub const PJSIP_INV_ALWAYS_USE_TIMER: pjsip_inv_option = 128;
+pub const PJSIP_INV_SUPPORT_TRICKLE_ICE: pjsip_inv_option = 256;
+pub const PJSIP_INV_REQUIRE_TRICKLE_ICE: pjsip_inv_option = 512;
+pub type pjsip_inv_option = u32;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjsip_timer {
@@ -486,54 +506,6 @@ extern "C" {
         lock_dlg: pj_bool_t,
         p_tdata: *mut *mut pjsip_tx_data,
     ) -> pj_status_t;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjsip_evsub {
-    _unused: [u8; 0],
-}
-pub const PJSIP_EVSUB_STATE_NULL: pjsip_evsub_state = 0;
-pub const PJSIP_EVSUB_STATE_SENT: pjsip_evsub_state = 1;
-pub const PJSIP_EVSUB_STATE_ACCEPTED: pjsip_evsub_state = 2;
-pub const PJSIP_EVSUB_STATE_PENDING: pjsip_evsub_state = 3;
-pub const PJSIP_EVSUB_STATE_ACTIVE: pjsip_evsub_state = 4;
-pub const PJSIP_EVSUB_STATE_TERMINATED: pjsip_evsub_state = 5;
-pub const PJSIP_EVSUB_STATE_UNKNOWN: pjsip_evsub_state = 6;
-pub type pjsip_evsub_state = u32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct pjsip_evsub_user {
-    pub on_evsub_state:
-        ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub, event: *mut pjsip_event)>,
-    pub on_tsx_state: ::std::option::Option<
-        unsafe extern "C" fn(
-            sub: *mut pjsip_evsub,
-            tsx: *mut pjsip_transaction,
-            event: *mut pjsip_event,
-        ),
-    >,
-    pub on_rx_refresh: ::std::option::Option<
-        unsafe extern "C" fn(
-            sub: *mut pjsip_evsub,
-            rdata: *mut pjsip_rx_data,
-            p_st_code: *mut ::std::os::raw::c_int,
-            p_st_text: *mut *mut pj_str_t,
-            res_hdr: *mut pjsip_hdr,
-            p_body: *mut *mut pjsip_msg_body,
-        ),
-    >,
-    pub on_rx_notify: ::std::option::Option<
-        unsafe extern "C" fn(
-            sub: *mut pjsip_evsub,
-            rdata: *mut pjsip_rx_data,
-            p_st_code: *mut ::std::os::raw::c_int,
-            p_st_text: *mut *mut pj_str_t,
-            res_hdr: *mut pjsip_hdr,
-            p_body: *mut *mut pjsip_msg_body,
-        ),
-    >,
-    pub on_client_refresh: ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub)>,
-    pub on_server_timeout: ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub)>,
 }
 extern "C" {
     pub static pjsip_refer_method: pjsip_method;

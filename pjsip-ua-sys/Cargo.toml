@@ -10,6 +10,7 @@ build = "build.rs"
 [dependencies]
 pj-sys = { path = "../pj-sys" }
 pjsip-sys = { path = "../pjsip-sys"}
+pjsip-simple-sys = { path = "../pjsip-simple-sys" }
 pjmedia-sys = { path = "../pjmedia-sys" }
 
 
