@@ -3,7 +3,7 @@ use std::env;
 
 fn main () {
 
-    println!("cargo:rustc-link-lib=pjmedia_audiodev");
+    println!("cargo:rustc-link-lib=pjmedia-audiodev");
     println!("cargo:rustc-link-search=native=/usr/lib");
     println!("cargo:rerun-if-changed=wrapper.h");
 
@@ -25,7 +25,7 @@ fn main () {
         .allowlist_function("pjmedia_aud_subsys_shutdown")
         .allowlist_function("pjmedia_aud_test")
         .allowlist_function("pjmedia_aud_unregister_factory")
-        
+
         .allowlist_type("pjmedia_aud_test_stat")
         .allowlist_type("pjmedia_aud_test_results")
 

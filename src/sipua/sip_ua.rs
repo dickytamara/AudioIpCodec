@@ -240,7 +240,7 @@ pub trait SIPUaExt {
     /// If the credential is specific to the account, then application should
     /// set the credential in the pjsua_acc_config rather than the credential here.
     fn set_cred_info(&self, value: [pjsip_cred_info; 8usize]);
-    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
+    // fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
 
     // TODO create pjsua_callback.
     // Application callback to receive various event notifications from the library.
@@ -282,7 +282,7 @@ pub trait SIPUaExt {
     /// Specify SRTP transport setting. Application can initialize it with
     /// default values using pjsua_srtp_opt_default().
     fn set_srtp_opt(&self, value: pjsua_srtp_opt);
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+    // fn get_srtp_opt(&self) -> pjsua_srtp_opt;
 
     /// Disconnect other call legs when more than one 2xx responses for outgoing INVITE
     /// are received due to forking. Currently the library is not able to handle simultaneous
@@ -334,15 +334,15 @@ impl SIPUa {
     }
 
     /// Clone message data.
-    pub fn msg_data_clone(&self, rhs: &mut pjsua_msg_data) -> Option<pjsua_msg_data> {
-        let ret = pjsua::msg_data_clone(rhs);
+    // pub fn msg_data_clone(&self, rhs: &mut pjsua_msg_data) -> Option<pjsua_msg_data> {
+    //     let ret = pjsua::msg_data_clone(rhs);
 
-        if ret.is_null() {
-            return None;
-        }
+    //     if ret.is_null() {
+    //         return None;
+    //     }
 
-        Some(unsafe {*ret} )
-    }
+    //     Some(unsafe {*ret} )
+    // }
 
     /// Instantiate pjsua application. Application must call this function
     /// before calling any other functions, to make sure that the underlying
@@ -929,9 +929,9 @@ impl SIPUaExt for SIPUaConfig {
         self.ctx.borrow_mut().cred_info = value;
     }
 
-    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize] {
-        self.ctx.borrow().cred_info
-    }
+    // fn get_cred_info(&self) -> [pjsip_cred_info; 8usize] {
+    //     self.ctx.borrow().cred_info
+    // }
 
     fn set_user_agent(&self, value: String) {
         self.ctx.borrow_mut().user_agent = pj_str_t::from_string(value);
@@ -969,9 +969,9 @@ impl SIPUaExt for SIPUaConfig {
         self.ctx.borrow_mut().srtp_opt = value;
     }
 
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt {
-        self.ctx.borrow().srtp_opt
-    }
+    // fn get_srtp_opt(&self) -> pjsua_srtp_opt {
+    //     self.ctx.borrow().srtp_opt
+    // }
 
     fn set_hangup_forked_call(&self, value: bool) {
         self.ctx.borrow_mut().hangup_forked_call = utils::boolean_to_pjbool(value);

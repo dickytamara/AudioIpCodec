@@ -44,8 +44,8 @@ pub trait SIPAccountExt {
     fn set_reg_uri(&self, value: String);
     fn get_reg_uri(&self) -> String;
     /// The optional custom SIP headers to be put in the registration request.
-    fn set_reg_hdr_list(&self, value: pjsip_hdr);
-    fn get_reg_hdr_list(&self) -> pjsip_hdr;
+    // fn set_reg_hdr_list(&self, value: pjsip_hdr);
+    // fn get_reg_hdr_list(&self) -> pjsip_hdr;
     /// Additional parameters that will be appended in the Contact header for this account.
     /// This will only affect REGISTER requests and will be appended after contact_params;
     ///
@@ -53,9 +53,9 @@ pub trait SIPAccountExt {
     /// Example: ";my-param=X;another-param=Hi%20there"
     fn set_reg_contact_params(&self, value: String);
     fn get_reg_contact_params(&self) -> String;
-    /// The optional custom SIP headers to be put in the presence subscription request.
-    fn set_sub_hdr_list(&self, value: pjsip_hdr);
-    fn get_sub_hdr_list(&self) -> pjsip_hdr;
+    // The optional custom SIP headers to be put in the presence subscription request.
+    // fn set_sub_hdr_list(&self, value: pjsip_hdr);
+    // fn get_sub_hdr_list(&self) -> pjsip_hdr;
     /// Subscribe to message waiting indication events (RFC 3842).
     ///
     /// See also enable_unsolicited_mwi field on pjsua_config.
@@ -80,7 +80,7 @@ pub trait SIPAccountExt {
     fn get_publish_enabled(&self) -> bool;
     /// Event publication options.
     fn set_publish_opt(&self, value: pjsip_publishc_opt);
-    fn get_publish_opt(&self) -> pjsip_publishc_opt;
+    // fn get_publish_opt(&self) -> pjsip_publishc_opt;
     /// Maximum time to wait for unpublication transaction(s) to complete during shutdown process,
     /// before sending unregistration. The library tries to wait for the unpublication
     /// (un-PUBLISH) to complete before sending REGISTER request to unregister the account,
@@ -93,7 +93,7 @@ pub trait SIPAccountExt {
     fn get_unpublish_max_wait_time_msec(&self) -> u32;
     /// Authentication preference.
     fn set_auth_pref(&self, value: pjsip_auth_clt_pref);
-    fn get_auth_pref(&self) -> pjsip_auth_clt_pref;
+    // fn get_auth_pref(&self) -> pjsip_auth_clt_pref;
     /// Optional PIDF tuple ID for outgoing PUBLISH and NOTIFY. If this value is not specified,
     /// a random string will be used.
     fn set_pidf_tuple_id(&self, value: String);
@@ -182,7 +182,7 @@ pub trait SIPAccountExt {
     /// More credentials can be specified, for example when the requests are expected to be
     /// challenged by the proxies in the route set.
     fn set_cred_info(&self, value: [pjsip_cred_info; 8usize]);
-    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
+    // fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
     /// Optionally bind this account to specific transport. This normally is not a good idea,
     /// as account should be able to send requests using any available transports according
     /// to the destination. But some application may want to have explicit control over the
@@ -298,7 +298,7 @@ pub trait SIPAccountExt {
 
     /// Media transport config.
     fn set_rtp_cfg(&self, value: pjsua_transport_config);
-    fn get_rtp_cfg(&self) -> pjsua_transport_config;
+    // fn get_rtp_cfg(&self) -> pjsua_transport_config;
     /// Specify NAT64 options.
     ///
     /// # Default
@@ -344,7 +344,7 @@ pub trait SIPAccountExt {
     /// The custom ICE setting for this account. This setting will only be used if ice_cfg_use
     /// is set to PJSUA_ICE_CONFIG_USE_CUSTOM
     fn set_ice_cfg(&self, value: pjsua_ice_config);
-    fn get_ice_cfg(&self) -> pjsua_ice_config;
+    // fn get_ice_cfg(&self) -> pjsua_ice_config;
     /// Control the use of TURN in the account. By default, the settings in the
     /// pjsua_media_config will be used
     ///
@@ -355,7 +355,7 @@ pub trait SIPAccountExt {
     /// The custom TURN setting for this account. This setting will only be used if turn_cfg_use
     /// is set to PJSUA_TURN_CONFIG_USE_CUSTOM
     fn set_turn_cfg(&self, value: pjsua_turn_config);
-    fn get_turn_cfg(&self) -> pjsua_turn_config;
+    // fn get_turn_cfg(&self) -> pjsua_turn_config;
     /// Specify whether secure media transport should be used for this account. Valid values are
     /// PJMEDIA_SRTP_DISABLED, PJMEDIA_SRTP_OPTIONAL, and PJMEDIA_SRTP_MANDATORY.
     ///
@@ -381,7 +381,7 @@ pub trait SIPAccountExt {
     /// Specify SRTP transport setting. Application can initialize it with default values using
     /// pjsua_srtp_opt_default().
     fn set_srtp_opt(&self, value: pjsua_srtp_opt);
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+    // fn get_srtp_opt(&self) -> pjsua_srtp_opt;
     /// Specify interval of auto registration retry upon registration failure, in seconds.
     /// Set to 0 to disable auto re-registration. Note that registration will only be automatically
     /// retried for temporal failures considered to be recoverable in relatively short term,
@@ -457,13 +457,13 @@ pub trait SIPAccountExt {
     /// Specify account configuration specific to IP address change used when calling
     /// pjsua_handle_ip_change().
     fn set_ip_change_cfg(&self, value: pjsua_ip_change_acc_cfg);
-    fn get_ip_change_cfg(&self) -> pjsua_ip_change_acc_cfg;
+    // fn get_ip_change_cfg(&self) -> pjsua_ip_change_acc_cfg;
     /// Enable RTP and RTCP multiplexing.
     fn set_enable_rtcp_mux(&self, value: bool);
     fn get_enable_rtcp_mux(&self) -> bool;
     /// RTCP Feedback configuration.
     fn set_rtcp_fb_cfg(&self, value: pjmedia_rtcp_fb_setting);
-    fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting;
+    // fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting;
 }
 
 impl SIPAccount {
@@ -498,12 +498,16 @@ impl SIPAccount {
         self.set_reg_retry_interval(300);
         self.set_reg_first_retry_interval(60);
 
+        for cred_info in self.ctx.borrow_mut().cred_info.iter_mut() {
+            cred_info.data_type = 0;
+            cred_info.scheme = pj_str_t::from_string(String::from("Digest"));
+        }
 
-        let mut cred = [pjsip_cred_info::new(); 8usize];
-        cred[0].data_type = 0;
-        cred[0].scheme = pj_str_t::from_string(String::from("Digest"));
+        // let mut cred = [pjsip_cred_info::new(); 8usize];
+        // cred[0].data_type = 0;
+        // cred[0].scheme = pj_str_t::from_string(String::from("Digest"));
 
-        self.set_cred_info(cred);
+        // self.set_cred_info(cred);
     }
 
     // set sip id for account
@@ -704,7 +708,7 @@ impl SIPAccounts {
     }
 
     // set default rtp config
-    pub fn set_rtp_config(&self, rtp_config: pjsua_transport_config) {
+    pub fn set_rtp_config(&self, rtp_config: &pjsua_transport_config) {
 
         let ids = self.enum_accs_id();
 
@@ -714,7 +718,9 @@ impl SIPAccounts {
 
             match acc {
                 Ok(ref mut sipacc) => {
-                    sipacc.set_rtp_cfg(rtp_config);
+                    sipacc.ctx.borrow_mut().rtp_cfg.port = rtp_config.port;
+                    sipacc.ctx.borrow_mut().rtp_cfg.port_range = rtp_config.port_range;
+                    // sipacc.set_rtp_cfg(*rtp_config);
                 },
                 Err(err) => println!("print error ={}", err)
             }
@@ -766,7 +772,7 @@ impl SIPAccounts {
     // enumerate current registered account id
     pub fn enum_accs_id(&self) -> Vec<pjsua_acc_id> {
 
-        let mut ret: Vec<pjsua_acc_id> = Vec::new();
+        let mut ret = Vec::<pjsua_acc_id>::new();
 
         let mut acc_id: [pjsua_acc_id; PJSUA_MAX_ACC as usize] = [-1; PJSUA_MAX_ACC as usize];
         let mut count = 8u32;
@@ -784,25 +790,25 @@ impl SIPAccounts {
     }
 
     // enumerate current registered account info
-    pub fn enum_info(&self) -> Vec<pjsua_acc_info> {
+    // pub fn enum_info(&self) -> Vec<pjsua_acc_info> {
 
-        let mut ret: Vec<pjsua_acc_info> = Vec::new();
+    //     let mut ret: Vec<pjsua_acc_info> = Vec::new();
 
-        let mut acc_info: [pjsua_acc_info; PJSUA_MAX_ACC as usize] = [pjsua_acc_info::new(); PJSUA_MAX_ACC as usize];
-        let mut count = 0u32;
+    //     let mut acc_info: [pjsua_acc_info; PJSUA_MAX_ACC as usize] = [pjsua_acc_info::new(); PJSUA_MAX_ACC as usize];
+    //     let mut count = 0u32;
 
-        if let Ok(_) = pjsua::acc_enum_info( &mut acc_info, &mut count) {
+    //     if let Ok(_) = pjsua::acc_enum_info( &mut acc_info, &mut count) {
 
-            for i in 0..count as usize {
-                ret.push(acc_info[i]);
-            }
+    //         for i in 0..count as usize {
+    //             ret.push(acc_info[i]);
+    //         }
 
-        } else {
-            println!("ERR cant enumerate account info.");
-        }
+    //     } else {
+    //         println!("ERR cant enumerate account info.");
+    //     }
 
-        ret
-    }
+    //     ret
+    // }
 
     // This is an internal function to find the most appropriate account to used to reach to the specified URL.
     pub fn find_for_outgoing(&self, value: String) -> pjsua_acc_id {
@@ -844,13 +850,13 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow().reg_uri.to_string()
     }
 
-    fn set_reg_hdr_list(&self, value: pjsip_hdr) {
-        self.ctx.borrow_mut().reg_hdr_list = value;
-    }
+    // fn set_reg_hdr_list(&self, value: pjsip_hdr) {
+    //     self.ctx.borrow_mut().reg_hdr_list = value;
+    // }
 
-    fn get_reg_hdr_list(&self) -> pjsip_hdr {
-        self.ctx.borrow().reg_hdr_list
-    }
+    // fn get_reg_hdr_list(&self) -> pjsip_hdr {
+    //     self.ctx.borrow().reg_hdr_list
+    // }
 
     fn set_reg_contact_params(&self, value: String) {
         self.ctx.borrow_mut().reg_contact_params = pj_str_t::from_string(value);
@@ -860,13 +866,13 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow().reg_contact_params.to_string()
     }
 
-    fn set_sub_hdr_list(&self, value: pjsip_hdr) {
-        self.ctx.borrow_mut().sub_hdr_list = value;
-    }
+    // fn set_sub_hdr_list(&self, value: pjsip_hdr) {
+    //     self.ctx.borrow_mut().sub_hdr_list = value;
+    // }
 
-    fn get_sub_hdr_list(&self) -> pjsip_hdr {
-        self.ctx.borrow().sub_hdr_list
-    }
+    // fn get_sub_hdr_list(&self) -> pjsip_hdr {
+    //     self.ctx.borrow().sub_hdr_list
+    // }
 
     fn set_mwi_enabled(&self, value: bool) {
         self.ctx.borrow_mut().mwi_enabled = utils::boolean_to_pjbool(value);
@@ -896,9 +902,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().publish_opt = value;
     }
 
-    fn get_publish_opt(&self) -> pjsip_publishc_opt {
-        self.ctx.borrow().publish_opt
-    }
+    // fn get_publish_opt(&self) -> pjsip_publishc_opt {
+    //     self.ctx.borrow().publish_opt
+    // }
 
     fn set_unpublish_max_wait_time_msec(&self, value: u32) {
         self.ctx.borrow_mut().unpublish_max_wait_time_msec = value;
@@ -912,9 +918,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().auth_pref = value;
     }
 
-    fn get_auth_pref(&self) -> pjsip_auth_clt_pref {
-        self.ctx.borrow().auth_pref
-    }
+    // fn get_auth_pref(&self) -> pjsip_auth_clt_pref {
+    //     self.ctx.borrow().auth_pref
+    // }
 
     fn set_pidf_tuple_id(&self, value: String) {
         self.ctx.borrow_mut().pidf_tuple_id = pj_str_t::from_string(value);
@@ -1051,9 +1057,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().cred_info = value;
     }
 
-    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize] {
-        self.ctx.borrow().cred_info
-    }
+    // fn get_cred_info(&self) -> [pjsip_cred_info; 8usize] {
+    //     self.ctx.borrow().cred_info
+    // }
 
     fn set_transport_id(&self, value: pjsua_transport_id) {
         self.ctx.borrow_mut().transport_id = value;
@@ -1147,9 +1153,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().rtp_cfg = value;
     }
 
-    fn get_rtp_cfg(&self) -> pjsua_transport_config {
-        self.ctx.borrow().rtp_cfg
-    }
+    // fn get_rtp_cfg(&self) -> pjsua_transport_config {
+    //     self.ctx.borrow().rtp_cfg
+    // }
 
     fn set_nat64_opt(&self, value: pjsua_nat64_opt) {
         self.ctx.borrow_mut().nat64_opt = value;
@@ -1211,9 +1217,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().ice_cfg = value;
     }
 
-    fn get_ice_cfg(&self) -> pjsua_ice_config {
-        self.ctx.borrow().ice_cfg
-    }
+    // fn get_ice_cfg(&self) -> pjsua_ice_config {
+    //     self.ctx.borrow().ice_cfg
+    // }
 
     fn set_turn_cfg_use(&self, value: pjsua_turn_config_use) {
         self.ctx.borrow_mut().turn_cfg_use = value;
@@ -1227,9 +1233,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().turn_cfg = value;
     }
 
-    fn get_turn_cfg(&self) -> pjsua_turn_config {
-        self.ctx.borrow().turn_cfg
-    }
+    // fn get_turn_cfg(&self) -> pjsua_turn_config {
+    //     self.ctx.borrow().turn_cfg
+    // }
 
     fn set_use_srtp(&self, value: pjmedia_srtp_use) {
         self.ctx.borrow_mut().use_srtp = value;
@@ -1259,9 +1265,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().srtp_opt = value;
     }
 
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt {
-        self.ctx.borrow().srtp_opt
-    }
+    // fn get_srtp_opt(&self) -> pjsua_srtp_opt {
+    //     self.ctx.borrow().srtp_opt
+    // }
 
     fn set_reg_retry_interval(&self, value: u32) {
         self.ctx.borrow_mut().reg_retry_interval = value;
@@ -1323,9 +1329,9 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().ip_change_cfg = value;
     }
 
-    fn get_ip_change_cfg(&self) -> pjsua_ip_change_acc_cfg {
-        self.ctx.borrow().ip_change_cfg
-    }
+    // fn get_ip_change_cfg(&self) -> pjsua_ip_change_acc_cfg {
+    //     self.ctx.borrow().ip_change_cfg
+    // }
 
     fn set_enable_rtcp_mux(&self, value: bool) {
         self.ctx.borrow_mut().enable_rtcp_mux = utils::boolean_to_pjbool(value);
@@ -1339,8 +1345,8 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().rtcp_fb_cfg = value;
     }
 
-    fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting {
-        self.ctx.borrow().rtcp_fb_cfg
-    }
+    // fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting {
+    //     self.ctx.borrow().rtcp_fb_cfg
+    // }
 }
 

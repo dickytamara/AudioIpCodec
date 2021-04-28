@@ -1,5 +1,4 @@
 
-use pj_sys::*;
 use pjnath_sys::*;
 use pjsip_sys::*;
 use pjmedia_sys::*;

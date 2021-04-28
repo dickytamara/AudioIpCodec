@@ -209,7 +209,7 @@ pub trait SIPMediaExt {
 
     /// ICE session options.
     fn set_ice_opt(&self, value: pj_ice_sess_options);
-    fn get_ice_opt(&self) -> pj_ice_sess_options;
+    // fn get_ice_opt(&self) -> pj_ice_sess_options;
 
     /// Disable RTCP component.
     ///
@@ -245,12 +245,12 @@ pub trait SIPMediaExt {
 
     /// Specify the credential to authenticate with the TURN server.
     fn set_turn_auth_cred(&self, value: pj_stun_auth_cred);
-    fn get_turn_auth_cred(&self) -> pj_stun_auth_cred;
+    // fn get_turn_auth_cred(&self) -> pj_stun_auth_cred;
 
     /// This specifies TLS settings for TLS transport. It is only be used when this TLS
     /// is used to connect to the TURN server.
     fn set_turn_tls_setting(&self, value: pj_turn_sock_tls_cfg);
-    fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg;
+    // fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg;
 
     /// Specify idle time of sound device before it is automatically closed,
     /// in seconds. Use value -1 to disable the auto-close feature of sound device
@@ -640,9 +640,9 @@ impl SIPMediaExt for SIPMediaConfig {
         self.ctx.borrow_mut().ice_opt = value;
     }
 
-    fn get_ice_opt(&self) -> pj_ice_sess_options {
-        self.ctx.borrow().ice_opt
-    }
+    // fn get_ice_opt(&self) -> pj_ice_sess_options {
+    //     self.ctx.borrow().ice_opt
+    // }
 
     fn set_ice_no_rtcp(&self, value: bool) {
         self.ctx.borrow_mut().ice_no_rtcp = utils::boolean_to_pjbool(value);
@@ -696,17 +696,17 @@ impl SIPMediaExt for SIPMediaConfig {
         self.ctx.borrow_mut().turn_auth_cred = value;
     }
 
-    fn get_turn_auth_cred(&self) -> pj_stun_auth_cred {
-        self.ctx.borrow().turn_auth_cred
-    }
+    // fn get_turn_auth_cred(&self) -> pj_stun_auth_cred {
+    //     self.ctx.borrow().turn_auth_cred
+    // }
 
     fn set_turn_tls_setting(&self, value: pj_turn_sock_tls_cfg) {
         self.ctx.borrow_mut().turn_tls_setting = value;
     }
 
-    fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg {
-        self.ctx.borrow().turn_tls_setting
-    }
+    // fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg {
+    //     self.ctx.borrow().turn_tls_setting
+    // }
 
     fn set_snd_auto_close_time(&self, value: i32) {
         self.ctx.borrow_mut().snd_auto_close_time = value;

@@ -78,7 +78,7 @@ impl SIPTransport {
 
         match config {
             Some(tp_cfg) => {
-                transport.config = *tp_cfg;
+                transport.config.set_port(tp_cfg.get_port());
             }, None => ()
         }
 

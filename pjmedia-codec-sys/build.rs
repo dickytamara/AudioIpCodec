@@ -4,7 +4,7 @@ use std::env;
 
 fn main () {
 
-    println!("cargo:rustc-link-lib=pjmedia_codec");
+    println!("cargo:rustc-link-lib=pjmedia-codec");
     println!("cargo:rustc-link-search=native=/usr/lib");
     // Tell cargo to invalidate the built crate whenever the wrapper changes
     println!("cargo:rerun-if-changed=wrapper.h");
