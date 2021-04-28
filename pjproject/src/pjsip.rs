@@ -6,6 +6,7 @@
 
 
 use pj_sys::*;
+use pjlib_util_sys::*;
 use pjsip_simple_sys::*;
 use pjsip_sys::*;
 
@@ -29,9 +30,16 @@ impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
 
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1 {
     fn new() -> pjsip_cred_info__bindgen_ty_1 {
-        pjsip_cred_info__bindgen_ty_1 {
-            aka: pjsip_cred_info__bindgen_ty_1__bindgen_ty_1::new(),
+        let mut result = pjsip_cred_info__bindgen_ty_1 {
+            aka: pjsip_sys::__BindgenUnionField::<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>::default(),
+            bindgen_union_field: [0; 7]
+        };
+
+        unsafe {
+            *result.aka.as_mut() = pjsip_cred_info__bindgen_ty_1__bindgen_ty_1::new();
         }
+
+        result
     }
 }
 
@@ -164,7 +172,16 @@ impl AutoCreate<pjsip_server_addresses> for pjsip_server_addresses {
     fn new() -> pjsip_server_addresses {
         pjsip_server_addresses {
             count: 0,
-            entry: [pjsip_server_addresses__bindgen_ty_1::new(); 16],
+            entry: [
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+                pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
+            ],
         }
     }
 }
@@ -278,7 +295,12 @@ impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
     fn new() -> pjsip_pres_status {
         pjsip_pres_status {
             info_cnt: 0,
-            info: [pjsip_pres_status__bindgen_ty_1::new(); 8],
+            info: [
+                pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
+                pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
+                pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
+                pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
+            ],
             _is_valid: PJ_FALSE as pj_bool_t,
         }
     }

@@ -2,6 +2,7 @@
 
 use pj_sys::*;
 use pjmedia_sys::*;
+use pjnath_sys::*;
 use pjsua_sys::*;
 
 use crate::pjproject::utils::{self, AutoCreate, FromString, ToString};
@@ -671,8 +672,10 @@ impl SIPMediaExt for SIPMediaConfig {
         if !value.server.is_empty() {
             self.ctx.borrow_mut().turn_server = pj_str_t::from_string(value.server);
             if !value.username.is_empty() & !value.password.is_empty() {
-                self.ctx.borrow_mut().turn_auth_cred.data.static_cred.username = pj_str_t::from_string(value.username);
-                self.ctx.borrow_mut().turn_auth_cred.data.static_cred.data = pj_str_t::from_string(value.password);
+                unsafe {
+                self.ctx.borrow_mut().turn_auth_cred.data.static_cred.as_mut().username = pj_str_t::from_string(value.username);
+                self.ctx.borrow_mut().turn_auth_cred.data.static_cred.as_mut().data = pj_str_t::from_string(value.password);
+                }
             }
         }
     }

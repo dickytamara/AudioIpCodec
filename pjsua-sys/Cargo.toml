@@ -18,4 +18,4 @@ pjsip-simple-sys = { path = "../pjsip-simple-sys" }
 pjsip-ua-sys = { path = "../pjsip-ua-sys" }
 
 [build-dependencies]
-bindgen = "0.58.0"
+bindgen = "0.58.1"

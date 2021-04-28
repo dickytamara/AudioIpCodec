@@ -11,7 +11,7 @@ use std::cell::{RefCell, RefMut};
 use std::path::PathBuf;
 
 
-#[derive(Clone)]
+// #[derive(Clone)]
 pub struct SIPTransportConfig {
     ctx: RefCell<pjsua_transport_config>
 }
@@ -78,7 +78,7 @@ impl SIPTransport {
 
         match config {
             Some(tp_cfg) => {
-                transport.config = tp_cfg.clone();
+                transport.config = *tp_cfg;
             }, None => ()
         }
 

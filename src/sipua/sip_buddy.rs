@@ -9,7 +9,7 @@ use crate::pjproject::prelude::*;
 use crate::pjproject::utils;
 use crate::pjproject::pjsua;
 
-#[derive(Clone)]
+// #[derive(Clone)]
 pub struct SIPBuddy {
     id: i32,
     ctx: RefCell<pjsua_buddy_config>,

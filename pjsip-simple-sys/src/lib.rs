@@ -73,6 +73,9 @@ pub struct pjsip_evsub_user {
     pub on_server_timeout: ::std::option::Option<unsafe extern "C" fn(sub: *mut pjsip_evsub)>,
 }
 extern "C" {
+    pub static pjsip_notify_method: pjsip_method;
+}
+extern "C" {
     pub fn pjsip_get_subscribe_method() -> *const pjsip_method;
 }
 extern "C" {

@@ -379,6 +379,7 @@ fn main () {
         .allowlist_function("pjsip_www_authenticate_hdr_create")
 
         .allowlist_var("mod_stateful_util")
+        
 
         .allowlist_type("PJSIP_.*")
         .allowlist_type("pjsip_.*")

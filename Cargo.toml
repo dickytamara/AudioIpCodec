@@ -9,6 +9,8 @@ edition = "2018"
 [dependencies]
 pjproject = { path = "./pjproject" }
 pj-sys = { path = "./pj-sys" }
+pjlib-util-sys = { path = "./pjlib-util-sys" }
+pjnath-sys = { path = "./pjnath-sys" }
 pjmedia-sys = { path = "./pjmedia-sys" }
 pjmedia-audiodev-sys = { path = "./pjmedia-audiodev-sys" }
 pjmedia-codec-sys = { path = "./pjmedia-codec-sys" }

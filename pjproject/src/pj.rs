@@ -202,7 +202,7 @@ impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1> for pj_stun_auth_cred__bindgen_
 impl AutoCreate<pj_stun_auth_cred> for pj_stun_auth_cred {
     fn new() -> pj_stun_auth_cred {
 
-        let result = pj_stun_auth_cred {
+        let mut result = pj_stun_auth_cred {
             type_: 0,
             data: pj_stun_auth_cred__bindgen_ty_1 {
                 static_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>::default(),

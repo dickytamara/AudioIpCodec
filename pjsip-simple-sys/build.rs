@@ -141,6 +141,8 @@ fn main () {
         .allowlist_type("pjsip_pres_.*")
         .allowlist_var("PJSIP_PRES_.*")
         .allowlist_var("pjsip_pres_.*")
+        .allowlist_type("pjsip_notify_method")
+        .allowlist_var("pjsip_notify_method")
 
         .allowlist_function("pjsip_publishc_create")
         .allowlist_function("pjsip_publishc_destroy")

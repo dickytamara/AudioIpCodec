@@ -1,6 +1,7 @@
 
 
 use pj_sys::*;
+use pjnath_sys::*;
 use pjsip_sys::*;
 use pjmedia_sys::*;
 use pjsip_simple_sys::*;
@@ -308,7 +309,7 @@ impl SIPCore {
 
     pub fn on_call_audio_state(&mut self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
 
-        let media = ci.media[mi as usize];
+        let media = &ci.media[mi as usize];
 
         if media.status == PJSUA_CALL_MEDIA_ACTIVE ||
         media.status == PJSUA_CALL_MEDIA_REMOTE_HOLD {
@@ -322,7 +323,7 @@ impl SIPCore {
             pjsua::enum_calls(&mut call_ids, &mut call_cnt).unwrap();
 
             unsafe {
-                call_conf_slot = media.stream.aud.conf_slot;
+                call_conf_slot = media.stream.aud.as_ref().conf_slot;
 
                 for idx in 0..call_cnt as usize {
                     if call_ids[idx] == ci.id { continue; }
@@ -410,7 +411,7 @@ impl SIPCore {
 
         for mi in 0..call_info.media_cnt {
 
-            let call_media_info = call_info.media[mi as usize];
+            let call_media_info = &call_info.media[mi as usize];
             let media_type = pjmedia::type_name(call_media_info.type_);
 
             let status_name = match call_media_info.status {
@@ -512,7 +513,7 @@ impl SIPCore {
         event: *mut pjsip_event,
     ) {
         unsafe {
-            let rdata = (*event).body.tsx_state.src.rdata;
+            let rdata = (*event).body.tsx_state.as_ref().src.rdata;
             // let astr = pjsip_rx_data_get_info(rdata);
             println!("Buddy subscription state");
         }
@@ -554,7 +555,7 @@ impl SIPCore {
             if st_code / 100 == 2 {
                 pjsua_call_hangup(
                     call_id,
-                    pjsip_status_code_PJSIP_SC_GONE,
+                    PJSIP_SC_GONE,
                     ptr::null() as *const _,
                     ptr::null() as *const _,
                 );
@@ -575,7 +576,7 @@ impl SIPCore {
         // logging nat detect result this only for trouble shooting
         unsafe {
 
-            let nat_result = *res;
+            let nat_result = &*res;
             let status_str;
             let status_text;
             let nat_type_name;
@@ -633,7 +634,7 @@ impl SIPCore {
     ) {
         unsafe {
             // transport
-            let tp = *tp;
+            let tp = &*tp;
             // transport type name TCP or UDP
             let type_name = CStr::from_ptr(tp.type_name)
                     .to_owned()
@@ -739,12 +740,12 @@ impl SIPCore {
             };
 
             if !info.is_null() {
-                let info = *info;
-                pjsua_transport_get_info(info.lis_restart.transport_id,
+                let info = &*info;
+                pjsua_transport_get_info(info.lis_restart.as_ref().transport_id,
                     &mut tp_info as *mut _
                 );
 
-                pjsua_acc_get_info(info.acc_shutdown_tp.acc_id,
+                pjsua_acc_get_info(info.acc_shutdown_tp.as_ref().acc_id,
                     &mut acc_info as *mut _
                 );
             }
@@ -778,11 +779,11 @@ impl SIPCore {
             }
 
             if op == PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT {
-                if (*info).acc_update_contact.code != 0 {
+                if (*info).acc_update_contact.as_ref().code != 0 {
                     log_str = format!("{} : update contact for account {} code: [{}]",
                         base_str,
                         acc_info.acc_uri.to_string(),
-                        (*info).acc_update_contact.code
+                        (*info).acc_update_contact.as_ref().code
                     );
                 } else {
                     log_str = format!("{} : update contact for account {}",
@@ -796,7 +797,7 @@ impl SIPCore {
                 log_str = format!("{} : hangup call for account {}, call_id[{}]",
                     base_str,
                     acc_info.acc_uri.to_string(),
-                    (*info).acc_hangup_calls.call_id
+                    (*info).acc_hangup_calls.as_ref().call_id
                 );
             }
 
@@ -804,7 +805,7 @@ impl SIPCore {
                 log_str = format!("{} : reinvite call for account {}, call_id[{}]",
                     base_str,
                     acc_info.acc_uri.to_string(),
-                    (*info).acc_reinvite_calls.call_id
+                    (*info).acc_reinvite_calls.as_ref() .call_id
                 );
             }
 
@@ -851,7 +852,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
 
         let exp: *const pjsip_expires_hdr = pjsip_msg_find_hdr(
             (*rdata).msg_info.msg,
-            pjsip_hdr_e_PJSIP_H_EXPIRES,
+            PJSIP_H_EXPIRES,
             ptr::null_mut(),
         ) as *const _;
 
@@ -859,7 +860,7 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
         let mut h: *mut pjsip_hdr = (*(*rdata).msg_info.msg).hdr.next;
 
         while h != llist.next {
-            if (*h as pjsip_hdr).type_ == (pjsip_hdr_e_PJSIP_H_CONTACT as pjsip_hdr_e) {
+            if (*h as pjsip_hdr).type_ == (PJSIP_H_CONTACT as pjsip_hdr_e) {
                 let c: *const pjsip_contact_hdr = h as *const pjsip_contact_hdr;
                 let mut e: c_uint = (*c).expires;
 
@@ -917,7 +918,7 @@ unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
 
     // let mut rdata = rdata;
     let msg = (*rdata).msg_info.msg;
-    let method = (*msg).line.req.method;
+    let method = &(*msg).line.req.as_ref().method;
 
     if pjsip::method_cmp(&method, &pjsip_ack_method) == 0 {
         return PJ_TRUE as pj_status_t;
@@ -929,11 +930,11 @@ unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
         return PJ_TRUE as pj_status_t;
     }
 
-    let mmethod = pjsip_notify_method;
+    let mmethod = &pjsip_notify_method;
     if pjsip::method_cmp(&method, &mmethod) == 0 {
-        status_code = pjsip_status_code_PJSIP_SC_BAD_REQUEST;
+        status_code = PJSIP_SC_BAD_REQUEST;
     } else {
-        status_code = pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED;
+        status_code = PJSIP_SC_METHOD_NOT_ALLOWED;
     }
 
     status = pjsip_endpt_create_response(
@@ -951,12 +952,12 @@ unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
     let msg = (*tdata).msg;
     let ahdr: *mut pjsip_hdr = &mut (*msg).hdr as *mut _;
 
-    if status_code == pjsip_status_code_PJSIP_SC_METHOD_NOT_ALLOWED {
+    if status_code == PJSIP_SC_METHOD_NOT_ALLOWED {
 
 
         let cap_hdr = pjsip_endpt_get_capability(
             pjsua_get_pjsip_endpt(),
-            pjsip_hdr_e_PJSIP_H_ALLOW as i32,
+            PJSIP_H_ALLOW as i32,
             ptr::null() as *const _,
         );
 

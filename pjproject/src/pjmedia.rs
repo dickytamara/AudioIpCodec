@@ -58,7 +58,16 @@ impl AutoCreate<pjmedia_rtcp_fb_setting> for pjmedia_rtcp_fb_setting {
         pjmedia_rtcp_fb_setting {
             dont_use_avpf: PJ_FALSE as pj_bool_t,
             cap_count: 0,
-            caps: [pjmedia_rtcp_fb_cap::new(); 16],
+            caps: [
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+            ],
         }
     }
 }
@@ -101,9 +110,20 @@ impl AutoCreate<pjmedia_video_format_detail> for pjmedia_video_format_detail {
 
 impl AutoCreate<pjmedia_format__bindgen_ty_1> for pjmedia_format__bindgen_ty_1 {
     fn new() -> pjmedia_format__bindgen_ty_1 {
-        pjmedia_format__bindgen_ty_1 {
-            aud: pjmedia_audio_format_detail::new(),
+        let mut result = pjmedia_format__bindgen_ty_1 {
+            aud: pjmedia_sys::__BindgenUnionField::<pjmedia_audio_format_detail>::default(),
+            vid: pjmedia_sys::__BindgenUnionField::<pjmedia_video_format_detail>::default(),
+            user: pjmedia_sys::__BindgenUnionField::<[::std::os::raw::c_char; 1usize]>::default(),
+            bindgen_union_field: [0; 6]
+        };
+
+        unsafe {
+            *result.aud.as_mut() = pjmedia_audio_format_detail::new();
+            *result.vid.as_mut() = pjmedia_video_format_detail::new();
+            *result.user.as_mut() = [0;1];
         }
+
+        result
     }
 }
 
@@ -206,7 +226,12 @@ impl AutoCreate<pjmedia_aud_dev_info> for pjmedia_aud_dev_info {
             caps: 0,
             routes: 0,
             ext_fmt_cnt: 0,
-            ext_fmt: [pjmedia_format::new(); 8]
+            ext_fmt: [
+                pjmedia_format::new(), pjmedia_format::new(),
+                pjmedia_format::new(), pjmedia_format::new(),
+                pjmedia_format::new(), pjmedia_format::new(),
+                pjmedia_format::new(), pjmedia_format::new(),
+            ]
         }
     }
 }
@@ -216,7 +241,16 @@ impl AutoCreate<pjmedia_rtcp_fb_info> for pjmedia_rtcp_fb_info {
     fn new () -> pjmedia_rtcp_fb_info {
         pjmedia_rtcp_fb_info {
             cap_count: 0,
-            caps: [pjmedia_rtcp_fb_cap::new(); 16usize],
+            caps: [
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+                pjmedia_rtcp_fb_cap::new(), pjmedia_rtcp_fb_cap::new(),
+            ],
         }
     }
 
@@ -272,19 +306,11 @@ impl AutoCreate<pjmedia_stream_info> for pjmedia_stream_info {
     }
 }
 
-impl AutoCreate<__BindgenBitfieldUnit<[u8;1usize]>> for __BindgenBitfieldUnit<[u8;1usize]> {
-    fn new () -> __BindgenBitfieldUnit<[u8;1usize]> {
-        __BindgenBitfieldUnit {
-            storage: [0; 1usize]
-        }
-    }
-}
-
 impl AutoCreate<pjmedia_rtcp_stream_stat__bindgen_ty_1> for pjmedia_rtcp_stream_stat__bindgen_ty_1 {
     fn new () -> pjmedia_rtcp_stream_stat__bindgen_ty_1 {
         pjmedia_rtcp_stream_stat__bindgen_ty_1 {
             _bitfield_align_1: [0; 0],
-            _bitfield_1: __BindgenBitfieldUnit::new([0; 1usize]),
+            _bitfield_1: pjmedia_sys::__BindgenBitfieldUnit::<[u8; 1usize]>::default(),
             __bindgen_padding_0: [0; 3usize],
         }
     }
@@ -413,18 +439,26 @@ impl AutoCreate<pjmedia_codec_param__bindgen_ty_1> for pjmedia_codec_param__bind
 impl AutoCreate<pjmedia_codec_fmtp_param> for pjmedia_codec_fmtp_param {
     fn new () -> pjmedia_codec_fmtp_param {
         pjmedia_codec_fmtp_param {
-            name: pj_str_t::from_string(String::new()),
-            val: pj_str_t::from_string(String::new())
+            name: pj_str_t::new(),
+            val: pj_str_t::new()
         }
     }
 }
-
 
 impl AutoCreate<pjmedia_codec_fmtp> for pjmedia_codec_fmtp {
     fn new() -> pjmedia_codec_fmtp {
         pjmedia_codec_fmtp {
             cnt: 0,
-            param: [pjmedia_codec_fmtp_param::new(); 16usize],
+            param: [
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+                pjmedia_codec_fmtp_param::new(), pjmedia_codec_fmtp_param::new(),
+            ],
         }
     }
 }
@@ -447,6 +481,58 @@ impl AutoCreate<pjmedia_codec_param> for pjmedia_codec_param {
         pjmedia_codec_param {
             info: pjmedia_codec_param__bindgen_ty_1::new(),
             setting: pjmedia_codec_param__bindgen_ty_2::new()
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_vid_codec_info> for pjmedia_vid_codec_info {
+    fn new() -> pjmedia_vid_codec_info {
+        pjmedia_vid_codec_info {
+            fmt_id: 0,
+            pt: 0,
+            encoding_name: pj_str_t::new(),
+            encoding_desc: pj_str_t::new(),
+            clock_rate: 0,
+            dir: 0,
+            dec_fmt_id_cnt: 0,
+            dec_fmt_id: [0; 8usize],
+            packings: 0,
+            fps_cnt: 0,
+            fps: [pjmedia_ratio::new(); 16usize],
+        }
+    }
+}
+
+impl AutoCreate<pjmedia_vid_stream_info> for pjmedia_vid_stream_info {
+    fn new() -> pjmedia_vid_stream_info {
+        pjmedia_vid_stream_info {
+            type_: 0,
+            proto: 0,
+            dir: 0,
+            rem_addr: pj_sockaddr::new(),
+            rem_rtcp: pj_sockaddr::new(),
+            rtcp_mux: 0,
+            loc_rtcp_fb: pjmedia_rtcp_fb_info::new(),
+            rem_rtcp_fb: pjmedia_rtcp_fb_info::new(),
+            tx_pt: 0,
+            rx_pt: 0,
+            ssrc: 0,
+            cname: pj_str_t::new(),
+            has_rem_ssrc: 0,
+            rem_ssrc: 0,
+            rem_cname: pj_str_t::new(),
+            rtp_ts: 0,
+            rtp_seq: 0,
+            rtp_seq_ts_set: 0,
+            jb_init: 0,
+            jb_min_pre: 0,
+            jb_max_pre: 0,
+            jb_max: 0,
+            codec_info: pjmedia_vid_codec_info::new(),
+            codec_param: ptr::null_mut(),
+            rtcp_sdes_bye_disabled: 0,
+            rc_cfg: pjmedia_vid_stream_rc_config::new(),
+            sk_cfg: pjmedia_vid_stream_sk_config::new(),
         }
     }
 }

@@ -1,12 +1,14 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
-extern crate pjproject;
-// extern crate pjsua_sys;
-extern crate pjmedia_sys;
-// extern crate pjsip_sys;
-// extern crate pjsip_simple_sys;
 extern crate pj_sys;
+extern crate pjlib_util_sys;
+extern crate pjnath_sys;
+extern crate pjsua_sys;
+extern crate pjmedia_sys;
+extern crate pjsip_sys;
+extern crate pjsip_simple_sys;
+extern crate pjproject;
 
 extern crate gtk;
 extern crate gio;
@@ -43,6 +45,7 @@ mod settings_tls;
 
 use gtk::prelude::*;
 use gio::prelude::*;
+use pjnath_sys::*;
 
 use std::env;
 use std::include_str;

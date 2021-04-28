@@ -57,7 +57,16 @@ impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     fn new() -> pjsua_srtp_opt {
         pjsua_srtp_opt {
             crypto_count: 0,
-            crypto: [pjmedia_srtp_crypto::new(); 16],
+            crypto: [
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+                pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
+            ],
             keying_count: 0,
             keying: [0, 0],
         }
@@ -173,7 +182,12 @@ impl AutoCreate<pjsua_config> for pjsua_config {
                 sess_expires: 0,
             },
             cred_count: 0,
-            cred_info: [pjsip_cred_info::new(); 8],
+            cred_info: [
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+            ],
             cb: pjsua_callback::new(),
             user_agent: pj_str_t::new(),
             use_srtp: 0,
@@ -354,7 +368,12 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             reg_delay_before_refresh: 0,
             unreg_timeout: 0,
             cred_count: 0,
-            cred_info: [pjsip_cred_info::new(); 8],
+            cred_info: [
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+                pjsip_cred_info::new(), pjsip_cred_info::new(),
+            ],
             transport_id: 0,
             allow_contact_rewrite: PJ_FALSE as pj_bool_t,
             contact_rewrite_method: 0,
@@ -507,11 +526,32 @@ impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_cal
     }
 }
 
+impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2> for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+    fn new() -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+        pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+            win_in: -1,
+            dec_slot: -1,
+            enc_slot: -1,
+            cap_dev: -1,
+        }
+    }
+} 
+
+
 impl AutoCreate<pjsua_call_media_info__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1 {
     fn new() -> pjsua_call_media_info__bindgen_ty_1 {
-        pjsua_call_media_info__bindgen_ty_1 {
-            aud: pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new(),
+        let mut result = pjsua_call_media_info__bindgen_ty_1 {
+            aud: pjsua_sys::__BindgenUnionField::<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>::default(),
+            vid: pjsua_sys::__BindgenUnionField::<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2>::default(),
+            bindgen_union_field: [0; 4usize]
+        };
+
+        unsafe {
+            *result.aud.as_mut() = pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new();
+            *result.vid.as_mut() = pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2::new();
         }
+
+        result
     }
 }
 
@@ -547,9 +587,27 @@ impl AutoCreate<pjsua_call_info> for pjsua_call_info {
             media_dir: 0,
             conf_slot: -1,
             media_cnt: 0,
-            media: [pjsua_call_media_info::new(); 16],
+            media: [
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+            ],
             prov_media_cnt: 0,
-            prov_media: [pjsua_call_media_info::new(); 16],
+            prov_media: [
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+            ],
             connect_duration: pj_time_val::new(),
             total_duration: pj_time_val::new(),
             rem_offerer: PJ_FALSE as pj_bool_t,
@@ -619,9 +677,18 @@ impl AutoCreate<pjsua_conf_port_info> for pjsua_conf_port_info {
 
 impl AutoCreate<pjsua_stream_info__bindgen_ty_1> for pjsua_stream_info__bindgen_ty_1 {
     fn new() -> pjsua_stream_info__bindgen_ty_1 {
-        pjsua_stream_info__bindgen_ty_1 {
-            aud: pjmedia_stream_info::new(),
+        let mut result = pjsua_stream_info__bindgen_ty_1 {
+            aud: pjsua_sys::__BindgenUnionField::<pjmedia_stream_info>::default(),
+            vid: pjsua_sys::__BindgenUnionField::<pjmedia_vid_stream_info>::default(),
+            bindgen_union_field: [0; 277usize],
+        };
+
+        unsafe {
+            *result.aud.as_mut() = pjmedia_stream_info::new();
+            *result.vid.as_mut() = pjmedia_vid_stream_info::new();
         }
+
+        result
     }
 }
 
