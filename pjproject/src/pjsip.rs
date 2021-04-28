@@ -6,6 +6,7 @@
 
 
 use pj_sys::*;
+use pjsip_simple_sys::*;
 use pjsip_sys::*;
 
 use super::{prelude::*, utils::check_status};

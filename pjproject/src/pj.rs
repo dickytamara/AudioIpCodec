@@ -3,6 +3,8 @@
 #![allow(non_upper_case_globals)]
 
 use pj_sys::*;
+use pjnath_sys::*;
+use pjsip_simple_sys::*;
 use super::{prelude::*, utils::{check_boolean, check_status}};
 
 use std::ptr;
@@ -188,17 +190,34 @@ impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2> for pj_stun_auth_
 impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1> for pj_stun_auth_cred__bindgen_ty_1 {
     fn new() -> pj_stun_auth_cred__bindgen_ty_1 {
         pj_stun_auth_cred__bindgen_ty_1 {
-            static_cred: pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1::new(),
+            static_cred: pjnath_sys::__BindgenUnionField::<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>::new(),
+            dyn_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2>::new(),
+            bindgen_union_field: [0; 9]
         }
     }
 }
 
+
+
 impl AutoCreate<pj_stun_auth_cred> for pj_stun_auth_cred {
     fn new() -> pj_stun_auth_cred {
-        pj_stun_auth_cred {
+
+        let result = pj_stun_auth_cred {
             type_: 0,
-            data: pj_stun_auth_cred__bindgen_ty_1::new(),
+            data: pj_stun_auth_cred__bindgen_ty_1 {
+                static_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>::default(),
+                dyn_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2>::default(),
+                bindgen_union_field: [0;9]
+            }
+
+        };
+
+        unsafe {
+            *result.data.static_cred.as_mut() = pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1::new();
+            *result.data.dyn_cred.as_mut() = pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2::new();
         }
+
+        result
     }
 }
 

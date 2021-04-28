@@ -5,8 +5,10 @@
 
 use pj_sys::*;
 use pjmedia_sys::*;
+use pjnath_sys::*;
 use pjsip_sys::*;
 use pjsip_simple_sys::*;
+use pjsip_ua_sys::*;
 use pjsua_sys::*;
 
 use super::prelude::*;

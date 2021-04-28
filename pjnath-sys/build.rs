@@ -1,6 +1,8 @@
 extern crate bindgen;
 use std::env;
 
+use bindgen::RustTarget;
+
 fn main () {
 
     println!("cargo:rustc-link-lib=pjnath");

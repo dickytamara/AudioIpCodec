@@ -4,7 +4,7 @@ use std::env;
 
 fn main () {
 
-    println!("cargo:rustc-link-lib=pjlib_util");
+    println!("cargo:rustc-link-lib=pjlib-util");
     println!("cargo:rustc-link-search=native=/usr/lib");
     println!("cargo:rerun-if-changed=wrapper.h");
 
