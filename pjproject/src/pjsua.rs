@@ -9,6 +9,7 @@ use pjnath_sys::*;
 use pjsip_sys::*;
 use pjsip_simple_sys::*;
 use pjsip_ua_sys::*;
+use pjsua_sys::*;
 
 use super::prelude::*;
 use super::utils;
@@ -29,6 +30,7 @@ pub use pjsua_sys::pjsua_buddy_config as BuddyConfig;
 pub use pjsua_sys::pjsua_call_setting as CallSetting;
 pub use pjsua_sys::pjsua_srtp_opt as SRTPOption;
 pub use pjsua_sys::pjsua_ip_change_acc_cfg as IPChangeAccountConfig;
+pub use pjsua_sys::pjsua_turn_config as TURNConfig;
 
 // info and status struct
 pub use pjsua_sys::pjsua_acc_info as AccountInfo;
@@ -59,7 +61,7 @@ extern "C" {
         tx_level_r: *mut c_uint,
         rx_level_l: *mut c_uint,
         rx_level_r: *mut c_uint,
-    ) -> pj_status_t;
+    ) -> i32;
 }
 
 pub fn conf_get_msignal_level(
@@ -68,7 +70,7 @@ pub fn conf_get_msignal_level(
     tx_level_r: &mut u32,
     rx_level_l: &mut u32,
     rx_level_r: &mut u32
-) -> pj_status_t {
+) -> i32 {
 
     unsafe {
         pjsua_conf_get_msignal_level(
@@ -505,7 +507,7 @@ impl AutoCreate<AccountInfo> for AccountInfo {
             has_registration: PJ_FALSE as pj_bool_t,
             expires: 0,
             status: 0,
-            reg_last_err: PJ_FALSE as pj_status_t,
+            reg_last_err: PJ_FALSE as i32,
             status_text: pj_str_t::new(),
             online_status: PJ_FALSE as pj_bool_t,
             online_status_text: pj_str_t::new(),
@@ -790,11 +792,11 @@ pub fn config_default(cfg: &mut UAConfig) {
     unsafe { pjsua_sys::pjsua_config_default(cfg as *mut _); }
 }
 
-pub fn create () -> Result<(), pj_status_t> {
+pub fn create () -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_create()) }
 }
 
-pub fn init (ua_cfg: &mut UAConfig, log_cfg: &mut LogConfig, media_cfg: &mut MediaConfig) -> Result<(), pj_status_t> {
+pub fn init (ua_cfg: &mut UAConfig, log_cfg: &mut LogConfig, media_cfg: &mut MediaConfig) -> Result<(), i32> {
     unsafe {
         let status = pjsua_sys::pjsua_init(
         ua_cfg as *const _,
@@ -806,11 +808,11 @@ pub fn init (ua_cfg: &mut UAConfig, log_cfg: &mut LogConfig, media_cfg: &mut Med
     }
 }
 
-pub fn start () -> Result<(), pj_status_t> {
+pub fn start () -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_start()) }
 }
 
-pub fn destroy () -> Result<(), pj_status_t> {
+pub fn destroy () -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_destroy()) }
 }
 
@@ -818,7 +820,7 @@ pub fn get_state () -> pjsua_state {
     unsafe { pjsua_sys::pjsua_get_state() }
 }
 
-pub fn destroy2 (flags: u32) -> Result<(), pj_status_t> {
+pub fn destroy2 (flags: u32) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_destroy2(flags)) }
 }
 
@@ -870,45 +872,45 @@ pub fn msg_data_clone (rhs: &mut MessageData) -> *mut MessageData {
 }
 
 pub fn handle_events(msec_timeout: u32) -> i32 {
-    unsafe { pjsua_handle_events(msec_timeout) }
+    unsafe { pjsua_sys::pjsua_handle_events(msec_timeout) }
 }
 
 pub fn stop_worker_threads() {
-    unsafe { pjsua_stop_worker_threads() }
+    unsafe { pjsua_sys::pjsua_stop_worker_threads() }
 }
 
-pub fn reconfigure_logging (c: &mut pjsua_logging_config) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_reconfigure_logging(c as *const _)) }
+pub fn reconfigure_logging (c: &mut LogConfig) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_reconfigure_logging(c as *const _)) }
 }
 
 pub fn get_pjsip_endpt() -> *mut pjsip_endpoint {
-    unsafe { pjsua_get_pjsip_endpt() }
+    unsafe { pjsua_sys::pjsua_get_pjsip_endpt() }
 }
 
 pub fn get_pjmedia_endpt() -> *mut pjmedia_endpt {
-    unsafe { pjsua_get_pjmedia_endpt() }
+    unsafe { pjsua_sys::pjsua_get_pjmedia_endpt() }
 }
 
 pub fn get_pool_factory() -> *mut pj_pool_factory {
-    unsafe { pjsua_get_pool_factory() }
+    unsafe { pjsua_sys::pjsua_get_pool_factory() }
 }
 
 pub fn ip_change_param_default(param: &mut pjsua_ip_change_param) {
-    unsafe { pjsua_ip_change_param_default(param as *mut _) }
+    unsafe { pjsua_sys::pjsua_ip_change_param_default(param as *mut _) }
 }
 
-pub fn detect_nat_type () -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_detect_nat_type()) }
+pub fn detect_nat_type () -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_detect_nat_type()) }
 }
 
-pub fn get_nat_type(type_: &mut pj_stun_nat_type) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_get_nat_type(type_ as *mut _)) }
+pub fn get_nat_type(type_: &mut pj_stun_nat_type) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_get_nat_type(type_ as *mut _)) }
 }
 
-pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> Result<(), pj_status_t> {
+pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> Result<(), i32> {
     unsafe {
         // todo fix this and compare result with c code.
-        let status = pjsua_update_stun_servers(
+        let status = pjsua_sys::pjsua_update_stun_servers(
                 count,
                 srv.as_mut_ptr(),
                 utils::boolean_to_pjbool(wait)
@@ -918,14 +920,14 @@ pub fn update_stun_servers (count: u32, srv: &mut [pj_str_t; 8], wait: bool) -> 
     }
 }
 
-// pj_status_t 	pjsua_resolve_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait, void *token, pj_stun_resolve_cb cb)
+// i32 	pjsua_resolve_stun_servers (unsigned count, pj_str_t srv[], pj_bool_t wait, void *token, pj_stun_resolve_cb cb)
 pub fn resolve_stun_servers<T> (
     count: u32,
     srv: &mut [pj_str_t; 8],
     wait: bool,
     token: Option<&mut T>,
     cb: pj_stun_resolve_cb
-) -> Result<(), pj_status_t> {
+) -> Result<(), i32> {
         // todo check token
     unsafe {
 
@@ -934,7 +936,7 @@ pub fn resolve_stun_servers<T> (
             None => ptr::null_mut()
         };
 
-        let status = pjsua_resolve_stun_servers(
+        let status = pjsua_sys::pjsua_resolve_stun_servers(
             count,
             srv.as_mut_ptr(),
             utils::boolean_to_pjbool(wait),
@@ -946,8 +948,8 @@ pub fn resolve_stun_servers<T> (
     }
 }
 
-// pj_status_t 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
-pub fn cancel_stun_resolution<T> (token: Option<&mut T>, notify_cb: bool) -> Result<(), pj_status_t> {
+// i32 	pjsua_cancel_stun_resolution (void *token, pj_bool_t notify_cb)
+pub fn cancel_stun_resolution<T> (token: Option<&mut T>, notify_cb: bool) -> Result<(), i32> {
     unsafe {
 
         let token = match token {
@@ -955,7 +957,7 @@ pub fn cancel_stun_resolution<T> (token: Option<&mut T>, notify_cb: bool) -> Res
             None => ptr::null_mut()
         };
 
-        let status = pjsua_cancel_stun_resolution (
+        let status = pjsua_sys::pjsua_cancel_stun_resolution (
             token,
             utils::boolean_to_pjbool(notify_cb)
         );
@@ -964,23 +966,23 @@ pub fn cancel_stun_resolution<T> (token: Option<&mut T>, notify_cb: bool) -> Res
     }
 }
 
-pub fn verify_sip_url(url: String) -> Result<(), pj_status_t> {
+pub fn verify_sip_url(url: String) -> Result<(), i32> {
     let url: *const i8 = CString::new(url).expect("pjsua_verify_sip_url").into_raw();
-    unsafe { utils::check_status(pjsua_verify_sip_url( url )) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_verify_sip_url( url )) }
 }
 
-pub fn verify_url (url: String) -> Result<(), pj_status_t> {
+pub fn verify_url (url: String) -> Result<(), i32> {
     let url: *const i8 = CString::new(url).expect("pjsua_verify_url").into_raw();
     unsafe {
-        utils::check_status(pjsua_verify_url ( url ))
+        utils::check_status(pjsua_sys::pjsua_verify_url(url ))
     }
 }
 
-pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> Result<(), pj_status_t> {
+pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> Result<(), i32> {
     unsafe {
         // because we use debug pjsua
         // will provide timer with debug suport
-        let status = pjsua_schedule_timer_dbg(
+        let status = pjsua_sys::pjsua_schedule_timer_dbg(
             entry as *mut _,
             delay as *const _,
             ptr::null_mut(),
@@ -991,60 +993,60 @@ pub fn schedule_timer (entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> R
      }
 }
 
-// pj_status_t 	pjsua_schedule_timer2 (void(*cb)(void *user_data), void *user_data, unsigned msec_delay)
+// i32 	pjsua_schedule_timer2 (void(*cb)(void *user_data), void *user_data, unsigned msec_delay)
 
 pub fn cancel_timer(entry: &mut pj_timer_entry) {
-    unsafe { pjsua_cancel_timer(entry as *mut _) }
+    unsafe { pjsua_sys::pjsua_cancel_timer(entry as *mut _) }
 }
 
-pub fn perror(sender: String, title: String, status: pj_status_t) {
+pub fn perror(sender: String, title: String, status: i32) {
     let sender: *const i8 = CString::new(sender.as_str()).expect("pjsua_perror").into_raw();
     let title: *const i8 = CString::new(title.as_str()).expect("pjusa_perror").into_raw();
 
-    unsafe { pjsua_perror( sender, title, status ); }
+    unsafe { pjsua_sys::pjsua_perror( sender, title, status ); }
 }
 
 pub fn dump(detail: bool) {
-    unsafe { pjsua_dump(utils::boolean_to_pjbool(detail)); }
+    unsafe { pjsua_sys::pjsua_dump(utils::boolean_to_pjbool(detail)); }
 }
 
-pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_handle_ip_change( param as *const _ )) }
+pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_handle_ip_change( param as *const _ )) }
 }
 
 
 // call helper function
 
-pub fn call_setting_default (opt: &mut pjsua_call_setting) {
-    unsafe { pjsua_call_setting_default(opt as * mut _) }
+pub fn call_setting_default (opt: &mut CallSetting) {
+    unsafe { pjsua_sys::pjsua_call_setting_default(opt as * mut _) }
 }
 
 pub fn call_send_dtmf_param_default (param: &mut pjsua_call_send_dtmf_param) {
-    unsafe { pjsua_call_send_dtmf_param_default(param as *mut _) }
+    unsafe { pjsua_sys::pjsua_call_send_dtmf_param_default(param as *mut _) }
 }
 
 pub fn call_get_max_count () -> u32 {
-    unsafe { pjsua_call_get_max_count() }
+    unsafe { pjsua_sys::pjsua_call_get_max_count() }
 }
 
 pub fn call_get_count () -> u32 {
-    unsafe { pjsua_call_get_count() }
+    unsafe { pjsua_sys::pjsua_call_get_count() }
 }
 
-pub fn enum_calls (ids: &mut [pjsua_call_id; PJSUA_MAX_CALLS as usize], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_calls (ids: &mut [i32; pjsua_sys::PJSUA_MAX_CALLS as usize], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_enum_calls( ids.as_mut_ptr(), count as *mut _))
+        utils::check_status(pjsua_sys::pjsua_enum_calls( ids.as_mut_ptr(), count as *mut _))
     }
 }
 
-// pj_status_t 	pjsua_call_make_call (pjsua_acc_id acc_id, const pj_str_t *dst_uri, const pjsua_call_setting *opt, void *user_data, const pjsua_msg_data *msg_data, pjsua_call_id *p_call_id)
+// i32 	pjsua_call_make_call (i32 acc_id, const pj_str_t *dst_uri, const pjsua_call_setting *opt, void *user_data, const pjsua_msg_data *msg_data, pjsua_call_id *p_call_id)
 pub fn call_make_call (
-    acc_id: pjsua_acc_id,
+    acc_id: i32,
     dst_uri: String,
-    opt: Option<&mut pjsua_call_setting>,
-    msg_data: Option<&mut pjsua_msg_data>,
-    p_call_id: Option<&mut pjsua_call_id>
-) -> Result<(), pj_status_t> {
+    opt: Option<&mut CallSetting>,
+    msg_data: Option<&mut MessageData>,
+    p_call_id: Option<&mut i32>
+) -> Result<(), i32> {
 
     let mut dst_uri = pj_str_t::from_string(dst_uri);
 
@@ -1066,7 +1068,7 @@ pub fn call_make_call (
 
     unsafe {
 
-        let status = pjsua_call_make_call(
+        let status = pjsua_sys::pjsua_call_make_call(
             acc_id,
             &mut dst_uri as *const _,
             opt,
@@ -1079,28 +1081,28 @@ pub fn call_make_call (
     }
 }
 
-pub fn call_is_active (call_id: pjsua_call_id) -> bool {
-    unsafe { utils::check_boolean(pjsua_call_is_active(call_id)) }
+pub fn call_is_active (call_id: i32) -> bool {
+    unsafe { utils::check_boolean(pjsua_sys::pjsua_call_is_active(call_id)) }
 }
 
-pub fn call_has_media (call_id: pjsua_call_id) -> bool {
-    unsafe { utils::check_boolean(pjsua_call_has_media(call_id)) }
+pub fn call_has_media (call_id: i32) -> bool {
+    unsafe { utils::check_boolean(pjsua_sys::pjsua_call_has_media(call_id)) }
 }
 
-pub fn call_get_conf_port (call_id: pjsua_call_id) -> pjsua_conf_port_id {
-    unsafe { pjsua_call_get_conf_port(call_id) }
+pub fn call_get_conf_port (call_id: i32) -> i32 {
+    unsafe { pjsua_sys::pjsua_call_get_conf_port(call_id) }
 }
 
-pub fn call_get_info (call_id: pjsua_call_id, info: &mut pjsua_call_info) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_call_get_info (call_id, info as *mut _)) }
+pub fn call_get_info (call_id: i32, info: &mut CallInfo) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_get_info(call_id, info as *mut _)) }
 }
 
-pub fn call_remote_has_cap (call_id: pjsua_call_id, htype: i32, hname: String, token: String) -> pjsip_dialog_cap_status {
+pub fn call_remote_has_cap (call_id: i32, htype: i32, hname: String, token: String) -> pjsip_dialog_cap_status {
     let hname: *const pj_str_t = &mut pj_str_t::from_string(hname) as *const _;
     let token: *const pj_str_t = &mut pj_str_t::from_string(token) as *const _;
 
     unsafe {
-        pjsua_call_remote_has_cap(
+        pjsua_sys::pjsua_call_remote_has_cap(
             call_id,
             htype,
             hname,
@@ -1110,16 +1112,16 @@ pub fn call_remote_has_cap (call_id: pjsua_call_id, htype: i32, hname: String, t
 }
 
 // unused function
-// pj_status_t 	pjsua_call_set_user_data (pjsua_call_id call_id, void *user_data)
+// i32 	pjsua_call_set_user_data (pjsua_call_id call_id, void *user_data)
 // void * 	pjsua_call_get_user_data (pjsua_call_id call_id)
 
-pub fn call_get_rem_nat_type (call_id: pjsua_call_id, p_type: &mut pj_stun_nat_type) -> Result<(), pj_status_t> {
+pub fn call_get_rem_nat_type (call_id: i32, p_type: &mut pj_stun_nat_type) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_call_get_rem_nat_type ( call_id, p_type as *mut _))
+        utils::check_status(pjsua_sys::pjsua_call_get_rem_nat_type(call_id, p_type as *mut _))
     }
 }
 
-pub fn call_answer (call_id: pjsua_call_id, code: u32, reason: Option<String>, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_answer (call_id: i32, code: u32, reason: Option<String>, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const pj_str_t,
@@ -1131,38 +1133,38 @@ pub fn call_answer (call_id: pjsua_call_id, code: u32, reason: Option<String>, m
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_answer( call_id, code, reason, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_answer( call_id, code, reason, msg_data)) }
 }
 
 pub fn call_answer2 (
-    call_id: pjsua_call_id,
-    opt: &mut pjsua_call_setting,
+    call_id: i32,
+    opt: &mut CallSetting,
     code: c_uint,
     reason: Option<String>,
-    msg_data: Option<&mut pjsua_msg_data>
-) -> Result<(), pj_status_t> {
+    msg_data: Option<&mut MessageData>
+) -> Result<(), i32> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const _ ,
         None => ptr::null_mut()
     };
 
-    let msg_data: *const pjsua_msg_data = match msg_data {
+    let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_answer2(call_id, opt, code, reason, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_answer2(call_id, opt, code, reason, msg_data)) }
 }
 
 pub fn call_answer_with_sdp(
-    call_id: pjsua_call_id,
+    call_id: i32,
     sdp: &mut pjmedia_sdp_session,
-    opt: &mut pjsua_call_setting,
+    opt: &mut CallSetting,
     code: u32,
     reason: Option<String>,
-    msg_data: Option<&mut pjsua_msg_data>
-) -> Result<(), pj_status_t> {
+    msg_data: Option<&mut MessageData>
+) -> Result<(), i32> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value),
@@ -1175,18 +1177,18 @@ pub fn call_answer_with_sdp(
     };
 
     unsafe {
-        utils::check_status(pjsua_call_answer_with_sdp(
+        utils::check_status(pjsua_sys::pjsua_call_answer_with_sdp(
             call_id, sdp as *const _, opt as *const _,
             code, reason, msg_data))
     }
 }
 
 pub fn call_hangup(
-    call_id: pjsua_call_id,
+    call_id: i32,
     code: c_uint,
     reason: Option<String>,
-    msg_data: Option<&mut pjsua_msg_data>
-) -> Result<(), pj_status_t> {
+    msg_data: Option<&mut MessageData>
+) -> Result<(), i32> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const _,
@@ -1198,64 +1200,64 @@ pub fn call_hangup(
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_hangup(call_id, code, reason, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_hangup(call_id, code, reason, msg_data)) }
 }
 
-pub fn call_process_redirect (call_id: pjsua_call_id, cmd: pjsip_redirect_op) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_call_process_redirect(call_id, cmd)) }
+pub fn call_process_redirect (call_id: i32, cmd: pjsip_redirect_op) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_process_redirect(call_id, cmd)) }
 }
 
-pub fn call_set_hold (call_id: pjsua_call_id, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_set_hold (call_id: i32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_set_hold( call_id, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_set_hold( call_id, msg_data)) }
 }
 
-pub fn call_set_hold2 (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_set_hold2 (call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_set_hold2(call_id, options, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_set_hold2(call_id, options, msg_data)) }
 }
 
-pub fn call_reinvite(call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_reinvite(call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_reinvite( call_id, options, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_reinvite( call_id, options, msg_data)) }
 }
 
-pub fn call_reinvite2(call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data> ) -> Result<(), pj_status_t> {
+pub fn call_reinvite2(call_id: i32, opt: &mut CallSetting, msg_data: Option<&mut MessageData> ) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_reinvite2( call_id, opt as *const _, msg_data )) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_reinvite2( call_id, opt as *const _, msg_data )) }
 }
 
-pub fn call_update (call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_update (call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
         None => ptr::null_mut()
     };
 
-    unsafe { utils::check_status(pjsua_call_update( call_id, options, msg_data)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_call_update( call_id, options, msg_data)) }
 }
 
-pub fn call_update2 (call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_update2 (call_id: i32, opt: &mut CallSetting, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1263,11 +1265,11 @@ pub fn call_update2 (call_id: pjsua_call_id, opt: &mut pjsua_call_setting, msg_d
     };
 
     unsafe {
-        utils::check_status(pjsua_call_update2( call_id, opt as *const _, msg_data))
+        utils::check_status(pjsua_sys::pjsua_call_update2( call_id, opt as *const _, msg_data))
     }
 }
 
-pub fn call_xfer (call_id: pjsua_call_id, dest: String, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_xfer (call_id: i32, dest: String, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let mut dest = pj_str_t::from_string(dest);
 
@@ -1277,11 +1279,11 @@ pub fn call_xfer (call_id: pjsua_call_id, dest: String, msg_data: Option<&mut pj
     };
 
     unsafe {
-        utils::check_status(pjsua_call_xfer(call_id,&mut dest as *const _,msg_data))
+        utils::check_status(pjsua_sys::pjsua_call_xfer(call_id,&mut dest as *const _,msg_data))
     }
 }
 
-pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, options: u32, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_xfer_replaces(call_id: i32, dest_call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1289,27 +1291,27 @@ pub fn call_xfer_replaces (call_id: pjsua_call_id, dest_call_id: pjsua_call_id, 
     };
 
     unsafe {
-        utils::check_status(pjsua_call_xfer_replaces (call_id, dest_call_id, options, msg_data))
+        utils::check_status(pjsua_sys::pjsua_call_xfer_replaces(call_id, dest_call_id, options, msg_data))
     }
 }
 
-pub fn call_dial_dtmf (call_id: pjsua_call_id, digits: String) -> Result<(), pj_status_t> {
+pub fn call_dial_dtmf (call_id: i32, digits: String) -> Result<(), i32> {
 
     let mut digits = pj_str_t::from_string(digits);
 
     unsafe {
-        utils::check_status(pjsua_call_dial_dtmf(call_id, &mut digits as *const _))
+        utils::check_status(pjsua_sys::pjsua_call_dial_dtmf(call_id, &mut digits as *const _))
     }
 
 }
 
-pub fn call_send_dtmf (call_id: pjsua_call_id, param: &mut pjsua_call_send_dtmf_param) -> Result<(), pj_status_t> {
+pub fn call_send_dtmf (call_id: i32, param: &mut pjsua_call_send_dtmf_param) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_call_send_dtmf (call_id, param as *const _))
+        utils::check_status(pjsua_sys::pjsua_call_send_dtmf (call_id, param as *const _))
     }
 }
 
-pub fn call_send_im (call_id: pjsua_call_id, mime_type: String, content: String, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_send_im (call_id: i32, mime_type: String, content: String, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let mut mime_type = pj_str_t::from_string(mime_type);
     let mut content = pj_str_t::from_string(content);
@@ -1320,7 +1322,7 @@ pub fn call_send_im (call_id: pjsua_call_id, mime_type: String, content: String,
     };
 
     unsafe {
-        let status = pjsua_call_send_im(
+        let status = pjsua_sys::pjsua_call_send_im(
             call_id,
             &mut mime_type as *const _,
             &mut content as *const _,
@@ -1331,7 +1333,7 @@ pub fn call_send_im (call_id: pjsua_call_id, mime_type: String, content: String,
     }
 }
 
-pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_send_typing_ind (call_id: i32, is_typing: bool, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -1339,7 +1341,7 @@ pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: 
     };
 
     unsafe {
-        let status = pjsua_call_send_typing_ind(
+        let status = pjsua_sys::pjsua_call_send_typing_ind(
             call_id,
             utils::boolean_to_pjbool(is_typing),
             msg_data
@@ -1349,7 +1351,7 @@ pub fn call_send_typing_ind (call_id: pjsua_call_id, is_typing: bool, msg_data: 
     }
 }
 
-pub fn call_send_request (call_id: pjsua_call_id, method: String, msg_data: Option<&mut pjsua_msg_data>) -> Result<(), pj_status_t> {
+pub fn call_send_request (call_id: i32, method: String, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
 
     let mut method = pj_str_t::from_string(method);
 
@@ -1359,28 +1361,28 @@ pub fn call_send_request (call_id: pjsua_call_id, method: String, msg_data: Opti
     };
 
     unsafe {
-        utils::check_status(pjsua_call_send_request ( call_id, &mut method as *const _, msg_data ))
+        utils::check_status(pjsua_sys::pjsua_call_send_request( call_id, &mut method as *const _, msg_data ))
     }
 }
 
 pub fn call_hangup_all () {
-    unsafe { pjsua_call_hangup_all() }
+    unsafe { pjsua_sys::pjsua_call_hangup_all() }
 }
 
 pub fn call_dump(
-    call_id: pjsua_call_id,
+    call_id: i32,
     with_media: bool,
     buffer: String,
     maxlen: u32,
     indent: String,
-) -> Result<(), pj_status_t> {
+) -> Result<(), i32> {
 
     let buffer: *mut i8 = CString::new(buffer.as_str()).expect("CString::pjsua_call_dump fail.").into_raw();
     let indent: *const i8 = CString::new(indent.as_str()).expect("CString::pjsua_call_dump fail.").into_raw();
 
     unsafe {
 
-        let status = pjsua_call_dump(
+        let status = pjsua_sys::pjsua_call_dump(
             call_id,
             utils::boolean_to_pjbool(with_media),
             buffer,
@@ -1392,22 +1394,22 @@ pub fn call_dump(
     }
 }
 
-pub fn call_get_stream_info (call_id: pjsua_call_id, med_idx: u32, psi: &mut pjsua_stream_info) -> Result<(), pj_status_t> {
+pub fn call_get_stream_info (call_id: i32, med_idx: u32, psi: &mut StreamInfo) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_call_get_stream_info (call_id, med_idx, psi as *mut _))
+        utils::check_status(pjsua_sys::pjsua_call_get_stream_info (call_id, med_idx, psi as *mut _))
     }
 }
 
-pub fn call_get_stream_stat (call_id: pjsua_call_id, med_idx: u32, stat: &mut pjsua_stream_stat) -> Result<(), pj_status_t> {
+pub fn call_get_stream_stat (call_id: i32, med_idx: u32, stat: &mut StreamStatus) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_call_get_stream_stat( call_id, med_idx, stat as *mut _))
+        utils::check_status(pjsua_sys::pjsua_call_get_stream_stat( call_id, med_idx, stat as *mut _))
     }
 }
 
-// pj_status_t 	pjsua_call_get_med_transport_info (pjsua_call_id call_id, unsigned med_idx, pjmedia_transport_info *t)
-pub fn call_get_med_transport_info (call_id: pjsua_call_id, med_idx: u32, t: &mut pjmedia_transport_info) -> Result<(), pj_status_t> {
+// i32 	pjsua_call_get_med_transport_info (pjsua_call_id call_id, unsigned med_idx, pjmedia_transport_info *t)
+pub fn call_get_med_transport_info (call_id: i32, med_idx: u32, t: &mut pjmedia_transport_info) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_call_get_med_transport_info( call_id, med_idx, t as *mut _))
+        utils::check_status(pjsua_sys::pjsua_call_get_med_transport_info( call_id, med_idx, t as *mut _))
     }
 }
 
@@ -1416,7 +1418,7 @@ pub fn call_get_med_transport_info (call_id: pjsua_call_id, med_idx: u32, t: &mu
 
 // pjsua_vid_win_id 	pjsua_call_get_vid_win (pjsua_call_id call_id)
 // pjsua_conf_port_id 	pjsua_call_get_vid_conf_port (pjsua_call_id call_id, pjmedia_dir dir)
-// pj_status_t 	pjsua_call_set_vid_strm (pjsua_call_id call_id, pjsua_call_vid_strm_op op, const pjsua_call_vid_strm_op_param *param)
+// i32 	pjsua_call_set_vid_strm (pjsua_call_id call_id, pjsua_call_vid_strm_op op, const pjsua_call_vid_strm_op_param *param)
 // pj_bool_t 	pjsua_call_vid_stream_is_running (pjsua_call_id call_id, int med_idx, pjmedia_dir dir)
 // int 	pjsua_call_get_vid_stream_idx (pjsua_call_id call_id)
 
@@ -1424,38 +1426,38 @@ pub fn call_get_med_transport_info (call_id: pjsua_call_id, med_idx: u32, t: &mu
 
 // pjsua sound and media device function helper
 pub fn media_config_default(cfg: &mut MediaConfig) {
-    unsafe { pjsua_media_config_default(cfg as *mut _); }
+    unsafe { pjsua_sys::pjsua_media_config_default(cfg as *mut _); }
 }
 
 pub fn snd_dev_param_default (prm: &mut pjsua_snd_dev_param) {
-    unsafe { pjsua_snd_dev_param_default(prm as *mut _); }
+    unsafe { pjsua_sys::pjsua_snd_dev_param_default(prm as *mut _); }
 }
 
 pub fn conf_connect_param_defautl(prm: &mut pjsua_conf_connect_param) {
-    unsafe { pjsua_conf_connect_param_default(prm as *mut _); }
+    unsafe { pjsua_sys::pjsua_conf_connect_param_default(prm as *mut _); }
 }
 
 pub fn conf_get_max_ports() -> u32 {
-    unsafe { pjsua_conf_get_max_ports() }
+    unsafe { pjsua_sys::pjsua_conf_get_max_ports() }
 }
 
 pub fn conf_get_active_ports() -> u32 {
-    unsafe { pjsua_conf_get_active_ports() }
+    unsafe { pjsua_sys::pjsua_conf_get_active_ports() }
 }
 
-pub fn enum_conf_ports(id: &mut [pjsua_conf_port_id; PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_conf_ports(id: &mut [i32; pjsua_sys::PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_enum_conf_ports( id.as_mut_ptr(), count as *mut _))
+        utils::check_status(pjsua_sys::pjsua_enum_conf_ports( id.as_mut_ptr(), count as *mut _))
     }
 }
 
-pub fn conf_get_port_info (port_id: pjsua_conf_port_id, info: &mut pjsua_conf_port_info) -> Result<(), pj_status_t> {
+pub fn conf_get_port_info (port_id: i32, info: &mut ConferencePortInfo) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_conf_get_port_info( port_id, info as *mut _ ))
+        utils::check_status(pjsua_sys::pjsua_conf_get_port_info( port_id, info as *mut _ ))
     }
 }
 
-pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut pjsua_conf_port_id>) -> Result<(), pj_status_t> {
+pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut i32>) -> Result<(), i32> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -1467,7 +1469,7 @@ pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut pjsua_conf_port_
         let pool = pool_create("tmp-pool");
 
         // let aport = port.as_mut().as_ptr();
-        let result = pjsua_conf_add_port(
+        let result = pjsua_sys::pjsua_conf_add_port(
             pool,
             port,
             p_id
@@ -1475,7 +1477,7 @@ pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut pjsua_conf_port_
 
         pool_release(pool);
 
-        if result == PJ_SUCCESS as pj_status_t {
+        if result == PJ_SUCCESS as i32 {
             Ok(())
         } else {
             Err(result)
@@ -1483,195 +1485,195 @@ pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut pjsua_conf_port_
     }
 }
 
-pub fn conf_remove_port (port_id: pjsua_conf_port_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_conf_remove_port(port_id)) }
+pub fn conf_remove_port (port_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_conf_remove_port(port_id)) }
 }
 
-pub fn conf_connect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_conf_connect(source, sink)) }
+pub fn conf_connect(source: i32, sink: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_conf_connect(source, sink)) }
 }
 
-pub fn conf_connect2 (source: pjsua_conf_port_id, sink: pjsua_conf_port_id, prm: &mut pjsua_conf_connect_param) -> Result<(), pj_status_t> {
+pub fn conf_connect2 (source: i32, sink: i32, prm: &mut pjsua_conf_connect_param) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_conf_connect2 ( source, sink, prm as *const _ ))
+        utils::check_status(pjsua_sys::pjsua_conf_connect2( source, sink, prm as *const _ ))
     }
 }
 
-pub fn conf_disconnect(source: pjsua_conf_port_id, sink: pjsua_conf_port_id) -> Result<(), pj_status_t> {
+pub fn conf_disconnect(source: i32, sink: i32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_conf_disconnect(source, sink))
+        utils::check_status(pjsua_sys::pjsua_conf_disconnect(source, sink))
     }
 }
 
-pub fn conf_adjust_tx_level (slot: pjsua_conf_port_id, level: f32) -> Result<(), pj_status_t> {
+pub fn conf_adjust_tx_level (slot: i32, level: f32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_conf_adjust_tx_level(slot, level))
+        utils::check_status(pjsua_sys::pjsua_conf_adjust_tx_level(slot, level))
     }
 }
 
-pub fn conf_adjust_rx_level (slot: pjsua_conf_port_id, level: f32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_conf_adjust_rx_level(slot, level)) }
+pub fn conf_adjust_rx_level (slot: i32, level: f32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_conf_adjust_rx_level(slot, level)) }
 }
 
-pub fn conf_get_signal_level (slot: pjsua_conf_port_id, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), pj_status_t> {
+pub fn conf_get_signal_level (slot: i32, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_conf_get_signal_level (slot, tx_level as *mut _, rx_level as *mut _))
+        utils::check_status(pjsua_sys::pjsua_conf_get_signal_level (slot, tx_level as *mut _, rx_level as *mut _))
     }
 }
 
-pub fn player_create(filename: String, options: u32, p_id: &mut pjsua_player_id) -> Result<(), pj_status_t> {
+pub fn player_create(filename: String, options: u32, p_id: &mut i32) -> Result<(), i32> {
 
     let filename: *const pj_str_t = &mut pj_str_t::from_string(filename) as *const _;
 
     unsafe {
-        utils::check_status(pjsua_player_create( filename, options, p_id as *mut _))
+        utils::check_status(pjsua_sys::pjsua_player_create( filename, options, p_id as *mut _))
     }
 }
 
-// pj_status_t 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label, unsigned options, pjsua_player_id *p_id)
+// i32 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label, unsigned options, pjsua_player_id *p_id)
 
-pub fn player_get_conf_port(id: pjsua_player_id) -> pjsua_conf_port_id {
-    unsafe { pjsua_player_get_conf_port(id) }
+pub fn player_get_conf_port(id: i32) -> i32 {
+    unsafe { pjsua_sys::pjsua_player_get_conf_port(id) }
 }
 
-pub fn player_get_port(id: pjsua_player_id, p_port: &mut pjmedia_port) -> Result<(), pj_status_t> {
+pub fn player_get_port(id: i32, p_port: &mut pjmedia_port) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_player_get_port(id, &mut (p_port as *mut _) as *mut _))
+        utils::check_status(pjsua_sys::pjsua_player_get_port(id, &mut (p_port as *mut _) as *mut _))
     }
 }
 
-pub fn player_get_info(id: pjsua_player_id, info: &mut pjmedia_wav_player_info) -> Result<(), pj_status_t> {
+pub fn player_get_info(id: i32, info: &mut pjmedia_wav_player_info) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_player_get_info( id, info as *mut _))
+        utils::check_status(pjsua_sys::pjsua_player_get_info( id, info as *mut _))
     }
 }
 
-pub fn player_get_pos(id: pjsua_player_id) -> pj_ssize_t {
-    unsafe { pjsua_player_get_pos(id) }
+pub fn player_get_pos(id: i32) -> i64 {
+    unsafe { pjsua_sys::pjsua_player_get_pos(id) }
 }
 
-pub fn player_set_pos(id: pjsua_player_id, samples: pj_uint32_t) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_player_set_pos(id, samples)) }
+pub fn player_set_pos(id: i32, samples: u32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_player_set_pos(id, samples)) }
 }
 
-pub fn player_destroy (id: pjsua_player_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_player_destroy(id)) }
+pub fn player_destroy (id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_player_destroy(id)) }
 }
 
 // skiped function
 
-// pj_status_t 	pjsua_recorder_create (const pj_str_t *filename, unsigned enc_type, void *enc_param, pj_ssize_t max_size, unsigned options, pjsua_recorder_id *p_id)
+// i32 	pjsua_recorder_create (const pj_str_t *filename, unsigned enc_type, void *enc_param, pj_ssize_t max_size, unsigned options, pjsua_recorder_id *p_id)
 // pjsua_conf_port_id 	pjsua_recorder_get_conf_port (pjsua_recorder_id id)
-// pj_status_t 	pjsua_recorder_get_port (pjsua_recorder_id id, pjmedia_port **p_port)
-// pj_status_t 	pjsua_recorder_destroy (pjsua_recorder_id id)
+// i32 	pjsua_recorder_get_port (pjsua_recorder_id id, pjmedia_port **p_port)
+// i32 	pjsua_recorder_destroy (pjsua_recorder_id id)
 
-pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_enum_aud_devs( info.as_mut_ptr(), count as *mut _)) }
+pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_enum_aud_devs( info.as_mut_ptr(), count as *mut _)) }
 }
 
-pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_enum_snd_devs( info.as_mut_ptr(), count as *mut _))
+        utils::check_status(pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), count as *mut _))
     }
 }
 
-pub fn get_snd_dev(capture_dev: &mut i32, playback_dev: &mut i32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_get_snd_dev( capture_dev as *mut _, playback_dev as *mut _ )) }
+pub fn get_snd_dev(capture_dev: &mut i32, playback_dev: &mut i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_get_snd_dev( capture_dev as *mut _, playback_dev as *mut _ )) }
 }
 
-pub fn set_snd_dev(capture_dev: i32, playback_dev: i32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_set_snd_dev(capture_dev, playback_dev)) }
+pub fn set_snd_dev(capture_dev: i32, playback_dev: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev(capture_dev, playback_dev)) }
 }
 
-pub fn set_snd_dev2(snd_param: &mut pjsua_snd_dev_param) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_set_snd_dev2( snd_param as *mut _)) }
+pub fn set_snd_dev2(snd_param: &mut pjsua_snd_dev_param) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev2( snd_param as *mut _)) }
 }
 
-pub fn set_null_snd_dev() -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_set_null_snd_dev()) }
+pub fn set_null_snd_dev() -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_set_null_snd_dev()) }
 }
 
 pub fn set_no_snd_dev() -> *mut pjmedia_port {
-    unsafe { pjsua_set_no_snd_dev() }
+    unsafe { pjsua_sys::pjsua_set_no_snd_dev() }
 }
 
-pub fn set_ec(tail_ms: u32, options: u32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_set_ec(tail_ms, options)) }
+pub fn set_ec(tail_ms: u32, options: u32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_set_ec(tail_ms, options)) }
 }
 
-pub fn get_ec_tail(p_tail_ms: &mut u32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_get_ec_tail(p_tail_ms)) }
+pub fn get_ec_tail(p_tail_ms: &mut u32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_tail(p_tail_ms)) }
 }
 
-pub fn get_ec_stat(p_stat: &mut pjmedia_echo_stat) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_get_ec_stat( p_stat as *mut _ )) }
+pub fn get_ec_stat(p_stat: &mut pjmedia_echo_stat) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_stat( p_stat as *mut _ )) }
 }
 
 pub fn snd_is_active() -> bool {
-    unsafe { utils::check_boolean(pjsua_snd_is_active()) }
+    unsafe { utils::check_boolean(pjsua_sys::pjsua_snd_is_active()) }
 }
 
 
 // skiped function for detailed audio dev setting
-// pj_status_t 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
-// pj_status_t 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
+// i32 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
+// i32 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
 
 
 // TODO check this create and destroy
-pub fn ext_snd_dev_create(param: &mut pjmedia_snd_port_param, p_snd: &mut pjsua_ext_snd_dev) -> Result<(), pj_status_t> {
+pub fn ext_snd_dev_create(param: &mut pjmedia_snd_port_param, p_snd: &mut pjsua_ext_snd_dev) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_ext_snd_dev_create( param as *mut _, &mut (p_snd as *mut _) as *mut _ ))
+        utils::check_status(pjsua_sys::pjsua_ext_snd_dev_create( param as *mut _, &mut (p_snd as *mut _) as *mut _ ))
     }
 }
 
-pub fn ext_snd_dev_destroy(snd: &mut pjsua_ext_snd_dev) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_ext_snd_dev_destroy(snd as *mut _)) }
+pub fn ext_snd_dev_destroy(snd: &mut pjsua_ext_snd_dev) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_ext_snd_dev_destroy(snd as *mut _)) }
 }
 
 pub fn ext_snd_dev_get_snd_port(snd: &mut pjsua_ext_snd_dev) -> *mut pjmedia_snd_port {
-    unsafe { pjsua_ext_snd_dev_get_snd_port( snd as *mut _) }
+    unsafe { pjsua_sys::pjsua_ext_snd_dev_get_snd_port( snd as *mut _) }
 }
 
-pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> pjsua_conf_port_id {
-    unsafe { pjsua_ext_snd_dev_get_conf_port( snd as *mut _ ) }
+pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> i32 {
+    unsafe { pjsua_sys::pjsua_ext_snd_dev_get_conf_port( snd as *mut _ ) }
 }
 
-pub fn enum_codecs(id: &mut [pjsua_codec_info; 32], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_codecs(id: &mut [CodecInfo; 32], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_enum_codecs( id.as_mut_ptr(), count as *mut _ ))
+        utils::check_status(pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(), count as *mut _ ))
     }
 }
 
-pub fn codec_set_priority(codec_id: String, priority: u8) -> Result<(), pj_status_t> {
+pub fn codec_set_priority(codec_id: String, priority: u8) -> Result<(), i32> {
     let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
-    unsafe { utils::check_status(pjsua_codec_set_priority( codec_id, priority)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_codec_set_priority( codec_id, priority)) }
 }
 
-pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), pj_status_t> {
+pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
 
     let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
 
     unsafe {
-        utils::check_status(pjsua_codec_get_param( codec_id, param as *mut _))
+        utils::check_status(pjsua_sys::pjsua_codec_get_param( codec_id, param as *mut _))
     }
 }
 
-pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), pj_status_t> {
+pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
     let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
     unsafe {
-        utils::check_status(pjsua_codec_set_param( codec_id, param as *const _ ))
+        utils::check_status(pjsua_sys::pjsua_codec_set_param( codec_id, param as *const _ ))
     }
 }
 
 
 // pjsua account helper
 
-pub fn ice_config_from_media_config(dst: &mut pjsua_ice_config, src: &mut pjsua_media_config) {
+pub fn ice_config_from_media_config(dst: &mut ICEConfig, src: &mut MediaConfig) {
 
     let pool = pool_create("tmp-pool");
 
     unsafe {
-        pjsua_ice_config_from_media_config(
+        pjsua_sys::pjsua_ice_config_from_media_config(
             pool,
             dst as *mut _,
             src as *const _
@@ -1681,12 +1683,12 @@ pub fn ice_config_from_media_config(dst: &mut pjsua_ice_config, src: &mut pjsua_
     pool_release(pool);
 }
 
-pub fn ice_config_dup(dst: &mut pjsua_ice_config, src: &mut pjsua_ice_config) {
+pub fn ice_config_dup(dst: &mut ICEConfig, src: &mut ICEConfig) {
 
     let pool = pool_create("tmp-pool");
 
     unsafe {
-        pjsua_ice_config_dup(
+        pjsua_sys::pjsua_ice_config_dup(
             pool,
             dst as *mut _,
             src as *const _
@@ -1696,12 +1698,12 @@ pub fn ice_config_dup(dst: &mut pjsua_ice_config, src: &mut pjsua_ice_config) {
     pool_release(pool);
 }
 
-pub fn turn_config_from_media_config(dst: &mut pjsua_turn_config, src: &mut pjsua_media_config) {
+pub fn turn_config_from_media_config(dst: &mut TURNConfig, src: &mut MediaConfig) {
 
     let pool = pool_create("tmp-pool");
 
     unsafe {
-        pjsua_turn_config_from_media_config(
+        pjsua_sys::pjsua_turn_config_from_media_config(
             pool,
             dst as *mut _,
             src as *const _
@@ -1711,12 +1713,12 @@ pub fn turn_config_from_media_config(dst: &mut pjsua_turn_config, src: &mut pjsu
     pool_release(pool);
 }
 
-pub fn turn_config_dup(dst: &mut pjsua_turn_config, src: &mut pjsua_turn_config) {
+pub fn turn_config_dup(dst: &mut TURNConfig, src: &mut TURNConfig) {
 
     let pool = pool_create("tmp-pool");
 
     unsafe {
-        pjsua_turn_config_dup(
+        pjsua_sys::pjsua_turn_config_dup(
             pool,
             dst as *mut _,
             src as *const _
@@ -1726,20 +1728,20 @@ pub fn turn_config_dup(dst: &mut pjsua_turn_config, src: &mut pjsua_turn_config)
     pool_release(pool);
 }
 
-pub fn srtp_opt_default(cfg: &mut pjsua_srtp_opt) {
+pub fn srtp_opt_default(cfg: &mut SRTPOption) {
     unsafe {
-        pjsua_srtp_opt_default(
+        pjsua_sys::pjsua_srtp_opt_default(
             cfg as *mut _
         )
     }
 }
 
-pub fn srtp_opt_dup(dst: &mut pjsua_srtp_opt, src: &mut pjsua_srtp_opt, check_str: bool) {
+pub fn srtp_opt_dup(dst: &mut SRTPOption, src: &mut SRTPOption, check_str: bool) {
 
     let pool = pool_create("tmp-pool");
 
     unsafe {
-        pjsua_srtp_opt_dup(
+        pjsua_sys::pjsua_srtp_opt_dup(
             pool,
             dst as *mut _,
             src as *const _,
@@ -1751,14 +1753,14 @@ pub fn srtp_opt_dup(dst: &mut pjsua_srtp_opt, src: &mut pjsua_srtp_opt, check_st
 }
 
 pub fn acc_config_default (cfg: &mut AccountConfig) {
-    unsafe { pjsua_acc_config_default(cfg as *mut _); }
+    unsafe { pjsua_sys::pjsua_acc_config_default(cfg as *mut _); }
 }
 
 pub fn acc_config_dup (dst: &mut AccountConfig, src: &mut AccountConfig) {
     unsafe {
         let pool = pool_create("tmp-pool");
 
-        pjsua_acc_config_dup(
+        pjsua_sys::pjsua_acc_config_dup(
             pool,
             dst as *mut _,
             src as *const _
@@ -1769,25 +1771,25 @@ pub fn acc_config_dup (dst: &mut AccountConfig, src: &mut AccountConfig) {
 }
 
 pub fn acc_get_count() -> u32 {
-    unsafe { pjsua_acc_get_count() }
+    unsafe { pjsua_sys::pjsua_acc_get_count() }
 }
 
-pub fn acc_is_valid(acc_id: pjsua_acc_id) -> bool {
-    unsafe { utils::check_boolean(pjsua_acc_is_valid(acc_id)) }
+pub fn acc_is_valid(acc_id: i32) -> bool {
+    unsafe { utils::check_boolean(pjsua_sys::pjsua_acc_is_valid(acc_id)) }
 }
 
-pub fn acc_set_default(acc_id: pjsua_acc_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_acc_set_default(acc_id)) }
+pub fn acc_set_default(acc_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_default(acc_id)) }
 }
 
-pub fn acc_get_default() -> pjsua_acc_id {
-    unsafe { pjsua_acc_get_default() }
+pub fn acc_get_default() -> i32 {
+    unsafe { pjsua_sys::pjsua_acc_get_default() }
 }
 
-pub fn acc_add(acc_cfg: &mut pjsua_acc_config, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> Result<(), pj_status_t> {
+pub fn acc_add(acc_cfg: &mut AccountConfig, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
     unsafe {
 
-        let status = pjsua_acc_add(
+        let status = pjsua_sys::pjsua_acc_add(
             acc_cfg as *const _,
             utils::boolean_to_pjbool(is_default),
             p_acc_id as *mut _
@@ -1797,10 +1799,10 @@ pub fn acc_add(acc_cfg: &mut pjsua_acc_config, is_default: bool, p_acc_id: &mut 
     }
 }
 
-pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut pjsua_acc_id) -> Result<(), pj_status_t> {
+pub fn acc_add_local(tid: i32, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
     unsafe {
 
-        let status = pjsua_acc_add_local(
+        let status = pjsua_sys::pjsua_acc_add_local(
             tid,
             utils::boolean_to_pjbool(is_default),
             p_acc_id as *mut _
@@ -1810,20 +1812,20 @@ pub fn acc_add_local(tid: pjsua_transport_id, is_default: bool, p_acc_id: &mut p
     }
 }
 
-// pj_status_t 	pjsua_acc_set_user_data (pjsua_acc_id acc_id, void *user_data)
-// void * 	pjsua_acc_get_user_data (pjsua_acc_id acc_id)
+// i32 	pjsua_acc_set_user_data (i32 acc_id, void *user_data)
+// void * 	pjsua_acc_get_user_data (i32 acc_id)
 
-pub fn acc_del(acc_id: pjsua_acc_id) -> Result<(), pj_status_t> {
+pub fn acc_del(acc_id: i32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_acc_del(acc_id))
+        utils::check_status(pjsua_sys::pjsua_acc_del(acc_id))
     }
 }
 
-pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> Result<(), pj_status_t> {
+pub fn acc_get_config (acc_id: i32, acc_cfg: &mut AccountConfig) -> Result<(), i32> {
     unsafe {
         let pool = pool_create("tmp-pool");
 
-        let status = pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
+        let status = pjsua_sys::pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
 
         pool_release(pool);
 
@@ -1831,22 +1833,22 @@ pub fn acc_get_config (acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> 
     }
 }
 
-pub fn acc_modify(acc_id: pjsua_acc_id, acc_cfg: &mut pjsua_acc_config) -> Result<(), pj_status_t> {
+pub fn acc_modify(acc_id: i32, acc_cfg: &mut AccountConfig) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_acc_modify( acc_id, acc_cfg as *const _ ))
+        utils::check_status(pjsua_sys::pjsua_acc_modify( acc_id, acc_cfg as *const _ ))
     }
 }
 
-pub fn acc_set_online_status(acc_id: pjsua_acc_id, is_online: bool) -> Result<(), pj_status_t> {
+pub fn acc_set_online_status(acc_id: i32, is_online: bool) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_acc_set_online_status( acc_id, utils::boolean_to_pjbool(is_online)))
+        utils::check_status(pjsua_sys::pjsua_acc_set_online_status( acc_id, utils::boolean_to_pjbool(is_online)))
     }
 }
 
-pub fn acc_set_online_status2(acc_id: pjsua_acc_id, is_online: bool, pr: &mut  pjrpid_element) -> Result<(), pj_status_t> {
+pub fn acc_set_online_status2(acc_id: i32, is_online: bool, pr: &mut  pjrpid_element) -> Result<(), i32> {
 
     unsafe {
-        let status = pjsua_acc_set_online_status2(
+        let status = pjsua_sys::pjsua_acc_set_online_status2(
             acc_id,
             utils::boolean_to_pjbool(is_online),
             pr as *const _
@@ -1855,57 +1857,57 @@ pub fn acc_set_online_status2(acc_id: pjsua_acc_id, is_online: bool, pr: &mut  p
     }
 }
 
-pub fn acc_set_registration(acc_id: pjsua_acc_id, renew: bool) -> Result<(), pj_status_t> {
+pub fn acc_set_registration(acc_id: i32, renew: bool) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_acc_set_registration( acc_id, utils::boolean_to_pjbool(renew)))
+        utils::check_status(pjsua_sys::pjsua_acc_set_registration( acc_id, utils::boolean_to_pjbool(renew)))
     }
 }
 
-pub fn acc_get_info (acc_id: pjsua_acc_id, info: &mut pjsua_acc_info) -> Result<(), pj_status_t> {
+pub fn acc_get_info (acc_id: i32, info: &mut AccountInfo) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_acc_get_info(acc_id, info as *mut _))
+        utils::check_status(pjsua_sys::pjsua_acc_get_info(acc_id, info as *mut _))
     }
 }
 
-pub fn enum_accs(ids: &mut [pjsua_acc_id; PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_accs(ids: &mut [i32; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _))
+        utils::check_status(pjsua_sys::pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _))
     }
 }
 
-pub fn acc_enum_info(info: &mut [pjsua_acc_info; PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn acc_enum_info(info: &mut [AccountInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
+        utils::check_status(pjsua_sys::pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
     }
 }
 
-pub fn acc_find_for_outgoing(url: String) -> pjsua_acc_id {
+pub fn acc_find_for_outgoing(url: String) -> i32 {
 
     let mut url = pj_str_t::from_string(url);
 
     unsafe {
-        pjsua_acc_find_for_outgoing(
+        pjsua_sys::pjsua_acc_find_for_outgoing(
             &mut url as *const _
         )
     }
 
 }
 
-pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
+pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> i32 {
 
     unsafe {
-        pjsua_acc_find_for_incoming(
+        pjsua_sys::pjsua_acc_find_for_incoming(
             rdata as *mut _
         )
     }
 }
 
-pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), pj_status_t> {
+pub fn acc_create_request(acc_id: i32, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), i32> {
 
     let mut target = pj_str_t::from_string(target);
 
     unsafe {
-        let status = pjsua_acc_create_request(
+        let status = pjsua_sys::pjsua_acc_create_request(
             acc_id,
             method as *const _,
             &mut target as *const _,
@@ -1916,7 +1918,7 @@ pub fn acc_create_request(acc_id: pjsua_acc_id, method: &mut pjsip_method, targe
     }
 }
 
-pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String) -> Result<(), pj_status_t> {
+pub fn acc_create_uac_contact(contact: String, acc_id: i32, uri: String) -> Result<(), i32> {
 
     let mut contact = pj_str_t::from_string(contact);
     let mut uri = pj_str_t::from_string(uri);
@@ -1924,7 +1926,7 @@ pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String
     unsafe {
         let pool = pool_create("tmp-pool");
 
-        let status = pjsua_acc_create_uac_contact(
+        let status = pjsua_sys::pjsua_acc_create_uac_contact(
             pool,
             &mut contact as *mut _,
             acc_id,
@@ -1937,14 +1939,14 @@ pub fn acc_create_uac_contact(contact: String, acc_id: pjsua_acc_id, uri: String
     }
 }
 
-pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut pjsip_rx_data) -> Result<(), pj_status_t> {
+pub fn acc_create_uas_contact(contact: String, acc_id: i32, rdata: &mut pjsip_rx_data) -> Result<(), i32> {
 
     let mut contact = pj_str_t::from_string(contact);
 
     unsafe {
         let pool = pool_create("tmp-pool");
 
-        let status = pjsua_acc_create_uas_contact(
+        let status = pjsua_sys::pjsua_acc_create_uas_contact(
             pool,
             &mut contact as *mut _,
             acc_id,
@@ -1957,51 +1959,51 @@ pub fn acc_create_uas_contact(contact: String, acc_id: pjsua_acc_id, rdata: &mut
     }
 }
 
-pub fn acc_set_transport(acc_id: pjsua_acc_id, tp_id: pjsua_transport_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_acc_set_transport( acc_id, tp_id )) }
+pub fn acc_set_transport(acc_id: i32, tp_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_transport( acc_id, tp_id )) }
 }
 
 
 // JSUA-API Buddy, Presence, and Instant Messaging
 
-pub fn buddy_config_default(cfg: &mut pjsua_buddy_config) {
+pub fn buddy_config_default(cfg: &mut BuddyConfig) {
     unsafe {
-        pjsua_buddy_config_default(
+        pjsua_sys::pjsua_buddy_config_default(
             cfg as *mut _
         )
     }
 }
 
 pub fn get_buddy_count() -> u32 {
-    unsafe { pjsua_get_buddy_count() }
+    unsafe { pjsua_sys::pjsua_get_buddy_count() }
 }
 
-pub fn buddy_is_valid(buddy_id: pjsua_buddy_id) -> bool {
-    unsafe {utils::check_boolean(pjsua_buddy_is_valid(buddy_id)) }
+pub fn buddy_is_valid(buddy_id: i32) -> bool {
+    unsafe {utils::check_boolean(pjsua_sys::pjsua_buddy_is_valid(buddy_id)) }
 }
 
-pub fn enum_buddies(ids: &mut [pjsua_buddy_id; PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_buddies(ids: &mut [i32; pjsua_sys::PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_enum_buddies( ids.as_mut_ptr(), count as *mut _ ))
+        utils::check_status(pjsua_sys::pjsua_enum_buddies( ids.as_mut_ptr(), count as *mut _ ))
     }
 }
 
-pub fn buddy_find(uri: String) -> pjsua_buddy_id {
+pub fn buddy_find(uri: String) -> i32 {
     let uri: *const pj_str_t = &mut pj_str_t::from_string(uri) as *const _;
-    unsafe { pjsua_buddy_find( uri ) }
+    unsafe { pjsua_sys::pjsua_buddy_find( uri ) }
 }
 
-pub fn buddy_get_info(buddy_id: pjsua_buddy_id, info: &mut pjsua_buddy_info) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_buddy_get_info( buddy_id, info as *mut _ )) }
+pub fn buddy_get_info(buddy_id: i32, info: &mut BuddyInfo) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_buddy_get_info( buddy_id, info as *mut _ )) }
 }
 
 // skiped function this mosly for trasfer data
-// pj_status_t 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
+// i32 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
 // void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
 
-pub fn buddy_add(buddy_cfg: &mut pjsua_buddy_config, p_buddy_id: *mut pjsua_buddy_id) -> Result<(), pj_status_t> {
+pub fn buddy_add(buddy_cfg: &mut BuddyConfig, p_buddy_id: *mut i32) -> Result<(), i32> {
     unsafe {
-        let status = pjsua_buddy_add (
+        let status = pjsua_sys::pjsua_buddy_add (
             buddy_cfg as *const _,
             p_buddy_id as *mut _
         );
@@ -2009,29 +2011,29 @@ pub fn buddy_add(buddy_cfg: &mut pjsua_buddy_config, p_buddy_id: *mut pjsua_budd
     }
 }
 
-pub fn buddy_del(buddy_id: pjsua_buddy_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_buddy_del(buddy_id)) }
+pub fn buddy_del(buddy_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_buddy_del(buddy_id)) }
 }
 
-pub fn buddy_subscribe_pres(buddy_id: pjsua_buddy_id, subscribe: bool) -> Result<(), pj_status_t> {
+pub fn buddy_subscribe_pres(buddy_id: i32, subscribe: bool) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_buddy_subscribe_pres(buddy_id, utils::boolean_to_pjbool(subscribe)))
+        utils::check_status(pjsua_sys::pjsua_buddy_subscribe_pres(buddy_id, utils::boolean_to_pjbool(subscribe)))
     }
 }
 
-pub fn buddy_update_pres(buddy_id: pjsua_buddy_id) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_buddy_update_pres(buddy_id)) }
+pub fn buddy_update_pres(buddy_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_buddy_update_pres(buddy_id)) }
 }
 
 pub fn pres_notify(
-    acc_id: pjsua_acc_id,
+    acc_id: i32,
     srv_pres: &mut pjsua_srv_pres,
     state: pjsip_evsub_state,
     state_str: String,
     reason: String,
     with_body: bool,
-    msg_data: Option<&mut pjsua_msg_data>
-) -> Result<(), pj_status_t> {
+    msg_data: Option<&mut MessageData>
+) -> Result<(), i32> {
 
     let mut state_str = pj_str_t::from_string(state_str);
     let mut reason = pj_str_t::from_string(reason);
@@ -2042,7 +2044,7 @@ pub fn pres_notify(
     };
 
     unsafe {
-        let status = pjsua_pres_notify(
+        let status = pjsua_sys::pjsua_pres_notify(
             acc_id,
             srv_pres,
             state,
@@ -2057,16 +2059,16 @@ pub fn pres_notify(
 }
 
 pub fn pres_dump(verbose: bool) {
-    unsafe { pjsua_pres_dump ( utils::boolean_to_pjbool(verbose))}
+    unsafe { pjsua_sys::pjsua_pres_dump ( utils::boolean_to_pjbool(verbose))}
 }
 
 pub fn im_send(
-    acc_id: pjsua_acc_id,
+    acc_id: i32,
     to: String,
     mime_type: String,
     content: String,
-    msg_data: Option<&mut pjsua_msg_data>
-) -> Result<(), pj_status_t> {
+    msg_data: Option<&mut MessageData>
+) -> Result<(), i32> {
 
     let mut to = pj_str_t::from_string(to);
     let mut mime_type = pj_str_t::from_string(mime_type);
@@ -2078,7 +2080,7 @@ pub fn im_send(
     };
 
     unsafe {
-        let status = pjsua_im_send(
+        let status = pjsua_sys::pjsua_im_send(
             acc_id,
             &mut to as *const _,
             &mut mime_type as *const _,
@@ -2092,11 +2094,11 @@ pub fn im_send(
 }
 
 pub fn im_typing(
-    acc_id: pjsua_acc_id,
+    acc_id: i32,
     to:String,
     is_typing: bool,
-    msg_data: Option<&mut pjsua_msg_data>
-) -> Result<(), pj_status_t> {
+    msg_data: Option<&mut MessageData>
+) -> Result<(), i32> {
 
     let mut to = pj_str_t::from_string(to);
 
@@ -2106,7 +2108,7 @@ pub fn im_typing(
     };
 
     unsafe {
-        let status = pjsua_im_typing(
+        let status = pjsua_sys::pjsua_im_typing(
             acc_id,
             &mut to as *const _,
             utils::boolean_to_pjbool(is_typing),
@@ -2120,15 +2122,15 @@ pub fn im_typing(
 
 // PJSUA-API Signaling Transport
 
-pub fn transport_config_default(cfg: &mut pjsua_transport_config) {
-    unsafe { pjsua_transport_config_default(cfg as *mut _) }
+pub fn transport_config_default(cfg: &mut TransportConfig) {
+    unsafe { pjsua_sys::pjsua_transport_config_default(cfg as *mut _) }
 }
 
-pub fn transport_config_dup(dst: &mut pjsua_transport_config, src: &mut pjsua_transport_config) {
+pub fn transport_config_dup(dst: &mut TransportConfig, src: &mut TransportConfig) {
     let pool = pool_create("tmp-pool");
 
     unsafe {
-        pjsua_transport_config_dup(
+        pjsua_sys::pjsua_transport_config_dup(
             pool,
             dst as *mut _,
             src as *mut _
@@ -2138,7 +2140,7 @@ pub fn transport_config_dup(dst: &mut pjsua_transport_config, src: &mut pjsua_tr
     pool_release(pool)
 }
 
-pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport_config, p_id: Option<&mut pjsua_transport_id>) -> Result<(), pj_status_t> {
+pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut TransportConfig, p_id: Option<&mut i32>) -> Result<(), i32> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -2146,7 +2148,7 @@ pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport
     };
 
     unsafe {
-        let status = pjsua_transport_create(
+        let status = pjsua_sys::pjsua_transport_create(
             type_,
             cfg as *const _,
             p_id
@@ -2155,7 +2157,7 @@ pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut pjsua_transport
     }
 }
 
-pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut pjsua_transport_id>) -> Result<(), pj_status_t> {
+pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut i32>) -> Result<(), i32> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -2163,11 +2165,11 @@ pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut pjsua_tran
     };
 
     unsafe {
-        utils::check_status(pjsua_transport_register( tp as *mut _, p_id))
+        utils::check_status(pjsua_sys::pjsua_transport_register( tp as *mut _, p_id))
     }
 }
 
-pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut pjsua_transport_id>) -> Result<(), pj_status_t> {
+pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut i32>) -> Result<(), i32> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -2175,36 +2177,36 @@ pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut pjsua_tran
     };
 
     unsafe {
-        utils::check_status(pjsua_tpfactory_register( tf as *mut _, p_id ))
+        utils::check_status(pjsua_sys::pjsua_tpfactory_register( tf as *mut _, p_id ))
     }
 }
 
-pub fn enum_transports(id: &mut [pjsua_transport_id; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> Result<(), pj_status_t> {
+pub fn enum_transports(id: &mut [i32; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> Result<(), i32> {
 
     unsafe {
-        utils::check_status(pjsua_enum_transports( id.as_mut_ptr(), count as *mut _))
+        utils::check_status(pjsua_sys::pjsua_enum_transports( id.as_mut_ptr(), count as *mut _))
     }
 }
 
-pub fn transport_get_info(id: pjsua_transport_id, info: &mut pjsua_transport_info) -> Result<(), pj_status_t> {
+pub fn transport_get_info(id: i32, info: &mut TransportInfo) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_transport_get_info ( id, info as *mut _))
+        utils::check_status(pjsua_sys::pjsua_transport_get_info(id, info as *mut _))
     }
 }
 
-pub fn transport_set_enable(id: pjsua_transport_id, enabled: bool) -> Result<(), pj_status_t> {
+pub fn transport_set_enable(id: i32, enabled: bool) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_transport_set_enable( id, utils::boolean_to_pjbool(enabled) ))
+        utils::check_status(pjsua_sys::pjsua_transport_set_enable( id, utils::boolean_to_pjbool(enabled) ))
     }
 }
 
-pub fn transport_close (id: pjsua_transport_id, force: bool) -> Result<(), pj_status_t> {
+pub fn transport_close (id: i32, force: bool) -> Result<(), i32> {
     unsafe {
-        utils::check_status(pjsua_transport_close ( id, utils::boolean_to_pjbool(force)))
+        utils::check_status(pjsua_sys::pjsua_transport_close ( id, utils::boolean_to_pjbool(force)))
     }
 }
 
-pub fn transport_lis_start(id: pjsua_transport_id, cfg: &mut pjsua_transport_config) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_transport_lis_start( id, cfg as *const _)) }
+pub fn transport_lis_start(id: i32, cfg: &mut TransportConfig) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_transport_lis_start( id, cfg as *const _)) }
 }
 
