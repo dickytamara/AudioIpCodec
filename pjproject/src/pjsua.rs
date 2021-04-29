@@ -167,7 +167,7 @@ impl AutoCreate<LogConfig> for LogConfig {
     fn new() -> LogConfig {
 
         let mut config = LogConfig {
-            msg_logging: PJ_FALSE as pj_bool_t,
+            msg_logging: 0,
             level: 0,
             console_level: 0,
             decor: 0,
@@ -201,13 +201,13 @@ impl AutoCreate<UAConfig> for UAConfig {
             stun_host: pj_str_t::new(),
             stun_srv_cnt: 0,
             stun_srv: [pj_str_t::new(); 8],
-            stun_try_ipv6: PJ_FALSE as pj_bool_t,
-            stun_ignore_failure: PJ_FALSE as pj_bool_t,
-            stun_map_use_stun2: PJ_FALSE as pj_bool_t,
+            stun_try_ipv6: 0,
+            stun_ignore_failure: 0,
+            stun_map_use_stun2: 0,
             nat_type_in_sdp: 0,
-            require_100rel: PJ_FALSE,
-            use_timer: PJ_FALSE,
-            enable_unsolicited_mwi: PJ_FALSE as pj_bool_t,
+            require_100rel: 0,
+            use_timer: 0,
+            enable_unsolicited_mwi: 0,
             timer_setting: pjsip_timer_setting {
                 min_se: 0,
                 sess_expires: 0,
@@ -223,9 +223,9 @@ impl AutoCreate<UAConfig> for UAConfig {
             user_agent: pj_str_t::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
-            srtp_optional_dup_offer: PJ_FALSE as pj_bool_t,
+            srtp_optional_dup_offer: 0,
             srtp_opt: pjsua_sys::pjsua_srtp_opt::new(),
-            hangup_forked_call: PJ_FALSE as pj_bool_t,
+            hangup_forked_call: 0,
         };
 
         // set with pjsua default
@@ -245,11 +245,11 @@ impl AutoCreate<MediaConfig> for MediaConfig {
             channel_count: 0,
             audio_frame_ptime: 0,
             max_media_ports: 0,
-            has_ioqueue: PJ_FALSE as pj_bool_t,
+            has_ioqueue: 0,
             thread_cnt: 0,
             quality: 0,
             ptime: 0,
-            no_vad: PJ_FALSE as pj_bool_t,
+            no_vad: 0,
             ilbc_mode: 0,
             tx_drop_pct: 0,
             rx_drop_pct: 0,
@@ -262,20 +262,20 @@ impl AutoCreate<MediaConfig> for MediaConfig {
             jb_max_pre: 0,
             jb_max: 0,
             jb_discard_algo: 0,
-            enable_ice: PJ_FALSE as pj_bool_t,
+            enable_ice: 0,
             ice_max_host_cands: 0,
             ice_opt: pj_ice_sess_options::new(),
-            ice_no_rtcp: PJ_FALSE as pj_bool_t,
-            ice_always_update: PJ_FALSE as pj_bool_t,
-            enable_turn: PJ_FALSE as pj_bool_t,
+            ice_no_rtcp: 0,
+            ice_always_update: 0,
+            enable_turn: 0,
             turn_server: pj_str_t::new(),
-            turn_conn_type: 0 as pj_turn_tp_type,
+            turn_conn_type: 0,
             turn_auth_cred: pj_stun_auth_cred::new(),
             turn_tls_setting: pj_turn_sock_tls_cfg::new(),
             snd_auto_close_time: 0,
-            vid_preview_enable_native: PJ_FALSE as pj_bool_t,
-            no_smart_media_update: PJ_FALSE as pj_bool_t,
-            no_rtcp_sdes_bye: PJ_FALSE as pj_bool_t,
+            vid_preview_enable_native: 0,
+            no_smart_media_update: 0,
+            no_rtcp_sdes_bye: 0,
             on_aud_prev_play_frame: None,
             on_aud_prev_rec_frame: None,
         };
@@ -291,7 +291,7 @@ impl AutoCreate<MediaConfig> for MediaConfig {
 impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
     fn new() -> pjsip_publishc_opt {
         pjsip_publishc_opt {
-            queue_request: PJ_FALSE as pj_bool_t,
+            queue_request: 0,
         }
     }
 }
@@ -299,7 +299,7 @@ impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
 impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {
     fn new() -> pjsip_auth_clt_pref {
         pjsip_auth_clt_pref {
-            initial_auth: PJ_FALSE as pj_bool_t,
+            initial_auth: 0,
             algorithm: pj_str_t::new(),
         }
     }
@@ -338,11 +338,11 @@ impl AutoCreate<TransportConfig> for TransportConfig {
 impl AutoCreate<ICEConfig> for ICEConfig {
     fn new() -> ICEConfig {
         ICEConfig {
-            enable_ice: PJ_FALSE as pj_bool_t,
+            enable_ice: 0,
             ice_max_host_cands: 0,
             ice_opt: pj_ice_sess_options::new(),
-            ice_no_rtcp: PJ_FALSE as pj_bool_t,
-            ice_always_update: PJ_FALSE as pj_bool_t,
+            ice_no_rtcp: 0,
+            ice_always_update: 0,
         }
     }
 }
@@ -350,7 +350,7 @@ impl AutoCreate<ICEConfig> for ICEConfig {
 impl AutoCreate<TurnConfig> for TurnConfig {
     fn new() -> TurnConfig {
         TurnConfig {
-            enable_turn: PJ_FALSE as pj_bool_t,
+            enable_turn: 0,
             turn_server: pj_str_t::new(),
             turn_conn_type: 0,
             turn_auth_cred: pj_stun_auth_cred::new(),
@@ -362,8 +362,8 @@ impl AutoCreate<TurnConfig> for TurnConfig {
 impl AutoCreate<IPChangeAccountConfig> for IPChangeAccountConfig {
     fn new() -> IPChangeAccountConfig {
         IPChangeAccountConfig {
-            shutdown_tp: PJ_FALSE as pj_bool_t,
-            hangup_calls: PJ_FALSE as pj_bool_t,
+            shutdown_tp: 0,
+            hangup_calls: 0,
             reinvite_flags: 0,
         }
     }
@@ -379,9 +379,9 @@ impl AutoCreate<AccountConfig> for AccountConfig {
             reg_hdr_list: pjsip_hdr::new(),
             reg_contact_params: pj_str_t::new(),
             sub_hdr_list: pjsip_hdr::new(),
-            mwi_enabled: PJ_FALSE as pj_bool_t,
+            mwi_enabled: 0,
             mwi_expires: 0,
-            publish_enabled: PJ_FALSE as pj_bool_t,
+            publish_enabled: 0,
             publish_opt: pjsip_publishc_opt::new(),
             unpublish_max_wait_time_msec: 0,
             auth_pref: pjsip_auth_clt_pref::new(),
@@ -406,18 +406,18 @@ impl AutoCreate<AccountConfig> for AccountConfig {
                 pjsip_cred_info::new(), pjsip_cred_info::new(),
             ],
             transport_id: 0,
-            allow_contact_rewrite: PJ_FALSE as pj_bool_t,
+            allow_contact_rewrite: 0,
             contact_rewrite_method: 0,
-            contact_use_src_port: PJ_FALSE as pj_bool_t,
-            allow_via_rewrite: PJ_FALSE as pj_bool_t,
-            allow_sdp_nat_rewrite: PJ_FALSE as pj_bool_t,
+            contact_use_src_port: 0,
+            allow_via_rewrite: 0,
+            allow_sdp_nat_rewrite: 0,
             use_rfc5626: 0,
             rfc5626_instance_id: pj_str_t::new(),
             rfc5626_reg_id: pj_str_t::new(),
             ka_interval: 0,
             ka_data: pj_str_t::new(),
-            vid_in_auto_show: PJ_FALSE as pj_bool_t,
-            vid_out_auto_transmit: PJ_FALSE as pj_bool_t,
+            vid_in_auto_show: 0,
+            vid_out_auto_transmit: 0,
             vid_wnd_flags: 0,
             vid_cap_dev: 0,
             vid_rend_dev: 0,
@@ -428,25 +428,25 @@ impl AutoCreate<AccountConfig> for AccountConfig {
             ipv6_media_use: 0,
             sip_stun_use: 0,
             media_stun_use: 0,
-            use_loop_med_tp: PJ_FALSE as pj_bool_t,
-            enable_loopback: PJ_FALSE as pj_bool_t,
+            use_loop_med_tp: 0,
+            enable_loopback: 0,
             ice_cfg_use: 0,
             ice_cfg: ICEConfig::new(),
             turn_cfg_use: 0,
             turn_cfg: TurnConfig::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
-            srtp_optional_dup_offer: PJ_FALSE as pj_bool_t,
+            srtp_optional_dup_offer: 0,
             srtp_opt: SRTPOption::new(),
             reg_retry_interval: 0,
             reg_first_retry_interval: 0,
             reg_retry_random_interval: 0,
-            drop_calls_on_reg_fail: PJ_FALSE as pj_bool_t,
+            drop_calls_on_reg_fail: 0,
             reg_use_proxy: 0,
             call_hold_type: 0,
-            register_on_acc_add: PJ_FALSE as pj_bool_t,
+            register_on_acc_add: 0,
             ip_change_cfg: IPChangeAccountConfig::new(),
-            enable_rtcp_mux: PJ_FALSE as pj_bool_t,
+            enable_rtcp_mux: 0,
             rtcp_fb_cfg: pjmedia_rtcp_fb_setting::new(),
         };
 
@@ -470,7 +470,7 @@ impl AutoCreate<BuddyConfig> for BuddyConfig {
     fn new() -> BuddyConfig {
         let mut config = BuddyConfig {
             uri: pj_str_t::new(),
-            subscribe: PJ_FALSE as pj_bool_t,
+            subscribe: 0,
             user_data: ptr::null_mut(),
         };
 
@@ -502,14 +502,14 @@ impl AutoCreate<AccountInfo> for AccountInfo {
     fn new() -> AccountInfo {
         AccountInfo {
             id: -1,
-            is_default: PJ_FALSE as pj_bool_t,
+            is_default: 0,
             acc_uri: pj_str_t::new(),
-            has_registration: PJ_FALSE as pj_bool_t,
+            has_registration: 0,
             expires: 0,
             status: 0,
-            reg_last_err: PJ_FALSE as i32,
+            reg_last_err: 0,
             status_text: pj_str_t::new(),
-            online_status: PJ_FALSE as pj_bool_t,
+            online_status: 0,
             online_status_text: pj_str_t::new(),
             rpid: pjrpid_element::new(),
             buf_: [0; 80],
@@ -641,7 +641,7 @@ impl AutoCreate<CallInfo> for CallInfo {
             ],
             connect_duration: pj_time_val::new(),
             total_duration: pj_time_val::new(),
-            rem_offerer: PJ_FALSE as pj_bool_t,
+            rem_offerer: 0,
             rem_aud_cnt: 0,
             rem_vid_cnt: 0,
             buf_: pjsua_sys::pjsua_call_info__bindgen_ty_1::new(),
@@ -657,7 +657,7 @@ impl AutoCreate<BuddyInfo> for BuddyInfo {
             contact: pj_str_t::new(),
             status: 0,
             status_text: pj_str_t::new(),
-            monitor_pres: PJ_FALSE as pj_bool_t,
+            monitor_pres: 0,
             sub_state: 0,
             sub_state_name: ptr::null_mut(),
             sub_term_code: 0,
