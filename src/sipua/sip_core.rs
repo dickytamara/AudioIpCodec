@@ -28,7 +28,7 @@ use super::sip_wav::*;
 
 use std::ptr;
 use std::ffi::{CString, CStr};
-use std::os::raw::{c_int, c_void, c_uint, c_char};
+use std::os::raw::{c_int, c_void, c_uint};
 use super::SIPInviteState;
 
 
@@ -500,10 +500,8 @@ impl SIPCore {
     }
 
     pub fn callback_on_buddy_state(&self, buddy_id: pjsua_buddy_id) {
-        unsafe {
-            let mut info: pjsua_buddy_info = pjsua_buddy_info::new();
-            pjsua_buddy_get_info(buddy_id, &mut info as *mut _);
-        }
+        let mut info: pjsua_buddy_info = pjsua_buddy_info::new();
+        pjsua::buddy_get_info(buddy_id, &mut info).unwrap();
     }
 
     pub fn callback_on_buddy_evsub_state(
@@ -512,11 +510,10 @@ impl SIPCore {
         sub: *mut pjsip_evsub,
         event: *mut pjsip_event,
     ) {
-        unsafe {
-            let rdata = (*event).body.tsx_state.as_ref().src.rdata;
-            // let astr = pjsip_rx_data_get_info(rdata);
-            println!("Buddy subscription state");
-        }
+
+        // let rdata = (*event).body.tsx_state.as_ref().src.rdata;
+        // let astr = pjsip_rx_data_get_info(rdata);
+        println!("Buddy subscription state");
     }
 
     pub fn callback_on_pager(

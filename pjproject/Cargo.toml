@@ -12,6 +12,7 @@ pjlib-util-sys = { path = "../pjlib-util-sys" }
 pjnath-sys = { path = "../pjnath-sys" }
 pjmedia-sys = { path = "../pjmedia-sys" }
 pjmedia-audiodev-sys = { path = "../pjmedia-audiodev-sys" }
+pjmedia-videodev-sys = { path = "../pjmedia-videodev-sys" }
 pjmedia-codec-sys = { path = "../pjmedia-codec-sys" }
 pjsip-sys = { path = "../pjsip-sys" }
 pjsip-ua-sys = { path = "../pjsip-ua-sys" }

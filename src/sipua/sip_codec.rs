@@ -60,7 +60,7 @@ impl SIPCodecs {
 
     pub fn enum_codecs(&self) -> Vec<pjsua_codec_info> {
 
-        let mut ret: Vec<pjsua_codec_info> = Vec::new();
+        let ret: Vec<pjsua_codec_info> = Vec::new();
 
         // let mut count: u32 = 0;
         // let mut codecs = [pjsua_codec_info::new(); 32];

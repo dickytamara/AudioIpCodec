@@ -1,5 +1,6 @@
-#![allow(unused_variables)]
 #![allow(dead_code)]
+#![allow(non_snake_case)]
+#![allow(unused_variables)]
 
 extern crate pj_sys;
 extern crate pjlib_util_sys;

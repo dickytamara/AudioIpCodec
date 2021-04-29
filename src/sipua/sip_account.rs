@@ -381,7 +381,7 @@ pub trait SIPAccountExt {
     /// Specify SRTP transport setting. Application can initialize it with default values using
     /// pjsua_srtp_opt_default().
     fn set_srtp_opt(&self, value: pjsua_srtp_opt);
-    // fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+    fn get_srtp_opt(&self) -> pjsua_srtp_opt;
     /// Specify interval of auto registration retry upon registration failure, in seconds.
     /// Set to 0 to disable auto re-registration. Note that registration will only be automatically
     /// retried for temporal failures considered to be recoverable in relatively short term,
@@ -1265,9 +1265,20 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow_mut().srtp_opt = value;
     }
 
-    // fn get_srtp_opt(&self) -> pjsua_srtp_opt {
-    //     self.ctx.borrow().srtp_opt
-    // }
+    fn get_srtp_opt(&self) -> pjsua_srtp_opt {
+        let mut ret = pjsua_srtp_opt::new();
+
+        // pub struct pjsua_srtp_opt {
+        //     pub crypto_count: ::std::os::raw::c_uint,
+        //     pub crypto: [pjmedia_srtp_crypto; 16usize],
+        //     pub keying_count: ::std::os::raw::c_uint,
+        //     pub keying: [pjmedia_srtp_keying_method; 2usize],
+        // }
+        ret.crypto_count = self.ctx.borrow().srtp_opt.crypto_count;
+        // ret = self.ctx.borrow().srtp_opt;
+
+        ret
+    }
 
     fn set_reg_retry_interval(&self, value: u32) {
         self.ctx.borrow_mut().reg_retry_interval = value;
