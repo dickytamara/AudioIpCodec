@@ -1,6 +1,6 @@
 
 
-use super::sip_buddy::*;
+// use super::sip_buddy::*;
 
 pub struct SIPPresence {
     buddy_list: Vec<SIPBuddy>,

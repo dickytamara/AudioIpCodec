@@ -1,11 +1,11 @@
 
 
-use pj_sys::*;
-use pjnath_sys::*;
-use pjsip_sys::*;
-use pjmedia_sys::*;
-use pjsip_simple_sys::*;
-use pjsua_sys::*;
+// use pj_sys::*;
+// use pjnath_sys::*;
+// use pjsip_sys::*;
+// use pjmedia_sys::*;
+// use pjsip_simple_sys::*;
+// use pjsua_sys::*;
 
 use crate::pjproject::{prelude::*, utils::boolean_to_pjbool};
 
@@ -930,7 +930,7 @@ unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
         return PJ_TRUE as pj_status_t;
     }
 
-    let mmethod = &pjsip_notify_method;
+    let mmethod = &pjsip_simple_sys::pjsip_notify_method;
     if pjsip::method_cmp(&method, &mmethod) == 0 {
         status_code = PJSIP_SC_BAD_REQUEST;
     } else {

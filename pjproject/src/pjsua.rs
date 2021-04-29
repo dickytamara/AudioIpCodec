@@ -9,22 +9,52 @@ use pjnath_sys::*;
 use pjsip_sys::*;
 use pjsip_simple_sys::*;
 use pjsip_ua_sys::*;
-use pjsua_sys::*;
 
 use super::prelude::*;
 use super::utils;
 
-
 use std::os::raw::{c_uint, c_void};
 use std::ffi::CString;
 use std::ptr;
+
+// config, Options and setting struct
+pub use pjsua_sys::pjsua_config as UAConfig;
+pub use pjsua_sys::pjsua_media_config as MediaConfig;
+pub use pjsua_sys::pjsua_acc_config as AccountConfig;
+pub use pjsua_sys::pjsua_logging_config as LogConfig;
+pub use pjsua_sys::pjsua_transport_config as TransportConfig;
+pub use pjsua_sys::pjsua_ice_config as ICEConfig;
+pub use pjsua_sys::pjsua_turn_config as TurnConfig;
+pub use pjsua_sys::pjsua_buddy_config as BuddyConfig;
+pub use pjsua_sys::pjsua_call_setting as CallSetting;
+pub use pjsua_sys::pjsua_srtp_opt as SRTPOption;
+pub use pjsua_sys::pjsua_ip_change_acc_cfg as IPChangeAccountConfig;
+
+// info and status struct
+pub use pjsua_sys::pjsua_acc_info as AccountInfo;
+pub use pjsua_sys::pjsua_buddy_info as BuddyInfo;
+pub use pjsua_sys::pjsua_transport_info as TransportInfo;
+pub use pjsua_sys::pjsua_call_media_info as CallMediaInfo;
+pub use pjsua_sys::pjsua_call_info as CallInfo;
+pub use pjsua_sys::pjsua_conf_port_info as ConferencePortInfo;
+pub use pjsua_sys::pjsua_stream_info as StreamInfo;
+pub use pjsua_sys::pjsua_stream_stat as StreamStatus;
+pub use pjsua_sys::pjsua_codec_info as CodecInfo;
+
+// data struct
+pub use pjsua_sys::pjsua_msg_data as MessageData;
+
+// callback struct
+pub use pjsua_sys::pjsua_callback as UACallback;
+
+
 
 pub const PJSUA_INVALID_ID: i32 = -1;
 
 #[link(name="pjsua")]
 extern "C" {
     pub fn pjsua_conf_get_msignal_level(
-        slot: pjsua_conf_port_id,
+        slot: i32,
         tx_level_l: *mut c_uint,
         tx_level_r: *mut c_uint,
         rx_level_l: *mut c_uint,
@@ -33,7 +63,7 @@ extern "C" {
 }
 
 pub fn conf_get_msignal_level(
-    slot: pjsua_conf_port_id,
+    slot: i32,
     tx_level_l: &mut u32,
     tx_level_r: &mut u32,
     rx_level_l: &mut u32,
@@ -53,9 +83,9 @@ pub fn conf_get_msignal_level(
 }
 
 
-impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
-    fn new() -> pjsua_srtp_opt {
-        pjsua_srtp_opt {
+impl AutoCreate<SRTPOption> for SRTPOption {
+    fn new() -> SRTPOption {
+        SRTPOption {
             crypto_count: 0,
             crypto: [
                 pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
@@ -73,9 +103,9 @@ impl AutoCreate<pjsua_srtp_opt> for pjsua_srtp_opt {
     }
 }
 
-impl AutoCreate<pjsua_callback> for pjsua_callback {
-    fn new() -> pjsua_callback {
-        pjsua_callback {
+impl AutoCreate<UACallback> for UACallback {
+    fn new() -> UACallback {
+        UACallback {
             on_call_state: None,
             on_incoming_call: None,
             on_call_tsx_state: None,
@@ -115,26 +145,26 @@ impl AutoCreate<pjsua_callback> for pjsua_callback {
             on_call_redirected: None,
             on_mwi_state: None,
             on_mwi_info: None,
-            on_transport_state: None as pjsip_tp_state_callback,
-            on_call_media_transport_state: None as pjsua_med_tp_state_cb,
+            on_transport_state: None,
+            on_call_media_transport_state: None,
             on_ice_transport_error: None,
             on_snd_dev_operation: None,
             on_call_media_event: None,
             on_create_media_transport: None,
             on_create_media_transport_srtp: None,
             on_acc_find_for_incoming: None,
-            on_stun_resolution_complete: None as pj_stun_resolve_cb,
+            on_stun_resolution_complete: None,
             on_ip_change_progress: None,
             on_media_event: None,
         }
     }
 }
 
-impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
+impl AutoCreate<LogConfig> for LogConfig {
 
-    fn new() -> pjsua_logging_config {
+    fn new() -> LogConfig {
 
-        let mut config = pjsua_logging_config {
+        let mut config = LogConfig {
             msg_logging: PJ_FALSE as pj_bool_t,
             level: 0,
             console_level: 0,
@@ -145,7 +175,7 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
         };
 
         unsafe {
-            pjsua_logging_config_default(&mut config as *mut _);
+            pjsua_sys::pjsua_logging_config_default(&mut config as *mut _);
         }
         config.level = 5;
         config.console_level= 5;
@@ -154,11 +184,10 @@ impl AutoCreate<pjsua_logging_config> for pjsua_logging_config {
     }
 }
 
-impl AutoCreate<pjsua_config> for pjsua_config {
+impl AutoCreate<UAConfig> for UAConfig {
 
-    fn new() -> pjsua_config {
-
-        let mut config = pjsua_config {
+    fn new() -> UAConfig {
+        let mut config = UAConfig {
             max_calls: 0,
             thread_cnt: 0,
             nameserver_count: 0,
@@ -188,27 +217,27 @@ impl AutoCreate<pjsua_config> for pjsua_config {
                 pjsip_cred_info::new(), pjsip_cred_info::new(),
                 pjsip_cred_info::new(), pjsip_cred_info::new(),
             ],
-            cb: pjsua_callback::new(),
+            cb: UACallback::new(),
             user_agent: pj_str_t::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
             srtp_optional_dup_offer: PJ_FALSE as pj_bool_t,
-            srtp_opt: pjsua_srtp_opt::new(),
+            srtp_opt: pjsua_sys::pjsua_srtp_opt::new(),
             hangup_forked_call: PJ_FALSE as pj_bool_t,
         };
 
         // set with pjsua default
         unsafe {
-            pjsua_config_default(&mut config as *mut _);
+            pjsua_sys::pjsua_config_default(&mut config as *mut _);
         }
 
         config
     }
 }
 
-impl AutoCreate<pjsua_media_config> for pjsua_media_config {
-    fn new() -> pjsua_media_config {
-        let mut config = pjsua_media_config {
+impl AutoCreate<MediaConfig> for MediaConfig {
+    fn new() -> MediaConfig {
+        let mut config = MediaConfig {
             clock_rate: 0,
             snd_clock_rate: 0,
             channel_count: 0,
@@ -250,7 +279,7 @@ impl AutoCreate<pjsua_media_config> for pjsua_media_config {
         };
 
         unsafe {
-            pjsua_media_config_default(&mut config as *mut _);
+            pjsua_sys::pjsua_media_config_default(&mut config as *mut _);
         }
 
         config
@@ -283,9 +312,9 @@ impl AutoCreate<pjsip_timer_setting> for pjsip_timer_setting {
     }
 }
 
-impl AutoCreate<pjsua_transport_config> for pjsua_transport_config {
-    fn new() -> pjsua_transport_config {
-        let mut config = pjsua_transport_config {
+impl AutoCreate<TransportConfig> for TransportConfig {
+    fn new() -> TransportConfig {
+        let mut config = TransportConfig {
             port: 0,
             port_range: 0,
             public_addr: pj_str_t::new(),
@@ -297,16 +326,16 @@ impl AutoCreate<pjsua_transport_config> for pjsua_transport_config {
         };
 
         unsafe {
-            pjsua_transport_config_default(&mut config as *mut _);
+            pjsua_sys::pjsua_transport_config_default(&mut config as *mut _);
         }
 
         config
     }
 }
 
-impl AutoCreate<pjsua_ice_config> for pjsua_ice_config {
-    fn new() -> pjsua_ice_config {
-        pjsua_ice_config {
+impl AutoCreate<ICEConfig> for ICEConfig {
+    fn new() -> ICEConfig {
+        ICEConfig {
             enable_ice: PJ_FALSE as pj_bool_t,
             ice_max_host_cands: 0,
             ice_opt: pj_ice_sess_options::new(),
@@ -316,9 +345,9 @@ impl AutoCreate<pjsua_ice_config> for pjsua_ice_config {
     }
 }
 
-impl AutoCreate<pjsua_turn_config> for pjsua_turn_config {
-    fn new() -> pjsua_turn_config {
-        pjsua_turn_config {
+impl AutoCreate<TurnConfig> for TurnConfig {
+    fn new() -> TurnConfig {
+        TurnConfig {
             enable_turn: PJ_FALSE as pj_bool_t,
             turn_server: pj_str_t::new(),
             turn_conn_type: 0,
@@ -328,9 +357,9 @@ impl AutoCreate<pjsua_turn_config> for pjsua_turn_config {
     }
 }
 
-impl AutoCreate<pjsua_ip_change_acc_cfg> for pjsua_ip_change_acc_cfg {
-    fn new() -> pjsua_ip_change_acc_cfg {
-        pjsua_ip_change_acc_cfg {
+impl AutoCreate<IPChangeAccountConfig> for IPChangeAccountConfig {
+    fn new() -> IPChangeAccountConfig {
+        IPChangeAccountConfig {
             shutdown_tp: PJ_FALSE as pj_bool_t,
             hangup_calls: PJ_FALSE as pj_bool_t,
             reinvite_flags: 0,
@@ -338,9 +367,9 @@ impl AutoCreate<pjsua_ip_change_acc_cfg> for pjsua_ip_change_acc_cfg {
     }
 }
 
-impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
-    fn new() -> pjsua_acc_config {
-        let mut config = pjsua_acc_config {
+impl AutoCreate<AccountConfig> for AccountConfig {
+    fn new() -> AccountConfig {
+        let mut config = AccountConfig {
             user_data: ptr::null_mut(),
             priority: 0,
             id: pj_str_t::new(),
@@ -392,7 +421,7 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             vid_rend_dev: 0,
             vid_stream_rc_cfg: pjmedia_vid_stream_rc_config::new(),
             vid_stream_sk_cfg: pjmedia_vid_stream_sk_config::new(),
-            rtp_cfg: pjsua_transport_config::new(),
+            rtp_cfg: TransportConfig::new(),
             nat64_opt: 0,
             ipv6_media_use: 0,
             sip_stun_use: 0,
@@ -400,13 +429,13 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             use_loop_med_tp: PJ_FALSE as pj_bool_t,
             enable_loopback: PJ_FALSE as pj_bool_t,
             ice_cfg_use: 0,
-            ice_cfg: pjsua_ice_config::new(),
+            ice_cfg: ICEConfig::new(),
             turn_cfg_use: 0,
-            turn_cfg: pjsua_turn_config::new(),
+            turn_cfg: TurnConfig::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
             srtp_optional_dup_offer: PJ_FALSE as pj_bool_t,
-            srtp_opt: pjsua_srtp_opt::new(),
+            srtp_opt: SRTPOption::new(),
             reg_retry_interval: 0,
             reg_first_retry_interval: 0,
             reg_retry_random_interval: 0,
@@ -414,13 +443,13 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
             reg_use_proxy: 0,
             call_hold_type: 0,
             register_on_acc_add: PJ_FALSE as pj_bool_t,
-            ip_change_cfg: pjsua_ip_change_acc_cfg::new(),
+            ip_change_cfg: IPChangeAccountConfig::new(),
             enable_rtcp_mux: PJ_FALSE as pj_bool_t,
             rtcp_fb_cfg: pjmedia_rtcp_fb_setting::new(),
         };
 
         unsafe {
-            pjsua_acc_config_default(&mut config as *mut _);
+            pjsua_sys::pjsua_acc_config_default(&mut config as *mut _);
 
 
         config.cred_count = 1;
@@ -435,25 +464,25 @@ impl AutoCreate<pjsua_acc_config> for pjsua_acc_config {
     }
 }
 
-impl AutoCreate<pjsua_buddy_config> for pjsua_buddy_config {
-    fn new() -> pjsua_buddy_config {
-        let mut config = pjsua_buddy_config {
+impl AutoCreate<BuddyConfig> for BuddyConfig {
+    fn new() -> BuddyConfig {
+        let mut config = BuddyConfig {
             uri: pj_str_t::new(),
             subscribe: PJ_FALSE as pj_bool_t,
             user_data: ptr::null_mut(),
         };
 
         unsafe {
-            pjsua_buddy_config_default(&mut config as *mut _);
+            pjsua_sys::pjsua_buddy_config_default(&mut config as *mut _);
         }
 
         config
     }
 }
 
-impl AutoCreate<pjsua_transport_info> for pjsua_transport_info {
-    fn new() -> pjsua_transport_info {
-        pjsua_transport_info {
+impl AutoCreate<TransportInfo> for TransportInfo {
+    fn new() -> TransportInfo {
+        TransportInfo {
             id: -1,
             type_: 0,
             type_name: pj_str_t::new(),
@@ -467,9 +496,9 @@ impl AutoCreate<pjsua_transport_info> for pjsua_transport_info {
     }
 }
 
-impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
-    fn new() -> pjsua_acc_info {
-        pjsua_acc_info {
+impl AutoCreate<AccountInfo> for AccountInfo {
+    fn new() -> AccountInfo {
+        AccountInfo {
             id: -1,
             is_default: PJ_FALSE as pj_bool_t,
             acc_uri: pj_str_t::new(),
@@ -486,10 +515,10 @@ impl AutoCreate<pjsua_acc_info> for pjsua_acc_info {
     }
 }
 
-impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
-    fn new() -> pjsua_call_setting {
+impl AutoCreate<CallSetting> for CallSetting {
+    fn new() -> CallSetting {
 
-        let mut ret = pjsua_call_setting {
+        let mut ret = CallSetting {
             flag: 0,
             req_keyframe_method: 0,
             aud_cnt: 0,
@@ -497,7 +526,7 @@ impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
         };
 
         unsafe {
-            pjsua_call_setting_default(&mut ret as *mut _);
+            pjsua_sys::pjsua_call_setting_default(&mut ret as *mut _);
         }
 
         ret.aud_cnt = 1;
@@ -507,9 +536,9 @@ impl AutoCreate<pjsua_call_setting> for pjsua_call_setting {
     }
 }
 
-impl AutoCreate<pjsua_call_info__bindgen_ty_1> for pjsua_call_info__bindgen_ty_1 {
-    fn new() -> pjsua_call_info__bindgen_ty_1 {
-        pjsua_call_info__bindgen_ty_1 {
+impl AutoCreate<pjsua_sys::pjsua_call_info__bindgen_ty_1> for pjsua_sys::pjsua_call_info__bindgen_ty_1 {
+    fn new() -> pjsua_sys::pjsua_call_info__bindgen_ty_1 {
+        pjsua_sys::pjsua_call_info__bindgen_ty_1 {
             local_info: [0; 256],
             local_contact: [0; 256],
             remote_info: [0; 256],
@@ -520,15 +549,15 @@ impl AutoCreate<pjsua_call_info__bindgen_ty_1> for pjsua_call_info__bindgen_ty_1
     }
 }
 
-impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-    fn new() -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-        pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 { conf_slot: 0 }
+impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
+    fn new() -> pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
+        pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 { conf_slot: 0 }
     }
 }
 
-impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2> for pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
-    fn new() -> pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
-        pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2> for pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+    fn new() -> pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+        pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
             win_in: -1,
             dec_slot: -1,
             enc_slot: -1,
@@ -538,38 +567,38 @@ impl AutoCreate<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2> for pjsua_cal
 } 
 
 
-impl AutoCreate<pjsua_call_media_info__bindgen_ty_1> for pjsua_call_media_info__bindgen_ty_1 {
-    fn new() -> pjsua_call_media_info__bindgen_ty_1 {
-        let mut result = pjsua_call_media_info__bindgen_ty_1 {
-            aud: pjsua_sys::__BindgenUnionField::<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>::default(),
-            vid: pjsua_sys::__BindgenUnionField::<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2>::default(),
+impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1> for pjsua_sys::pjsua_call_media_info__bindgen_ty_1 {
+    fn new() -> pjsua_sys::pjsua_call_media_info__bindgen_ty_1 {
+        let mut result = pjsua_sys::pjsua_call_media_info__bindgen_ty_1 {
+            aud: pjsua_sys::__BindgenUnionField::<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>::default(),
+            vid: pjsua_sys::__BindgenUnionField::<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2>::default(),
             bindgen_union_field: [0; 4usize]
         };
 
         unsafe {
-            *result.aud.as_mut() = pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new();
-            *result.vid.as_mut() = pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2::new();
+            *result.aud.as_mut() = pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1::new();
+            *result.vid.as_mut() = pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2::new();
         }
 
         result
     }
 }
 
-impl AutoCreate<pjsua_call_media_info> for pjsua_call_media_info {
-    fn new() -> pjsua_call_media_info {
-        pjsua_call_media_info {
+impl AutoCreate<CallMediaInfo> for CallMediaInfo {
+    fn new() -> CallMediaInfo {
+        CallMediaInfo {
             index: 0,
             type_: 0,
             dir: 0,
             status: 0,
-            stream: pjsua_call_media_info__bindgen_ty_1::new(),
+            stream: pjsua_sys::pjsua_call_media_info__bindgen_ty_1::new(),
         }
     }
 }
 
-impl AutoCreate<pjsua_call_info> for pjsua_call_info {
-    fn new() -> pjsua_call_info {
-        pjsua_call_info {
+impl AutoCreate<CallInfo> for CallInfo {
+    fn new() -> CallInfo {
+        CallInfo {
             id: -1,
             role: 0,
             acc_id: -1,
@@ -578,7 +607,7 @@ impl AutoCreate<pjsua_call_info> for pjsua_call_info {
             remote_info: pj_str_t::new(),
             remote_contact: pj_str_t::new(),
             call_id: pj_str_t::new(),
-            setting: pjsua_call_setting::new(),
+            setting: CallSetting::new(),
             state: 0,
             state_text: pj_str_t::new(),
             last_status: 0,
@@ -588,39 +617,39 @@ impl AutoCreate<pjsua_call_info> for pjsua_call_info {
             conf_slot: -1,
             media_cnt: 0,
             media: [
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
             ],
             prov_media_cnt: 0,
             prov_media: [
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
-                pjsua_call_media_info::new(), pjsua_call_media_info::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
+                CallMediaInfo::new(), CallMediaInfo::new(),
             ],
             connect_duration: pj_time_val::new(),
             total_duration: pj_time_val::new(),
             rem_offerer: PJ_FALSE as pj_bool_t,
             rem_aud_cnt: 0,
             rem_vid_cnt: 0,
-            buf_: pjsua_call_info__bindgen_ty_1::new(),
+            buf_: pjsua_sys::pjsua_call_info__bindgen_ty_1::new(),
         }
     }
 }
 
-impl AutoCreate<pjsua_buddy_info> for pjsua_buddy_info {
-    fn new() -> pjsua_buddy_info {
-        pjsua_buddy_info {
+impl AutoCreate<BuddyInfo> for BuddyInfo {
+    fn new() -> BuddyInfo {
+        BuddyInfo {
             id: -1,
             uri: pj_str_t::new(),
             contact: pj_str_t::new(),
@@ -638,9 +667,9 @@ impl AutoCreate<pjsua_buddy_info> for pjsua_buddy_info {
     }
 }
 
-impl AutoCreate<pjsua_msg_data> for pjsua_msg_data {
-    fn new () -> pjsua_msg_data{
-        let mut ret = pjsua_msg_data {
+impl AutoCreate<MessageData> for MessageData {
+    fn new () -> MessageData {
+        let mut ret = MessageData {
             target_uri: pj_str_t::new(),
             hdr_list: pjsip_hdr::new(),
             content_type: pj_str_t::new(),
@@ -650,16 +679,16 @@ impl AutoCreate<pjsua_msg_data> for pjsua_msg_data {
         };
 
         unsafe {
-            pjsua_msg_data_init(&mut ret as *mut _);
+            pjsua_sys::pjsua_msg_data_init(&mut ret as *mut _);
         }
 
         ret
     }
 }
 
-impl AutoCreate<pjsua_conf_port_info> for pjsua_conf_port_info {
-    fn new () -> pjsua_conf_port_info {
-        pjsua_conf_port_info {
+impl AutoCreate<ConferencePortInfo> for ConferencePortInfo {
+    fn new () -> ConferencePortInfo {
+        ConferencePortInfo {
             slot_id: 0,
             name: pj_str_t::new(),
             format: pjmedia_format::new(),
@@ -675,9 +704,9 @@ impl AutoCreate<pjsua_conf_port_info> for pjsua_conf_port_info {
     }
 }
 
-impl AutoCreate<pjsua_stream_info__bindgen_ty_1> for pjsua_stream_info__bindgen_ty_1 {
-    fn new() -> pjsua_stream_info__bindgen_ty_1 {
-        let mut result = pjsua_stream_info__bindgen_ty_1 {
+impl AutoCreate<pjsua_sys::pjsua_stream_info__bindgen_ty_1> for pjsua_sys::pjsua_stream_info__bindgen_ty_1 {
+    fn new() -> pjsua_sys::pjsua_stream_info__bindgen_ty_1 {
+        let mut result = pjsua_sys::pjsua_stream_info__bindgen_ty_1 {
             aud: pjsua_sys::__BindgenUnionField::<pjmedia_stream_info>::default(),
             vid: pjsua_sys::__BindgenUnionField::<pjmedia_vid_stream_info>::default(),
             bindgen_union_field: [0; 277usize],
@@ -692,28 +721,28 @@ impl AutoCreate<pjsua_stream_info__bindgen_ty_1> for pjsua_stream_info__bindgen_
     }
 }
 
-impl AutoCreate<pjsua_stream_info> for pjsua_stream_info {
+impl AutoCreate<StreamInfo> for StreamInfo {
 
-    fn new() -> pjsua_stream_info {
-        pjsua_stream_info {
+    fn new() -> StreamInfo {
+        StreamInfo {
             type_: 0,
-            info: pjsua_stream_info__bindgen_ty_1::new(),
+            info: pjsua_sys::pjsua_stream_info__bindgen_ty_1::new(),
         }
     }
 }
 
-impl AutoCreate<pjsua_stream_stat> for pjsua_stream_stat {
-    fn new () -> pjsua_stream_stat {
-        pjsua_stream_stat {
+impl AutoCreate<StreamStatus> for StreamStatus {
+    fn new () -> StreamStatus {
+        StreamStatus {
             rtcp: pjmedia_rtcp_stat::new(),
             jbuf: pjmedia_jb_state::new(),
         }
     }
 }
 
-impl AutoCreate<pjsua_codec_info> for pjsua_codec_info {
-    fn new () -> pjsua_codec_info {
-        pjsua_codec_info {
+impl AutoCreate<CodecInfo> for CodecInfo {
+    fn new () -> CodecInfo {
+        CodecInfo {
             codec_id: pj_str_t::from_string(String::new()),
             priority: 0,
             desc: pj_str_t::from_string(String::new()),
@@ -728,7 +757,7 @@ impl AutoCreate<pjsua_codec_info> for pjsua_codec_info {
 pub fn pool_create(pool_name: &str) -> *mut pj_pool_t {
     unsafe {
 
-        let ret = pjsua_pool_create(
+        let ret = pjsua_sys::pjsua_pool_create(
             CString::new(pool_name)
             .expect("String error create pool_name")
             .into_raw(),
@@ -753,21 +782,21 @@ pub fn pool_safe_release(ppool: *mut *mut pj_pool_t) {
     }
 }
 
-pub fn logging_config_default(cfg: &mut pjsua_logging_config) {
-    unsafe { pjsua_logging_config_default(cfg as *mut _); }
+pub fn logging_config_default(cfg: &mut LogConfig) {
+    unsafe { pjsua_sys::pjsua_logging_config_default(cfg as *mut _); }
 }
 
-pub fn config_default(cfg: &mut pjsua_config) {
-    unsafe { pjsua_config_default(cfg as *mut _); }
+pub fn config_default(cfg: &mut UAConfig) {
+    unsafe { pjsua_sys::pjsua_config_default(cfg as *mut _); }
 }
 
 pub fn create () -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_create()) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_create()) }
 }
 
-pub fn init (ua_cfg: &mut pjsua_config, log_cfg: &mut pjsua_logging_config, media_cfg: &mut pjsua_media_config) -> Result<(), pj_status_t> {
+pub fn init (ua_cfg: &mut UAConfig, log_cfg: &mut LogConfig, media_cfg: &mut MediaConfig) -> Result<(), pj_status_t> {
     unsafe {
-        let status = pjsua_init(
+        let status = pjsua_sys::pjsua_init(
         ua_cfg as *const _,
         log_cfg as *const _,
         media_cfg as *const _
@@ -778,27 +807,27 @@ pub fn init (ua_cfg: &mut pjsua_config, log_cfg: &mut pjsua_logging_config, medi
 }
 
 pub fn start () -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_start()) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_start()) }
 }
 
 pub fn destroy () -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_destroy()) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_destroy()) }
 }
 
 pub fn get_state () -> pjsua_state {
-    unsafe { pjsua_get_state() }
+    unsafe { pjsua_sys::pjsua_get_state() }
 }
 
 pub fn destroy2 (flags: u32) -> Result<(), pj_status_t> {
-    unsafe { utils::check_status(pjsua_destroy2(flags)) }
+    unsafe { utils::check_status(pjsua_sys::pjsua_destroy2(flags)) }
 }
 
-pub fn logging_config_dup (dst: &mut pjsua_logging_config, src: &mut pjsua_logging_config) {
+pub fn logging_config_dup (dst: &mut LogConfig, src: &mut LogConfig) {
     unsafe {
 
         let pool = pool_create("tmp-pool");
 
-        pjsua_logging_config_dup(
+        pjsua_sys::pjsua_logging_config_dup(
             pool,
             dst as *mut _,
             src as *const _
@@ -808,12 +837,12 @@ pub fn logging_config_dup (dst: &mut pjsua_logging_config, src: &mut pjsua_loggi
     }
 }
 
-pub fn config_dup (dst: &mut pjsua_config, src: &mut pjsua_config) {
+pub fn config_dup (dst: &mut UAConfig, src: &mut UAConfig) {
     unsafe {
 
         let pool = pool_create("tmp-pool");
 
-        pjsua_config_dup(
+        pjsua_sys::pjsua_config_dup(
             pool,
             dst as *mut _,
             src as *const _
@@ -823,16 +852,16 @@ pub fn config_dup (dst: &mut pjsua_config, src: &mut pjsua_config) {
     }
 }
 
-pub fn msg_data_init(msg_data: &mut pjsua_msg_data) {
-    unsafe { pjsua_msg_data_init(msg_data as *mut _); }
+pub fn msg_data_init(msg_data: &mut MessageData) {
+    unsafe { pjsua_sys::pjsua_msg_data_init(msg_data as *mut _); }
 }
 
-pub fn msg_data_clone (rhs: &mut pjsua_msg_data) -> *mut pjsua_msg_data {
+pub fn msg_data_clone (rhs: &mut MessageData) -> *mut MessageData {
     unsafe {
 
         let pool = pool_create("tmp-pool");
 
-        let ret = pjsua_msg_data_clone(pool, rhs as *const _ );
+        let ret = pjsua_sys::pjsua_msg_data_clone(pool, rhs as *const _ );
 
         pool_release(pool);
 
@@ -1394,8 +1423,7 @@ pub fn call_get_med_transport_info (call_id: pjsua_call_id, med_idx: u32, t: &mu
 
 
 // pjsua sound and media device function helper
-
-pub fn media_config_default(cfg: &mut pjsua_media_config) {
+pub fn media_config_default(cfg: &mut MediaConfig) {
     unsafe { pjsua_media_config_default(cfg as *mut _); }
 }
 
@@ -1722,11 +1750,11 @@ pub fn srtp_opt_dup(dst: &mut pjsua_srtp_opt, src: &mut pjsua_srtp_opt, check_st
     pool_release(pool);
 }
 
-pub fn acc_config_default (cfg: &mut pjsua_acc_config) {
+pub fn acc_config_default (cfg: &mut AccountConfig) {
     unsafe { pjsua_acc_config_default(cfg as *mut _); }
 }
 
-pub fn acc_config_dup (dst: &mut pjsua_acc_config, src: &mut pjsua_acc_config) {
+pub fn acc_config_dup (dst: &mut AccountConfig, src: &mut AccountConfig) {
     unsafe {
         let pool = pool_create("tmp-pool");
 

@@ -1,14 +1,6 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 #![allow(unused_variables)]
-
-extern crate pj_sys;
-extern crate pjlib_util_sys;
-extern crate pjnath_sys;
-extern crate pjsua_sys;
-extern crate pjmedia_sys;
-extern crate pjsip_sys;
-extern crate pjsip_simple_sys;
 extern crate pjproject;
 
 extern crate gtk;
@@ -46,7 +38,7 @@ mod settings_tls;
 
 use gtk::prelude::*;
 use gio::prelude::*;
-use pjnath_sys::*;
+// use pjnath_sys::*;
 
 use std::env;
 use std::include_str;
@@ -71,8 +63,8 @@ use sipua::sip_account::SIPAccount;
 use sipua::SIPInviteState;
 use pjproject::utils::AutoCreate;
 
-use pj_sys::*;
-use pjmedia_sys::*;
+// use pj_sys::*;
+// use pjmedia_sys::*;
 use sipua::*;
 
 use sip_account::SIPAccountExt;

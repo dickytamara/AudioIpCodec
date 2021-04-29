@@ -5,7 +5,7 @@
 #![allow(non_snake_case)]
 extern crate pj_sys;
 extern crate pjlib_util_sys;
-extern crate pjsip_sys;
+// extern crate pjsip_sys;
 use pj_sys::*;
 use pjlib_util_sys::*;
 use pjsip_sys::*;

@@ -12,7 +12,6 @@ edition = "2018"
 pj-sys = { path = "../pj-sys" }
 pjlib-util-sys = { path = "../pjlib-util-sys" }
 pjsip-sys = { path = "../pjsip-sys" }
-# pjmedia-sys = { path = "../pjmedia-sys" }
 
 [build-dependencies]
-bindgen = "0.58.1"
+# bindgen = "0.58.1"

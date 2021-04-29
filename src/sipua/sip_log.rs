@@ -1,8 +1,8 @@
 
 use std::{cell::{RefCell, RefMut}};
 
-use pj_sys::*;
-use pjsua_sys::*;
+// use pj_sys::*;
+// use pjsua_sys::*;
 
 use crate::pjproject::utils::{self, AutoCreate, ToString, FromString};
 use crate::pjproject::pjsua;

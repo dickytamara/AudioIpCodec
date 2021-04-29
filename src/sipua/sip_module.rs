@@ -1,6 +1,6 @@
 
-use pj_sys::*;
-use pjsip_sys::*;
+// use pj_sys::*;
+// use pjsip_sys::*;
 
 use crate::pjproject::{pjsip, pjsua, prelude::*};
 use std::cell::{RefCell, RefMut};

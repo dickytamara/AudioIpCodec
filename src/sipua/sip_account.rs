@@ -1,14 +1,7 @@
 use std::cell::RefCell;
-
-use pj_sys::*;
-use pjsip_simple_sys::*;
-use pjsip_sys::*;
-use pjmedia_sys::*;
-use pjsip_ua_sys::*;
-use pjsua_sys::*;
+use pjproject::pjsua::AccountConfig;
 
 use crate::pjproject::prelude::*;
-
 use crate::pjproject::utils;
 use crate::pjproject::pjsua;
 
@@ -17,7 +10,8 @@ use crate::pjproject::pjsua;
 // #[derive(Clone)]
 pub struct SIPAccount {
     id: i32,
-    ctx: RefCell<pjsua_acc_config>,
+    // ctx: RefCell<pjsua_acc_config>,
+    ctx: RefCell<AccountConfig>
 }
 
 
