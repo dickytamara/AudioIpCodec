@@ -95,15 +95,6 @@ pub enum UAConfigSrtpSecureSignaling {
     Sips = 3,
 }
 
-// PJ_O_RDONLY
-// Open file for reading.
-// PJ_O_WRONLY
-// Open file for writing.
-// PJ_O_RDWR
-// Open file for reading and writing. File will be truncated.
-// PJ_O_APPEND
-// Append to existing file.
-
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum LogConfigFileFlags {
@@ -112,6 +103,82 @@ pub enum LogConfigFileFlags {
     ReadWrite = pj_sys::PJ_O_RDWR,
     Append = pj_sys::PJ_O_APPEND
 }
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigChannel {
+    Mono = 1,
+    Stereo = 2
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigClockRate {
+    ClockRate8000 = 8000,
+    ClockRate16000 = 16000,
+    ClockRate32000 = 32000,
+    ClockRate44100 = 44100,
+    ClockRate48000 = 48000,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigEncodingQuality {
+    Level1 = 1, Level2 = 2, Level3 = 3, Level4 = 4,
+    Level5 = 5, Level6 = 6, Level7 = 7, Level8 = 8,
+    Level9 = 9, Level10 = 10,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigIlbcMode {
+    Mode20 = 20,
+    Mode30 = 30,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigEchoCancelarOption {
+    Default = pjmedia_sys::PJMEDIA_ECHO_DEFAULT,
+    Speex = pjmedia_sys::PJMEDIA_ECHO_SPEEX,
+    Simple = pjmedia_sys::PJMEDIA_ECHO_SIMPLE,
+    WebRtc = pjmedia_sys::PJMEDIA_ECHO_WEBRTC,
+    AlgoMask = pjmedia_sys::PJMEDIA_ECHO_ALGO_MASK,
+    NoLock = pjmedia_sys::PJMEDIA_ECHO_NO_LOCK,
+    UseSimpleFifo = pjmedia_sys::PJMEDIA_ECHO_USE_SIMPLE_FIFO,
+    UseSwEcho = pjmedia_sys::PJMEDIA_ECHO_USE_SW_ECHO,
+    UseNoiseSuppressor = pjmedia_sys::PJMEDIA_ECHO_USE_NOISE_SUPPRESSOR,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigDiscardAlgo {
+    None = pjmedia_sys::PJMEDIA_JB_DISCARD_NONE,
+    Static = pjmedia_sys::PJMEDIA_JB_DISCARD_STATIC,
+    Progressive = pjmedia_sys::PJMEDIA_JB_DISCARD_PROGRESSIVE,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigIceSessTrickle {
+    Disabled = pjnath_sys::PJ_ICE_SESS_TRICKLE_DISABLED,
+    Half = pjnath_sys::PJ_ICE_SESS_TRICKLE_HALF,
+    Full = pjnath_sys::PJ_ICE_SESS_TRICKLE_FULL,
+}
+
+pub const PJ_TURN_TP_UDP: pj_turn_tp_type = 17;
+pub const PJ_TURN_TP_TCP: pj_turn_tp_type = 6;
+pub const PJ_TURN_TP_TLS: pj_turn_tp_type = 56;
+pub type pj_turn_tp_type = u32;
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaConfigTurnTransportType {
+    Udp = pjnath_sys::PJ_TURN_TP_UDP,
+    Tcp = pjnath_sys::PJ_TURN_TP_TCP,
+    TLS = pjnath_sys::PJ_TURN_TP_TLS,
+}
+
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(i32)]
