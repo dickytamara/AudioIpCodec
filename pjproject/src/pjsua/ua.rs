@@ -1,26 +1,11 @@
 
-use pjsip_ua_sys::pjsip_timer_setting;
+use std::convert::TryFrom;
 use crate::utils::{boolean_to_pjbool, check_boolean};
 
 use super::*;
 
-pub struct SIPOutboundProxyServerData {
-    server: String,
-    username: String,
-    password: String
-}
-
-impl SIPOutboundProxyServerData {
-    pub fn new(svr: String, user: String, pass: String) -> Self {
-        SIPOutboundProxyServerData {
-            server: svr,
-            username: user,
-            password: pass
-        }
-    }
-}
-
 pub trait UAConfigExt {
+
     /// Set Maximum calls to support (default: 4). The value specified here must be smaller
     /// than the compile time maximum settings PJSUA_MAX_CALLS, which by default is 32.
     /// To increase this limit, the library must be recompiled with new PJSUA_MAX_CALLS value.
@@ -160,8 +145,8 @@ pub trait UAConfigExt {
 
     /// Specify Session Timer settings, see pjsip_timer_setting.
     /// Note that this setting can be further customized in account configuration (pjsua_acc_config).
-    fn set_timer_setting(&mut self, value: pjsip_timer_setting);
-    fn get_timer_setting(&self) -> pjsip_timer_setting;
+    fn set_timer_setting(&mut self, min_se: u32, sess_expires: u32);
+    fn get_timer_setting(&self) -> (u32, u32);
 
     /// Number of credentials in the credential array.
     fn set_cred_count(&mut self, value: u32);
@@ -171,8 +156,8 @@ pub trait UAConfigExt {
     /// and can be used to authenticate against outbound proxies.
     /// If the credential is specific to the account, then application should
     /// set the credential in the pjsua_acc_config rather than the credential here.
-    fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]);
-    fn get_cred_info(&self) -> [CredentialInfo; 8usize];
+    fn set_cred_info(&mut self, value: Vec<CredentialInfo>);
+    fn get_cred_info(&self) -> Vec<CredentialInfo>;
 
     // TODO create pjsua_callback.
     // Application callback to receive various event notifications from the library.
@@ -204,8 +189,8 @@ pub trait UAConfigExt {
     ///
     /// # Default
     /// PJSUA_DEFAULT_SRTP_SECURE_SIGNALING
-    fn set_srtp_secure_signaling(&mut self, value: i32);
-    fn get_srtp_secure_signaling(&self) -> i32;
+    fn set_srtp_secure_signaling(&mut self, value: UAConfigSrtpSecureSignaling);
+    fn get_srtp_secure_signaling(&self) -> UAConfigSrtpSecureSignaling;
 
     /// This setting has been deprecated and will be ignored.
     fn set_srtp_optional_dup_offer(&mut self, value: bool);
@@ -230,18 +215,25 @@ pub trait UAConfigExt {
 }
 
 pub trait CredentialInfoExt {
+    
+    /// Realm. Use "*" to make a credential that can be used to authenticate
+    /// against any challenges.
     fn set_realm(&mut self, value: String);
     fn get_realm(&self) -> String;
 
+    /// Scheme (e.g. "digest").
     fn set_scheme(&mut self, value: String);
     fn get_scheme(&self) -> String;
 
+    /// User name.
     fn set_username(&mut self, value: String);
     fn get_username(&self) -> String;
 
-    fn set_data_type(&mut self, value: i32);
-    fn get_data_type(&self) -> i32;
+    /// Type of data (0 for plaintext passwd).
+    fn set_data_type(&mut self, value: CredentialInfoType);
+    fn get_data_type(&self) -> CredentialInfoType;
 
+    /// The data, which can be a plaintext password or a hashed digest.
     fn set_data(&mut self, value: String);
     fn get_data(&self) -> String;
 }
@@ -321,173 +313,179 @@ impl UAConfigExt for UAConfig {
     }
 
     fn set_stun_try_ipv6(&mut self, value: bool) {
-        todo!()
+        self.stun_try_ipv6 = boolean_to_pjbool(value);
     }
 
     fn get_stun_try_ipv6(&self) -> bool {
-        todo!()
+        check_boolean(self.stun_try_ipv6)
     }
 
     fn set_stun_ignore_failure(&mut self, value: bool) {
-        todo!()
+        self.stun_ignore_failure = boolean_to_pjbool(value);
     }
 
     fn get_stun_ignore_failure(&self) -> bool {
-        todo!()
+        check_boolean(self.stun_ignore_failure)
     }
 
     fn set_stun_map_use_stun2(&mut self, value: bool) {
-        todo!()
+        self.stun_map_use_stun2 = boolean_to_pjbool(value);
     }
 
     fn get_stun_map_use_stun2(&self) -> bool {
-        todo!()
+        check_boolean(self.stun_map_use_stun2)
     }
 
     fn set_nat_type_in_sdp(&mut self, value: i32) {
-        todo!()
+        self.nat_type_in_sdp = value;
     }
 
     fn get_nat_type_in_sdp(&self) -> i32 {
-        todo!()
+        self.nat_type_in_sdp
     }
 
     fn set_require_100rel(&mut self, value: UAConfig100relUse) {
-        todo!()
+        self.require_100rel = value.into();
     }
 
     fn get_require_100rel(&self) -> UAConfig100relUse {
-        todo!()
+        UAConfig100relUse::try_from(self.require_100rel)
+        .expect("Error UAConfig get require_100rel")
     }
 
     fn set_use_timer(&mut self, value: UAConfigSipTimerUse) {
-        todo!()
+        self.use_timer = value.into();
     }
 
     fn get_use_timer(&self) -> UAConfigSipTimerUse {
-        todo!()
+        UAConfigSipTimerUse::try_from(self.use_timer)
+        .expect("Error UAConfig get use_timer")
     }
 
     fn set_enable_unsolicited_mwi(&mut self, value: bool) {
-        todo!()
+        self.enable_unsolicited_mwi = boolean_to_pjbool(value);
     }
 
     fn get_enable_unsolicited_mwi(&self) -> bool {
-        todo!()
+        check_boolean(self.enable_unsolicited_mwi)
     }
 
-    fn set_timer_setting(&mut self, value: pjsip_timer_setting) {
-        todo!()
+    fn set_timer_setting(&mut self, min_se: u32, sess_expires: u32) {
+        self.timer_setting.min_se = min_se;
+        self.timer_setting.sess_expires = sess_expires;
     }
 
-    fn get_timer_setting(&self) -> pjsip_timer_setting {
-        todo!()
+    fn get_timer_setting(&self) -> (u32, u32) {
+        (self.timer_setting.min_se, self.timer_setting.sess_expires)
     }
 
     fn set_cred_count(&mut self, value: u32) {
-        todo!()
+        self.cred_count = value;
     }
 
     fn get_cred_count(&self) -> u32 {
+        self.cred_count
+    }
+
+    fn set_cred_info(&mut self, value: Vec<CredentialInfo>) {
         todo!()
     }
 
-    fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]) {
-        todo!()
-    }
-
-    fn get_cred_info(&self) -> [CredentialInfo; 8usize] {
+    fn get_cred_info(&self) -> Vec<CredentialInfo> {
         todo!()
     }
 
     fn set_user_agent(&mut self, value: String) {
-        todo!()
+        self.user_agent = pj_str_t::from_string(value);
     }
 
     fn get_user_agent(&self) -> String {
-        todo!()
+        self.user_agent.to_string()
     }
 
     fn set_use_srtp(&mut self, value: UAConfigSrtpUse) {
-        todo!()
+        self.use_srtp = value.into();
     }
 
     fn get_use_srtp(&self) -> UAConfigSrtpUse {
-        todo!()
+        UAConfigSrtpUse::try_from(self.use_srtp)
+        .expect("Error UAConfig get use_srtp")
     }
 
-    fn set_srtp_secure_signaling(&mut self, value: i32) {
-        todo!()
+    fn set_srtp_secure_signaling(&mut self, value: UAConfigSrtpSecureSignaling) {
+        self.srtp_secure_signaling = value.into();
     }
 
-    fn get_srtp_secure_signaling(&self) -> i32 {
-        todo!()
+    fn get_srtp_secure_signaling(&self) -> UAConfigSrtpSecureSignaling {
+        UAConfigSrtpSecureSignaling::try_from(self.srtp_secure_signaling)
+        .expect("Error UAConfig get srtp_secure_signaling")
     }
 
     fn set_srtp_optional_dup_offer(&mut self, value: bool) {
-        todo!()
+        self.srtp_optional_dup_offer = boolean_to_pjbool(value);
     }
 
     fn get_srtp_optional_dup_offer(&self) -> bool {
-        todo!()
+        check_boolean(self.srtp_optional_dup_offer)
     }
 
-    fn set_srtp_opt(&mut self, value: pjsua_srtp_opt) {
-        todo!()
+    fn set_srtp_opt(&mut self, value: SRTPOption) {
+        self.srtp_opt = value;
     }
 
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt {
+    fn get_srtp_opt(&self) -> SRTPOption {
         todo!()
     }
 
     fn set_hangup_forked_call(&mut self, value: bool) {
-        todo!()
+        self.hangup_forked_call = boolean_to_pjbool(value);
     }
 
     fn get_hangup_forked_call(&self) -> bool {
-        todo!()
+        check_boolean(self.hangup_forked_call)
     }
 }
 
 
 impl CredentialInfoExt for CredentialInfo {
     fn set_realm(&mut self, value: String) {
-        todo!()
+        self.realm = pj_str_t::from_string(value);
     }
 
     fn get_realm(&self) -> String {
-        todo!()
+        self.realm.to_string()
     }
 
     fn set_scheme(&mut self, value: String) {
-        todo!()
+        self.scheme = pj_str_t::from_string(value);
     }
 
     fn get_scheme(&self) -> String {
-        todo!()
+        self.scheme.to_string()
     }
 
     fn set_username(&mut self, value: String) {
-        todo!()
+        self.username = pj_str_t::from_string(value);
     }
 
     fn get_username(&self) -> String {
-        todo!()
+        self.username.to_string()
     }
 
-    fn set_data_type(&mut self, value: i32) {
-        todo!()
+    fn set_data_type(&mut self, value: CredentialInfoType) {
+        self.data_type = value.into()
     }
 
-    fn get_data_type(&self) -> i32 {
-        todo!()
+    fn get_data_type(&self) -> CredentialInfoType {
+        CredentialInfoType::try_from(self.data_type)
+        .expect("Error CredentialInfo get data_type")
     }
 
     fn set_data(&mut self, value: String) {
-        todo!()
+        self.data = pj_str_t::from_string(value);
     }
 
     fn get_data(&self) -> String {
-        todo!()
+        self.data.to_string()
     }
 }

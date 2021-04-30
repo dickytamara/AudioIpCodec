@@ -26,12 +26,13 @@ pub mod auto;
 pub mod ua;
 pub mod media;
 pub mod account;
+mod log;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;
+pub use pjsua_sys::pjsua_logging_config as LogConfig;
 pub use pjsua_sys::pjsua_media_config as MediaConfig;
 pub use pjsua_sys::pjsua_acc_config as AccountConfig;
-pub use pjsua_sys::pjsua_logging_config as LogConfig;
 pub use pjsua_sys::pjsua_transport_config as TransportConfig;
 pub use pjsua_sys::pjsua_ice_config as ICEConfig;
 pub use pjsua_sys::pjsua_turn_config as TurnConfig;
@@ -84,6 +85,39 @@ pub enum UAConfigSrtpUse {
     Disabled = pjmedia_sys::PJMEDIA_SRTP_DISABLED,
     Optional = pjmedia_sys::PJMEDIA_SRTP_OPTIONAL,
     Mandatory = pjmedia_sys::PJMEDIA_SRTP_MANDATORY,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(i32)]
+pub enum UAConfigSrtpSecureSignaling {
+    Disable = 0,
+    Tls = 1,
+    Sips = 3,
+}
+
+// PJ_O_RDONLY
+// Open file for reading.
+// PJ_O_WRONLY
+// Open file for writing.
+// PJ_O_RDWR
+// Open file for reading and writing. File will be truncated.
+// PJ_O_APPEND
+// Append to existing file.
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum LogConfigFileFlags {
+    ReadOnly = pj_sys::PJ_O_RDONLY,
+    WriteOnly = pj_sys::PJ_O_WRONLY,
+    ReadWrite = pj_sys::PJ_O_RDWR,
+    Append = pj_sys::PJ_O_APPEND
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(i32)]
+pub enum CredentialInfoType {
+    PlainText = 0,
+    HashDigest = 1,
 }
 
 
