@@ -338,7 +338,22 @@ impl AutoCreate<pjsip_media_type> for pjsip_media_type {
     }
 }
 
+impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
+    fn new() -> pjsip_publishc_opt {
+        pjsip_publishc_opt {
+            queue_request: 0,
+        }
+    }
+}
 
+impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {
+    fn new() -> pjsip_auth_clt_pref {
+        pjsip_auth_clt_pref {
+            initial_auth: 0,
+            algorithm: pj_str_t::new(),
+        }
+    }
+}
 
 // function helper
 // const pjsip_method * 	pjsip_get_invite_method (void)

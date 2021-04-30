@@ -12,7 +12,7 @@ use crate::pjproject::pjsua;
 // #[derive(Clone)]
 pub struct SIPBuddy {
     id: i32,
-    ctx: RefCell<pjsua_buddy_config>,
+    ctx: RefCell<BuddyConfig>,
 }
 
 pub trait SIPBuddyExt {

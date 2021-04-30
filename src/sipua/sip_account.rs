@@ -1,5 +1,5 @@
 use std::cell::RefCell;
-use pjproject::pjsua::AccountConfig;
+use pjproject::pjsua::{AccountConfig, CallSetting, MessageData, TransportConfig};
 
 use crate::pjproject::prelude::*;
 use crate::pjproject::utils;
@@ -187,8 +187,8 @@ pub trait SIPAccountExt {
     ///
     /// # See also
     ///     pjsua_acc_set_transport()
-    fn set_transport_id(&self, value: pjsua_transport_id);
-    fn get_transport_id(&self) -> pjsua_transport_id;
+    fn set_transport_id(&self, value: i32);
+    fn get_transport_id(&self) -> i32;
     /// This option is used to update the transport address and the Contact header of REGISTER
     /// request. When this option is enabled, the library will keep track of the public IP address
     /// from the response of REGISTER request. Once it detects that the address has changed, it
@@ -291,8 +291,8 @@ pub trait SIPAccountExt {
     // vid_stream_sk_cfg: pjmedia_vid_stream_sk_config,
 
     /// Media transport config.
-    fn set_rtp_cfg(&self, value: pjsua_transport_config);
-    // fn get_rtp_cfg(&self) -> pjsua_transport_config;
+    fn set_rtp_cfg(&self, value: TransportConfig);
+    // fn get_rtp_cfg(&self) -> TransportConfig;
     /// Specify NAT64 options.
     ///
     /// # Default
@@ -465,11 +465,11 @@ impl SIPAccount {
     pub fn new() -> Self {
         SIPAccount {
             id: -1,
-            ctx: RefCell::new(pjsua_acc_config::new()),
+            ctx: RefCell::new(AccountConfig::new()),
         }
     }
 
-    pub fn from(acc_id: pjsua_acc_id) -> Result<Self, i32> {
+    pub fn from(acc_id: i32) -> Result<Self, i32> {
 
         let ret = SIPAccount {
             id: acc_id,
@@ -632,7 +632,7 @@ impl SIPAccount {
     }
 
     // set transport by given id transport id for account
-    pub fn set_transport(&self, tp_id: pjsua_transport_id) {
+    pub fn set_transport(&self, tp_id: i32) {
 
         pjsua::acc_set_transport( self.id, tp_id)
         .expect("SIPAccount::pjsua_acc_set_transport");
@@ -647,7 +647,7 @@ impl SIPAccount {
         state_str: String,
         reason: String,
         with_body: bool,
-        msg_data: Option<&mut pjsua_msg_data>
+        msg_data: Option<&mut MessageData>
     ) {
         pjsua::pres_notify(self.id, srv_pres, state, state_str, reason, with_body, msg_data)
         .expect("SIPAccount::pjsua_pres_notify");
@@ -658,14 +658,14 @@ impl SIPAccount {
         to: String,
         mime_type: String,
         content: String,
-        msg_data: Option<&mut pjsua_msg_data>
+        msg_data: Option<&mut MessageData>
     ) {
         pjsua::im_send(self.id, to, mime_type, content, msg_data)
         .expect("SIPAccount::pjsua_im_send");
     }
 
     // Send typing indication outside dialog.
-    pub fn im_typing(&self, to: String, is_typing: bool, msg_data: Option<&mut pjsua_msg_data>) {
+    pub fn im_typing(&self, to: String, is_typing: bool, msg_data: Option<&mut MessageData>) {
         pjsua::im_typing(self.id, to, is_typing, msg_data)
         .expect("SIPAccount::pjsua_im_typing");
     }
@@ -673,9 +673,9 @@ impl SIPAccount {
     pub fn call(
         &self,
         dst_uri: String,
-        opt: Option<&mut pjsua_call_setting>,
-        msg_data: Option<&mut pjsua_msg_data>,
-        p_call_id: Option<&mut pjsua_call_id>
+        opt: Option<&mut CallSetting>,
+        msg_data: Option<&mut MessageData>,
+        p_call_id: Option<&mut i32>
     ) {
         pjsua::call_make_call(self.id, dst_uri, opt, msg_data, p_call_id)
         .expect("SIPAccount::pjsua_call_make_call");
@@ -697,12 +697,12 @@ impl SIPAccounts {
     }
 
     // get default account
-    pub fn get_default(&self) -> pjsua_acc_id {
+    pub fn get_default(&self) -> i32 {
         pjsua::acc_get_default()
     }
 
     // set default rtp config
-    pub fn set_rtp_config(&self, rtp_config: &pjsua_transport_config) {
+    pub fn set_rtp_config(&self, rtp_config: &TransportConfig) {
 
         let ids = self.enum_accs_id();
 
@@ -764,11 +764,11 @@ impl SIPAccounts {
     }
 
     // enumerate current registered account id
-    pub fn enum_accs_id(&self) -> Vec<pjsua_acc_id> {
+    pub fn enum_accs_id(&self) -> Vec<i32> {
 
-        let mut ret = Vec::<pjsua_acc_id>::new();
+        let mut ret = Vec::<i32>::new();
 
-        let mut acc_id: [pjsua_acc_id; PJSUA_MAX_ACC as usize] = [-1; PJSUA_MAX_ACC as usize];
+        let mut acc_id: [i32; PJSUA_MAX_ACC as usize] = [-1; PJSUA_MAX_ACC as usize];
         let mut count = 8u32;
 
         if let Ok(_)= pjsua::enum_accs(&mut acc_id, &mut count) {
@@ -805,12 +805,12 @@ impl SIPAccounts {
     // }
 
     // This is an internal function to find the most appropriate account to used to reach to the specified URL.
-    pub fn find_for_outgoing(&self, value: String) -> pjsua_acc_id {
+    pub fn find_for_outgoing(&self, value: String) -> i32 {
         pjsua::acc_find_for_outgoing(value)
     }
 
     // This is an internal function to find the most appropriate account to be used to handle incoming calls.
-    pub fn on_acc_find_for_incoming (&self, rdata: &mut pjsip_rx_data) -> pjsua_acc_id {
+    pub fn on_acc_find_for_incoming (&self, rdata: &mut pjsip_rx_data) -> i32 {
         pjsua::acc_find_for_incoming(rdata)
     }
 
@@ -1055,11 +1055,11 @@ impl SIPAccountExt for SIPAccount {
     //     self.ctx.borrow().cred_info
     // }
 
-    fn set_transport_id(&self, value: pjsua_transport_id) {
+    fn set_transport_id(&self, value: i32) {
         self.ctx.borrow_mut().transport_id = value;
     }
 
-    fn get_transport_id(&self) -> pjsua_transport_id {
+    fn get_transport_id(&self) -> i32 {
         self.ctx.borrow().transport_id
     }
 
@@ -1143,11 +1143,11 @@ impl SIPAccountExt for SIPAccount {
         self.ctx.borrow().ka_data.to_string()
     }
 
-    fn set_rtp_cfg(&self, value: pjsua_transport_config) {
+    fn set_rtp_cfg(&self, value: TransportConfig) {
         self.ctx.borrow_mut().rtp_cfg = value;
     }
 
-    // fn get_rtp_cfg(&self) -> pjsua_transport_config {
+    // fn get_rtp_cfg(&self) -> TransportConfig {
     //     self.ctx.borrow().rtp_cfg
     // }
 

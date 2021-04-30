@@ -1,3 +1,4 @@
+extern crate num_enum;
 extern crate pj_sys;
 extern crate pjlib_util_sys;
 extern crate pjnath_sys;
