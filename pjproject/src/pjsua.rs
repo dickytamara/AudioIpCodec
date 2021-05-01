@@ -17,7 +17,7 @@ use super::utils;
 use std::os::raw::{c_uint, c_void};
 use std::ffi::CString;
 use std::ptr;
-// use std::convert::TryFrom;
+
 use num_enum::IntoPrimitive;
 use num_enum::TryFromPrimitive;
 
@@ -26,7 +26,7 @@ pub mod auto;
 pub mod ua;
 pub mod media;
 pub mod account;
-mod log;
+pub mod log;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;
@@ -185,6 +185,93 @@ pub enum MediaConfigTurnTransportType {
 pub enum CredentialInfoType {
     PlainText = 0,
     HashDigest = 1,
+}
+
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountStatusCode {
+    Null = pjsip_sys::PJSIP_SC_NULL,
+    Trying = pjsip_sys::PJSIP_SC_TRYING,
+    Ringing = pjsip_sys::PJSIP_SC_RINGING,
+    CallBeingForwarded = pjsip_sys::PJSIP_SC_CALL_BEING_FORWARDED,
+    Queued = pjsip_sys::PJSIP_SC_QUEUED,
+    Progress = pjsip_sys::PJSIP_SC_PROGRESS,
+    EarlyDialogTerminated = pjsip_sys::PJSIP_SC_EARLY_DIALOG_TERMINATED,
+    Ok = pjsip_sys::PJSIP_SC_OK,
+    Accepted = pjsip_sys::PJSIP_SC_ACCEPTED,
+    NoNotification = pjsip_sys::PJSIP_SC_NO_NOTIFICATION,
+    MutipleChoices = pjsip_sys::PJSIP_SC_MULTIPLE_CHOICES,
+    MovedPermanently = pjsip_sys::PJSIP_SC_MOVED_PERMANENTLY,
+    MovedTemporarily = pjsip_sys::PJSIP_SC_MOVED_TEMPORARILY,
+    UseProxy = pjsip_sys::PJSIP_SC_USE_PROXY,
+    AlternativeService = pjsip_sys::PJSIP_SC_ALTERNATIVE_SERVICE,
+    BadRequest = pjsip_sys::PJSIP_SC_BAD_REQUEST,
+    Unauthorized = pjsip_sys::PJSIP_SC_UNAUTHORIZED,
+    PaymentRequired = pjsip_sys::PJSIP_SC_PAYMENT_REQUIRED,
+    Forbidden = pjsip_sys::PJSIP_SC_FORBIDDEN,
+    NotFound = pjsip_sys::PJSIP_SC_NOT_FOUND,
+    MethodNotAllowed = pjsip_sys::PJSIP_SC_METHOD_NOT_ALLOWED,
+    NotAcceptable = pjsip_sys::PJSIP_SC_NOT_ACCEPTABLE,
+    ProxyAuthenticationRequired = pjsip_sys::PJSIP_SC_PROXY_AUTHENTICATION_REQUIRED,
+    RequestTimeout = pjsip_sys::PJSIP_SC_REQUEST_TIMEOUT,
+    Conflict = pjsip_sys::PJSIP_SC_CONFLICT,
+    Gone = pjsip_sys::PJSIP_SC_GONE,
+    LengthRequired = pjsip_sys::PJSIP_SC_LENGTH_REQUIRED,
+    ConditionalRequestFailed = pjsip_sys::PJSIP_SC_CONDITIONAL_REQUEST_FAILED,
+    RequestEntityTooLarge = pjsip_sys::PJSIP_SC_REQUEST_ENTITY_TOO_LARGE,
+    RequestUriTooLong = pjsip_sys::PJSIP_SC_REQUEST_URI_TOO_LONG,
+    UnsuportedMediaType = pjsip_sys::PJSIP_SC_UNSUPPORTED_MEDIA_TYPE,
+    UnsuportedUriScheme = pjsip_sys::PJSIP_SC_UNSUPPORTED_URI_SCHEME,
+    UnknownResourcePriority = pjsip_sys::PJSIP_SC_UNKNOWN_RESOURCE_PRIORITY,
+    BadExtension = pjsip_sys::PJSIP_SC_BAD_EXTENSION,
+    ExtensionRequired = pjsip_sys::PJSIP_SC_EXTENSION_REQUIRED,
+    SessionTimerTooSmall = pjsip_sys::PJSIP_SC_SESSION_TIMER_TOO_SMALL,
+    IntervalTooBrief = pjsip_sys::PJSIP_SC_INTERVAL_TOO_BRIEF,
+    BadLocationInformation = pjsip_sys::PJSIP_SC_BAD_LOCATION_INFORMATION,
+    UseIndentityHeader = pjsip_sys::PJSIP_SC_USE_IDENTITY_HEADER,
+    ProvideReferrerHeader = pjsip_sys::PJSIP_SC_PROVIDE_REFERRER_HEADER,
+    FlowFailed = pjsip_sys::PJSIP_SC_FLOW_FAILED,
+    AnonimityDisallowed = pjsip_sys::PJSIP_SC_ANONIMITY_DISALLOWED,
+    BadIdentityInfo = pjsip_sys::PJSIP_SC_BAD_IDENTITY_INFO,
+    UnsupportedCertificate = pjsip_sys::PJSIP_SC_UNSUPPORTED_CERTIFICATE,
+    InvalidIdentityHeader = pjsip_sys::PJSIP_SC_INVALID_IDENTITY_HEADER,
+    FirstHodLacksOutboundSupport = pjsip_sys::PJSIP_SC_FIRST_HOP_LACKS_OUTBOUND_SUPPORT,
+    MaxBreadthExceeded = pjsip_sys::PJSIP_SC_MAX_BREADTH_EXCEEDED,
+    BadInfoPackage = pjsip_sys::PJSIP_SC_BAD_INFO_PACKAGE,
+    ConsentNeeded = pjsip_sys::PJSIP_SC_CONSENT_NEEDED,
+    TemporarilyUnavailable = pjsip_sys::PJSIP_SC_TEMPORARILY_UNAVAILABLE,
+    CallTsxDoesNotExist = pjsip_sys::PJSIP_SC_CALL_TSX_DOES_NOT_EXIST,
+    LoopDetected = pjsip_sys::PJSIP_SC_LOOP_DETECTED,
+    TooManyHops = pjsip_sys::PJSIP_SC_TOO_MANY_HOPS,
+    AddressIncomplete = pjsip_sys::PJSIP_SC_ADDRESS_INCOMPLETE,
+    AcAmbiguous = pjsip_sys::PJSIP_AC_AMBIGUOUS,
+    BusyHere = pjsip_sys::PJSIP_SC_BUSY_HERE,
+    RequestTerminated = pjsip_sys::PJSIP_SC_REQUEST_TERMINATED,
+    NotAcceptableHere = pjsip_sys::PJSIP_SC_NOT_ACCEPTABLE_HERE,
+    BadEvent = pjsip_sys::PJSIP_SC_BAD_EVENT,
+    RequestUpdated = pjsip_sys::PJSIP_SC_REQUEST_UPDATED,
+    RequestPending = pjsip_sys::PJSIP_SC_REQUEST_PENDING,
+    Undecipherable = pjsip_sys::PJSIP_SC_UNDECIPHERABLE,
+    SecurityAgreementNeeded = pjsip_sys::PJSIP_SC_SECURITY_AGREEMENT_NEEDED,
+    IntenalServerError = pjsip_sys::PJSIP_SC_INTERNAL_SERVER_ERROR,
+    NotImplemented = pjsip_sys::PJSIP_SC_NOT_IMPLEMENTED,
+    BadGateway = pjsip_sys::PJSIP_SC_BAD_GATEWAY,
+    ServiceUnavailable = pjsip_sys::PJSIP_SC_SERVICE_UNAVAILABLE,
+    ServerTimeout = pjsip_sys::PJSIP_SC_SERVER_TIMEOUT,
+    VersionNotSupported = pjsip_sys::PJSIP_SC_VERSION_NOT_SUPPORTED,
+    MessageTooLarge = pjsip_sys::PJSIP_SC_MESSAGE_TOO_LARGE,
+    PushNotificationServiceNotSupported = pjsip_sys::PJSIP_SC_PUSH_NOTIFICATION_SERVICE_NOT_SUPPORTED,
+    PreconditionFailure = pjsip_sys::PJSIP_SC_PRECONDITION_FAILURE,
+    BusyEverywhere = pjsip_sys::PJSIP_SC_BUSY_EVERYWHERE,
+    Decline = pjsip_sys::PJSIP_SC_DECLINE,
+    DoesNotExistAnywhere = pjsip_sys::PJSIP_SC_DOES_NOT_EXIST_ANYWHERE,
+    NotAcceptableAnywhere = pjsip_sys::PJSIP_SC_NOT_ACCEPTABLE_ANYWHERE,
+    Unwanted = pjsip_sys::PJSIP_SC_UNWANTED,
+    Rejected = pjsip_sys::PJSIP_SC_REJECTED,
+    // TsxTimeout = pjsip_sys::PJSIP_SC_TSX_TIMEOUT,
+    // TsxTransportError = pjsip_sys::PJSIP_SC_TSX_TRANSPORT_ERROR,
+    Force32Bit = pjsip_sys::PJSIP_SC__force_32bit,
 }
 
 

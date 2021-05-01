@@ -451,3 +451,20 @@ pub trait AccountConfigExt {
     fn set_rtcp_fb_cfg(&self, value: pjmedia_rtcp_fb_setting);
     // fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting;
 }
+
+
+// todo: only read only operation
+pub trait AccountInfoExt {
+    fn get_id (&self) -> pjsua_acc_id;
+    fn get_is_default (&self) -> bool;
+    fn get_acc_uri (&self) -> String;
+    fn get_has_registration (&self) -> bool;
+    fn get_expires (&self) -> u32;
+    fn get_status (&self) -> AccountStatusCode;
+    fn get_reg_last_err (&self) -> i32;
+    fn get_status_text (&self) -> String;
+    fn get_online_status (&self) -> bool;
+    fn get_online_status_text (&self) -> String;
+    // fn get_rpid (&self) -> pjrpid_element;
+    // fn get_buf_ (&self) [::std::os::raw::c_char; 80usize],
+}

@@ -1,26 +1,7 @@
 
-use pjmedia_sys::pjmedia_jb_discard_algo;
-use pjnath_sys::{pj_ice_sess_options, pj_stun_auth_cred, pj_turn_tp_type};
-use std::convert::TryFrom;
+use std::{convert::TryFrom, path::PathBuf};
 use crate::utils::{boolean_to_pjbool, check_boolean};
-
 use super::*;
-
-pub struct SIPTurnServerData {
-    server: String,
-    username: String,
-    password: String
-}
-
-impl SIPTurnServerData {
-    pub fn new(srv: String, user: String, pass: String) -> Self {
-        SIPTurnServerData {
-            server: srv,
-            username: user,
-            password: pass
-        }
-    }
-}
 
 pub trait MediaConfigExt {
 
@@ -192,12 +173,6 @@ pub trait MediaConfigExt {
     fn get_ice_max_host_cands(&self) -> i32;
 
     /// ICE session options.
-    // pub struct pj_ice_sess_options {
-    //     pub aggressive: pj_bool_t,
-    //     pub nominated_check_delay: ::std::os::raw::c_uint,
-    //     pub controlled_agent_want_nom_timeout: ::std::os::raw::c_int,
-    //     pub trickle: pj_ice_sess_trickle,
-    // }
     fn set_ice_opt(&mut self,
         aggresive: Option<bool>,
         nominated_check_delay: Option<u32>,
@@ -227,7 +202,7 @@ pub trait MediaConfigExt {
     fn get_enable_turn(&self) -> bool;
 
     /// Specify TURN domain name or host name, in in "DOMAIN:PORT" or "HOST:PORT" format.
-    fn set_turn_server(&mut self, value: SIPTurnServerData);
+    fn set_turn_server(&mut self, value: String);
     fn get_turn_server(&self) -> String;
 
     /// Specify the connection type to be used to the TURN server.
@@ -251,8 +226,8 @@ pub trait MediaConfigExt {
 
     /// This specifies TLS settings for TLS transport. It is only be used when this TLS
     /// is used to connect to the TURN server.
-    fn set_turn_tls_setting(&mut self, value: pj_turn_sock_tls_cfg);
-    fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg;
+    fn set_turn_tls_setting(&mut self, path: Option<PathBuf>, ca: String, cert: String, privkey: String, password: String);
+    fn get_turn_tls_setting(&self) -> (Option<PathBuf>, String, String, String, String);
 
     /// Specify idle time of sound device before it is automatically closed,
     /// in seconds. Use value -1 to disable the auto-close feature of sound device
@@ -291,10 +266,7 @@ pub trait MediaConfigExt {
     // TODO implement callback
     //     pub on_aud_prev_play_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
     //     pub on_aud_prev_rec_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
-
-
 }
-
 
 
 impl MediaConfigExt for MediaConfig {
@@ -559,12 +531,12 @@ impl MediaConfigExt for MediaConfig {
         check_boolean(self.enable_turn)
     }
 
-    fn set_turn_server(&mut self, value: SIPTurnServerData) {
-        todo!()
+    fn set_turn_server(&mut self, value: String) {
+        self.turn_server = pj_str_t::from_string(value);
     }
 
     fn get_turn_server(&self) -> String {
-        todo!()
+        self.turn_server.to_string()
     }
 
     fn set_turn_conn_type(&mut self, value: MediaConfigTurnTransportType) {
@@ -638,12 +610,53 @@ impl MediaConfigExt for MediaConfig {
         }
     }
 
-    fn set_turn_tls_setting(&mut self, value: pj_turn_sock_tls_cfg) {
-        todo!()
+    fn set_turn_tls_setting(&mut self,
+        path: Option<PathBuf>,
+        ca: String,
+        cert: String,
+        privkey: String,
+        password: String
+    )
+    {
+        match path {
+            Some(path) => {
+                self.turn_tls_setting.ca_list_path = pj_str_t::from_string(
+                    String::from(path.to_str().unwrap())
+                );
+                self.turn_tls_setting.ca_list_file = pj_str_t::from_string(ca);
+                self.turn_tls_setting.cert_file = pj_str_t::from_string(cert);
+                self.turn_tls_setting.privkey_file = pj_str_t::from_string(privkey);
+                self.turn_tls_setting.password = pj_str_t::from_string(password);
+            },
+            None => {
+                self.turn_tls_setting.ca_buf = pj_str_t::from_string(ca);
+                self.turn_tls_setting.cert_buf = pj_str_t::from_string(cert);
+                self.turn_tls_setting.privkey_buf = pj_str_t::from_string(privkey);
+                self.turn_tls_setting.password = pj_str_t::from_string(password);
+            }
+        }
     }
 
-    fn get_turn_tls_setting(&self) -> pj_turn_sock_tls_cfg {
-        todo!()
+    fn get_turn_tls_setting(&self) -> (Option<PathBuf>, String, String, String, String) {
+        // return based on ca_list_path
+        let path = self.turn_tls_setting.ca_list_path.to_string();
+        if path.is_empty() {
+            (
+                None,
+                self.turn_tls_setting.ca_buf.to_string(),
+                self.turn_tls_setting.cert_buf.to_string(),
+                self.turn_tls_setting.privkey_buf.to_string(),
+                self.turn_tls_setting.password.to_string()
+            )
+        } else {
+            (
+                Some(PathBuf::from(path)),
+                self.turn_tls_setting.ca_list_file.to_string(),
+                self.turn_tls_setting.cert_file.to_string(),
+                self.turn_tls_setting.privkey_file.to_string(),
+                self.turn_tls_setting.password.to_string()
+            )
+        }
     }
 
     fn set_snd_auto_close_time(&mut self, value: i32) {
