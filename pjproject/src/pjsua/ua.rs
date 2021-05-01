@@ -215,7 +215,7 @@ pub trait UAConfigExt {
 }
 
 pub trait CredentialInfoExt {
-    
+
     /// Realm. Use "*" to make a credential that can be used to authenticate
     /// against any challenges.
     fn set_realm(&mut self, value: String);

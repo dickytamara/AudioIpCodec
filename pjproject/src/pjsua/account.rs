@@ -1,10 +1,9 @@
-use pjmedia_sys::{pjmedia_rtcp_fb_setting, pjmedia_srtp_use};
-use pjsip_simple_sys::pjsip_publishc_opt;
-use pjsip_sys::{pjsip_auth_clt_pref, pjsip_cred_info};
-use pjsip_ua_sys::pjsip_timer_setting;
-use pjsua_sys::{pjsua_100rel_use, pjsua_sip_timer_use};
+use std::convert::TryFrom;
 
-use crate::utils::{boolean_to_pjbool, check_boolean, check_status};
+use pjmedia_sys::{pjmedia_rtcp_fb_setting};
+use pjsip_sys::{pjsip_cred_info};
+
+use crate::utils::{boolean_to_pjbool, check_boolean};
 
 use super::*;
 
@@ -67,8 +66,8 @@ pub trait AccountConfigExt {
     fn set_publish_enabled(&mut self, value: bool);
     fn get_publish_enabled(&self) -> bool;
     /// Event publication options.
-    fn set_publish_opt(&self, value: pjsip_publishc_opt);
-    fn get_publish_opt(&self) -> pjsip_publishc_opt;
+    fn set_publish_opt(&mut self, value: bool);
+    fn get_publish_opt(&self) -> bool;
     /// Maximum time to wait for unpublication transaction(s) to complete during shutdown process,
     /// before sending unregistration. The library tries to wait for the unpublication
     /// (un-PUBLISH) to complete before sending REGISTER request to unregister the account,
@@ -80,8 +79,8 @@ pub trait AccountConfigExt {
     fn set_unpublish_max_wait_time_msec(&mut self, value: u32);
     fn get_unpublish_max_wait_time_msec(&self) -> u32;
     /// Authentication preference.
-    fn set_auth_pref(&mut self, value: pjsip_auth_clt_pref);
-    fn get_auth_pref(&self) -> pjsip_auth_clt_pref;
+    fn set_auth_pref(&mut self, initial_auth: bool, algorithm: String);
+    fn get_auth_pref(&self) -> (bool, String);
     /// Optional PIDF tuple ID for outgoing PUBLISH and NOTIFY. If this value is not specified,
     /// a random string will be used.
     fn set_pidf_tuple_id(&mut self, value: String);
@@ -112,17 +111,17 @@ pub trait AccountConfigExt {
     ///
     /// # Default
     /// The default value is taken from the value of require_100rel in pjsua_config.
-    fn set_require_100rel(&mut self, value: pjsua_100rel_use);
-    fn get_require_100rel(&self) -> pjsua_100rel_use;
+    fn set_require_100rel(&mut self, value: UAConfig100relUse);
+    fn get_require_100rel(&self) -> UAConfig100relUse;
     /// Specify the usage of Session Timers for all sessions. See the pjsua_sip_timer_use for possible values.
     ///
     /// # Default
     /// PJSUA_SIP_TIMER_OPTIONAL
-    fn set_use_timer(&mut self, value: pjsua_sip_timer_use);
-    fn get_use_timer(&self) -> pjsua_sip_timer_use;
+    fn set_use_timer(&mut self, value: UAConfigSipTimerUse);
+    fn get_use_timer(&self) -> UAConfigSipTimerUse;
     /// Specify Session Timer settings, see pjsip_timer_setting.
-    fn set_timer_setting(&mut self, value: pjsip_timer_setting);
-    fn get_timer_setting(&self) -> pjsip_timer_setting;
+    fn set_timer_setting(&mut self, min_se: u32, sess_expires: u32);
+    fn get_timer_setting(&self) -> (u32, u32);
     /// Number of proxies in the proxy array below.
     fn set_proxy_cnt(&mut self, value: u32);
     fn get_proxy_cnt(&self) -> u32;
@@ -135,8 +134,8 @@ pub trait AccountConfigExt {
     /// (the first proxy in the array will be visited first). If global outbound proxies are configured
     /// in pjsua_config, then these account proxies will be placed after the global outbound
     /// proxies in the routeset.
-    fn set_proxy(&mut self, value: [String; 8usize]);
-    fn get_proxy(&self) -> [String; 8usize];
+    fn set_proxy(&mut self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>);
+    fn get_proxy(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>);
     /// If remote sends SDP answer containing more than one format or codec in the media line,
     /// send re-INVITE or UPDATE with just one codec to lock which codec to use.
     ///
@@ -291,23 +290,23 @@ pub trait AccountConfigExt {
     ///
     /// # Default
     /// PJSUA_NAT64_DISABLED
-    fn set_nat64_opt(&mut self, value: pjsua_nat64_opt);
-    fn get_nat64_opt(&self) -> pjsua_nat64_opt;
+    fn set_nat64_opt(&mut self, value: bool);
+    fn get_nat64_opt(&self) -> bool;
     /// Specify whether IPv6 should be used on media.
-    fn set_ipv6_media_use(&mut self, value: pjsua_ipv6_use);
-    fn get_ipv6_media_use(&self) -> pjsua_ipv6_use;
+    fn set_ipv6_media_use(&mut self, value: bool);
+    fn get_ipv6_media_use(&self) -> bool;
     /// Control the use of STUN for the SIP signaling.
     ///
     /// # Default
     /// PJSUA_STUN_USE_DEFAULT
-    fn set_sip_stun_use(&mut self, value: pjsua_stun_use);
-    fn get_sip_stun_use(&self) -> pjsua_stun_use;
+    fn set_sip_stun_use(&mut self, value: AccountConfigStunUse);
+    fn get_sip_stun_use(&self) -> AccountConfigStunUse;
     /// Control the use of STUN for the media transports.
     ///
     /// # Default
     /// PJSUA_STUN_RETRY_ON_FAILURE
-    fn set_media_stun_use(&mut self, value: pjsua_stun_use);
-    fn get_media_stun_use(&self) -> pjsua_stun_use;
+    fn set_media_stun_use(&mut self, value: AccountConfigStunUse);
+    fn get_media_stun_use(&self) -> AccountConfigStunUse;
     /// Use loopback media transport. This may be useful if application doesn't want PJSIP
     /// to create real media transports/sockets, such as when using third party media.
     ///
@@ -327,8 +326,8 @@ pub trait AccountConfigExt {
     ///
     /// # Default
     /// PJSUA_ICE_CONFIG_USE_DEFAULT
-    fn set_ice_cfg_use(&mut self, value: pjsua_ice_config_use);
-    fn get_ice_cfg_use(&self) -> pjsua_ice_config_use;
+    fn set_ice_cfg_use(&mut self, value: AccountConfigIceUse);
+    fn get_ice_cfg_use(&self) -> AccountConfigIceUse;
     /// The custom ICE setting for this account. This setting will only be used if ice_cfg_use
     /// is set to PJSUA_ICE_CONFIG_USE_CUSTOM
     fn set_ice_cfg(&mut self, value: pjsua_ice_config);
@@ -338,8 +337,8 @@ pub trait AccountConfigExt {
     ///
     /// # Default
     /// PJSUA_TURN_CONFIG_USE_DEFAULT
-    fn set_turn_cfg_use(&mut self, value: pjsua_turn_config_use);
-    fn get_turn_cfg_use(&self) -> pjsua_turn_config_use;
+    fn set_turn_cfg_use(&mut self, value: AccountConfigStunUse);
+    fn get_turn_cfg_use(&self) -> AccountConfigStunUse;
     /// The custom TURN setting for this account. This setting will only be used if turn_cfg_use
     /// is set to PJSUA_TURN_CONFIG_USE_CUSTOM
     fn set_turn_cfg(&self, value: pjsua_turn_config);
@@ -349,8 +348,8 @@ pub trait AccountConfigExt {
     ///
     /// # Default
     /// PJSUA_DEFAULT_USE_SRTP
-    fn set_use_srtp(&mut self, value: pjmedia_srtp_use);
-    fn get_use_srtp(&self) -> pjmedia_srtp_use;
+    fn set_use_srtp(&mut self, value: UAConfigSrtpUse);
+    fn get_use_srtp(&self) -> UAConfigSrtpUse;
     /// Specify whether SRTP requires secure signaling to be used. This option is only used when
     /// use_srtp option above is non-zero.
     ///
@@ -444,8 +443,8 @@ pub trait AccountConfigExt {
     fn get_register_on_acc_add(&self) -> bool;
     /// Specify account configuration specific to IP address change used when calling
     /// pjsua_handle_ip_change().
-    fn set_ip_change_cfg(&mut self, value: pjsua_ip_change_acc_cfg);
-    fn get_ip_change_cfg(&self) -> pjsua_ip_change_acc_cfg;
+    fn set_ip_change_cfg(&mut self, shutdown_tp: Option<bool>, hangup_calls: Option<bool>, reinvite_flags: Option<CallFlags>);
+    fn get_ip_change_cfg(&self) -> (bool, bool, CallFlags);
     /// Enable RTP and RTCP multiplexing.
     fn set_enable_rtcp_mux(&mut self, value: bool);
     fn get_enable_rtcp_mux(&self) -> bool;
@@ -530,12 +529,12 @@ impl AccountConfigExt for AccountConfig {
         check_boolean(self.publish_enabled)
     }
 
-    fn set_publish_opt(&self, value: pjsip_publishc_opt) {
-        todo!()
+    fn set_publish_opt(&mut self, value: bool) {
+        self.publish_opt.queue_request = boolean_to_pjbool(value);
     }
 
-    fn get_publish_opt(&self) -> pjsip_publishc_opt {
-        todo!()
+    fn get_publish_opt(&self) -> bool {
+        check_boolean(self.publish_opt.queue_request)
     }
 
     fn set_unpublish_max_wait_time_msec(&mut self, value: u32) {
@@ -546,12 +545,16 @@ impl AccountConfigExt for AccountConfig {
         self.unpublish_max_wait_time_msec
     }
 
-    fn set_auth_pref(&mut self, value: pjsip_auth_clt_pref) {
-        todo!()
+    fn set_auth_pref(&mut self, initial_auth: bool, algorithm: String) {
+        self.auth_pref.initial_auth = boolean_to_pjbool(initial_auth);
+        self.auth_pref.algorithm = pj_str_t::from_string(algorithm);
     }
 
-    fn get_auth_pref(&self) -> pjsip_auth_clt_pref {
-        todo!()
+    fn get_auth_pref(&self) -> (bool, String) {
+        (
+            check_boolean(self.auth_pref.initial_auth),
+            self.auth_pref.algorithm.to_string()
+        )
     }
 
     fn set_pidf_tuple_id(&mut self, value: String) {
@@ -586,28 +589,36 @@ impl AccountConfigExt for AccountConfig {
         self.contact_uri_params.to_string()
     }
 
-    fn set_require_100rel(&mut self, value: pjsua_100rel_use) {
-        todo!()
+    fn set_require_100rel(&mut self, value: UAConfig100relUse) {
+        self.require_100rel = value.into();
     }
 
-    fn get_require_100rel(&self) -> pjsua_100rel_use {
-        todo!()
+    fn get_require_100rel(&self) -> UAConfig100relUse {
+        UAConfig100relUse::try_from(self.require_100rel)
+        .expect("Error AccountConfig get require_100rel")
     }
 
-    fn set_use_timer(&mut self, value: pjsua_sip_timer_use) {
-        todo!()
+    fn set_use_timer(&mut self, value: UAConfigSipTimerUse) {
+        self.use_timer = value.into();
     }
 
-    fn get_use_timer(&self) -> pjsua_sip_timer_use {
-        todo!()
+    fn get_use_timer(&self) -> UAConfigSipTimerUse {
+        UAConfigSipTimerUse::try_from(self.use_timer)
+        .expect("Error AccountConfig get use_timer")
     }
 
-    fn set_timer_setting(&mut self, value: pjsip_timer_setting) {
-        todo!()
+        // pub min_se: ::std::os::raw::c_uint,
+    // pub sess_expires: ::std::os::raw::c_uint,
+    fn set_timer_setting(&mut self, min_se: u32, sess_expires: u32) {
+        self.timer_setting.min_se = min_se;
+        self.timer_setting.sess_expires = sess_expires;
     }
 
-    fn get_timer_setting(&self) -> pjsip_timer_setting {
-        todo!()
+    fn get_timer_setting(&self) -> (u32, u32) {
+        (
+            self.timer_setting.min_se,
+            self.timer_setting.sess_expires
+        )
     }
 
     fn set_proxy_cnt(&mut self, value: u32) {
@@ -618,11 +629,11 @@ impl AccountConfigExt for AccountConfig {
         self.proxy_cnt
     }
 
-    fn set_proxy(&mut self, value: [String; 8usize]) {
+    fn set_proxy(&mut self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>) {
         todo!()
     }
 
-    fn get_proxy(&self) -> [String; 8usize] {
+    fn get_proxy(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>) {
         todo!()
     }
 
@@ -770,36 +781,38 @@ impl AccountConfigExt for AccountConfig {
         todo!()
     }
 
-    fn set_nat64_opt(&mut self, value: pjsua_nat64_opt) {
-        todo!()
+    fn set_nat64_opt(&mut self, value: bool) {
+        self.nat64_opt = boolean_to_pjbool(value) as u32;
     }
 
-    fn get_nat64_opt(&self) -> pjsua_nat64_opt {
-        todo!()
+    fn get_nat64_opt(&self) -> bool {
+        check_boolean(self.nat64_opt as i32)
     }
 
-    fn set_ipv6_media_use(&mut self, value: pjsua_ipv6_use) {
-        todo!()
+    fn set_ipv6_media_use(&mut self, value: bool) {
+        self.ipv6_media_use = boolean_to_pjbool(value) as u32;
     }
 
-    fn get_ipv6_media_use(&self) -> pjsua_ipv6_use {
-        todo!()
+    fn get_ipv6_media_use(&self) -> bool {
+        check_boolean(self.ipv6_media_use as i32)
     }
 
-    fn set_sip_stun_use(&mut self, value: pjsua_stun_use) {
-        todo!()
+    fn set_sip_stun_use(&mut self, value: AccountConfigStunUse) {
+        self.sip_stun_use = value.into();
     }
 
-    fn get_sip_stun_use(&self) -> pjsua_stun_use {
-        todo!()
+    fn get_sip_stun_use(&self) -> AccountConfigStunUse {
+        AccountConfigStunUse::try_from(self.sip_stun_use)
+        .expect("Error AccountConfig get sip_stun_use")
     }
 
-    fn set_media_stun_use(&mut self, value: pjsua_stun_use) {
-        todo!()
+    fn set_media_stun_use(&mut self, value: AccountConfigStunUse) {
+        self.media_stun_use = value.into();
     }
 
-    fn get_media_stun_use(&self) -> pjsua_stun_use {
-        todo!()
+    fn get_media_stun_use(&self) -> AccountConfigStunUse {
+        AccountConfigStunUse::try_from(self.media_stun_use)
+        .expect("Error AccountConfig get media_stun_use")
     }
 
     fn set_use_loop_med_tp(&mut self, value: bool) {
@@ -818,12 +831,13 @@ impl AccountConfigExt for AccountConfig {
         check_boolean(self.enable_loopback)
     }
 
-    fn set_ice_cfg_use(&mut self, value: pjsua_ice_config_use) {
-        todo!()
+    fn set_ice_cfg_use(&mut self, value: AccountConfigIceUse) {
+        self.ice_cfg_use = value.into();
     }
 
-    fn get_ice_cfg_use(&self) -> pjsua_ice_config_use {
-        todo!()
+    fn get_ice_cfg_use(&self) -> AccountConfigIceUse {
+        AccountConfigIceUse::try_from(self.ice_cfg_use)
+        .expect("Error AccountConfig get ice_cfg_use")
     }
 
     fn set_ice_cfg(&mut self, value: ICEConfig) {
@@ -834,24 +848,26 @@ impl AccountConfigExt for AccountConfig {
         todo!()
     }
 
-    fn set_turn_cfg_use(&mut self, value: pjsua_turn_config_use) {
-        todo!()
+    fn set_turn_cfg_use(&mut self, value: AccountConfigStunUse) {
+        self.turn_cfg_use = value.into();
     }
 
-    fn get_turn_cfg_use(&self) -> pjsua_turn_config_use {
-        todo!()
+    fn get_turn_cfg_use(&self) -> AccountConfigStunUse {
+        AccountConfigStunUse::try_from(self.turn_cfg_use)
+        .expect("Error AccountConfig get turn_cfg_use")
     }
 
     fn set_turn_cfg(&self, value: pjsua_turn_config) {
         todo!()
     }
 
-    fn set_use_srtp(&mut self, value: pjmedia_srtp_use) {
-        todo!()
+    fn set_use_srtp(&mut self, value: UAConfigSrtpUse) {
+        self.use_srtp = value.into();
     }
 
-    fn get_use_srtp(&self) -> pjmedia_srtp_use {
-        todo!()
+    fn get_use_srtp(&self) -> UAConfigSrtpUse {
+        UAConfigSrtpUse::try_from(self.use_srtp)
+        .expect("Error AccountConfig get use_srtp")
     }
 
     fn set_srtp_secure_signaling(&mut self, value: i32) {
@@ -934,12 +950,32 @@ impl AccountConfigExt for AccountConfig {
         check_boolean(self.register_on_acc_add)
     }
 
-    fn set_ip_change_cfg(&mut self, value: pjsua_ip_change_acc_cfg) {
-        todo!()
+    fn set_ip_change_cfg(&mut self,
+        shutdown_tp: Option<bool>,
+        hangup_calls: Option<bool>,
+        reinvite_flags: Option<CallFlags>
+    ) {
+
+        if shutdown_tp.is_some() {
+            self.ip_change_cfg.shutdown_tp = boolean_to_pjbool(shutdown_tp.unwrap());
+        }
+
+        if hangup_calls.is_some() {
+            self.ip_change_cfg.hangup_calls = boolean_to_pjbool(hangup_calls.unwrap());
+        }
+
+        if reinvite_flags.is_some() {
+            self.ip_change_cfg.reinvite_flags = hangup_calls.unwrap().into();
+        }
     }
 
-    fn get_ip_change_cfg(&self) -> pjsua_ip_change_acc_cfg {
-        todo!()
+    fn get_ip_change_cfg(&self) -> (bool, bool, CallFlags) {
+        (
+            check_boolean(self.ip_change_cfg.shutdown_tp),
+            check_boolean(self.ip_change_cfg.hangup_calls),
+            CallFlags::try_from(self.ip_change_cfg.reinvite_flags)
+            .expect("Error AccountConfig get ip_change_cfg.reinvite_flags")
+        )
     }
 
     fn set_enable_rtcp_mux(&mut self, value: bool) {

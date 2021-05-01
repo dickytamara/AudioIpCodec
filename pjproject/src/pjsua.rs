@@ -166,11 +166,6 @@ pub enum MediaConfigIceSessTrickle {
     Full = pjnath_sys::PJ_ICE_SESS_TRICKLE_FULL,
 }
 
-pub const PJ_TURN_TP_UDP: pj_turn_tp_type = 17;
-pub const PJ_TURN_TP_TCP: pj_turn_tp_type = 6;
-pub const PJ_TURN_TP_TLS: pj_turn_tp_type = 56;
-pub type pj_turn_tp_type = u32;
-
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum MediaConfigTurnTransportType {
@@ -186,6 +181,51 @@ pub enum CredentialInfoType {
     PlainText = 0,
     HashDigest = 1,
 }
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountConfigStunUse {
+    Default = pjsua_sys::PJSUA_STUN_USE_DEFAULT,
+    Disabled = pjsua_sys::PJSUA_STUN_USE_DISABLED,
+    RetryOnFailure = pjsua_sys::PJSUA_STUN_RETRY_ON_FAILURE,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountConfigIceUse {
+    Default = pjsua_sys::PJSUA_ICE_CONFIG_USE_DEFAULT,
+    Custom = pjsua_sys::PJSUA_ICE_CONFIG_USE_CUSTOM,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountConfigTurnUse {
+    Default = pjsua_sys::PJSUA_TURN_CONFIG_USE_DEFAULT,
+    Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
+}
+
+
+pub const PJSUA_CALL_UNHOLD: pjsua_call_flag = 1;
+pub const PJSUA_CALL_UPDATE_CONTACT: pjsua_call_flag = 2;
+pub const PJSUA_CALL_INCLUDE_DISABLED_MEDIA: pjsua_call_flag = 4;
+pub const PJSUA_CALL_NO_SDP_OFFER: pjsua_call_flag = 8;
+pub const PJSUA_CALL_REINIT_MEDIA: pjsua_call_flag = 16;
+pub const PJSUA_CALL_UPDATE_VIA: pjsua_call_flag = 32;
+pub const PJSUA_CALL_UPDATE_TARGET: pjsua_call_flag = 64;
+pub type pjsua_call_flag = u32;
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallFlags {
+    Unhold = pjsua_sys::PJSUA_CALL_UNHOLD,
+    UpdateContact = pjsua_sys::PJSUA_CALL_UPDATE_CONTACT,
+    IncludeDisabledMedia = pjsua_sys::PJSUA_CALL_INCLUDE_DISABLED_MEDIA,
+    NoSdpOffer = pjsua_sys::PJSUA_CALL_NO_SDP_OFFER,
+    ReinitMedia = pjsua_sys::PJSUA_CALL_REINIT_MEDIA,
+    UpdateVia = pjsua_sys::PJSUA_CALL_UPDATE_VIA,
+    UpdateTarget = pjsua_sys::PJSUA_CALL_UPDATE_TARGET,
+}
+
 
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
