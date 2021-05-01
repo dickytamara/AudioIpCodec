@@ -204,16 +204,6 @@ pub enum AccountConfigTurnUse {
     Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
 }
 
-
-pub const PJSUA_CALL_UNHOLD: pjsua_call_flag = 1;
-pub const PJSUA_CALL_UPDATE_CONTACT: pjsua_call_flag = 2;
-pub const PJSUA_CALL_INCLUDE_DISABLED_MEDIA: pjsua_call_flag = 4;
-pub const PJSUA_CALL_NO_SDP_OFFER: pjsua_call_flag = 8;
-pub const PJSUA_CALL_REINIT_MEDIA: pjsua_call_flag = 16;
-pub const PJSUA_CALL_UPDATE_VIA: pjsua_call_flag = 32;
-pub const PJSUA_CALL_UPDATE_TARGET: pjsua_call_flag = 64;
-pub type pjsua_call_flag = u32;
-
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum CallFlags {
