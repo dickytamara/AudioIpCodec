@@ -226,6 +226,17 @@ pub enum CallFlags {
     UpdateTarget = pjsua_sys::PJSUA_CALL_UPDATE_TARGET,
 }
 
+pub const PJSUA_CALL_HOLD_TYPE_RFC3264: pjsua_call_hold_type = 0;
+pub const PJSUA_CALL_HOLD_TYPE_RFC2543: pjsua_call_hold_type = 1;
+pub type pjsua_call_hold_type = u32;
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallHoldType {
+    Rfc3264 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC3264,
+    Rfc2543 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC2543,
+}
+
 
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]

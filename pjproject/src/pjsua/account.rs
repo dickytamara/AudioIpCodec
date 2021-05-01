@@ -432,8 +432,8 @@ pub trait AccountConfigExt {
     ///
     /// # Default
     /// PJSUA_CALL_HOLD_TYPE_DEFAULT
-    fn set_call_hold_type(&mut self, value: pjsua_call_hold_type);
-    fn get_call_hold_type(&self) -> u32;
+    fn set_call_hold_type(&mut self, value: CallHoldType);
+    fn get_call_hold_type(&self) -> CallHoldType;
     /// Specify whether the account should register as soon as it is added to the UA. Application can
     /// set this to PJ_FALSE and control the registration manually with pjsua_acc_set_registration().
     ///
@@ -934,12 +934,13 @@ impl AccountConfigExt for AccountConfig {
         self.reg_use_proxy
     }
 
-    fn set_call_hold_type(&mut self, value: pjsua_call_hold_type) {
-        self.call_hold_type = value
+    fn set_call_hold_type(&mut self, value: CallHoldType) {
+        self.call_hold_type = value.into();
     }
 
-    fn get_call_hold_type(&self) -> pjsua_call_hold_type {
-        self.call_hold_type
+    fn get_call_hold_type(&self) -> CallHoldType {
+        CallHoldType::try_from(self.call_hold_type)
+        .expect("Error AccountConfig get call_hold_type")
     }
 
     fn set_register_on_acc_add(&mut self, value: bool) {
