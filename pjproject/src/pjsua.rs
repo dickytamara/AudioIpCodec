@@ -29,6 +29,7 @@ pub mod account;
 pub mod log;
 pub mod transport;
 pub mod buddy;
+pub mod call;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;
@@ -284,10 +285,60 @@ pub enum BuddyEvsubState {
     Unknown = pjsip_simple_sys::PJSIP_EVSUB_STATE_UNKNOWN,
 }
 
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallInfoRole {
+    Uac = pjsip_sys::PJSIP_ROLE_UAC,
+    Uas = pjsip_sys::PJSIP_ROLE_UAS,
+}
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum AccountStatusCode {
+pub enum InviteState {
+    Null = pjsip_ua_sys::PJSIP_INV_STATE_NULL,
+    Calling = pjsip_ua_sys::PJSIP_INV_STATE_CALLING,
+    Incoming = pjsip_ua_sys::PJSIP_INV_STATE_INCOMING,
+    Early = pjsip_ua_sys::PJSIP_INV_STATE_EARLY,
+    Connecting = pjsip_ua_sys::PJSIP_INV_STATE_CONNECTING,
+    Confirmed = pjsip_ua_sys::PJSIP_INV_STATE_CONFIRMED,
+    Disconnected = pjsip_ua_sys::PJSIP_INV_STATE_DISCONNECTED,
+}
+
+pub const PJSUA_CALL_MEDIA_NONE: pjsua_call_media_status = 0;
+pub const PJSUA_CALL_MEDIA_ACTIVE: pjsua_call_media_status = 1;
+pub const PJSUA_CALL_MEDIA_LOCAL_HOLD: pjsua_call_media_status = 2;
+pub const PJSUA_CALL_MEDIA_REMOTE_HOLD: pjsua_call_media_status = 3;
+pub const PJSUA_CALL_MEDIA_ERROR: pjsua_call_media_status = 4;
+pub type pjsua_call_media_status = u32;
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallMediaStatus {
+    None = pjsua_sys::PJSUA_CALL_MEDIA_NONE,
+    Active = pjsua_sys::PJSUA_CALL_MEDIA_ACTIVE,
+    LocalHold = pjsua_sys::PJSUA_CALL_MEDIA_LOCAL_HOLD,
+    RemoteHold = pjsua_sys::PJSUA_CALL_MEDIA_REMOTE_HOLD,
+    Error = pjsua_sys::PJSUA_CALL_MEDIA_ERROR,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaDirection {
+    None = pjmedia_sys::PJMEDIA_DIR_NONE,
+    EncAndCap = pjmedia_sys::PJMEDIA_DIR_ENCODING,
+    DecAndPlayRender = pjmedia_sys::PJMEDIA_DIR_DECODING,
+    // Decoding = PJMEDIA_DIR_DECODING: pjmedia_dir = 2;
+    // Playback = PJMEDIA_DIR_PLAYBACK: pjmedia_dir = 2;
+    // Render = PJMEDIA_DIR_RENDER: pjmedia_dir = 2;
+    EncDecAndPlayRender = pjmedia_sys::PJMEDIA_DIR_ENCODING_DECODING,
+    // Playback = PJMEDIA_DIR_CAPTURE_PLAYBACK: pjmedia_dir = 3;
+    // Render = PJMEDIA_DIR_CAPTURE_RENDER: pjmedia_dir = 3;
+}
+
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SipStatusCode {
     Null = pjsip_sys::PJSIP_SC_NULL,
     Trying = pjsip_sys::PJSIP_SC_TRYING,
     Ringing = pjsip_sys::PJSIP_SC_RINGING,

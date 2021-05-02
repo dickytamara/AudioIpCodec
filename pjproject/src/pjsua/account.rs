@@ -461,7 +461,7 @@ pub trait AccountInfoExt {
     fn get_acc_uri (&self) -> String;
     fn get_has_registration (&self) -> bool;
     fn get_expires (&self) -> u32;
-    fn get_status (&self) -> AccountStatusCode;
+    fn get_status (&self) -> SipStatusCode;
     fn get_reg_last_err (&self) -> i32;
     fn get_status_text (&self) -> String;
     fn get_online_status (&self) -> bool;
@@ -1017,8 +1017,8 @@ impl AccountInfoExt for AccountInfo {
         self.expires
     }
 
-    fn get_status (&self) -> AccountStatusCode {
-        AccountStatusCode::try_from(self.status)
+    fn get_status (&self) -> SipStatusCode {
+        SipStatusCode::try_from(self.status)
         .expect("Error AccountInfo get status")
     }
 
