@@ -27,6 +27,7 @@ pub mod ua;
 pub mod media;
 pub mod account;
 pub mod log;
+pub mod transport;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;
@@ -224,6 +225,51 @@ pub enum CallHoldType {
     Rfc2543 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC2543,
 }
 
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum TransportType {
+    Unspecified = pjsip_sys::PJSIP_TRANSPORT_UNSPECIFIED,
+    Udp = pjsip_sys::PJSIP_TRANSPORT_UDP,
+    Tcp = pjsip_sys::PJSIP_TRANSPORT_TCP,
+    TLS = pjsip_sys::PJSIP_TRANSPORT_TLS,
+    Dtls = pjsip_sys::PJSIP_TRANSPORT_DTLS,
+    Sctp = pjsip_sys::PJSIP_TRANSPORT_SCTP,
+    Loop = pjsip_sys::PJSIP_TRANSPORT_LOOP,
+    LoopDgram = pjsip_sys::PJSIP_TRANSPORT_LOOP_DGRAM,
+    StartOther = pjsip_sys::PJSIP_TRANSPORT_START_OTHER,
+    Ipv6 = pjsip_sys::PJSIP_TRANSPORT_IPV6,
+    Udp6 = pjsip_sys::PJSIP_TRANSPORT_UDP6,
+    Tcp6 = pjsip_sys::PJSIP_TRANSPORT_TCP6,
+    Tls6 = pjsip_sys::PJSIP_TRANSPORT_TLS6,
+    Dtls6 = pjsip_sys::PJSIP_TRANSPORT_DTLS6,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum TransportFlags {
+    Reliable = pjsip_sys::PJSIP_TRANSPORT_RELIABLE,
+    Secure = pjsip_sys::PJSIP_TRANSPORT_SECURE,
+    Datagram = pjsip_sys::PJSIP_TRANSPORT_DATAGRAM,
+}
+
+
+pub const PJ_QOS_TYPE_BEST_EFFORT: pj_qos_type = 0;
+pub const PJ_QOS_TYPE_BACKGROUND: pj_qos_type = 1;
+pub const PJ_QOS_TYPE_VIDEO: pj_qos_type = 2;
+pub const PJ_QOS_TYPE_VOICE: pj_qos_type = 3;
+pub const PJ_QOS_TYPE_CONTROL: pj_qos_type = 4;
+pub const PJ_QOS_TYPE_SIGNALLING: pj_qos_type = 5;
+pub type pj_qos_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum TransportQosType {
+    BestEffort = pj_sys::PJ_QOS_TYPE_BEST_EFFORT,
+    Background = pj_sys::PJ_QOS_TYPE_BACKGROUND,
+    Video = pj_sys::PJ_QOS_TYPE_VIDEO,
+    Voice = pj_sys::PJ_QOS_TYPE_VOICE,
+    Control = pj_sys::PJ_QOS_TYPE_CONTROL,
+    Signaling = pj_sys::PJ_QOS_TYPE_SIGNALLING,
+}
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
