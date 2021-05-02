@@ -116,6 +116,7 @@ pub enum MediaConfigChannel {
 pub enum MediaConfigClockRate {
     ClockRate8000 = 8000,
     ClockRate16000 = 16000,
+    ClockRate24000 = 24000,
     ClockRate32000 = 32000,
     ClockRate44100 = 44100,
     ClockRate48000 = 48000,

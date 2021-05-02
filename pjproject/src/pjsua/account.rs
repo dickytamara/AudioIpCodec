@@ -607,8 +607,6 @@ impl AccountConfigExt for AccountConfig {
         .expect("Error AccountConfig get use_timer")
     }
 
-        // pub min_se: ::std::os::raw::c_uint,
-    // pub sess_expires: ::std::os::raw::c_uint,
     fn set_timer_setting(&mut self, min_se: u32, sess_expires: u32) {
         self.timer_setting.min_se = min_se;
         self.timer_setting.sess_expires = sess_expires;
@@ -993,5 +991,50 @@ impl AccountConfigExt for AccountConfig {
 
     fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting {
         todo!()
+    }
+}
+
+
+impl AccountInfoExt for AccountInfo {
+
+    fn get_id (&self) -> pjsua_acc_id {
+        self.id
+    }
+
+    fn get_is_default (&self) -> bool {
+        check_boolean(self.is_default)
+    }
+
+    fn get_acc_uri (&self) -> String {
+        self.acc_uri.to_string()
+    }
+
+    fn get_has_registration (&self) -> bool {
+        check_boolean(self.has_registration)
+    }
+
+    fn get_expires (&self) -> u32 {
+        self.expires
+    }
+
+    fn get_status (&self) -> AccountStatusCode {
+        AccountStatusCode::try_from(self.status)
+        .expect("Error AccountInfo get status")
+    }
+
+    fn get_reg_last_err (&self) -> i32 {
+        self.reg_last_err
+    }
+
+    fn get_status_text (&self) -> String {
+        self.status_text.to_string()
+    }
+
+    fn get_online_status (&self) -> bool {
+        check_boolean(self.online_status)
+    }
+
+    fn get_online_status_text (&self) -> String {
+        self.online_status_text.to_string()
     }
 }
