@@ -28,6 +28,7 @@ pub mod media;
 pub mod account;
 pub mod log;
 pub mod transport;
+pub mod buddy;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;
@@ -252,14 +253,6 @@ pub enum TransportFlags {
     Datagram = pjsip_sys::PJSIP_TRANSPORT_DATAGRAM,
 }
 
-
-pub const PJ_QOS_TYPE_BEST_EFFORT: pj_qos_type = 0;
-pub const PJ_QOS_TYPE_BACKGROUND: pj_qos_type = 1;
-pub const PJ_QOS_TYPE_VIDEO: pj_qos_type = 2;
-pub const PJ_QOS_TYPE_VOICE: pj_qos_type = 3;
-pub const PJ_QOS_TYPE_CONTROL: pj_qos_type = 4;
-pub const PJ_QOS_TYPE_SIGNALLING: pj_qos_type = 5;
-pub type pj_qos_type = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum TransportQosType {
@@ -270,6 +263,27 @@ pub enum TransportQosType {
     Control = pj_sys::PJ_QOS_TYPE_CONTROL,
     Signaling = pj_sys::PJ_QOS_TYPE_SIGNALLING,
 }
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum BuddyStatus {
+    Unknown = pjsua_sys::PJSUA_BUDDY_STATUS_UNKNOWN,
+    Online = pjsua_sys::PJSUA_BUDDY_STATUS_ONLINE,
+    Offline = pjsua_sys::PJSUA_BUDDY_STATUS_OFFLINE,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum BuddyEvsubState {
+    Null = pjsip_simple_sys::PJSIP_EVSUB_STATE_NULL,
+    Sent = pjsip_simple_sys::PJSIP_EVSUB_STATE_SENT,
+    Accepted = pjsip_simple_sys::PJSIP_EVSUB_STATE_ACCEPTED,
+    Pending = pjsip_simple_sys::PJSIP_EVSUB_STATE_PENDING,
+    Active = pjsip_simple_sys::PJSIP_EVSUB_STATE_ACTIVE,
+    Terminated = pjsip_simple_sys::PJSIP_EVSUB_STATE_TERMINATED,
+    Unknown = pjsip_simple_sys::PJSIP_EVSUB_STATE_UNKNOWN,
+}
+
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
