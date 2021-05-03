@@ -33,12 +33,6 @@ pub trait CallInfoExt {
     fn get_call_id (&self) -> String;
 
     /// Call setting
-    // pub struct pjsua_call_setting {
-    //     pub flag: ::std::os::raw::c_uint,
-    //     pub req_keyframe_method: ::std::os::raw::c_uint,
-    //     pub aud_cnt: ::std::os::raw::c_uint,
-    //     pub vid_cnt: ::std::os::raw::c_uint,
-    // }
     fn get_setting (&self) -> (CallFlags, KeyFrameMethod, u32, u32);
 
     /// Call state

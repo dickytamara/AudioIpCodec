@@ -27,7 +27,7 @@ pub trait UAConfigExt {
     /// Array of nameservers to be used by the SIP resolver subsystem.
     /// The order of the name server specifies the priority
     /// (first name server will be used first, unless it is not reachable).
-    fn set_nameserver(&mut self, ns1: Option<String>, ns2: Option<String>, ns3: Option<String>, ns4: Option<String>) -> Result<(), i32>;
+    fn set_nameserver(&mut self, ns1: Option<String>, ns2: Option<String>, ns3: Option<String>, ns4: Option<String>);
     fn get_nameserver(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>);
 
     /// Force loose-route to be used in all route/proxy URIs (outbound_proxy and account's proxy settings).
@@ -46,7 +46,7 @@ pub trait UAConfigExt {
     /// The final route set for outgoing requests will consists of the outbound
     /// proxies and the proxy configured in the account.
     // fn set_outbound_proxy(&self, value: Vec<SIPOutboundProxyServerData>) -> Result<(), i32>;
-    fn set_outbound_proxy(&self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>);
+    fn set_outbound_proxy(&mut self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>);
     fn get_outbound_proxy(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>);
 
     /// Get Number of STUN server entries in stun_srv array.
@@ -264,12 +264,51 @@ impl UAConfigExt for UAConfig {
         self.nameserver_count
     }
 
-    fn set_nameserver(&mut self, ns1: Option<String>, ns2: Option<String>, ns3: Option<String>, ns4: Option<String>) -> Result<(), i32> {
-        todo!()
+    fn set_nameserver(&mut self, ns1: Option<String>, ns2: Option<String>, ns3: Option<String>, ns4: Option<String>) {
+        // reset nameserver
+        self.nameserver_count = 0;
+
+        if ns1.is_some() {
+            self.nameserver[self.nameserver_count as usize] = pj_str_t::from_string(ns1.unwrap());
+            self.nameserver_count+= 1;
+        }
+
+        if ns2.is_some() {
+            self.nameserver[self.nameserver_count as usize] = pj_str_t::from_string(ns2.unwrap());
+            self.nameserver_count+= 1;
+        }
+
+        if ns3.is_some() {
+            self.nameserver[self.nameserver_count as usize] = pj_str_t::from_string(ns3.unwrap());
+            self.nameserver_count+= 1;
+        }
+
+        if ns4.is_some() {
+            self.nameserver[self.nameserver_count as usize] = pj_str_t::from_string(ns4.unwrap());
+            self.nameserver_count+= 1;
+        }
     }
 
     fn get_nameserver(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>) {
-        todo!()
+        let mut nameserver = (None, None, None, None);
+
+        if self.nameserver_count > 0 {
+            nameserver.0 = Some(self.nameserver[0].to_string());
+        }
+
+        if self.nameserver_count > 1 {
+            nameserver.1 = Some(self.nameserver[1].to_string());
+        }
+
+        if self.nameserver_count > 2 {
+            nameserver.2 = Some(self.nameserver[2].to_string());
+        }
+
+        if self.nameserver_count > 3 {
+            nameserver.3 = Some(self.nameserver[3].to_string());
+        }
+
+        nameserver
     }
 
     fn set_force_lr(&mut self, value: bool) {
@@ -288,12 +327,51 @@ impl UAConfigExt for UAConfig {
         self.outbound_proxy_cnt
     }
 
-    fn set_outbound_proxy(&self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>) {
-        todo!()
+    fn set_outbound_proxy(&mut self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>) {
+        // reset proxy
+        self.outbound_proxy_cnt = 0;
+
+        if proxy1.is_some() {
+            self.outbound_proxy[self.outbound_proxy_cnt as usize] = pj_str_t::from_string(proxy1.unwrap());
+            self.outbound_proxy_cnt+= 1;
+        }
+
+        if proxy2.is_some() {
+            self.outbound_proxy[self.outbound_proxy_cnt as usize] = pj_str_t::from_string(proxy2.unwrap());
+            self.outbound_proxy_cnt+= 1;
+        }
+
+        if proxy3.is_some() {
+            self.outbound_proxy[self.outbound_proxy_cnt as usize] = pj_str_t::from_string(proxy3.unwrap());
+            self.outbound_proxy_cnt+= 1;
+        }
+
+        if proxy4.is_some() {
+            self.outbound_proxy[self.outbound_proxy_cnt as usize] = pj_str_t::from_string(proxy4.unwrap());
+            self.outbound_proxy_cnt+= 1;
+        }
     }
 
     fn get_outbound_proxy(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>) {
-        todo!()
+        let mut proxy = (None, None, None, None);
+
+        if self.outbound_proxy_cnt > 0 {
+            proxy.0 = Some(self.outbound_proxy[0].to_string());
+        }
+
+        if self.outbound_proxy_cnt > 1 {
+            proxy.1 = Some(self.outbound_proxy[1].to_string());
+        }
+
+        if self.outbound_proxy_cnt > 2 {
+            proxy.2 = Some(self.outbound_proxy[2].to_string());
+        }
+
+        if self.outbound_proxy_cnt > 3 {
+            proxy.3 = Some(self.outbound_proxy[3].to_string());
+        }
+
+       proxy
     }
 
     fn set_stun_srv_cnt(&mut self, value: u32) {
@@ -305,11 +383,50 @@ impl UAConfigExt for UAConfig {
     }
 
     fn set_stun_srv(&mut self, stun1: Option<String>, stun2: Option<String>, stun3: Option<String>, stun4: Option<String>) {
-        todo!()
+        // reset stun
+        self.stun_srv_cnt = 0;
+
+        if stun1.is_some() {
+            self.stun_srv[self.stun_srv_cnt as usize] = pj_str_t::from_string(stun1.unwrap());
+            self.stun_srv_cnt+= 1;
+        }
+
+        if stun2.is_some() {
+            self.stun_srv[self.stun_srv_cnt as usize] = pj_str_t::from_string(stun2.unwrap());
+            self.stun_srv_cnt+= 1;
+        }
+
+        if stun3.is_some() {
+            self.stun_srv[self.stun_srv_cnt as usize] = pj_str_t::from_string(stun3.unwrap());
+            self.stun_srv_cnt+= 1;
+        }
+
+        if stun4.is_some() {
+            self.stun_srv[self.stun_srv_cnt as usize] = pj_str_t::from_string(stun4.unwrap());
+            self.stun_srv_cnt+= 1;
+        }
     }
 
     fn get_stun_srv(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>) {
-        todo!()
+        let mut stun = (None, None, None, None);
+
+        if self.stun_srv_cnt > 0 {
+            stun.0 = Some(self.stun_srv[0].to_string());
+        }
+
+        if self.stun_srv_cnt > 1 {
+            stun.1 = Some(self.stun_srv[1].to_string());
+        }
+
+        if self.stun_srv_cnt > 2 {
+            stun.2 = Some(self.stun_srv[2].to_string());
+        }
+
+        if self.stun_srv_cnt > 3 {
+            stun.3 = Some(self.stun_srv[3].to_string());
+        }
+
+       stun
     }
 
     fn set_stun_try_ipv6(&mut self, value: bool) {

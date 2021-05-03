@@ -16,6 +16,7 @@ pub trait AccountConfigExt {
     /// The higher the number means the higher the priority is, and the account will be matched first.
     fn set_priority(&mut self, value: i32);
     fn get_priority(&self) -> i32;
+
     /// The full SIP URL for the account. The value can take name address or URL format,
     /// and will look something like "sip:account@serviceprovider" or "/"
     /// Display Name" <sip:account@provider>".
@@ -23,6 +24,7 @@ pub trait AccountConfigExt {
     /// This field is mandatory.
     fn set_id(&mut self, value: String);
     fn get_id(&self) -> String;
+
     /// This is the URL to be put in the request URI for the registration,
     /// and will look something like "sip:serviceprovider".
     ///
@@ -30,6 +32,7 @@ pub trait AccountConfigExt {
     /// If the value is empty, no account registration will be performed.
     fn set_reg_uri(&mut self, value: String);
     fn get_reg_uri(&self) -> String;
+
     /// The optional custom SIP headers to be put in the registration request.
     // fn set_reg_hdr_list(&self, value: pjsip_hdr);
     // fn get_reg_hdr_list(&self) -> pjsip_hdr;
@@ -40,6 +43,7 @@ pub trait AccountConfigExt {
     /// Example: ";my-param=X;another-param=Hi%20there"
     fn set_reg_contact_params(&mut self, value: String);
     fn get_reg_contact_params(&self) -> String;
+
     // The optional custom SIP headers to be put in the presence subscription request.
     // fn set_sub_hdr_list(&self, value: pjsip_hdr);
     // fn get_sub_hdr_list(&self) -> pjsip_hdr;
@@ -51,6 +55,7 @@ pub trait AccountConfigExt {
     /// no
     fn set_mwi_enabled(&mut self, value: bool);
     fn get_mwi_enabled(&self) -> bool;
+
     /// Specify the default expiration time for Message Waiting Indication (RFC 3842)
     /// event subscription. This must not be zero.
     ///
@@ -58,6 +63,7 @@ pub trait AccountConfigExt {
     /// PJSIP_MWI_DEFAULT_EXPIRES
     fn set_mwi_expires(&mut self, value: u32);
     fn get_mwi_expires(&self) -> u32;
+
     /// If this flag is set, the presence information of this account will be
     /// PUBLISH-ed to the server where the account belongs.
     ///
@@ -68,6 +74,7 @@ pub trait AccountConfigExt {
     /// Event publication options.
     fn set_publish_opt(&mut self, value: bool);
     fn get_publish_opt(&self) -> bool;
+
     /// Maximum time to wait for unpublication transaction(s) to complete during shutdown process,
     /// before sending unregistration. The library tries to wait for the unpublication
     /// (un-PUBLISH) to complete before sending REGISTER request to unregister the account,
@@ -78,18 +85,22 @@ pub trait AccountConfigExt {
     /// PJSUA_UNPUBLISH_MAX_WAIT_TIME_MSEC
     fn set_unpublish_max_wait_time_msec(&mut self, value: u32);
     fn get_unpublish_max_wait_time_msec(&self) -> u32;
+
     /// Authentication preference.
     fn set_auth_pref(&mut self, initial_auth: bool, algorithm: String);
     fn get_auth_pref(&self) -> (bool, String);
+
     /// Optional PIDF tuple ID for outgoing PUBLISH and NOTIFY. If this value is not specified,
     /// a random string will be used.
     fn set_pidf_tuple_id(&mut self, value: String);
     fn get_pidf_tuple_id(&self) -> String;
+
     /// Optional URI to be put as Contact for this account. It is recommended that this field
     /// is left empty, so that the value will be calculated automatically based on the transport
     /// address.
     fn set_force_contact(&mut self, value: String);
     fn get_force_contact(&self) -> String;
+
     /// Additional parameters that will be appended in the Contact header for this account.
     /// This will affect the Contact header in all SIP messages sent on behalf of this account,
     /// including but not limited to REGISTER, INVITE, and SUBCRIBE requests or responses.
@@ -98,6 +109,7 @@ pub trait AccountConfigExt {
     /// Example: ";my-param=X;another-param=Hi%20there"
     fn set_contact_params(&mut self, value: String);
     fn get_contact_params(&self) -> String;
+
     /// Additional URI parameters that will be appended in the Contact URI for this account.
     /// This will affect the Contact URI in all SIP messages sent on behalf of this account,
     /// including but not limited to REGISTER, INVITE, and SUBCRIBE requests or responses.
@@ -106,6 +118,7 @@ pub trait AccountConfigExt {
     /// Example: ";my-param=X;another-param=Hi%20there"
     fn set_contact_uri_params(&mut self, value: String);
     fn get_contact_uri_params(&self) -> String;
+
     /// Specify how support for reliable provisional response (100rel/ PRACK) should be used for
     /// all sessions in this account. See the documentation of pjsua_100rel_use enumeration for more info.
     ///
@@ -113,18 +126,22 @@ pub trait AccountConfigExt {
     /// The default value is taken from the value of require_100rel in pjsua_config.
     fn set_require_100rel(&mut self, value: UAConfig100relUse);
     fn get_require_100rel(&self) -> UAConfig100relUse;
+
     /// Specify the usage of Session Timers for all sessions. See the pjsua_sip_timer_use for possible values.
     ///
     /// # Default
     /// PJSUA_SIP_TIMER_OPTIONAL
     fn set_use_timer(&mut self, value: UAConfigSipTimerUse);
     fn get_use_timer(&self) -> UAConfigSipTimerUse;
+
     /// Specify Session Timer settings, see pjsip_timer_setting.
     fn set_timer_setting(&mut self, min_se: u32, sess_expires: u32);
     fn get_timer_setting(&self) -> (u32, u32);
+
     /// Number of proxies in the proxy array below.
     fn set_proxy_cnt(&mut self, value: u32);
     fn get_proxy_cnt(&self) -> u32;
+
     /// Optional URI of the proxies to be visited for all outgoing requests that are using this account
     /// (REGISTER, INVITE, etc). Application need to specify these proxies if the service provider
     /// requires that requests destined towards its network should go through certain proxies first
@@ -136,6 +153,7 @@ pub trait AccountConfigExt {
     /// proxies in the routeset.
     fn set_proxy(&mut self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>);
     fn get_proxy(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>);
+
     /// If remote sends SDP answer containing more than one format or codec in the media line,
     /// send re-INVITE or UPDATE with just one codec to lock which codec to use.
     ///
@@ -143,10 +161,12 @@ pub trait AccountConfigExt {
     /// 1 (Yes). Set to zero to disable.
     fn set_lock_codec(&mut self, value: u32);
     fn get_lock_codec(&self) -> u32;
+
     /// Optional interval for registration, in seconds. If the value is zero,
     /// default interval will be used (PJSUA_REG_INTERVAL, 300 seconds).
     fn set_reg_timeout(&mut self, value: u32);
     fn get_reg_timeout(&self) -> u32;
+
     /// Specify the number of seconds to refresh the client registration before the
     /// registration expires.
     ///
@@ -154,6 +174,7 @@ pub trait AccountConfigExt {
     /// PJSIP_REGISTER_CLIENT_DELAY_BEFORE_REFRESH, 5 seconds
     fn set_reg_delay_before_refresh(&mut self, value: u32);
     fn get_reg_delay_before_refresh(&self) -> u32;
+
     /// Specify the maximum time to wait for unregistration requests to complete
     /// during library shutdown sequence.
     ///
@@ -161,15 +182,18 @@ pub trait AccountConfigExt {
     /// PJSUA_UNREG_TIMEOUT
     fn set_unreg_timeout(&mut self, value: u32);
     fn get_unreg_timeout(&self) -> u32;
+
     /// Number of credentials in the credential array.
     fn set_cred_count(&mut self, value: u32);
     fn get_cred_count(&self) -> u32;
+
     /// Array of credentials. If registration is desired, normally there should be at least
     /// one credential specified, to successfully authenticate against the service provider.
     /// More credentials can be specified, for example when the requests are expected to be
     /// challenged by the proxies in the route set.
     fn set_cred_info(&mut self, value: [pjsip_cred_info; 8usize]);
     fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
+
     /// Optionally bind this account to specific transport. This normally is not a good idea,
     /// as account should be able to send requests using any available transports according
     /// to the destination. But some application may want to have explicit control over the
@@ -182,6 +206,7 @@ pub trait AccountConfigExt {
     ///     pjsua_acc_set_transport()
     fn set_transport_id(&mut self, value: i32);
     fn get_transport_id(&self) -> i32;
+
     /// This option is used to update the transport address and the Contact header of REGISTER
     /// request. When this option is enabled, the library will keep track of the public IP address
     /// from the response of REGISTER request. Once it detects that the address has changed, it
@@ -195,6 +220,7 @@ pub trait AccountConfigExt {
     /// 1 (yes)
     fn set_allow_contact_rewrite(&mut self, value: bool);
     fn get_allow_contact_rewrite(&self) -> bool;
+
     /// Specify how Contact update will be done with the registration, if allow_contact_rewrite is enabled.
     /// The value is bitmask combination of pjsua_contact_rewrite_method. See also pjsua_contact_rewrite_method.
     ///
@@ -204,6 +230,7 @@ pub trait AccountConfigExt {
     /// value: PJSUA_CONTACT_REWRITE_METHOD (PJSUA_CONTACT_REWRITE_NO_UNREG | PJSUA_CONTACT_REWRITE_ALWAYS_UPDATE)
     fn set_contact_rewrite_method(&mut self, value: i32);
     fn get_contact_rewrite_method(&self) -> i32;
+
     /// Specify if source TCP port should be used as the initial Contact address if TCP/TLS transport is used.
     /// Note that this feature will be automatically turned off when nameserver is configured because it
     /// may yield different destination address due to DNS SRV resolution. Also some platforms are unable to
@@ -214,6 +241,7 @@ pub trait AccountConfigExt {
     /// PJ_TRUE (yes).
     fn set_contact_use_src_port(&mut self, value: bool);
     fn get_contact_use_src_port(&self) -> bool;
+
     /// This option is used to overwrite the "sent-by" field of the Via header for outgoing messages with
     /// the same interface address as the one in the REGISTER request, as long as the request uses the same
     /// transport instance as the previous REGISTER request.
@@ -222,6 +250,7 @@ pub trait AccountConfigExt {
     /// 1 (yes)
     fn set_allow_via_rewrite(&mut self, value: bool);
     fn get_allow_via_rewrite(&self) -> bool;
+
     /// This option controls whether the IP address in SDP should be replaced with the IP address found
     /// in Via header of the REGISTER response, ONLY when STUN and ICE are not used. If the value is FALSE
     /// (the original behavior), then the local IP address will be used. If TRUE, and when STUN and ICE
@@ -231,6 +260,7 @@ pub trait AccountConfigExt {
     /// PJ_FALSE (no)
     fn set_allow_sdp_nat_rewrite(&mut self, value: bool);
     fn get_allow_sdp_nat_rewrite(&self) -> bool;
+
     /// Control the use of SIP outbound feature. SIP outbound is described in RFC 5626 to enable
     /// proxies or registrar to send inbound requests back to UA using the same connection initiated
     /// by the UA for its registration. This feature is highly useful in NAT-ed deployemtns,
@@ -243,6 +273,7 @@ pub trait AccountConfigExt {
     /// PJ_TRUE
     fn set_use_rfc5626(&mut self, value: u32);
     fn get_use_rfc5626(&self) -> u32;
+
     /// Specify SIP outbound (RFC 5626) instance ID to be used by this application. If empty,
     /// an instance ID will be generated based on the hostname of this agent. If application
     /// specifies this parameter, the value will
@@ -259,6 +290,7 @@ pub trait AccountConfigExt {
     // empty
     fn set_rfc5626_reg_id(&mut self, value: String);
     fn get_rfc5626_reg_id(&self) -> String;
+
     /// Set the interval for periodic keep-alive transmission for this account. If this value is zero,
     /// keep-alive will be disabled for this account. The keep-alive transmission will be sent to the
     /// registrar's address, after successful registration.
@@ -267,6 +299,7 @@ pub trait AccountConfigExt {
     /// 15 (seconds)
     fn set_ka_interval(&mut self, value: u32);
     fn get_ka_interval(&self) -> u32;
+
     /// Specify the data to be transmitted as keep-alive packets.
     ///
     /// # Default
@@ -286,27 +319,32 @@ pub trait AccountConfigExt {
     /// Media transport config.
     fn set_rtp_cfg(&mut self, value: TransportConfig);
     fn get_rtp_cfg(&self) -> TransportConfig;
+
     /// Specify NAT64 options.
     ///
     /// # Default
     /// PJSUA_NAT64_DISABLED
     fn set_nat64_opt(&mut self, value: bool);
     fn get_nat64_opt(&self) -> bool;
+
     /// Specify whether IPv6 should be used on media.
     fn set_ipv6_media_use(&mut self, value: bool);
     fn get_ipv6_media_use(&self) -> bool;
+
     /// Control the use of STUN for the SIP signaling.
     ///
     /// # Default
     /// PJSUA_STUN_USE_DEFAULT
     fn set_sip_stun_use(&mut self, value: AccountConfigStunUse);
     fn get_sip_stun_use(&self) -> AccountConfigStunUse;
+
     /// Control the use of STUN for the media transports.
     ///
     /// # Default
     /// PJSUA_STUN_RETRY_ON_FAILURE
     fn set_media_stun_use(&mut self, value: AccountConfigStunUse);
     fn get_media_stun_use(&self) -> AccountConfigStunUse;
+
     /// Use loopback media transport. This may be useful if application doesn't want PJSIP
     /// to create real media transports/sockets, such as when using third party media.
     ///
@@ -314,6 +352,7 @@ pub trait AccountConfigExt {
     /// PJ_FALSE
     fn set_use_loop_med_tp(&mut self, value: bool);
     fn get_use_loop_med_tp(&self) -> bool;
+
     /// Enable local loopback when loop_med_tp_use is set to PJ_TRUE. If enabled, packets sent
     /// to the transport will be sent back to the streams attached to the transport.
     ///
@@ -321,6 +360,7 @@ pub trait AccountConfigExt {
     /// PJ_FALSE
     fn set_enable_loopback(&mut self, value: bool);
     fn get_enable_loopback(&self) -> bool;
+
     /// Control the use of ICE in the account. By default, the settings in the
     /// pjsua_media_config will be used.
     ///
@@ -328,10 +368,12 @@ pub trait AccountConfigExt {
     /// PJSUA_ICE_CONFIG_USE_DEFAULT
     fn set_ice_cfg_use(&mut self, value: AccountConfigIceUse);
     fn get_ice_cfg_use(&self) -> AccountConfigIceUse;
+
     /// The custom ICE setting for this account. This setting will only be used if ice_cfg_use
     /// is set to PJSUA_ICE_CONFIG_USE_CUSTOM
     fn set_ice_cfg(&mut self, value: pjsua_ice_config);
     fn get_ice_cfg(&self) -> pjsua_ice_config;
+
     /// Control the use of TURN in the account. By default, the settings in the
     /// pjsua_media_config will be used
     ///
@@ -339,10 +381,12 @@ pub trait AccountConfigExt {
     /// PJSUA_TURN_CONFIG_USE_DEFAULT
     fn set_turn_cfg_use(&mut self, value: AccountConfigStunUse);
     fn get_turn_cfg_use(&self) -> AccountConfigStunUse;
+
     /// The custom TURN setting for this account. This setting will only be used if turn_cfg_use
     /// is set to PJSUA_TURN_CONFIG_USE_CUSTOM
-    fn set_turn_cfg(&self, value: pjsua_turn_config);
-    // fn get_turn_cfg(&self) -> pjsua_turn_config;
+    fn set_turn_cfg(&mut self, value: TURNConfig);
+    fn get_turn_cfg(&self) -> TURNConfig;
+
     /// Specify whether secure media transport should be used for this account. Valid values are
     /// PJMEDIA_SRTP_DISABLED, PJMEDIA_SRTP_OPTIONAL, and PJMEDIA_SRTP_MANDATORY.
     ///
@@ -350,6 +394,7 @@ pub trait AccountConfigExt {
     /// PJSUA_DEFAULT_USE_SRTP
     fn set_use_srtp(&mut self, value: UAConfigSrtpUse);
     fn get_use_srtp(&self) -> UAConfigSrtpUse;
+
     /// Specify whether SRTP requires secure signaling to be used. This option is only used when
     /// use_srtp option above is non-zero.
     ///
@@ -362,13 +407,16 @@ pub trait AccountConfigExt {
     /// PJSUA_DEFAULT_SRTP_SECURE_SIGNALING
     fn set_srtp_secure_signaling(&mut self, value: i32);
     fn get_srtp_secure_signaling(&self) -> i32;
+
     /// This setting has been deprecated and will be ignored.
     fn set_srtp_optional_dup_offer(&mut self, value: bool);
     fn get_srtp_optional_dup_offer(&self) -> bool;
+
     /// Specify SRTP transport setting. Application can initialize it with default values using
     /// pjsua_srtp_opt_default().
     fn set_srtp_opt(&mut self, value: pjsua_srtp_opt);
     fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+
     /// Specify interval of auto registration retry upon registration failure, in seconds.
     /// Set to 0 to disable auto re-registration. Note that registration will only be automatically
     /// retried for temporal failures considered to be recoverable in relatively short term,
@@ -393,6 +441,7 @@ pub trait AccountConfigExt {
     /// PJSUA_REG_RETRY_INTERVAL
     fn set_reg_retry_interval(&mut self, value: u32);
     fn get_reg_retry_interval(&self) -> u32;
+
     /// This specifies the interval for the first registration retry. The registration retry is explained
     /// in reg_retry_interval. Note that the value here will also be randomized by some seconds
     /// (specified in reg_retry_random_interval) to avoid all clients re-registering at the same time.
@@ -401,6 +450,7 @@ pub trait AccountConfigExt {
     /// 0
     fn set_reg_first_retry_interval(&mut self, value: u32);
     fn get_reg_first_retry_interval(&self) -> u32;
+
     /// This specifies maximum randomized value to be added/substracted to/from the registration
     /// retry interval specified in reg_retry_interval and reg_first_retry_interval, in second.
     /// This is useful to avoid all clients re-registering at the same time. For example, if the
@@ -411,6 +461,7 @@ pub trait AccountConfigExt {
     /// 10
     fn set_reg_retry_random_interval(&mut self, value: u32);
     fn get_reg_retry_random_interval(&self) -> u32;
+
     /// Specify whether calls of the configured account should be dropped after registration failure and
     /// an attempt of re-registration has also failed.
     ///
@@ -418,7 +469,8 @@ pub trait AccountConfigExt {
     /// PJ_FALSE (disabled)
     fn set_drop_calls_on_reg_fail(&mut self, value: bool);
     fn get_drop_calls_on_reg_fail(&self) -> bool;
-    // Specify how the registration uses the outbound and account proxy settings. This controls if
+
+    /// Specify how the registration uses the outbound and account proxy settings. This controls if
     /// and what Route headers will appear in the REGISTER request of this account. The value is bitmask
     /// combination of PJSUA_REG_USE_OUTBOUND_PROXY and PJSUA_REG_USE_ACC_PROXY bits. If the value is set to 0,
     /// the REGISTER request will not use any proxy (i.e. it will not have any Route headers).
@@ -427,6 +479,7 @@ pub trait AccountConfigExt {
     /// 3 (PJSUA_REG_USE_OUTBOUND_PROXY | PJSUA_REG_USE_ACC_PROXY)
     fn set_reg_use_proxy(&mut self, value: u32);
     fn get_reg_use_proxy(&mut self) -> u32;
+
     /// Specify how to offer call hold to remote peer. Please see the documentation on
     /// pjsua_call_hold_type for more info.
     ///
@@ -434,6 +487,7 @@ pub trait AccountConfigExt {
     /// PJSUA_CALL_HOLD_TYPE_DEFAULT
     fn set_call_hold_type(&mut self, value: CallHoldType);
     fn get_call_hold_type(&self) -> CallHoldType;
+
     /// Specify whether the account should register as soon as it is added to the UA. Application can
     /// set this to PJ_FALSE and control the registration manually with pjsua_acc_set_registration().
     ///
@@ -441,13 +495,16 @@ pub trait AccountConfigExt {
     /// PJ_TRUE
     fn set_register_on_acc_add(&mut self, value: bool);
     fn get_register_on_acc_add(&self) -> bool;
+
     /// Specify account configuration specific to IP address change used when calling
     /// pjsua_handle_ip_change().
     fn set_ip_change_cfg(&mut self, shutdown_tp: Option<bool>, hangup_calls: Option<bool>, reinvite_flags: Option<CallFlags>);
     fn get_ip_change_cfg(&self) -> (bool, bool, CallFlags);
+
     /// Enable RTP and RTCP multiplexing.
     fn set_enable_rtcp_mux(&mut self, value: bool);
     fn get_enable_rtcp_mux(&self) -> bool;
+
     /// RTCP Feedback configuration.
     fn set_rtcp_fb_cfg(&mut self, value: pjmedia_rtcp_fb_setting);
     fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting;
@@ -628,11 +685,50 @@ impl AccountConfigExt for AccountConfig {
     }
 
     fn set_proxy(&mut self, proxy1: Option<String>, proxy2: Option<String>, proxy3: Option<String>, proxy4: Option<String>) {
-        todo!()
+        // reset proxy
+        self.proxy_cnt = 0;
+
+        if proxy1.is_some() {
+            self.proxy[self.proxy_cnt as usize] = pj_str_t::from_string(proxy1.unwrap());
+            self.proxy_cnt+= 1;
+        }
+
+        if proxy2.is_some() {
+            self.proxy[self.proxy_cnt as usize] = pj_str_t::from_string(proxy2.unwrap());
+            self.proxy_cnt+= 1;
+        }
+
+        if proxy3.is_some() {
+            self.proxy[self.proxy_cnt as usize] = pj_str_t::from_string(proxy3.unwrap());
+            self.proxy_cnt+= 1;
+        }
+
+        if proxy4.is_some() {
+            self.proxy[self.proxy_cnt as usize] = pj_str_t::from_string(proxy4.unwrap());
+            self.proxy_cnt+= 1;
+        }
     }
 
     fn get_proxy(&self) -> (Option<String>, Option<String>, Option<String>, Option<String>) {
-        todo!()
+       let mut proxy = (None, None, None, None);
+
+        if self.proxy_cnt > 0 {
+            proxy.0 = Some(self.proxy[0].to_string());
+        }
+
+        if self.proxy_cnt > 1 {
+            proxy.1 = Some(self.proxy[1].to_string());
+        }
+
+        if self.proxy_cnt > 2 {
+            proxy.2 = Some(self.proxy[2].to_string());
+        }
+
+        if self.proxy_cnt > 3 {
+            proxy.3 = Some(self.proxy[3].to_string());
+        }
+
+       proxy
     }
 
     fn set_lock_codec(&mut self, value: u32) {
@@ -855,7 +951,11 @@ impl AccountConfigExt for AccountConfig {
         .expect("Error AccountConfig get turn_cfg_use")
     }
 
-    fn set_turn_cfg(&self, value: pjsua_turn_config) {
+    fn set_turn_cfg(&mut self, value: TURNConfig) {
+        todo!()
+    }
+
+    fn get_turn_cfg(&self) -> TURNConfig {
         todo!()
     }
 
