@@ -158,8 +158,8 @@ pub trait MediaConfigExt {
     fn get_jb_max(&self) -> i32;
 
     //     pub jb_discard_algo: pjmedia_jb_discard_algo,
-    fn set_jb_discard_algo(&mut self, value: MediaConfigDiscardAlgo);
-    fn get_jb_discard_algo(&self) -> MediaConfigDiscardAlgo;
+    fn set_jb_discard_algo(&mut self, value: JbDiscardAlgo);
+    fn get_jb_discard_algo(&self) -> JbDiscardAlgo;
 
     /// Enable ICE
     fn set_enable_ice(&mut self, value: bool);
@@ -445,12 +445,12 @@ impl MediaConfigExt for MediaConfig {
         self.jb_max
     }
 
-    fn set_jb_discard_algo(&mut self, value: MediaConfigDiscardAlgo) {
+    fn set_jb_discard_algo(&mut self, value: JbDiscardAlgo) {
         self.jb_discard_algo = value.into();
     }
 
-    fn get_jb_discard_algo(&self) -> MediaConfigDiscardAlgo {
-        MediaConfigDiscardAlgo::try_from(self.jb_discard_algo)
+    fn get_jb_discard_algo(&self) -> JbDiscardAlgo {
+        JbDiscardAlgo::try_from(self.jb_discard_algo)
         .expect("Error MediaConfig get jb_discard_algo")
     }
 

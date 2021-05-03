@@ -1,10 +1,5 @@
 use std::convert::TryFrom;
-
-use pjmedia_sys::{pjmedia_rtcp_fb_setting};
-use pjsip_sys::{pjsip_cred_info};
-
 use crate::utils::{boolean_to_pjbool, check_boolean};
-
 use super::*;
 
 
@@ -191,8 +186,8 @@ pub trait AccountConfigExt {
     /// one credential specified, to successfully authenticate against the service provider.
     /// More credentials can be specified, for example when the requests are expected to be
     /// challenged by the proxies in the route set.
-    fn set_cred_info(&mut self, value: [pjsip_cred_info; 8usize]);
-    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize];
+    fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]);
+    fn get_cred_info(&self) -> [CredentialInfo; 8usize];
 
     /// Optionally bind this account to specific transport. This normally is not a good idea,
     /// as account should be able to send requests using any available transports according
@@ -318,7 +313,7 @@ pub trait AccountConfigExt {
 
     /// Media transport config.
     fn set_rtp_cfg(&mut self, value: TransportConfig);
-    fn get_rtp_cfg(&self) -> TransportConfig;
+    fn get_rtp_cfg(&self) -> &TransportConfig;
 
     /// Specify NAT64 options.
     ///
@@ -371,8 +366,8 @@ pub trait AccountConfigExt {
 
     /// The custom ICE setting for this account. This setting will only be used if ice_cfg_use
     /// is set to PJSUA_ICE_CONFIG_USE_CUSTOM
-    fn set_ice_cfg(&mut self, value: pjsua_ice_config);
-    fn get_ice_cfg(&self) -> pjsua_ice_config;
+    fn set_ice_cfg(&mut self, value: ICEConfig);
+    fn get_ice_cfg(&self) -> &ICEConfig;
 
     /// Control the use of TURN in the account. By default, the settings in the
     /// pjsua_media_config will be used
@@ -385,7 +380,7 @@ pub trait AccountConfigExt {
     /// The custom TURN setting for this account. This setting will only be used if turn_cfg_use
     /// is set to PJSUA_TURN_CONFIG_USE_CUSTOM
     fn set_turn_cfg(&mut self, value: TURNConfig);
-    fn get_turn_cfg(&self) -> TURNConfig;
+    fn get_turn_cfg(&self) -> &TURNConfig;
 
     /// Specify whether secure media transport should be used for this account. Valid values are
     /// PJMEDIA_SRTP_DISABLED, PJMEDIA_SRTP_OPTIONAL, and PJMEDIA_SRTP_MANDATORY.
@@ -414,8 +409,8 @@ pub trait AccountConfigExt {
 
     /// Specify SRTP transport setting. Application can initialize it with default values using
     /// pjsua_srtp_opt_default().
-    fn set_srtp_opt(&mut self, value: pjsua_srtp_opt);
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt;
+    fn set_srtp_opt(&mut self, value: SRTPOption);
+    fn get_srtp_opt(&self) -> &SRTPOption;
 
     /// Specify interval of auto registration retry upon registration failure, in seconds.
     /// Set to 0 to disable auto re-registration. Note that registration will only be automatically
@@ -506,8 +501,8 @@ pub trait AccountConfigExt {
     fn get_enable_rtcp_mux(&self) -> bool;
 
     /// RTCP Feedback configuration.
-    fn set_rtcp_fb_cfg(&mut self, value: pjmedia_rtcp_fb_setting);
-    fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting;
+    fn set_rtcp_fb_cfg(&mut self, value: RtcpFbSetting);
+    fn get_rtcp_fb_cfg(&self) -> &RtcpFbSetting;
 }
 
 
@@ -526,6 +521,58 @@ pub trait AccountInfoExt {
     // fn get_rpid (&self) -> pjrpid_element;
     // fn get_buf_ (&self) [::std::os::raw::c_char; 80usize],
 }
+
+
+pub trait RtcpFbSettingExt {
+
+    /// Specify whether transport protocol in SDP media description uses RTP/AVP instead
+    /// of RTP/AVPF. Note that RFC4585 mandates to signal RTP/AVPF profile, but it may
+    /// cause SDP negotiation failure when negotiating with endpoints that does not
+    /// support RTP/AVPF (including older version of PJSIP), furthermore, there is RFC8643
+    /// that promotes interoperability over the strictness of RTP profile specifications.
+    ///
+    /// # default
+    /// true
+    fn set_dont_use_avpf (&mut self, value: bool);
+    fn get_dont_use_avpf (&self) -> bool;
+
+    /// Number of RTCP Feedback capabilities.
+    fn set_cap_count (&mut self, value: u32);
+    fn get_cap_count (&self) -> u32;
+
+    /// The RTCP Feedback capabilities.
+    fn set_caps (&mut self, value: [RtcpFbCapability; 16usize]);
+    fn get_caps (&self) -> &[RtcpFbCapability; 16usize];
+}
+
+
+pub trait RtcpFbCapabilityExt {
+
+    /// Specify the codecs to which the capability is applicable. Codec ID is using the same
+    /// format as in pjmedia_codec_mgr_find_codecs_by_id() and
+    /// pjmedia_vid_codec_mgr_find_codecs_by_id(), e.g: "L16/8000/1", "PCMU", "H264".
+    /// This can also be an asterisk ("*") to represent all codecs.
+    fn set_codec_id (&mut self, value: String);
+    fn get_codec_id (&self) -> String ;
+
+    /// Specify the RTCP Feedback type.
+    fn set_type_ (&mut self, value: RtcpFbType);
+    fn get_type_ (&self) -> RtcpFbType;
+
+    /// Specify the type name if RTCP Feedback type is PJMEDIA_RTCP_FB_OTHER.
+    fn set_type_name (&mut self, value: String);
+    fn get_type_name (&self) -> String;
+
+    /// Specify the RTCP Feedback parameters. Feedback subtypes should be specified in this field, e.g:
+    ///
+    /// - 'pli' for Picture Loss Indication feedback,
+    /// - 'sli' for Slice Loss Indication feedback,
+    /// - 'rpsi' for Reference Picture Selection Indication feedback,
+    /// - 'app' for specific/proprietary application layer feedback.
+    fn set_param (&mut self, value: String);
+    fn get_param (&self) -> String;
+}
+
 
 
 impl AccountConfigExt for AccountConfig {
@@ -771,11 +818,11 @@ impl AccountConfigExt for AccountConfig {
         self.cred_count
     }
 
-    fn set_cred_info(&mut self, value: [pjsip_cred_info; 8usize]) {
+    fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]) {
         todo!()
     }
 
-    fn get_cred_info(&self) -> [pjsip_cred_info; 8usize] {
+    fn get_cred_info(&self) -> [CredentialInfo; 8usize] {
         todo!()
     }
 
@@ -868,11 +915,11 @@ impl AccountConfigExt for AccountConfig {
     }
 
     fn set_rtp_cfg(&mut self, value: TransportConfig) {
-        todo!()
+        self.rtp_cfg = value;
     }
 
-    fn get_rtp_cfg(&self) -> TransportConfig {
-        todo!()
+    fn get_rtp_cfg(&self) -> &TransportConfig {
+        &self.rtp_cfg
     }
 
     fn set_nat64_opt(&mut self, value: bool) {
@@ -935,11 +982,11 @@ impl AccountConfigExt for AccountConfig {
     }
 
     fn set_ice_cfg(&mut self, value: ICEConfig) {
-        todo!()
+        self.ice_cfg = value;
     }
 
-    fn get_ice_cfg(&self) -> ICEConfig {
-        todo!()
+    fn get_ice_cfg(&self) -> &ICEConfig {
+        &self.ice_cfg
     }
 
     fn set_turn_cfg_use(&mut self, value: AccountConfigStunUse) {
@@ -952,11 +999,11 @@ impl AccountConfigExt for AccountConfig {
     }
 
     fn set_turn_cfg(&mut self, value: TURNConfig) {
-        todo!()
+        self.turn_cfg = value;
     }
 
-    fn get_turn_cfg(&self) -> TURNConfig {
-        todo!()
+    fn get_turn_cfg(&self) -> &TURNConfig {
+        &self.turn_cfg
     }
 
     fn set_use_srtp(&mut self, value: UAConfigSrtpUse) {
@@ -984,12 +1031,12 @@ impl AccountConfigExt for AccountConfig {
         check_boolean(self.srtp_optional_dup_offer)
     }
 
-    fn set_srtp_opt(&mut self, value: pjsua_srtp_opt) {
-        todo!()
+    fn set_srtp_opt(&mut self, value: SRTPOption) {
+        self.srtp_opt = value;
     }
 
-    fn get_srtp_opt(&self) -> pjsua_srtp_opt {
-        todo!()
+    fn get_srtp_opt(&self) -> &SRTPOption {
+        &self.srtp_opt
     }
 
     fn set_reg_retry_interval(&mut self, value: u32) {
@@ -1085,12 +1132,15 @@ impl AccountConfigExt for AccountConfig {
         check_boolean(self.enable_rtcp_mux)
     }
 
-    fn set_rtcp_fb_cfg(&mut self, value: pjmedia_rtcp_fb_setting) {
-        todo!()
+    // this settings for video support only
+    // an audio implementation don't need
+    // to touch this.
+    fn set_rtcp_fb_cfg(&mut self, value: RtcpFbSetting) {
+        self.rtcp_fb_cfg = value;
     }
 
-    fn get_rtcp_fb_cfg(&self) -> pjmedia_rtcp_fb_setting {
-        todo!()
+    fn get_rtcp_fb_cfg(&self) -> &RtcpFbSetting {
+        &self.rtcp_fb_cfg
     }
 }
 
@@ -1136,5 +1186,67 @@ impl AccountInfoExt for AccountInfo {
 
     fn get_online_status_text (&self) -> String {
         self.online_status_text.to_string()
+    }
+}
+
+impl RtcpFbSettingExt for RtcpFbSetting {
+    fn set_dont_use_avpf (&mut self, value: bool) {
+        self.dont_use_avpf = boolean_to_pjbool(value);
+    }
+
+    fn get_dont_use_avpf (&self) -> bool {
+        check_boolean(self.dont_use_avpf)
+    }
+
+    fn set_cap_count (&mut self, value: u32) {
+        self.cap_count = value;
+    }
+
+    fn get_cap_count (&self) -> u32 {
+        self.cap_count
+    }
+
+    fn set_caps (&mut self, value: [RtcpFbCapability; 16usize]) {
+        self.caps = value;
+    }
+
+    fn get_caps (&self) -> &[RtcpFbCapability; 16usize] {
+        &self.caps
+    }
+}
+
+
+impl RtcpFbCapabilityExt for RtcpFbCapability {
+    fn set_codec_id (&mut self, value: String) {
+        self.codec_id = pj_str_t::from_string(value);
+    }
+
+    fn get_codec_id (&self) -> String  {
+        self.codec_id.to_string()
+    }
+
+    fn set_type_ (&mut self, value: RtcpFbType) {
+        self.type_ = value.into();
+    }
+
+    fn get_type_ (&self) -> RtcpFbType {
+        RtcpFbType::try_from(self.type_)
+        .expect("Error RtcpFbCapability get type_")
+    }
+
+    fn set_type_name (&mut self, value: String) {
+        self.type_name = pj_str_t::from_string(value);
+    }
+
+    fn get_type_name (&self) -> String {
+        self.type_name.to_string()
+    }
+
+    fn set_param (&mut self, value: String) {
+        self.param = pj_str_t::from_string(value);
+    }
+
+    fn get_param (&self) -> String {
+        self.param.to_string()
     }
 }

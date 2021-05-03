@@ -10,8 +10,8 @@ use super::utils::AutoCreate;
 use super::*;
 
 impl AutoCreate<SRTPOption> for SRTPOption {
-    fn new() -> SRTPOption {
-        SRTPOption {
+    fn new() -> Self {
+        Self {
             crypto_count: 0,
             crypto: [
                 pjmedia_srtp_crypto::new(), pjmedia_srtp_crypto::new(),
@@ -30,8 +30,8 @@ impl AutoCreate<SRTPOption> for SRTPOption {
 }
 
 impl AutoCreate<UACallback> for UACallback {
-    fn new() -> UACallback {
-        UACallback {
+    fn new() -> Self {
+        Self {
             on_call_state: None,
             on_incoming_call: None,
             on_call_tsx_state: None,
@@ -88,9 +88,9 @@ impl AutoCreate<UACallback> for UACallback {
 
 impl AutoCreate<LogConfig> for LogConfig {
 
-    fn new() -> LogConfig {
+    fn new() -> Self {
 
-        let mut config = LogConfig {
+        let mut config = Self {
             msg_logging: 0,
             level: 0,
             console_level: 0,
@@ -111,8 +111,8 @@ impl AutoCreate<LogConfig> for LogConfig {
 }
 
 impl AutoCreate<UAConfig> for UAConfig {
-    fn new() -> UAConfig {
-        let mut config = UAConfig {
+    fn new() -> Self {
+        let mut config = Self {
             max_calls: 0,
             thread_cnt: 0,
             nameserver_count: 0,
@@ -161,8 +161,8 @@ impl AutoCreate<UAConfig> for UAConfig {
 }
 
 impl AutoCreate<MediaConfig> for MediaConfig {
-    fn new() -> MediaConfig {
-        let mut config = MediaConfig {
+    fn new() -> Self {
+        let mut config = Self {
             clock_rate: 0,
             snd_clock_rate: 0,
             channel_count: 0,
@@ -212,8 +212,8 @@ impl AutoCreate<MediaConfig> for MediaConfig {
 }
 
 impl AutoCreate<TransportConfig> for TransportConfig {
-    fn new() -> TransportConfig {
-        let mut config = TransportConfig {
+    fn new() -> Self {
+        let mut config = Self {
             port: 0,
             port_range: 0,
             public_addr: pj_str_t::new(),
@@ -233,8 +233,8 @@ impl AutoCreate<TransportConfig> for TransportConfig {
 }
 
 impl AutoCreate<ICEConfig> for ICEConfig {
-    fn new() -> ICEConfig {
-        ICEConfig {
+    fn new() -> Self {
+        Self {
             enable_ice: 0,
             ice_max_host_cands: 0,
             ice_opt: pj_ice_sess_options::new(),
@@ -245,8 +245,8 @@ impl AutoCreate<ICEConfig> for ICEConfig {
 }
 
 impl AutoCreate<TurnConfig> for TurnConfig {
-    fn new() -> TurnConfig {
-        TurnConfig {
+    fn new() -> Self {
+        Self {
             enable_turn: 0,
             turn_server: pj_str_t::new(),
             turn_conn_type: 0,
@@ -257,8 +257,8 @@ impl AutoCreate<TurnConfig> for TurnConfig {
 }
 
 impl AutoCreate<IPChangeAccountConfig> for IPChangeAccountConfig {
-    fn new() -> IPChangeAccountConfig {
-        IPChangeAccountConfig {
+    fn new() -> Self {
+        Self {
             shutdown_tp: 0,
             hangup_calls: 0,
             reinvite_flags: 0,
@@ -267,8 +267,8 @@ impl AutoCreate<IPChangeAccountConfig> for IPChangeAccountConfig {
 }
 
 impl AutoCreate<AccountConfig> for AccountConfig {
-    fn new() -> AccountConfig {
-        let mut config = AccountConfig {
+    fn new() -> Self {
+        let mut config = Self {
             user_data: ptr::null_mut(),
             priority: 0,
             id: pj_str_t::new(),
@@ -364,8 +364,8 @@ impl AutoCreate<AccountConfig> for AccountConfig {
 }
 
 impl AutoCreate<BuddyConfig> for BuddyConfig {
-    fn new() -> BuddyConfig {
-        let mut config = BuddyConfig {
+    fn new() -> Self {
+        let mut config = Self {
             uri: pj_str_t::new(),
             subscribe: 0,
             user_data: ptr::null_mut(),
@@ -380,8 +380,8 @@ impl AutoCreate<BuddyConfig> for BuddyConfig {
 }
 
 impl AutoCreate<TransportInfo> for TransportInfo {
-    fn new() -> TransportInfo {
-        TransportInfo {
+    fn new() -> Self {
+        Self {
             id: -1,
             type_: 0,
             type_name: pj_str_t::new(),
@@ -396,8 +396,8 @@ impl AutoCreate<TransportInfo> for TransportInfo {
 }
 
 impl AutoCreate<AccountInfo> for AccountInfo {
-    fn new() -> AccountInfo {
-        AccountInfo {
+    fn new() -> Self {
+        Self {
             id: -1,
             is_default: 0,
             acc_uri: pj_str_t::new(),
@@ -415,9 +415,9 @@ impl AutoCreate<AccountInfo> for AccountInfo {
 }
 
 impl AutoCreate<CallSetting> for CallSetting {
-    fn new() -> CallSetting {
+    fn new() -> Self {
 
-        let mut ret = CallSetting {
+        let mut ret = Self {
             flag: 0,
             req_keyframe_method: 0,
             aud_cnt: 0,
@@ -436,8 +436,8 @@ impl AutoCreate<CallSetting> for CallSetting {
 }
 
 impl AutoCreate<pjsua_sys::pjsua_call_info__bindgen_ty_1> for pjsua_sys::pjsua_call_info__bindgen_ty_1 {
-    fn new() -> pjsua_sys::pjsua_call_info__bindgen_ty_1 {
-        pjsua_sys::pjsua_call_info__bindgen_ty_1 {
+    fn new() -> Self {
+        Self {
             local_info: [0; 256],
             local_contact: [0; 256],
             remote_info: [0; 256],
@@ -449,25 +449,25 @@ impl AutoCreate<pjsua_sys::pjsua_call_info__bindgen_ty_1> for pjsua_sys::pjsua_c
 }
 
 impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1> for pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-    fn new() -> pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
-        pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 { conf_slot: 0 }
+    fn new() -> Self {
+        Self { conf_slot: 0 }
     }
 }
 
 impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2> for pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
-    fn new() -> pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
-        pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
+    fn new() -> Self {
+        Self {
             win_in: -1,
             dec_slot: -1,
             enc_slot: -1,
             cap_dev: -1,
         }
     }
-} 
+}
 
 impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1> for pjsua_sys::pjsua_call_media_info__bindgen_ty_1 {
-    fn new() -> pjsua_sys::pjsua_call_media_info__bindgen_ty_1 {
-        let mut result = pjsua_sys::pjsua_call_media_info__bindgen_ty_1 {
+    fn new() -> Self {
+        let mut result = Self {
             aud: pjsua_sys::__BindgenUnionField::<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>::default(),
             vid: pjsua_sys::__BindgenUnionField::<pjsua_sys::pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2>::default(),
             bindgen_union_field: [0; 4usize]
@@ -483,8 +483,8 @@ impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1> for pjsua_sys::p
 }
 
 impl AutoCreate<CallMediaInfo> for CallMediaInfo {
-    fn new() -> CallMediaInfo {
-        CallMediaInfo {
+    fn new() -> Self {
+        Self {
             index: 0,
             type_: 0,
             dir: 0,
@@ -495,8 +495,8 @@ impl AutoCreate<CallMediaInfo> for CallMediaInfo {
 }
 
 impl AutoCreate<CallInfo> for CallInfo {
-    fn new() -> CallInfo {
-        CallInfo {
+    fn new() -> Self {
+        Self {
             id: -1,
             role: 0,
             acc_id: -1,
@@ -546,8 +546,8 @@ impl AutoCreate<CallInfo> for CallInfo {
 }
 
 impl AutoCreate<BuddyInfo> for BuddyInfo {
-    fn new() -> BuddyInfo {
-        BuddyInfo {
+    fn new() -> Self {
+        Self {
             id: -1,
             uri: pj_str_t::new(),
             contact: pj_str_t::new(),
@@ -566,8 +566,8 @@ impl AutoCreate<BuddyInfo> for BuddyInfo {
 }
 
 impl AutoCreate<MessageData> for MessageData {
-    fn new () -> MessageData {
-        let mut ret = MessageData {
+    fn new () -> Self {
+        let mut ret = Self {
             target_uri: pj_str_t::new(),
             hdr_list: pjsip_hdr::new(),
             content_type: pj_str_t::new(),
@@ -585,8 +585,8 @@ impl AutoCreate<MessageData> for MessageData {
 }
 
 impl AutoCreate<ConferencePortInfo> for ConferencePortInfo {
-    fn new () -> ConferencePortInfo {
-        ConferencePortInfo {
+    fn new () -> Self {
+        Self {
             slot_id: 0,
             name: pj_str_t::new(),
             format: pjmedia_format::new(),
@@ -604,7 +604,7 @@ impl AutoCreate<ConferencePortInfo> for ConferencePortInfo {
 
 impl AutoCreate<pjsua_sys::pjsua_stream_info__bindgen_ty_1> for pjsua_sys::pjsua_stream_info__bindgen_ty_1 {
     fn new() -> pjsua_sys::pjsua_stream_info__bindgen_ty_1 {
-        let mut result = pjsua_sys::pjsua_stream_info__bindgen_ty_1 {
+        let mut result = Self {
             aud: pjsua_sys::__BindgenUnionField::<pjmedia_stream_info>::default(),
             vid: pjsua_sys::__BindgenUnionField::<pjmedia_vid_stream_info>::default(),
             bindgen_union_field: [0; 277usize],
@@ -621,8 +621,8 @@ impl AutoCreate<pjsua_sys::pjsua_stream_info__bindgen_ty_1> for pjsua_sys::pjsua
 
 impl AutoCreate<StreamInfo> for StreamInfo {
 
-    fn new() -> StreamInfo {
-        StreamInfo {
+    fn new() -> Self {
+        Self {
             type_: 0,
             info: pjsua_sys::pjsua_stream_info__bindgen_ty_1::new(),
         }
@@ -630,8 +630,8 @@ impl AutoCreate<StreamInfo> for StreamInfo {
 }
 
 impl AutoCreate<StreamStatus> for StreamStatus {
-    fn new () -> StreamStatus {
-        StreamStatus {
+    fn new () -> Self {
+        Self {
             rtcp: pjmedia_rtcp_stat::new(),
             jbuf: pjmedia_jb_state::new(),
         }
@@ -639,7 +639,7 @@ impl AutoCreate<StreamStatus> for StreamStatus {
 }
 
 impl AutoCreate<CodecInfo> for CodecInfo {
-    fn new () -> CodecInfo {
+    fn new () -> Self {
         CodecInfo {
             codec_id: pj_str_t::from_string(String::new()),
             priority: 0,

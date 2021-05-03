@@ -30,6 +30,7 @@ pub mod log;
 pub mod transport;
 pub mod buddy;
 pub mod call;
+pub mod codec;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;
@@ -44,6 +45,10 @@ pub use pjsua_sys::pjsua_call_setting as CallSetting;
 pub use pjsua_sys::pjsua_srtp_opt as SRTPOption;
 pub use pjsua_sys::pjsua_ip_change_acc_cfg as IPChangeAccountConfig;
 pub use pjsua_sys::pjsua_turn_config as TURNConfig;
+
+pub type RtcpFbSetting = pjmedia_sys::pjmedia_rtcp_fb_setting;
+pub type RtcpFbInfo = pjmedia_sys::pjmedia_rtcp_fb_info;
+pub type RtcpFbCapability = pjmedia_sys::pjmedia_rtcp_fb_cap;
 
 // info and status struct
 pub use pjsua_sys::pjsua_acc_info as AccountInfo;
@@ -156,7 +161,7 @@ pub enum MediaConfigEchoCancelarOption {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaConfigDiscardAlgo {
+pub enum JbDiscardAlgo {
     None = pjmedia_sys::PJMEDIA_JB_DISCARD_NONE,
     Static = pjmedia_sys::PJMEDIA_JB_DISCARD_STATIC,
     Progressive = pjmedia_sys::PJMEDIA_JB_DISCARD_PROGRESSIVE,
@@ -206,6 +211,18 @@ pub enum AccountConfigIceUse {
 pub enum AccountConfigTurnUse {
     Default = pjsua_sys::PJSUA_TURN_CONFIG_USE_DEFAULT,
     Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
+}
+
+
+// pub type pjmedia_rtcp_fb_type = u32;
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum RtcpFbType {
+    ack = pjmedia_sys::PJMEDIA_RTCP_FB_ACK,
+    Nack = pjmedia_sys::PJMEDIA_RTCP_FB_NACK,
+    TrrInt = pjmedia_sys::PJMEDIA_RTCP_FB_TRR_INT,
+    FbOther = pjmedia_sys::PJMEDIA_RTCP_FB_OTHER,
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
@@ -311,13 +328,6 @@ pub enum InviteState {
     Disconnected = pjsip_ua_sys::PJSIP_INV_STATE_DISCONNECTED,
 }
 
-pub const PJSUA_CALL_MEDIA_NONE: pjsua_call_media_status = 0;
-pub const PJSUA_CALL_MEDIA_ACTIVE: pjsua_call_media_status = 1;
-pub const PJSUA_CALL_MEDIA_LOCAL_HOLD: pjsua_call_media_status = 2;
-pub const PJSUA_CALL_MEDIA_REMOTE_HOLD: pjsua_call_media_status = 3;
-pub const PJSUA_CALL_MEDIA_ERROR: pjsua_call_media_status = 4;
-pub type pjsua_call_media_status = u32;
-
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum CallMediaStatus {
@@ -340,6 +350,35 @@ pub enum MediaDirection {
     EncDecAndPlayRender = pjmedia_sys::PJMEDIA_DIR_ENCODING_DECODING,
     // Playback = PJMEDIA_DIR_CAPTURE_PLAYBACK: pjmedia_dir = 3;
     // Render = PJMEDIA_DIR_CAPTURE_RENDER: pjmedia_dir = 3;
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaTransportProtocol {
+    None = pjmedia_sys::PJMEDIA_TP_PROTO_NONE,
+    Unknown = pjmedia_sys::PJMEDIA_TP_PROTO_UNKNOWN,
+    Udp = pjmedia_sys::PJMEDIA_TP_PROTO_UDP,
+    Rtp = pjmedia_sys::PJMEDIA_TP_PROTO_RTP,
+    Dtls = pjmedia_sys::PJMEDIA_TP_PROTO_DTLS,
+    RtcpFb = pjmedia_sys::PJMEDIA_TP_PROFILE_RTCP_FB,
+    Srtp = pjmedia_sys::PJMEDIA_TP_PROFILE_SRTP,
+    ProfileAvp = pjmedia_sys::PJMEDIA_TP_PROFILE_AVP,
+    RtpAvp = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_AVP,
+    RtpSavp = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_SAVP,
+    DtlsSrtp = pjmedia_sys::PJMEDIA_TP_PROTO_DTLS_SRTP,
+    RtpAvpf = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_AVPF,
+    RtpSavpf = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_SAVPF,
+    DtlsSrtpf = pjmedia_sys::PJMEDIA_TP_PROTO_DTLS_SRTPF,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum MediaType {
+    None = pjmedia_sys::PJMEDIA_TYPE_NONE,
+    Audio = pjmedia_sys::PJMEDIA_TYPE_AUDIO,
+    Video = pjmedia_sys::PJMEDIA_TYPE_VIDEO,
+    Application = pjmedia_sys::PJMEDIA_TYPE_APPLICATION,
+    Unknown = pjmedia_sys::PJMEDIA_TYPE_UNKNOWN,
 }
 
 
