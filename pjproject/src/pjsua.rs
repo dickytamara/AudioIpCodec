@@ -222,6 +222,13 @@ pub enum CallFlags {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
+pub enum KeyFrameMethod {
+    SipInfo = pjsua_sys::PJSUA_VID_REQ_KEYFRAME_SIP_INFO,
+    RtcpPLI = pjsua_sys::PJSUA_VID_REQ_KEYFRAME_RTCP_PLI,
+}
+
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
 pub enum CallHoldType {
     Rfc3264 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC3264,
     Rfc2543 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC2543,

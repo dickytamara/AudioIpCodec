@@ -33,7 +33,13 @@ pub trait CallInfoExt {
     fn get_call_id (&self) -> String;
 
     /// Call setting
-    fn get_setting (&self) -> pjsua_call_setting;
+    // pub struct pjsua_call_setting {
+    //     pub flag: ::std::os::raw::c_uint,
+    //     pub req_keyframe_method: ::std::os::raw::c_uint,
+    //     pub aud_cnt: ::std::os::raw::c_uint,
+    //     pub vid_cnt: ::std::os::raw::c_uint,
+    // }
+    fn get_setting (&self) -> (CallFlags, KeyFrameMethod, u32, u32);
 
     /// Call state
     fn get_state (&self) -> InviteState;
@@ -131,9 +137,15 @@ impl CallInfoExt for CallInfo {
         self.call_id.to_string()
     }
 
-    fn get_setting (&self) -> CallSetting {
-        CallSetting::try_from(self.setting)
-        .expect("Error CallInfo get setting")
+    fn get_setting (&self) -> (CallFlags, KeyFrameMethod, u32, u32) {
+        (
+            CallFlags::try_from(self.setting.flag)
+            .expect("Error CallInfo get setting"),
+            KeyFrameMethod::try_from(self.setting.req_keyframe_method)
+            .expect("Error CallInfo get req_keyframe_method"),
+            self.setting.aud_cnt,
+            self.setting.vid_cnt
+        )
     }
 
     fn get_state (&self) -> InviteState {
