@@ -1,21 +1,12 @@
 
-// use pjnath_sys::*;
-// use pjsip_sys::*;
-// use pjmedia_sys::*;
-// use pjsua_sys::*;
 
 use crate::pjproject::prelude::*;
-// use crate::pjproject::utils;
-// use crate::pjproject::pjlib;
-// use crate::pjproject::pjsip;
 use crate::pjproject::pjsua;
 
-// use std::ptr;
-// use std::ffi::CString;
 
 #[derive(Copy, Clone)]
 pub struct SIPCall {
-    id: pjsua_call_id,
+    id: i32,
 }
 
 
@@ -28,8 +19,8 @@ impl SIPCall {
         }
     }
     /// construct SIPCall from given call_id
-    pub fn from(call_id: pjsua_call_id) -> Self {
-        SIPCall {
+    pub fn from(call_id: i32) -> Self {
+        Self {
             id: call_id,
         }
     }
@@ -50,9 +41,9 @@ impl SIPCall {
     }
  
     /// Obtain detail information about the specified call.
-    pub fn get_info(&self) -> Result<pjsua_call_info, i32> {
+    pub fn get_info(&self) -> Result<CallInfo, i32> {
 
-        let mut info = pjsua_call_info::new();
+        let mut info = CallInfo::new();
 
         if let Err(e) = pjsua::call_get_info(self.id, &mut info) {
             return Err(e);

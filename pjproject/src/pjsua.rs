@@ -72,6 +72,8 @@ pub use pjsua_sys::pjsua_msg_data as MessageData;
 pub use pjsua_sys::pjsua_callback as UACallback;
 
 pub const INVALID_ID: i32 = -1;
+pub const MAX_ACC: usize = pjsua_sys::PJSUA_MAX_ACC as usize;
+pub const MAX_BUDDIES: usize = pjsua_sys::PJSUA_MAX_BUDDIES as usize;
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
@@ -215,9 +217,6 @@ pub enum AccountConfigTurnUse {
     Default = pjsua_sys::PJSUA_TURN_CONFIG_USE_DEFAULT,
     Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
 }
-
-
-// pub type pjmedia_rtcp_fb_type = u32;
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]

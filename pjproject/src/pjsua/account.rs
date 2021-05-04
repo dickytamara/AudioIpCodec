@@ -66,6 +66,7 @@ pub trait AccountConfigExt {
     /// PJ_FALSE
     fn set_publish_enabled(&mut self, value: bool);
     fn get_publish_enabled(&self) -> bool;
+
     /// Event publication options.
     fn set_publish_opt(&mut self, value: bool);
     fn get_publish_opt(&self) -> bool;

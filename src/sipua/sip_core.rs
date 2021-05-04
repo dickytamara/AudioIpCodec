@@ -423,14 +423,14 @@ impl SIPCore {
                 _ => "Error"
             };
 
-            match call_media_info.type_ {
-                PJMEDIA_TYPE_NONE |
-                PJMEDIA_TYPE_VIDEO |
-                PJMEDIA_TYPE_APPLICATION |
-                PJMEDIA_TYPE_UNKNOWN => has_error = true ,
-                PJMEDIA_TYPE_AUDIO => self.on_call_audio_state(&call_info, mi, &mut has_error) ,
-                _ => has_error = true
-            }
+            // match call_media_info.type_ {
+            //     PJMEDIA_TYPE_NONE |
+            //     PJMEDIA_TYPE_VIDEO |
+            //     PJMEDIA_TYPE_APPLICATION |
+            //     PJMEDIA_TYPE_UNKNOWN => has_error = true ,
+            //     PJMEDIA_TYPE_AUDIO => self.on_call_audio_state(&call_info, mi, &mut has_error) ,
+            //     _ => has_error = true
+            // }
 
             println!("sipua.rs Call {} media {} [type={}], status is {}",
                 call_info.id, mi, media_type, status_name);

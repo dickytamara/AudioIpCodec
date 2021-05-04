@@ -18,8 +18,8 @@ use std::{ffi::CString, ptr};
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
     for pjsip_cred_info__bindgen_ty_1__bindgen_ty_1
 {
-    fn new() -> pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {
-        pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {
+    fn new() -> Self {
+        Self {
             k: pj_str_t::new(),
             op: pj_str_t::new(),
             amf: pj_str_t::new(),
@@ -29,8 +29,8 @@ impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
 }
 
 impl AutoCreate<pjsip_cred_info__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1 {
-    fn new() -> pjsip_cred_info__bindgen_ty_1 {
-        let mut result = pjsip_cred_info__bindgen_ty_1 {
+    fn new() -> Self {
+        let mut result = Self {
             aka: pjsip_sys::__BindgenUnionField::<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>::default(),
             bindgen_union_field: [0; 7]
         };
@@ -44,8 +44,8 @@ impl AutoCreate<pjsip_cred_info__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1
 }
 
 impl AutoCreate<pjsip_cred_info> for pjsip_cred_info {
-    fn new() -> pjsip_cred_info {
-        pjsip_cred_info {
+    fn new() -> Self {
+        Self {
             realm: pj_str_t::new(),
             scheme: pj_str_t::new(),
             username: pj_str_t::new(),
@@ -57,8 +57,8 @@ impl AutoCreate<pjsip_cred_info> for pjsip_cred_info {
 }
 
 impl AutoCreate<pjsip_hdr_vptr> for pjsip_hdr_vptr {
-    fn new() -> pjsip_hdr_vptr {
-        pjsip_hdr_vptr {
+    fn new() -> Self {
+        Self {
             clone: None,
             shallow_clone: None,
             print_on: None,
@@ -67,8 +67,8 @@ impl AutoCreate<pjsip_hdr_vptr> for pjsip_hdr_vptr {
 }
 
 impl AutoCreate<pjsip_hdr> for pjsip_hdr {
-    fn new() -> pjsip_hdr {
-        pjsip_hdr {
+    fn new() -> Self {
+        Self {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             type_: 0,
@@ -80,8 +80,8 @@ impl AutoCreate<pjsip_hdr> for pjsip_hdr {
 }
 
 impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
-    fn new() -> pjsip_tls_setting {
-        pjsip_tls_setting {
+    fn new() -> Self {
+        Self {
             ca_list_file: pj_str_t::new(),
             ca_list_path: pj_str_t::new(),
             cert_file: pj_str_t::new(),
@@ -99,24 +99,25 @@ impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
             sigalgs: pj_str_t::new(),
             entropy_type: 0,
             entropy_path: pj_str_t::new(),
-            verify_server: PJ_FALSE as pj_bool_t,
-            verify_client: PJ_FALSE as pj_bool_t,
-            require_client_cert: PJ_FALSE as pj_bool_t,
+            verify_server: 0,
+            verify_client: 0,
+            require_client_cert: 0,
             timeout: pj_time_val::new(),
-            reuse_addr: PJ_FALSE as pj_bool_t,
+            reuse_addr: 0,
             qos_type: 0,
             qos_params: pj_qos_params::new(),
-            qos_ignore_error: PJ_FALSE as pj_bool_t,
+            qos_ignore_error: 0,
             sockopt_params: pj_sockopt_params::new(),
-            sockopt_ignore_error: PJ_FALSE as pj_bool_t,
+            sockopt_ignore_error: 0,
             on_accept_fail_cb: None,
         }
     }
 }
 
 impl AutoCreate<pjsip_module> for pjsip_module {
-    fn new() -> pjsip_module {
-        pjsip_module {
+    fn new() -> Self {
+        // unsafe { std::mem::zeroed() }
+        Self {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             name: pj_str_t::new(),
@@ -136,8 +137,8 @@ impl AutoCreate<pjsip_module> for pjsip_module {
 }
 
 impl AutoCreate<pjsip_tx_data_op_key> for pjsip_tx_data_op_key {
-    fn new() -> pjsip_tx_data_op_key {
-        pjsip_tx_data_op_key {
+    fn new() -> Self {
+        Self {
             key: pj_ioqueue_op_key_t::new(),
             tdata: ptr::null_mut(),
             token: ptr::null_mut(),
@@ -147,8 +148,8 @@ impl AutoCreate<pjsip_tx_data_op_key> for pjsip_tx_data_op_key {
 }
 
 impl AutoCreate<pjsip_buffer> for pjsip_buffer {
-    fn new() -> pjsip_buffer {
-        pjsip_buffer {
+    fn new() -> Self {
+        Self {
             start: ptr::null_mut(),
             cur: ptr::null_mut(),
             end: ptr::null_mut(),
@@ -157,8 +158,8 @@ impl AutoCreate<pjsip_buffer> for pjsip_buffer {
 }
 
 impl AutoCreate<pjsip_server_addresses__bindgen_ty_1> for pjsip_server_addresses__bindgen_ty_1 {
-    fn new() -> pjsip_server_addresses__bindgen_ty_1 {
-        pjsip_server_addresses__bindgen_ty_1 {
+    fn new() -> Self {
+        Self {
             type_: 0,
             priority: 0,
             weight: 0,
@@ -169,8 +170,8 @@ impl AutoCreate<pjsip_server_addresses__bindgen_ty_1> for pjsip_server_addresses
 }
 
 impl AutoCreate<pjsip_server_addresses> for pjsip_server_addresses {
-    fn new() -> pjsip_server_addresses {
-        pjsip_server_addresses {
+    fn new() -> Self {
+        Self {
             count: 0,
             entry: [
                 pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
@@ -187,8 +188,8 @@ impl AutoCreate<pjsip_server_addresses> for pjsip_server_addresses {
 }
 
 impl AutoCreate<pjsip_tx_data__bindgen_ty_1> for pjsip_tx_data__bindgen_ty_1 {
-    fn new() -> pjsip_tx_data__bindgen_ty_1 {
-        pjsip_tx_data__bindgen_ty_1 {
+    fn new() -> Self {
+        Self {
             name: pj_str_t::new(),
             addr: pjsip_server_addresses::new(),
             cur_addr: 0x00000000,
@@ -197,8 +198,8 @@ impl AutoCreate<pjsip_tx_data__bindgen_ty_1> for pjsip_tx_data__bindgen_ty_1 {
 }
 
 impl AutoCreate<pjsip_tx_data__bindgen_ty_2> for pjsip_tx_data__bindgen_ty_2 {
-    fn new() -> pjsip_tx_data__bindgen_ty_2 {
-        pjsip_tx_data__bindgen_ty_2 {
+    fn new() -> Self {
+        Self {
             transport: ptr::null_mut(),
             dst_addr: pj_sockaddr::new(),
             dst_addr_len: 0,
@@ -209,16 +210,16 @@ impl AutoCreate<pjsip_tx_data__bindgen_ty_2> for pjsip_tx_data__bindgen_ty_2 {
 }
 
 impl AutoCreate<pjsip_tpselector__bindgen_ty_1> for pjsip_tpselector__bindgen_ty_1 {
-    fn new() -> pjsip_tpselector__bindgen_ty_1 {
-        pjsip_tpselector__bindgen_ty_1 {
+    fn new() -> Self {
+        Self {
             ptr: ptr::null_mut(),
         }
     }
 }
 
 impl AutoCreate<pjsip_tpselector> for pjsip_tpselector {
-    fn new() -> pjsip_tpselector {
-        pjsip_tpselector {
+    fn new() -> Self {
+        Self {
             type_: 0,
             disable_connection_reuse: PJ_FALSE as pj_bool_t,
             u: pjsip_tpselector__bindgen_ty_1::new(),
@@ -227,8 +228,8 @@ impl AutoCreate<pjsip_tpselector> for pjsip_tpselector {
 }
 
 impl AutoCreate<pjsip_host_port> for pjsip_host_port {
-    fn new() -> pjsip_host_port {
-        pjsip_host_port {
+    fn new() -> Self {
+        Self {
             host: pj_str_t::new(),
             port: 0,
         }
@@ -236,8 +237,8 @@ impl AutoCreate<pjsip_host_port> for pjsip_host_port {
 }
 
 impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
-    fn new() -> pjsip_tx_data {
-        pjsip_tx_data {
+    fn new() -> Self {
+        Self {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             pool: ptr::null_mut(),
@@ -257,7 +258,7 @@ impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
             dest_info: pjsip_tx_data__bindgen_ty_1::new(),
             tp_info: pjsip_tx_data__bindgen_ty_2::new(),
             tp_sel: pjsip_tpselector::new(),
-            auth_retry: PJ_FALSE as pj_bool_t,
+            auth_retry: 0,
             mod_data: [ptr::null_mut(); 32],
             via_addr: pjsip_host_port::new(),
             via_tp: ptr::null_mut(),
@@ -266,8 +267,8 @@ impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
 }
 
 impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {
-    fn new() -> pjsip_generic_string_hdr {
-        pjsip_generic_string_hdr {
+    fn new() -> Self {
+        Self {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             type_: 0,
@@ -280,8 +281,8 @@ impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {
 }
 
 impl AutoCreate<pjsip_pres_status__bindgen_ty_1> for pjsip_pres_status__bindgen_ty_1 {
-    fn new() -> pjsip_pres_status__bindgen_ty_1 {
-        pjsip_pres_status__bindgen_ty_1 {
+    fn new() -> Self {
+        Self {
             basic_open: PJ_FALSE as pj_bool_t,
             rpid: pjrpid_element::new(),
             id: pj_str_t::new(),
@@ -292,8 +293,8 @@ impl AutoCreate<pjsip_pres_status__bindgen_ty_1> for pjsip_pres_status__bindgen_
 }
 
 impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
-    fn new() -> pjsip_pres_status {
-        pjsip_pres_status {
+    fn new() -> Self {
+        Self {
             info_cnt: 0,
             info: [
                 pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
@@ -307,8 +308,8 @@ impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
 }
 
 impl AutoCreate<pjsip_param> for pjsip_param {
-    fn new() -> pjsip_param {
-        pjsip_param {
+    fn new() -> Self {
+        Self {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             name: pj_str_t::new(),
@@ -318,8 +319,8 @@ impl AutoCreate<pjsip_param> for pjsip_param {
 }
 
 impl AutoCreate<pjsip_multipart_part> for pjsip_multipart_part {
-    fn new() -> pjsip_multipart_part {
-        pjsip_multipart_part {
+    fn new() -> Self {
+        Self {
             prev: ptr::null_mut(),
             next: ptr::null_mut(),
             hdr: pjsip_hdr::new(),
@@ -329,8 +330,8 @@ impl AutoCreate<pjsip_multipart_part> for pjsip_multipart_part {
 }
 
 impl AutoCreate<pjsip_media_type> for pjsip_media_type {
-    fn new() -> pjsip_media_type {
-        pjsip_media_type {
+    fn new() -> Self {
+        Self {
             type_: pj_str_t::new(),
             subtype: pj_str_t::new(),
             param: pjsip_param::new(),
@@ -339,8 +340,8 @@ impl AutoCreate<pjsip_media_type> for pjsip_media_type {
 }
 
 impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
-    fn new() -> pjsip_publishc_opt {
-        pjsip_publishc_opt {
+    fn new() -> Self {
+        Self {
             queue_request: 0,
         }
     }
