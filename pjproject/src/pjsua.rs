@@ -1,4 +1,3 @@
-// #![allow(unused_variables)]
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 #![allow(dead_code)]
@@ -58,6 +57,9 @@ pub use pjsua_sys::pjsua_call_media_info as CallMediaInfo;
 pub use pjsua_sys::pjsua_call_info as CallInfo;
 pub use pjsua_sys::pjsua_conf_port_info as ConferencePortInfo;
 pub use pjsua_sys::pjsua_stream_info as StreamInfo;
+pub use pjmedia_sys::pjmedia_stream_info as MediaStreamInfo;
+pub use pjmedia_sys::pjmedia_codec_info as MediaCodecInfo;
+pub use pjmedia_sys::pjmedia_codec_param as MediaCodecParam;
 pub use pjsua_sys::pjsua_stream_stat as StreamStatus;
 pub use pjsua_sys::pjsua_codec_info as CodecInfo;
 pub use pjsip_sys::pjsip_cred_info as CredentialInfo;
