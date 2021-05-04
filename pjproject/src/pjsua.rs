@@ -30,6 +30,7 @@ pub mod transport;
 pub mod buddy;
 pub mod call;
 pub mod codec;
+pub mod message;
 
 // config, Options and setting struct
 pub use pjsua_sys::pjsua_config as UAConfig;

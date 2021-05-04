@@ -96,6 +96,7 @@ pub trait MediaStreamInfoExt {
 }
 
 impl CodecInfoExt for CodecInfo {
+
     fn get_codec_id (&self) -> String {
         self.codec_id.to_string()
     }
