@@ -1,6 +1,6 @@
 
 use std::{convert::TryFrom, path::PathBuf};
-use crate::utils::{boolean_to_pjbool, check_boolean};
+use crate::{pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 pub trait MediaConfigExt {
@@ -177,9 +177,9 @@ pub trait MediaConfigExt {
         aggresive: Option<bool>,
         nominated_check_delay: Option<u32>,
         controlled_agent_want_nom_timeout: Option<i32>,
-        trickle: Option<MediaConfigIceSessTrickle>,
+        trickle: Option<IceSessTrickle>,
     );
-    fn get_ice_opt(&self) -> (bool, u32, i32, MediaConfigIceSessTrickle);
+    fn get_ice_opt(&self) -> (bool, u32, i32, IceSessTrickle);
 
     /// Disable RTCP component.
     ///
@@ -210,8 +210,8 @@ pub trait MediaConfigExt {
     ///
     /// # Default
     /// PJ_TURN_TP_UDP
-    fn set_turn_conn_type(&mut self, value: MediaConfigTurnTransportType);
-    fn get_turn_conn_type(&self) -> MediaConfigTurnTransportType;
+    fn set_turn_conn_type(&mut self, value: TurnTpType);
+    fn get_turn_conn_type(&self) -> TurnTpType;
 
     /// Specify the credential to authenticate with the TURN server.
     /// see pjsua api this rust api only support static credential
@@ -475,7 +475,7 @@ impl MediaConfigExt for MediaConfig {
         aggresive: Option<bool>,
         nominated_check_delay: Option<u32>,
         controlled_agent_want_nom_timeout: Option<i32>,
-        trickle: Option<MediaConfigIceSessTrickle>,
+        trickle: Option<IceSessTrickle>,
     ) {
 
         if aggresive.is_some() {
@@ -497,12 +497,12 @@ impl MediaConfigExt for MediaConfig {
 
     }
 
-    fn get_ice_opt(&self) -> (bool, u32, i32, MediaConfigIceSessTrickle) {
+    fn get_ice_opt(&self) -> (bool, u32, i32, IceSessTrickle) {
         (
             check_boolean(self.ice_opt.aggressive),
             self.ice_opt.nominated_check_delay,
             self.ice_opt.controlled_agent_want_nom_timeout,
-            MediaConfigIceSessTrickle::try_from(self.ice_opt.trickle)
+            IceSessTrickle::try_from(self.ice_opt.trickle)
             .expect("Error MediaConfig get ice_opt.trickle")
         )
     }
@@ -539,12 +539,12 @@ impl MediaConfigExt for MediaConfig {
         self.turn_server.to_string()
     }
 
-    fn set_turn_conn_type(&mut self, value: MediaConfigTurnTransportType) {
+    fn set_turn_conn_type(&mut self, value: TurnTpType) {
         self.turn_conn_type = value.into();
     }
 
-    fn get_turn_conn_type(&self) -> MediaConfigTurnTransportType {
-        MediaConfigTurnTransportType::try_from(self.turn_conn_type)
+    fn get_turn_conn_type(&self) -> TurnTpType {
+        TurnTpType::try_from(self.turn_conn_type)
         .expect("Error MediaConfig get turn_conn_type")
     }
 

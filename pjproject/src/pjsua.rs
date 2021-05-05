@@ -173,23 +173,6 @@ pub enum JbDiscardAlgo {
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum MediaConfigIceSessTrickle {
-    Disabled = pjnath_sys::PJ_ICE_SESS_TRICKLE_DISABLED,
-    Half = pjnath_sys::PJ_ICE_SESS_TRICKLE_HALF,
-    Full = pjnath_sys::PJ_ICE_SESS_TRICKLE_FULL,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum MediaConfigTurnTransportType {
-    Udp = pjnath_sys::PJ_TURN_TP_UDP,
-    Tcp = pjnath_sys::PJ_TURN_TP_TCP,
-    TLS = pjnath_sys::PJ_TURN_TP_TLS,
-}
-
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(i32)]
 pub enum CredentialInfoType {
     PlainText = 0,
