@@ -15,6 +15,7 @@ use num_enum::IntoPrimitive;
 use num_enum::TryFromPrimitive;
 
 
+/// pub type pj_stun_method_e = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum StunMethod {
@@ -32,6 +33,7 @@ pub enum StunMethod {
     Max = pjnath_sys::PJ_STUN_METHOD_MAX,
 }
 
+/// pub type pj_stun_msg_class_e = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum StunMessageClass {
@@ -41,6 +43,7 @@ pub enum StunMessageClass {
     Error = pjnath_sys::PJ_STUN_ERROR_CLASS,
 }
 
+/// pub type pj_stun_msg_type = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum StunMessageType {
@@ -69,6 +72,7 @@ pub enum StunMessageType {
     ConnectionAttemptIndication = pjnath_sys::PJ_STUN_CONNECTION_ATTEMPT_INDICATION,
 }
 
+/// pub type pj_stun_attr_type = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum StunAttrType {
@@ -116,22 +120,195 @@ pub enum StunAttrType {
     EndExtendedAttr = pjnath_sys::PJ_STUN_ATTR_END_EXTENDED_ATTR,
 }
 
-pub const PJ_STUN_SC_TRY_ALTERNATE: pj_stun_status = 300;
-pub const PJ_STUN_SC_BAD_REQUEST: pj_stun_status = 400;
-pub const PJ_STUN_SC_UNAUTHORIZED: pj_stun_status = 401;
-pub const PJ_STUN_SC_FORBIDDEN: pj_stun_status = 403;
-pub const PJ_STUN_SC_UNKNOWN_ATTRIBUTE: pj_stun_status = 420;
-pub const PJ_STUN_SC_ALLOCATION_MISMATCH: pj_stun_status = 437;
-pub const PJ_STUN_SC_STALE_NONCE: pj_stun_status = 438;
-pub const PJ_STUN_SC_TRANSITIONING: pj_stun_status = 439;
-pub const PJ_STUN_SC_WRONG_CREDENTIALS: pj_stun_status = 441;
-pub const PJ_STUN_SC_UNSUPP_TRANSPORT_PROTO: pj_stun_status = 442;
-pub const PJ_STUN_SC_OPER_TCP_ONLY: pj_stun_status = 445;
-pub const PJ_STUN_SC_CONNECTION_FAILURE: pj_stun_status = 446;
-pub const PJ_STUN_SC_CONNECTION_TIMEOUT: pj_stun_status = 447;
-pub const PJ_STUN_SC_ALLOCATION_QUOTA_REACHED: pj_stun_status = 486;
-pub const PJ_STUN_SC_ROLE_CONFLICT: pj_stun_status = 487;
-pub const PJ_STUN_SC_SERVER_ERROR: pj_stun_status = 500;
-pub const PJ_STUN_SC_INSUFFICIENT_CAPACITY: pj_stun_status = 508;
-pub const PJ_STUN_SC_GLOBAL_FAILURE: pj_stun_status = 600;
-pub type pj_stun_status = u32;
+
+/// pub type pj_stun_status = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunStatus {
+    TryAlternate = pjnath_sys::PJ_STUN_SC_TRY_ALTERNATE,
+    BadRequest = pjnath_sys::PJ_STUN_SC_BAD_REQUEST,
+    UnAuthorized = pjnath_sys::PJ_STUN_SC_UNAUTHORIZED,
+    Forbiden = pjnath_sys::PJ_STUN_SC_FORBIDDEN,
+    UnknownAttribute = pjnath_sys::PJ_STUN_SC_UNKNOWN_ATTRIBUTE,
+    AllocationMismatch = pjnath_sys::PJ_STUN_SC_ALLOCATION_MISMATCH,
+    StaleNonce = pjnath_sys::PJ_STUN_SC_STALE_NONCE,
+    Transitioning = pjnath_sys::PJ_STUN_SC_TRANSITIONING,
+    WrongCredentials = pjnath_sys::PJ_STUN_SC_WRONG_CREDENTIALS,
+    UnsuppTransportProto = pjnath_sys::PJ_STUN_SC_UNSUPP_TRANSPORT_PROTO,
+    OperTcpOnly = pjnath_sys::PJ_STUN_SC_OPER_TCP_ONLY,
+    ConnectionFailure = pjnath_sys::PJ_STUN_SC_CONNECTION_FAILURE,
+    ConnectionTimeout = pjnath_sys::PJ_STUN_SC_CONNECTION_TIMEOUT,
+    AllocationQuotaReached = pjnath_sys::PJ_STUN_SC_ALLOCATION_QUOTA_REACHED,
+    RoloConflict = pjnath_sys::PJ_STUN_SC_ROLE_CONFLICT,
+    ServerError = pjnath_sys::PJ_STUN_SC_SERVER_ERROR,
+    InsufficientCapacity = pjnath_sys::PJ_STUN_SC_INSUFFICIENT_CAPACITY,
+    GlobalFailure = pjnath_sys::PJ_STUN_SC_GLOBAL_FAILURE,
+}
+
+
+///  pub type pj_stun_decode_options = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunDecodeOptions {
+    IsDatagram = pjnath_sys::PJ_STUN_IS_DATAGRAM,
+    CheckPacket = pjnath_sys::PJ_STUN_CHECK_PACKET,
+    Authenticate = pjnath_sys::PJ_STUN_NO_AUTHENTICATE,
+    NoFingerprintCheck = pjnath_sys::PJ_STUN_NO_FINGERPRINT_CHECK,
+}
+
+/// pub type pj_stun_auth_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunAuthType {
+    None = pjnath_sys::PJ_STUN_AUTH_NONE,
+    ShortTerm = pjnath_sys::PJ_STUN_AUTH_SHORT_TERM,
+    LongTerm = pjnath_sys::PJ_STUN_AUTH_LONG_TERM,
+}
+
+/// pub type pj_stun_auth_cred_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunAuthCredType {
+    Static = pjnath_sys::PJ_STUN_AUTH_CRED_STATIC,
+    CredDynamic = pjnath_sys::PJ_STUN_AUTH_CRED_DYNAMIC,
+}
+
+/// pub type pj_stun_passwd_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunPasswdType {
+    Plain = pjnath_sys::PJ_STUN_PASSWD_PLAIN,
+    Hashed = pjnath_sys::PJ_STUN_PASSWD_HASHED,
+}
+
+/// pub type pj_stun_sess_msg_log_flag = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunSessMsgLogFlag {
+    TxReq = pjnath_sys::PJ_STUN_SESS_LOG_TX_REQ,
+    TxRes = pjnath_sys::PJ_STUN_SESS_LOG_TX_RES,
+    TxInd = pjnath_sys::PJ_STUN_SESS_LOG_TX_IND,
+    RxReq = pjnath_sys::PJ_STUN_SESS_LOG_RX_REQ,
+    RxRes = pjnath_sys::PJ_STUN_SESS_LOG_RX_RES,
+    RxInd = pjnath_sys::PJ_STUN_SESS_LOG_RX_IND,
+}
+
+/// pub type pj_ice_cand_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceCandType {
+    Host = pjnath_sys::PJ_ICE_CAND_TYPE_HOST,
+    Srflx = pjnath_sys::PJ_ICE_CAND_TYPE_SRFLX,
+    Prflx = pjnath_sys::PJ_ICE_CAND_TYPE_PRFLX,
+    Relayed = pjnath_sys::PJ_ICE_CAND_TYPE_RELAYED,
+    Max = pjnath_sys::PJ_ICE_CAND_TYPE_MAX,
+}
+
+/// pub type pj_ice_sess_check_state = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceSessCheckState {
+    Frozen = pjnath_sys::PJ_ICE_SESS_CHECK_STATE_FROZEN,
+    Waiting = pjnath_sys::PJ_ICE_SESS_CHECK_STATE_WAITING,
+    InProgress = pjnath_sys::PJ_ICE_SESS_CHECK_STATE_IN_PROGRESS,
+    Succeded = pjnath_sys::PJ_ICE_SESS_CHECK_STATE_SUCCEEDED,
+    Failed = pjnath_sys::PJ_ICE_SESS_CHECK_STATE_FAILED,
+}
+
+/// pub type pj_ice_sess_checklist_state = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceSessChecklistState {
+    Idle = pjnath_sys::PJ_ICE_SESS_CHECKLIST_ST_IDLE,
+    Running  = pjnath_sys::PJ_ICE_SESS_CHECKLIST_ST_RUNNING,
+    Completed = pjnath_sys::PJ_ICE_SESS_CHECKLIST_ST_COMPLETED,
+}
+
+/// pub type pj_ice_sess_role = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceSessRole {
+    Unknown = pjnath_sys::PJ_ICE_SESS_ROLE_UNKNOWN,
+    Controlled = pjnath_sys::PJ_ICE_SESS_ROLE_CONTROLLED,
+    Controllin = pjnath_sys::PJ_ICE_SESS_ROLE_CONTROLLING,
+}
+
+/// pub type pj_ice_sess_trickle = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceSessTrickle {
+    Disabled = pjnath_sys::PJ_ICE_SESS_TRICKLE_DISABLED,
+    Half = pjnath_sys::PJ_ICE_SESS_TRICKLE_HALF,
+    Full = pjnath_sys::PJ_ICE_SESS_TRICKLE_FULL,
+}
+
+/// pub type pj_stun_sock_op = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunSockOp {
+    Dns = pjnath_sys::PJ_STUN_SOCK_DNS_OP,
+    Binding = pjnath_sys::PJ_STUN_SOCK_BINDING_OP,
+    KeepAlive = pjnath_sys::PJ_STUN_SOCK_KEEP_ALIVE_OP,
+    MappedAddrChange = pjnath_sys::PJ_STUN_SOCK_MAPPED_ADDR_CHANGE,
+}
+
+/// pub type pj_turn_tp_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum TurnTpType {
+    Udp = pjnath_sys::PJ_TURN_TP_UDP,
+    Tcp = pjnath_sys::PJ_TURN_TP_TCP,
+    Tls = pjnath_sys::PJ_TURN_TP_TLS,
+}
+
+/// pub type pj_turn_state_t = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum TurnState {
+    Null = pjnath_sys::PJ_TURN_STATE_NULL,
+    Resolving = pjnath_sys::PJ_TURN_STATE_RESOLVING,
+    Resolved = pjnath_sys::PJ_TURN_STATE_RESOLVED,
+    Allocating = pjnath_sys::PJ_TURN_STATE_ALLOCATING,
+    Ready = pjnath_sys::PJ_TURN_STATE_READY,
+    Deallocating = pjnath_sys::PJ_TURN_STATE_DEALLOCATING,
+    Deallocated = pjnath_sys::PJ_TURN_STATE_DEALLOCATED,
+    Destroying = pjnath_sys::PJ_TURN_STATE_DESTROYING,
+}
+
+/// pub type pj_ice_strans_op = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceStransOp {
+    Init = pjnath_sys::PJ_ICE_STRANS_OP_INIT,
+    Negotiation = pjnath_sys::PJ_ICE_STRANS_OP_NEGOTIATION,
+    KeepAlive = pjnath_sys::PJ_ICE_STRANS_OP_KEEP_ALIVE,
+    AddrChange = pjnath_sys::PJ_ICE_STRANS_OP_ADDR_CHANGE,
+}
+
+/// pub type pj_ice_strans_state = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum IceStransState {
+    Null = pjnath_sys::PJ_ICE_STRANS_STATE_NULL,
+    Init = pjnath_sys::PJ_ICE_STRANS_STATE_INIT,
+    Ready = pjnath_sys::PJ_ICE_STRANS_STATE_READY,
+    SessReady = pjnath_sys::PJ_ICE_STRANS_STATE_SESS_READY,
+    Nego = pjnath_sys::PJ_ICE_STRANS_STATE_NEGO,
+    Running = pjnath_sys::PJ_ICE_STRANS_STATE_RUNNING,
+    Failed = pjnath_sys::PJ_ICE_STRANS_STATE_FAILED,
+}
+
+/// pub type pj_stun_nat_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum StunNatType {
+    Unknown = pjnath_sys::PJ_STUN_NAT_TYPE_UNKNOWN,
+    ErrUnknown = pjnath_sys::PJ_STUN_NAT_TYPE_ERR_UNKNOWN,
+    Open = pjnath_sys::PJ_STUN_NAT_TYPE_OPEN,
+    Blocked = pjnath_sys::PJ_STUN_NAT_TYPE_BLOCKED,
+    SymmetricUdp = pjnath_sys::PJ_STUN_NAT_TYPE_SYMMETRIC_UDP,
+    FullCone = pjnath_sys::PJ_STUN_NAT_TYPE_FULL_CONE,
+    Symmetric = pjnath_sys::PJ_STUN_NAT_TYPE_SYMMETRIC,
+    Restricted = pjnath_sys::PJ_STUN_NAT_TYPE_RESTRICTED,
+    PortRestricted = pjnath_sys::PJ_STUN_NAT_TYPE_PORT_RESTRICTED,
+}
