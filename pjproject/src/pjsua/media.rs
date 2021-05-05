@@ -1,6 +1,6 @@
 
 use std::{convert::TryFrom, path::PathBuf};
-use crate::{pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
+use crate::{pjmedia::{MediaEchoFlag, MediaJbDiscardAlgo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 pub trait MediaConfigExt {
@@ -103,8 +103,8 @@ pub trait MediaConfigExt {
     ///
     /// # Default
     /// 0.
-    fn set_ec_options(&mut self, value: MediaConfigEchoCancelarOption);
-    fn get_ec_options(&self) -> MediaConfigEchoCancelarOption;
+    fn set_ec_options(&mut self, value: MediaEchoFlag);
+    fn get_ec_options(&self) -> MediaEchoFlag;
 
     /// Echo canceller tail length, in miliseconds.
     ///
@@ -158,8 +158,8 @@ pub trait MediaConfigExt {
     fn get_jb_max(&self) -> i32;
 
     //     pub jb_discard_algo: pjmedia_jb_discard_algo,
-    fn set_jb_discard_algo(&mut self, value: JbDiscardAlgo);
-    fn get_jb_discard_algo(&self) -> JbDiscardAlgo;
+    fn set_jb_discard_algo(&mut self, value: MediaJbDiscardAlgo);
+    fn get_jb_discard_algo(&self) -> MediaJbDiscardAlgo;
 
     /// Enable ICE
     fn set_enable_ice(&mut self, value: bool);
@@ -380,12 +380,12 @@ impl MediaConfigExt for MediaConfig {
         self.rx_drop_pct
     }
 
-    fn set_ec_options(&mut self, value: MediaConfigEchoCancelarOption) {
+    fn set_ec_options(&mut self, value: MediaEchoFlag) {
         self.ec_options = value.into();
     }
 
-    fn get_ec_options(&self) -> MediaConfigEchoCancelarOption {
-        MediaConfigEchoCancelarOption::try_from(self.ec_options)
+    fn get_ec_options(&self) -> MediaEchoFlag {
+        MediaEchoFlag::try_from(self.ec_options)
         .expect("Error MediaConfig get ec_options")
     }
 
@@ -445,12 +445,12 @@ impl MediaConfigExt for MediaConfig {
         self.jb_max
     }
 
-    fn set_jb_discard_algo(&mut self, value: JbDiscardAlgo) {
+    fn set_jb_discard_algo(&mut self, value: MediaJbDiscardAlgo) {
         self.jb_discard_algo = value.into();
     }
 
-    fn get_jb_discard_algo(&self) -> JbDiscardAlgo {
-        JbDiscardAlgo::try_from(self.jb_discard_algo)
+    fn get_jb_discard_algo(&self) -> MediaJbDiscardAlgo {
+        MediaJbDiscardAlgo::try_from(self.jb_discard_algo)
         .expect("Error MediaConfig get jb_discard_algo")
     }
 

@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::utils::check_boolean;
+use crate::{pjmedia::{MediaDir, MediaJbDiscardAlgo, MediaTpProto, MediaType}, utils::check_boolean};
 
 use super::*;
 
@@ -25,10 +25,10 @@ pub trait MediaStreamInfoExt {
     fn get_type_ (&self) -> MediaType;
 
     /// Transport protocol (RTP/AVP, etc.)
-    fn get_proto (&self) -> MediaTransportProtocol;
+    fn get_proto (&self) -> MediaTpProto;
 
     /// Media direction.
-    fn get_dir (&self) -> MediaDirection;
+    fn get_dir (&self) -> MediaDir;
 
     // fn get_rem_addr (&self) -> pj_sockaddr;
     // fn get_rem_rtcp (&self) -> pj_sockaddr;
@@ -90,7 +90,7 @@ pub trait MediaStreamInfoExt {
 
     fn get_jb_max (&self) -> i32;
 
-    fn get_jb_discard_algo (&self) -> JbDiscardAlgo;
+    fn get_jb_discard_algo (&self) -> MediaJbDiscardAlgo;
 
     fn get_rtcp_sdes_bye_disabled (&self) -> bool;
 }
@@ -117,13 +117,13 @@ impl MediaStreamInfoExt for MediaStreamInfo {
         .expect("Error MediaStreamInfo get type_")
     }
 
-    fn get_proto (&self) -> MediaTransportProtocol {
-        MediaTransportProtocol::try_from(self.proto)
+    fn get_proto (&self) -> MediaTpProto {
+        MediaTpProto::try_from(self.proto)
         .expect("Error MediaStreamInfo get proto")
     }
 
-    fn get_dir (&self) -> MediaDirection {
-        MediaDirection::try_from(self.dir)
+    fn get_dir (&self) -> MediaDir {
+        MediaDir::try_from(self.dir)
         .expect("Error MediaStreamInfo get dir")
     }
 
@@ -223,8 +223,8 @@ impl MediaStreamInfoExt for MediaStreamInfo {
         self.jb_max
     }
 
-    fn get_jb_discard_algo (&self) -> JbDiscardAlgo {
-        JbDiscardAlgo::try_from(self.jb_discard_algo)
+    fn get_jb_discard_algo (&self) -> MediaJbDiscardAlgo {
+        MediaJbDiscardAlgo::try_from(self.jb_discard_algo)
         .expect("Error MediaStreamInfo get jb_discard_algo")
     }
 

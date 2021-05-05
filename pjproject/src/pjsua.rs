@@ -151,28 +151,6 @@ pub enum MediaConfigIlbcMode {
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum MediaConfigEchoCancelarOption {
-    Default = pjmedia_sys::PJMEDIA_ECHO_DEFAULT,
-    Speex = pjmedia_sys::PJMEDIA_ECHO_SPEEX,
-    Simple = pjmedia_sys::PJMEDIA_ECHO_SIMPLE,
-    WebRtc = pjmedia_sys::PJMEDIA_ECHO_WEBRTC,
-    AlgoMask = pjmedia_sys::PJMEDIA_ECHO_ALGO_MASK,
-    NoLock = pjmedia_sys::PJMEDIA_ECHO_NO_LOCK,
-    UseSimpleFifo = pjmedia_sys::PJMEDIA_ECHO_USE_SIMPLE_FIFO,
-    UseSwEcho = pjmedia_sys::PJMEDIA_ECHO_USE_SW_ECHO,
-    UseNoiseSuppressor = pjmedia_sys::PJMEDIA_ECHO_USE_NOISE_SUPPRESSOR,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum JbDiscardAlgo {
-    None = pjmedia_sys::PJMEDIA_JB_DISCARD_NONE,
-    Static = pjmedia_sys::PJMEDIA_JB_DISCARD_STATIC,
-    Progressive = pjmedia_sys::PJMEDIA_JB_DISCARD_PROGRESSIVE,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(i32)]
 pub enum CredentialInfoType {
     PlainText = 0,
@@ -199,15 +177,6 @@ pub enum AccountConfigIceUse {
 pub enum AccountConfigTurnUse {
     Default = pjsua_sys::PJSUA_TURN_CONFIG_USE_DEFAULT,
     Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum RtcpFbType {
-    ack = pjmedia_sys::PJMEDIA_RTCP_FB_ACK,
-    Nack = pjmedia_sys::PJMEDIA_RTCP_FB_NACK,
-    TrrInt = pjmedia_sys::PJMEDIA_RTCP_FB_TRR_INT,
-    FbOther = pjmedia_sys::PJMEDIA_RTCP_FB_OTHER,
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
@@ -322,50 +291,6 @@ pub enum CallMediaStatus {
     RemoteHold = pjsua_sys::PJSUA_CALL_MEDIA_REMOTE_HOLD,
     Error = pjsua_sys::PJSUA_CALL_MEDIA_ERROR,
 }
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum MediaDirection {
-    None = pjmedia_sys::PJMEDIA_DIR_NONE,
-    EncAndCap = pjmedia_sys::PJMEDIA_DIR_ENCODING,
-    DecAndPlayRender = pjmedia_sys::PJMEDIA_DIR_DECODING,
-    // Decoding = PJMEDIA_DIR_DECODING: pjmedia_dir = 2;
-    // Playback = PJMEDIA_DIR_PLAYBACK: pjmedia_dir = 2;
-    // Render = PJMEDIA_DIR_RENDER: pjmedia_dir = 2;
-    EncDecAndPlayRender = pjmedia_sys::PJMEDIA_DIR_ENCODING_DECODING,
-    // Playback = PJMEDIA_DIR_CAPTURE_PLAYBACK: pjmedia_dir = 3;
-    // Render = PJMEDIA_DIR_CAPTURE_RENDER: pjmedia_dir = 3;
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum MediaTransportProtocol {
-    None = pjmedia_sys::PJMEDIA_TP_PROTO_NONE,
-    Unknown = pjmedia_sys::PJMEDIA_TP_PROTO_UNKNOWN,
-    Udp = pjmedia_sys::PJMEDIA_TP_PROTO_UDP,
-    Rtp = pjmedia_sys::PJMEDIA_TP_PROTO_RTP,
-    Dtls = pjmedia_sys::PJMEDIA_TP_PROTO_DTLS,
-    RtcpFb = pjmedia_sys::PJMEDIA_TP_PROFILE_RTCP_FB,
-    Srtp = pjmedia_sys::PJMEDIA_TP_PROFILE_SRTP,
-    ProfileAvp = pjmedia_sys::PJMEDIA_TP_PROFILE_AVP,
-    RtpAvp = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_AVP,
-    RtpSavp = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_SAVP,
-    DtlsSrtp = pjmedia_sys::PJMEDIA_TP_PROTO_DTLS_SRTP,
-    RtpAvpf = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_AVPF,
-    RtpSavpf = pjmedia_sys::PJMEDIA_TP_PROTO_RTP_SAVPF,
-    DtlsSrtpf = pjmedia_sys::PJMEDIA_TP_PROTO_DTLS_SRTPF,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum MediaType {
-    None = pjmedia_sys::PJMEDIA_TYPE_NONE,
-    Audio = pjmedia_sys::PJMEDIA_TYPE_AUDIO,
-    Video = pjmedia_sys::PJMEDIA_TYPE_VIDEO,
-    Application = pjmedia_sys::PJMEDIA_TYPE_APPLICATION,
-    Unknown = pjmedia_sys::PJMEDIA_TYPE_UNKNOWN,
-}
-
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]

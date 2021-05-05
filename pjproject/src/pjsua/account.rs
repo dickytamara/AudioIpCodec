@@ -1,5 +1,5 @@
 use std::convert::TryFrom;
-use crate::utils::{boolean_to_pjbool, check_boolean};
+use crate::{pjmedia::MediaRtcpFbType, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 
@@ -557,8 +557,8 @@ pub trait RtcpFbCapabilityExt {
     fn get_codec_id (&self) -> String ;
 
     /// Specify the RTCP Feedback type.
-    fn set_type_ (&mut self, value: RtcpFbType);
-    fn get_type_ (&self) -> RtcpFbType;
+    fn set_type_ (&mut self, value: MediaRtcpFbType);
+    fn get_type_ (&self) -> MediaRtcpFbType;
 
     /// Specify the type name if RTCP Feedback type is PJMEDIA_RTCP_FB_OTHER.
     fn set_type_name (&mut self, value: String);
@@ -1226,12 +1226,12 @@ impl RtcpFbCapabilityExt for RtcpFbCapability {
         self.codec_id.to_string()
     }
 
-    fn set_type_ (&mut self, value: RtcpFbType) {
+    fn set_type_ (&mut self, value: MediaRtcpFbType) {
         self.type_ = value.into();
     }
 
-    fn get_type_ (&self) -> RtcpFbType {
-        RtcpFbType::try_from(self.type_)
+    fn get_type_ (&self) -> MediaRtcpFbType {
+        MediaRtcpFbType::try_from(self.type_)
         .expect("Error RtcpFbCapability get type_")
     }
 

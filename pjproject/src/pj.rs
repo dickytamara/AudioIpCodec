@@ -197,8 +197,6 @@ impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1> for pj_stun_auth_cred__bindgen_
     }
 }
 
-
-
 impl AutoCreate<pj_stun_auth_cred> for pj_stun_auth_cred {
     fn new() -> pj_stun_auth_cred {
 

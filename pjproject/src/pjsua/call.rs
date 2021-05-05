@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::utils::check_boolean;
+use crate::{pjmedia::MediaDir, utils::check_boolean};
 
 use super::*;
 
@@ -59,7 +59,7 @@ pub trait CallInfoExt {
 
     /// Media direction of the default audio stream. See media_status above on how the default
     /// is chosen.
-    fn get_media_dir (&self) -> MediaDirection;
+    fn get_media_dir (&self) -> MediaDir;
 
     /// The conference port number for the default audio stream. See media_status above on how
     /// the default is chosen.
@@ -165,8 +165,8 @@ impl CallInfoExt for CallInfo {
         .expect("Error CallInfo get media_status")
     }
 
-    fn get_media_dir (&self) -> MediaDirection {
-        MediaDirection::try_from(self.media_dir)
+    fn get_media_dir (&self) -> MediaDir {
+        MediaDir::try_from(self.media_dir)
         .expect("Error CallInfo get media_dir")
     }
 

@@ -21,7 +21,7 @@ pub mod auto;
 /// pub type pjmedia_type = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MeidaType {
+pub enum MediaType {
     None = pjmedia_sys::PJMEDIA_TYPE_NONE,
     Audio = pjmedia_sys::PJMEDIA_TYPE_AUDIO,
     Video = pjmedia_sys::PJMEDIA_TYPE_VIDEO,
@@ -86,7 +86,7 @@ pub enum MediaOrient {
 /// pub type pjmedia_clock_options = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaclockOptions {
+pub enum MediaClockOptions {
     NoAsync = pjmedia_sys::PJMEDIA_CLOCK_NO_ASYNC,
     NoHighestPtio = pjmedia_sys::PJMEDIA_CLOCK_NO_HIGHEST_PRIO,
 }
@@ -493,7 +493,7 @@ pub enum MediaJbFrameType {
 /// pub type pjmedia_jb_discard_algo = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaDiscardAlgo {
+pub enum MediaJbDiscardAlgo {
     None = pjmedia_sys::PJMEDIA_JB_DISCARD_NONE,
     Static = pjmedia_sys::PJMEDIA_JB_DISCARD_STATIC,
     Progressive = pjmedia_sys::PJMEDIA_JB_DISCARD_PROGRESSIVE,
