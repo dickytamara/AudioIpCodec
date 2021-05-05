@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::{pjmedia::MediaDir, utils::check_boolean};
+use crate::{pjmedia::MediaDir, pjsip::{SIPRole, SIPStatusCode}, utils::check_boolean};
 
 use super::*;
 
@@ -12,7 +12,7 @@ pub trait CallInfoExt {
     fn get_id (&self) -> i32;
 
     /// Initial call role (UAC == caller)
-    fn get_role (&self) -> CallInfoRole;
+    fn get_role (&self) -> SIPRole;
 
     /// The account ID where this call belongs.
     fn get_acc_id (&self) -> i32;
@@ -42,7 +42,7 @@ pub trait CallInfoExt {
     fn get_state_text (&self) -> String;
 
     /// Last status code heard, which can be used as cause code
-    fn get_last_status (&self) -> SipStatusCode;
+    fn get_last_status (&self) -> SIPStatusCode;
 
     /// The reason phrase describing the status.
     fn get_last_status_text (&self) -> String;
@@ -102,8 +102,8 @@ impl CallInfoExt for CallInfo {
         self.id
     }
 
-    fn get_role (&self) -> CallInfoRole {
-        CallInfoRole::try_from(self.role)
+    fn get_role (&self) -> SIPRole {
+        SIPRole::try_from(self.role)
         .expect("Error CallInfo get role")
     }
 
@@ -151,8 +151,8 @@ impl CallInfoExt for CallInfo {
         self.state_text.to_string()
     }
 
-    fn get_last_status (&self) -> SipStatusCode {
-        SipStatusCode::try_from(self.last_status)
+    fn get_last_status (&self) -> SIPStatusCode {
+        SIPStatusCode::try_from(self.last_status)
         .expect("Error CallInfo get last_status")
     }
 

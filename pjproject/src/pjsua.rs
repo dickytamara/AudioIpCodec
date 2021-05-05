@@ -93,14 +93,6 @@ pub enum UAConfigSipTimerUse {
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum UAConfigSrtpUse {
-    Disabled = pjmedia_sys::PJMEDIA_SRTP_DISABLED,
-    Optional = pjmedia_sys::PJMEDIA_SRTP_OPTIONAL,
-    Mandatory = pjmedia_sys::PJMEDIA_SRTP_MANDATORY,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(i32)]
 pub enum UAConfigSrtpSecureSignaling {
     Disable = 0,
@@ -207,33 +199,6 @@ pub enum CallHoldType {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum TransportType {
-    Unspecified = pjsip_sys::PJSIP_TRANSPORT_UNSPECIFIED,
-    Udp = pjsip_sys::PJSIP_TRANSPORT_UDP,
-    Tcp = pjsip_sys::PJSIP_TRANSPORT_TCP,
-    TLS = pjsip_sys::PJSIP_TRANSPORT_TLS,
-    Dtls = pjsip_sys::PJSIP_TRANSPORT_DTLS,
-    Sctp = pjsip_sys::PJSIP_TRANSPORT_SCTP,
-    Loop = pjsip_sys::PJSIP_TRANSPORT_LOOP,
-    LoopDgram = pjsip_sys::PJSIP_TRANSPORT_LOOP_DGRAM,
-    StartOther = pjsip_sys::PJSIP_TRANSPORT_START_OTHER,
-    Ipv6 = pjsip_sys::PJSIP_TRANSPORT_IPV6,
-    Udp6 = pjsip_sys::PJSIP_TRANSPORT_UDP6,
-    Tcp6 = pjsip_sys::PJSIP_TRANSPORT_TCP6,
-    Tls6 = pjsip_sys::PJSIP_TRANSPORT_TLS6,
-    Dtls6 = pjsip_sys::PJSIP_TRANSPORT_DTLS6,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum TransportFlags {
-    Reliable = pjsip_sys::PJSIP_TRANSPORT_RELIABLE,
-    Secure = pjsip_sys::PJSIP_TRANSPORT_SECURE,
-    Datagram = pjsip_sys::PJSIP_TRANSPORT_DATAGRAM,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
 pub enum TransportQosType {
     BestEffort = pj_sys::PJ_QOS_TYPE_BEST_EFFORT,
     Background = pj_sys::PJ_QOS_TYPE_BACKGROUND,
@@ -265,13 +230,6 @@ pub enum BuddyEvsubState {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum CallInfoRole {
-    Uac = pjsip_sys::PJSIP_ROLE_UAC,
-    Uas = pjsip_sys::PJSIP_ROLE_UAS,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
 pub enum InviteState {
     Null = pjsip_ua_sys::PJSIP_INV_STATE_NULL,
     Calling = pjsip_ua_sys::PJSIP_INV_STATE_CALLING,
@@ -291,93 +249,6 @@ pub enum CallMediaStatus {
     RemoteHold = pjsua_sys::PJSUA_CALL_MEDIA_REMOTE_HOLD,
     Error = pjsua_sys::PJSUA_CALL_MEDIA_ERROR,
 }
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum SipStatusCode {
-    Null = pjsip_sys::PJSIP_SC_NULL,
-    Trying = pjsip_sys::PJSIP_SC_TRYING,
-    Ringing = pjsip_sys::PJSIP_SC_RINGING,
-    CallBeingForwarded = pjsip_sys::PJSIP_SC_CALL_BEING_FORWARDED,
-    Queued = pjsip_sys::PJSIP_SC_QUEUED,
-    Progress = pjsip_sys::PJSIP_SC_PROGRESS,
-    EarlyDialogTerminated = pjsip_sys::PJSIP_SC_EARLY_DIALOG_TERMINATED,
-    Ok = pjsip_sys::PJSIP_SC_OK,
-    Accepted = pjsip_sys::PJSIP_SC_ACCEPTED,
-    NoNotification = pjsip_sys::PJSIP_SC_NO_NOTIFICATION,
-    MutipleChoices = pjsip_sys::PJSIP_SC_MULTIPLE_CHOICES,
-    MovedPermanently = pjsip_sys::PJSIP_SC_MOVED_PERMANENTLY,
-    MovedTemporarily = pjsip_sys::PJSIP_SC_MOVED_TEMPORARILY,
-    UseProxy = pjsip_sys::PJSIP_SC_USE_PROXY,
-    AlternativeService = pjsip_sys::PJSIP_SC_ALTERNATIVE_SERVICE,
-    BadRequest = pjsip_sys::PJSIP_SC_BAD_REQUEST,
-    Unauthorized = pjsip_sys::PJSIP_SC_UNAUTHORIZED,
-    PaymentRequired = pjsip_sys::PJSIP_SC_PAYMENT_REQUIRED,
-    Forbidden = pjsip_sys::PJSIP_SC_FORBIDDEN,
-    NotFound = pjsip_sys::PJSIP_SC_NOT_FOUND,
-    MethodNotAllowed = pjsip_sys::PJSIP_SC_METHOD_NOT_ALLOWED,
-    NotAcceptable = pjsip_sys::PJSIP_SC_NOT_ACCEPTABLE,
-    ProxyAuthenticationRequired = pjsip_sys::PJSIP_SC_PROXY_AUTHENTICATION_REQUIRED,
-    RequestTimeout = pjsip_sys::PJSIP_SC_REQUEST_TIMEOUT,
-    Conflict = pjsip_sys::PJSIP_SC_CONFLICT,
-    Gone = pjsip_sys::PJSIP_SC_GONE,
-    LengthRequired = pjsip_sys::PJSIP_SC_LENGTH_REQUIRED,
-    ConditionalRequestFailed = pjsip_sys::PJSIP_SC_CONDITIONAL_REQUEST_FAILED,
-    RequestEntityTooLarge = pjsip_sys::PJSIP_SC_REQUEST_ENTITY_TOO_LARGE,
-    RequestUriTooLong = pjsip_sys::PJSIP_SC_REQUEST_URI_TOO_LONG,
-    UnsuportedMediaType = pjsip_sys::PJSIP_SC_UNSUPPORTED_MEDIA_TYPE,
-    UnsuportedUriScheme = pjsip_sys::PJSIP_SC_UNSUPPORTED_URI_SCHEME,
-    UnknownResourcePriority = pjsip_sys::PJSIP_SC_UNKNOWN_RESOURCE_PRIORITY,
-    BadExtension = pjsip_sys::PJSIP_SC_BAD_EXTENSION,
-    ExtensionRequired = pjsip_sys::PJSIP_SC_EXTENSION_REQUIRED,
-    SessionTimerTooSmall = pjsip_sys::PJSIP_SC_SESSION_TIMER_TOO_SMALL,
-    IntervalTooBrief = pjsip_sys::PJSIP_SC_INTERVAL_TOO_BRIEF,
-    BadLocationInformation = pjsip_sys::PJSIP_SC_BAD_LOCATION_INFORMATION,
-    UseIndentityHeader = pjsip_sys::PJSIP_SC_USE_IDENTITY_HEADER,
-    ProvideReferrerHeader = pjsip_sys::PJSIP_SC_PROVIDE_REFERRER_HEADER,
-    FlowFailed = pjsip_sys::PJSIP_SC_FLOW_FAILED,
-    AnonimityDisallowed = pjsip_sys::PJSIP_SC_ANONIMITY_DISALLOWED,
-    BadIdentityInfo = pjsip_sys::PJSIP_SC_BAD_IDENTITY_INFO,
-    UnsupportedCertificate = pjsip_sys::PJSIP_SC_UNSUPPORTED_CERTIFICATE,
-    InvalidIdentityHeader = pjsip_sys::PJSIP_SC_INVALID_IDENTITY_HEADER,
-    FirstHodLacksOutboundSupport = pjsip_sys::PJSIP_SC_FIRST_HOP_LACKS_OUTBOUND_SUPPORT,
-    MaxBreadthExceeded = pjsip_sys::PJSIP_SC_MAX_BREADTH_EXCEEDED,
-    BadInfoPackage = pjsip_sys::PJSIP_SC_BAD_INFO_PACKAGE,
-    ConsentNeeded = pjsip_sys::PJSIP_SC_CONSENT_NEEDED,
-    TemporarilyUnavailable = pjsip_sys::PJSIP_SC_TEMPORARILY_UNAVAILABLE,
-    CallTsxDoesNotExist = pjsip_sys::PJSIP_SC_CALL_TSX_DOES_NOT_EXIST,
-    LoopDetected = pjsip_sys::PJSIP_SC_LOOP_DETECTED,
-    TooManyHops = pjsip_sys::PJSIP_SC_TOO_MANY_HOPS,
-    AddressIncomplete = pjsip_sys::PJSIP_SC_ADDRESS_INCOMPLETE,
-    AcAmbiguous = pjsip_sys::PJSIP_AC_AMBIGUOUS,
-    BusyHere = pjsip_sys::PJSIP_SC_BUSY_HERE,
-    RequestTerminated = pjsip_sys::PJSIP_SC_REQUEST_TERMINATED,
-    NotAcceptableHere = pjsip_sys::PJSIP_SC_NOT_ACCEPTABLE_HERE,
-    BadEvent = pjsip_sys::PJSIP_SC_BAD_EVENT,
-    RequestUpdated = pjsip_sys::PJSIP_SC_REQUEST_UPDATED,
-    RequestPending = pjsip_sys::PJSIP_SC_REQUEST_PENDING,
-    Undecipherable = pjsip_sys::PJSIP_SC_UNDECIPHERABLE,
-    SecurityAgreementNeeded = pjsip_sys::PJSIP_SC_SECURITY_AGREEMENT_NEEDED,
-    IntenalServerError = pjsip_sys::PJSIP_SC_INTERNAL_SERVER_ERROR,
-    NotImplemented = pjsip_sys::PJSIP_SC_NOT_IMPLEMENTED,
-    BadGateway = pjsip_sys::PJSIP_SC_BAD_GATEWAY,
-    ServiceUnavailable = pjsip_sys::PJSIP_SC_SERVICE_UNAVAILABLE,
-    ServerTimeout = pjsip_sys::PJSIP_SC_SERVER_TIMEOUT,
-    VersionNotSupported = pjsip_sys::PJSIP_SC_VERSION_NOT_SUPPORTED,
-    MessageTooLarge = pjsip_sys::PJSIP_SC_MESSAGE_TOO_LARGE,
-    PushNotificationServiceNotSupported = pjsip_sys::PJSIP_SC_PUSH_NOTIFICATION_SERVICE_NOT_SUPPORTED,
-    PreconditionFailure = pjsip_sys::PJSIP_SC_PRECONDITION_FAILURE,
-    BusyEverywhere = pjsip_sys::PJSIP_SC_BUSY_EVERYWHERE,
-    Decline = pjsip_sys::PJSIP_SC_DECLINE,
-    DoesNotExistAnywhere = pjsip_sys::PJSIP_SC_DOES_NOT_EXIST_ANYWHERE,
-    NotAcceptableAnywhere = pjsip_sys::PJSIP_SC_NOT_ACCEPTABLE_ANYWHERE,
-    Unwanted = pjsip_sys::PJSIP_SC_UNWANTED,
-    Rejected = pjsip_sys::PJSIP_SC_REJECTED,
-    // TsxTimeout = pjsip_sys::PJSIP_SC_TSX_TIMEOUT,
-    // TsxTransportError = pjsip_sys::PJSIP_SC_TSX_TRANSPORT_ERROR,
-    Force32Bit = pjsip_sys::PJSIP_SC__force_32bit,
-}
-
 
 #[link(name="pjsua")]
 extern "C" {

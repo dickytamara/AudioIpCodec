@@ -4,8 +4,6 @@ use crate::{pjmedia::{MediaDir, MediaJbDiscardAlgo, MediaTpProto, MediaType}, ut
 
 use super::*;
 
-// use pj_sys::pj_sockaddr;
-
 pub trait CodecInfoExt {
     /// Codec unique identification.
     fn get_codec_id (&self) -> String;

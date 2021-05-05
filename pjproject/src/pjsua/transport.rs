@@ -1,5 +1,7 @@
 
 use std::convert::TryFrom;
+use crate::pjsip::{SIPTransportFlags, SIPTransportType};
+
 use super::*;
 
 pub trait TransportConfigExt {
@@ -66,7 +68,7 @@ pub trait TransportInfoExt {
     fn get_id (&self) -> i32;
 
     /// Transport type.
-    fn get_type (&self) -> TransportType;
+    fn get_type (&self) -> SIPTransportType;
 
     /// Transport type name.
     fn get_type_name (&self) -> String;
@@ -75,7 +77,7 @@ pub trait TransportInfoExt {
     fn get_info (&self) -> String;
 
     /// Transport flag (see #TrasportFlags).
-    fn get_flag (&self) -> TransportFlags;
+    fn get_flag (&self) -> SIPTransportFlags;
 
     /// Local address length.
     fn get_addr_len (&self) -> u32;
@@ -140,8 +142,8 @@ impl TransportInfoExt for TransportInfo {
         self.id
     }
 
-    fn get_type (&self) -> TransportType {
-        TransportType::try_from(self.type_)
+    fn get_type (&self) -> SIPTransportType {
+        SIPTransportType::try_from(self.type_)
         .expect("Error TransportInfo get type_")
     }
 
@@ -153,8 +155,8 @@ impl TransportInfoExt for TransportInfo {
         self.info.to_string()
     }
 
-    fn get_flag (&self) -> TransportFlags {
-        TransportFlags::try_from(self.flag)
+    fn get_flag (&self) -> SIPTransportFlags {
+        SIPTransportFlags::try_from(self.flag)
         .expect("Error TransportInfo get flag")
     }
 

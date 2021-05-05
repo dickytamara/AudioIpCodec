@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::utils::{boolean_to_pjbool, check_boolean};
+use crate::{pjmedia::MediaSrtpUse, utils::{boolean_to_pjbool, check_boolean}};
 
 use super::*;
 
@@ -175,8 +175,8 @@ pub trait UAConfigExt {
     ///
     /// # Default
     /// PJSUA_DEFAULT_USE_SRTP`
-    fn set_use_srtp(&mut self, value: UAConfigSrtpUse);
-    fn get_use_srtp(&self) -> UAConfigSrtpUse;
+    fn set_use_srtp(&mut self, value: MediaSrtpUse);
+    fn get_use_srtp(&self) -> MediaSrtpUse;
 
     /// Specify whether SRTP requires secure signaling to be used. This option is only used when use_srtp option above is non-zero.
     ///
@@ -520,12 +520,12 @@ impl UAConfigExt for UAConfig {
         self.user_agent.to_string()
     }
 
-    fn set_use_srtp(&mut self, value: UAConfigSrtpUse) {
+    fn set_use_srtp(&mut self, value: MediaSrtpUse) {
         self.use_srtp = value.into();
     }
 
-    fn get_use_srtp(&self) -> UAConfigSrtpUse {
-        UAConfigSrtpUse::try_from(self.use_srtp)
+    fn get_use_srtp(&self) -> MediaSrtpUse {
+        MediaSrtpUse::try_from(self.use_srtp)
         .expect("Error UAConfig get use_srtp")
     }
 
