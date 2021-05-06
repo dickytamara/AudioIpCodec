@@ -6,7 +6,7 @@ use super::*;
 
 
 // readonly
-pub trait CallInfoExt {
+pub trait UACallInfoExt {
 
     /// Call identification.
     fn get_id (&self) -> i32;
@@ -95,8 +95,25 @@ pub trait CallInfoExt {
     // fn get_buf_ (&self) -> pjsua_call_info__bindgen_ty_1;
 }
 
+pub trait UAStreamInfoExt {
 
-impl CallInfoExt for CallInfo {
+}
+
+pub trait UAStreamStatExt {
+
+}
+
+pub trait UACallVidStrmOpParamExt {
+    
+}
+
+pub trait UACallSendDtmfParamExt {
+    
+}
+
+
+
+impl UACallInfoExt for UACallInfo {
 
     fn get_id (&self) -> i32 {
         self.id
@@ -178,7 +195,7 @@ impl CallInfoExt for CallInfo {
         self.media_cnt
     }
 
-    fn get_media (&self) -> [CallMediaInfo; 16usize] {
+    fn get_media (&self) -> [UACallMediaInfo; 16usize] {
         todo!()
     }
 
@@ -186,7 +203,7 @@ impl CallInfoExt for CallInfo {
         self.prov_media_cnt
     }
 
-    fn get_prov_media (&self) -> [CallMediaInfo; 16usize] {
+    fn get_prov_media (&self) -> [UACallMediaInfo; 16usize] {
         todo!()
     }
 

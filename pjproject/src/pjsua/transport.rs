@@ -92,7 +92,6 @@ pub trait UATransportInfoExt {
     fn get_usage_count (&self) -> u32;
 }
 
-
 impl UATransportConfigExt for UATransportConfig {
 
     fn set_port(&mut self, value: u32) {

@@ -482,7 +482,7 @@ impl AutoCreate<pjsua_sys::pjsua_call_media_info__bindgen_ty_1> for pjsua_sys::p
     }
 }
 
-impl AutoCreate<CallMediaInfo> for CallMediaInfo {
+impl AutoCreate<UACallMediaInfo> for UACallMediaInfo {
     fn new() -> Self {
         Self {
             index: 0,
@@ -494,7 +494,7 @@ impl AutoCreate<CallMediaInfo> for CallMediaInfo {
     }
 }
 
-impl AutoCreate<CallInfo> for CallInfo {
+impl AutoCreate<UACallInfo> for UACallInfo {
     fn new() -> Self {
         Self {
             id: -1,
@@ -515,25 +515,25 @@ impl AutoCreate<CallInfo> for CallInfo {
             conf_slot: -1,
             media_cnt: 0,
             media: [
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
             ],
             prov_media_cnt: 0,
             prov_media: [
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
-                CallMediaInfo::new(), CallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
+                UACallMediaInfo::new(), UACallMediaInfo::new(),
             ],
             connect_duration: pj_time_val::new(),
             total_duration: pj_time_val::new(),
@@ -619,7 +619,7 @@ impl AutoCreate<pjsua_sys::pjsua_stream_info__bindgen_ty_1> for pjsua_sys::pjsua
     }
 }
 
-impl AutoCreate<StreamInfo> for StreamInfo {
+impl AutoCreate<UAStreamInfo> for UAStreamInfo {
 
     fn new() -> Self {
         Self {
@@ -629,7 +629,7 @@ impl AutoCreate<StreamInfo> for StreamInfo {
     }
 }
 
-impl AutoCreate<StreamStatus> for StreamStatus {
+impl AutoCreate<UAStreamStat> for UAStreamStat {
     fn new () -> Self {
         Self {
             rtcp: pjmedia_rtcp_stat::new(),

@@ -57,6 +57,13 @@ pub type UATurnConfig = pjsua_sys::pjsua_turn_config;
 pub type UAAccConfig = pjsua_sys::pjsua_acc_config;
 pub type UAAccInfo = pjsua_sys::pjsua_acc_info;
 
+// calls management
+pub type UACallMediaInfo = pjsua_sys::pjsua_call_media_info;
+pub type UACallInfo = pjsua_sys::pjsua_call_info;
+pub type UAStreamInfo = pjsua_sys::pjsua_stream_info;
+pub type UAStreamStat = pjsua_sys::pjsua_stream_stat;
+pub type UACallVidStrmOpParam = pjsua_sys::pjsua_call_vid_strm_op_param;
+pub type UACallSendDtmfParam = pjsua_sys::pjsua_call_send_dtmf_param;
 
 pub type UAMediaConfig = pjsua_sys::pjsua_media_config;
 pub type UABuddyConfig = pjsua_sys::pjsua_buddy_config;
@@ -65,11 +72,7 @@ pub type UABuddyConfig = pjsua_sys::pjsua_buddy_config;
 
 // info and status struct
 pub type BuddyInfo = pjsua_sys::pjsua_buddy_info;
-pub type CallMediaInfo = pjsua_sys::pjsua_call_media_info;
-pub type CallInfo = pjsua_sys::pjsua_call_info;
 pub type ConferencePortInfo = pjsua_sys::pjsua_conf_port_info;
-pub type StreamInfo = pjsua_sys::pjsua_stream_info;
-pub type StreamStatus = pjsua_sys::pjsua_stream_stat;
 pub type UACodecInfo = pjsua_sys::pjsua_codec_info;
 pub type CredentialInfo = pjsip_sys::pjsip_cred_info;
 
@@ -701,7 +704,7 @@ pub fn call_get_conf_port (call_id: i32) -> i32 {
     unsafe { pjsua_sys::pjsua_call_get_conf_port(call_id) }
 }
 
-pub fn call_get_info (call_id: i32, info: &mut CallInfo) -> Result<(), i32> {
+pub fn call_get_info (call_id: i32, info: &mut UACallInfo) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_call_get_info(call_id, info as *mut _)) }
 }
 
@@ -995,13 +998,13 @@ pub fn call_dump(
     }
 }
 
-pub fn call_get_stream_info (call_id: i32, med_idx: u32, psi: &mut StreamInfo) -> Result<(), i32> {
+pub fn call_get_stream_info (call_id: i32, med_idx: u32, psi: &mut UAStreamInfo) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_call_get_stream_info (call_id, med_idx, psi as *mut _))
     }
 }
 
-pub fn call_get_stream_stat (call_id: i32, med_idx: u32, stat: &mut StreamStatus) -> Result<(), i32> {
+pub fn call_get_stream_stat (call_id: i32, med_idx: u32, stat: &mut UAStreamStat) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_call_get_stream_stat( call_id, med_idx, stat as *mut _))
     }
