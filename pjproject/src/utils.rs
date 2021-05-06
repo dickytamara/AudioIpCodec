@@ -1,6 +1,4 @@
-
 use pj_sys::*;
-
 
 // global trait for new struct
 pub trait AutoCreate<T> {

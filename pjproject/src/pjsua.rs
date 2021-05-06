@@ -1,6 +1,3 @@
-#![allow(non_camel_case_types)]
-#![allow(non_upper_case_globals)]
-#![allow(dead_code)]
 
 use pj_sys::{PJ_SUCCESS, pj_pool_factory, pj_pool_release, pj_pool_safe_release, pj_pool_t, pj_str_t, pj_time_val, pj_timer_entry};
 use pjmedia_sys::{pjmedia_aud_dev_info, pjmedia_codec_param, pjmedia_echo_stat, pjmedia_endpt, pjmedia_port, pjmedia_sdp_session, pjmedia_snd_dev_info, pjmedia_snd_port, pjmedia_snd_port_param, pjmedia_srtp_crypto, pjmedia_stream_info, pjmedia_transport_info, pjmedia_wav_player_info};
@@ -75,14 +72,54 @@ pub const INVALID_ID: i32 = -1;
 pub const MAX_ACC: usize = pjsua_sys::PJSUA_MAX_ACC as usize;
 pub const MAX_BUDDIES: usize = pjsua_sys::PJSUA_MAX_BUDDIES as usize;
 
+
+/// pub type pjsua_state = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum UAConfig100relUse {
-    NotUsed = pjsua_sys::PJSUA_100REL_NOT_USED,
-    Mandatory = pjsua_sys::PJSUA_100REL_MANDATORY,
-    Optional = pjsua_sys::PJSUA_100REL_OPTIONAL
+pub enum SUAState {
+    Null = pjsua_sys::PJSUA_STATE_NULL,
+    Created = pjsua_sys::PJSUA_STATE_CREATED,
+    Init = pjsua_sys::PJSUA_STATE_INIT,
+    Starting = pjsua_sys::PJSUA_STATE_STARTING,
+    Running = pjsua_sys::PJSUA_STATE_RUNNING,
+    Closing = pjsua_sys::PJSUA_STATE_CLOSING,
 }
 
+/// pub type pjsua_med_tp_st = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUAMedTpSt {
+    Null = pjsua_sys::PJSUA_MED_TP_NULL,
+    Creating = pjsua_sys::PJSUA_MED_TP_CREATING,
+    Idle = pjsua_sys::PJSUA_MED_TP_IDLE, 
+    Init = pjsua_sys::PJSUA_MED_TP_INIT, 
+    Running = pjsua_sys::PJSUA_MED_TP_RUNNING, 
+    Disabled = pjsua_sys::PJSUA_MED_TP_DISABLED, 
+}
+
+/// pub type pjsua_contact_rewrite_method = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUAContactRewriteMethod {
+    Unregister = pjsua_sys::PJSUA_CONTACT_REWRITE_UNREGISTER,
+    NoUnreg = pjsua_sys::PJSUA_CONTACT_REWRITE_NO_UNREG,
+    AlwaysUpdate = pjsua_sys::PJSUA_CONTACT_REWRITE_ALWAYS_UPDATE,
+}
+
+/// pub type pjsua_ip_change_op = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUAIpChangeOp {
+    Null = pjsua_sys::PJSUA_IP_CHANGE_OP_NULL,
+    RestartLis = pjsua_sys::PJSUA_IP_CHANGE_OP_RESTART_LIS,
+    AccShutdownTp = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP, 
+    AccUpdateContact = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT, 
+    AccHangupCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS, 
+    AccReinviteCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS, 
+    Completed = pjsua_sys::PJSUA_IP_CHANGE_OP_COMPLETED, 
+}
+
+/// pub type pjsua_sip_timer_use = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum UAConfigSipTimerUse {
@@ -92,6 +129,149 @@ pub enum UAConfigSipTimerUse {
     Always = pjsua_sys::PJSUA_SIP_TIMER_ALWAYS
 }
 
+/// pub type pjsua_100rel_use = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum UAConfig100relUse {
+    NotUsed = pjsua_sys::PJSUA_100REL_NOT_USED,
+    Mandatory = pjsua_sys::PJSUA_100REL_MANDATORY,
+    Optional = pjsua_sys::PJSUA_100REL_OPTIONAL
+}
+
+/// pub type pjsua_destroy_flag = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUADestroyFlag {
+    NoRxMsg = pjsua_sys::PJSUA_DESTROY_NO_RX_MSG,
+    NoTxMsg = pjsua_sys::PJSUA_DESTROY_NO_TX_MSG,
+    NoNetwork = pjsua_sys::PJSUA_DESTROY_NO_NETWORK,
+}
+
+/// pub type pjsua_call_hold_type = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallHoldType {
+    Rfc3264 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC3264,
+    Rfc2543 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC2543,
+}
+
+/// pub type pjsua_stun_use = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountConfigStunUse {
+    Default = pjsua_sys::PJSUA_STUN_USE_DEFAULT,
+    Disabled = pjsua_sys::PJSUA_STUN_USE_DISABLED,
+    RetryOnFailure = pjsua_sys::PJSUA_STUN_RETRY_ON_FAILURE,
+}
+
+/// pub type pjsua_ice_config_use = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountConfigIceUse {
+    Default = pjsua_sys::PJSUA_ICE_CONFIG_USE_DEFAULT,
+    Custom = pjsua_sys::PJSUA_ICE_CONFIG_USE_CUSTOM,
+}
+
+/// pub type pjsua_turn_config_use = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum AccountConfigTurnUse {
+    Default = pjsua_sys::PJSUA_TURN_CONFIG_USE_DEFAULT,
+    Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
+}
+
+/// pub type pjsua_ipv6_use = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUAIpV6Use {
+    Disabled = pjsua_sys::PJSUA_IPV6_DISABLED,
+    Enabled = pjsua_sys::PJSUA_IPV6_ENABLED,
+}
+
+/// pub type pjsua_nat64_opt = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUANat64Use {
+    Disabled = pjsua_sys::PJSUA_NAT64_DISABLED,
+    Enabled = pjsua_sys::PJSUA_NAT64_ENABLED,
+}
+
+/// pub type pjsua_call_media_status = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallMediaStatus {
+    None = pjsua_sys::PJSUA_CALL_MEDIA_NONE,
+    Active = pjsua_sys::PJSUA_CALL_MEDIA_ACTIVE,
+    LocalHold = pjsua_sys::PJSUA_CALL_MEDIA_LOCAL_HOLD,
+    RemoteHold = pjsua_sys::PJSUA_CALL_MEDIA_REMOTE_HOLD,
+    Error = pjsua_sys::PJSUA_CALL_MEDIA_ERROR,
+}
+
+/// pub type pjsua_vid_req_keyframe_method = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum KeyFrameMethod {
+    SipInfo = pjsua_sys::PJSUA_VID_REQ_KEYFRAME_SIP_INFO,
+    RtcpPLI = pjsua_sys::PJSUA_VID_REQ_KEYFRAME_RTCP_PLI,
+}
+
+/// pub type pjsua_call_flag = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum CallFlags {
+    Unhold = pjsua_sys::PJSUA_CALL_UNHOLD,
+    UpdateContact = pjsua_sys::PJSUA_CALL_UPDATE_CONTACT,
+    IncludeDisabledMedia = pjsua_sys::PJSUA_CALL_INCLUDE_DISABLED_MEDIA,
+    NoSdpOffer = pjsua_sys::PJSUA_CALL_NO_SDP_OFFER,
+    ReinitMedia = pjsua_sys::PJSUA_CALL_REINIT_MEDIA,
+    UpdateVia = pjsua_sys::PJSUA_CALL_UPDATE_VIA,
+    UpdateTarget = pjsua_sys::PJSUA_CALL_UPDATE_TARGET,
+}
+
+/// pub type pjsua_call_vid_strm_op = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUACallVidStrmOp {
+    NoOp = pjsua_sys::PJSUA_CALL_VID_STRM_NO_OP,
+    Add = pjsua_sys::PJSUA_CALL_VID_STRM_ADD, 
+    Remove = pjsua_sys::PJSUA_CALL_VID_STRM_REMOVE, 
+    ChangeDir = pjsua_sys::PJSUA_CALL_VID_STRM_CHANGE_DIR, 
+    ChangeCapDev = pjsua_sys::PJSUA_CALL_VID_STRM_CHANGE_CAP_DEV,
+    StartTransmit = pjsua_sys::PJSUA_CALL_VID_STRM_START_TRANSMIT, 
+    StopTransmit = pjsua_sys::PJSUA_CALL_VID_STRM_STOP_TRANSMIT, 
+    SendKeyframe = pjsua_sys::PJSUA_CALL_VID_STRM_SEND_KEYFRAME, 
+}
+
+/// pub type pjsua_buddy_status = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum BuddyStatus {
+    Unknown = pjsua_sys::PJSUA_BUDDY_STATUS_UNKNOWN,
+    Online = pjsua_sys::PJSUA_BUDDY_STATUS_ONLINE,
+    Offline = pjsua_sys::PJSUA_BUDDY_STATUS_OFFLINE,
+}
+
+/// pub type pjsua_snd_dev_id = i32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(i32)]
+pub enum SUASndDevId {
+    DefaultCaptureDev = pjsua_sys::PJSUA_SND_DEFAULT_CAPTURE_DEV,
+    DefaultPlaybackDev = pjsua_sys::PJSUA_SND_DEFAULT_PLAYBACK_DEV,
+    NoDev = pjsua_sys::PJSUA_SND_NO_DEV,
+    NullDev = pjsua_sys::PJSUA_SND_NULL_DEV,
+}
+
+/// pub type pjsua_snd_dev_mode = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum SUASndDevMode {
+    SpeakerOnly = pjsua_sys::PJSUA_SND_DEV_SPEAKER_ONLY,
+    ImmediateOpen = pjsua_sys::PJSUA_SND_DEV_NO_IMMEDIATE_OPEN,
+}
+
+
+
+
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(i32)]
 pub enum UAConfigSrtpSecureSignaling {
@@ -99,15 +279,6 @@ pub enum UAConfigSrtpSecureSignaling {
     Tls = 1,
     Sips = 3,
 }
-
-// #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-// #[repr(u32)]
-// pub enum LogConfigFileFlags {
-//     ReadOnly = pj_sys::PJ_O_RDONLY,
-//     WriteOnly = pj_sys::PJ_O_WRONLY,
-//     ReadWrite = pj_sys::PJ_O_RDWR,
-//     Append = pj_sys::PJ_O_APPEND
-// }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
@@ -149,82 +320,12 @@ pub enum CredentialInfoType {
     HashDigest = 1,
 }
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum AccountConfigStunUse {
-    Default = pjsua_sys::PJSUA_STUN_USE_DEFAULT,
-    Disabled = pjsua_sys::PJSUA_STUN_USE_DISABLED,
-    RetryOnFailure = pjsua_sys::PJSUA_STUN_RETRY_ON_FAILURE,
-}
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum AccountConfigIceUse {
-    Default = pjsua_sys::PJSUA_ICE_CONFIG_USE_DEFAULT,
-    Custom = pjsua_sys::PJSUA_ICE_CONFIG_USE_CUSTOM,
-}
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum AccountConfigTurnUse {
-    Default = pjsua_sys::PJSUA_TURN_CONFIG_USE_DEFAULT,
-    Custom = pjsua_sys::PJSUA_TURN_CONFIG_USE_CUSTOM,
-}
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum CallFlags {
-    Unhold = pjsua_sys::PJSUA_CALL_UNHOLD,
-    UpdateContact = pjsua_sys::PJSUA_CALL_UPDATE_CONTACT,
-    IncludeDisabledMedia = pjsua_sys::PJSUA_CALL_INCLUDE_DISABLED_MEDIA,
-    NoSdpOffer = pjsua_sys::PJSUA_CALL_NO_SDP_OFFER,
-    ReinitMedia = pjsua_sys::PJSUA_CALL_REINIT_MEDIA,
-    UpdateVia = pjsua_sys::PJSUA_CALL_UPDATE_VIA,
-    UpdateTarget = pjsua_sys::PJSUA_CALL_UPDATE_TARGET,
-}
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum KeyFrameMethod {
-    SipInfo = pjsua_sys::PJSUA_VID_REQ_KEYFRAME_SIP_INFO,
-    RtcpPLI = pjsua_sys::PJSUA_VID_REQ_KEYFRAME_RTCP_PLI,
-}
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum CallHoldType {
-    Rfc3264 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC3264,
-    Rfc2543 = pjsua_sys::PJSUA_CALL_HOLD_TYPE_RFC2543,
-}
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum TransportQosType {
-    BestEffort = pj_sys::PJ_QOS_TYPE_BEST_EFFORT,
-    Background = pj_sys::PJ_QOS_TYPE_BACKGROUND,
-    Video = pj_sys::PJ_QOS_TYPE_VIDEO,
-    Voice = pj_sys::PJ_QOS_TYPE_VOICE,
-    Control = pj_sys::PJ_QOS_TYPE_CONTROL,
-    Signaling = pj_sys::PJ_QOS_TYPE_SIGNALLING,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum BuddyStatus {
-    Unknown = pjsua_sys::PJSUA_BUDDY_STATUS_UNKNOWN,
-    Online = pjsua_sys::PJSUA_BUDDY_STATUS_ONLINE,
-    Offline = pjsua_sys::PJSUA_BUDDY_STATUS_OFFLINE,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum CallMediaStatus {
-    None = pjsua_sys::PJSUA_CALL_MEDIA_NONE,
-    Active = pjsua_sys::PJSUA_CALL_MEDIA_ACTIVE,
-    LocalHold = pjsua_sys::PJSUA_CALL_MEDIA_LOCAL_HOLD,
-    RemoteHold = pjsua_sys::PJSUA_CALL_MEDIA_REMOTE_HOLD,
-    Error = pjsua_sys::PJSUA_CALL_MEDIA_ERROR,
-}
 
 #[link(name="pjsua")]
 extern "C" {

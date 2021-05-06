@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::pjsip::{SIPTransportFlags, SIPTransportType};
+use crate::{pj::QOSType, pjsip::{SIPTransportFlags, SIPTransportType}};
 
 use super::*;
 
@@ -53,8 +53,8 @@ pub trait TransportConfigExt {
     /// # default
     /// QoS not set.
     ///
-    fn set_qos_type(&mut self, value: TransportQosType);
-    fn get_qos_type(&self) -> TransportQosType;
+    fn set_qos_type(&mut self, value: QOSType);
+    fn get_qos_type(&self) -> QOSType;
 
     // fn get_tls_setting(&self) -> pjsip_tls_setting;
     // fn get_qos_params(&self) -> pj_qos_params,
@@ -127,12 +127,12 @@ impl TransportConfigExt for TransportConfig {
         self.bound_addr.to_string()
     }
 
-    fn set_qos_type(&mut self, value: TransportQosType) {
+    fn set_qos_type(&mut self, value: QOSType) {
         self.qos_type = value.into()
     }
 
-    fn get_qos_type(&self) -> TransportQosType {
-        TransportQosType::try_from(self.qos_type)
+    fn get_qos_type(&self) -> QOSType {
+        QOSType::try_from(self.qos_type)
         .expect("Error TrasportConfig get qos_type")
     }
 }

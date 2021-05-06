@@ -1,3 +1,7 @@
+#![allow(dead_code)]
+#![allow(non_camel_case_types)]
+#![allow(non_upper_case_globals)]
+
 extern crate num_enum;
 extern crate pj_sys;
 extern crate pjlib_util_sys;
@@ -10,7 +14,6 @@ extern crate pjsip_sys;
 extern crate pjsip_simple_sys;
 extern crate pjsip_ua_sys;
 extern crate pjsua_sys;
-
 
 pub mod utils;
 pub mod prelude;
