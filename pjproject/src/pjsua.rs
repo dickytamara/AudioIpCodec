@@ -100,14 +100,14 @@ pub enum UAConfigSrtpSecureSignaling {
     Sips = 3,
 }
 
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum LogConfigFileFlags {
-    ReadOnly = pj_sys::PJ_O_RDONLY,
-    WriteOnly = pj_sys::PJ_O_WRONLY,
-    ReadWrite = pj_sys::PJ_O_RDWR,
-    Append = pj_sys::PJ_O_APPEND
-}
+// #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+// #[repr(u32)]
+// pub enum LogConfigFileFlags {
+//     ReadOnly = pj_sys::PJ_O_RDONLY,
+//     WriteOnly = pj_sys::PJ_O_WRONLY,
+//     ReadWrite = pj_sys::PJ_O_RDWR,
+//     Append = pj_sys::PJ_O_APPEND
+// }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
@@ -214,18 +214,6 @@ pub enum BuddyStatus {
     Unknown = pjsua_sys::PJSUA_BUDDY_STATUS_UNKNOWN,
     Online = pjsua_sys::PJSUA_BUDDY_STATUS_ONLINE,
     Offline = pjsua_sys::PJSUA_BUDDY_STATUS_OFFLINE,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
-pub enum BuddyEvsubState {
-    Null = pjsip_simple_sys::PJSIP_EVSUB_STATE_NULL,
-    Sent = pjsip_simple_sys::PJSIP_EVSUB_STATE_SENT,
-    Accepted = pjsip_simple_sys::PJSIP_EVSUB_STATE_ACCEPTED,
-    Pending = pjsip_simple_sys::PJSIP_EVSUB_STATE_PENDING,
-    Active = pjsip_simple_sys::PJSIP_EVSUB_STATE_ACTIVE,
-    Terminated = pjsip_simple_sys::PJSIP_EVSUB_STATE_TERMINATED,
-    Unknown = pjsip_simple_sys::PJSIP_EVSUB_STATE_UNKNOWN,
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]

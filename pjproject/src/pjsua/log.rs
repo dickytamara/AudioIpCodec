@@ -1,6 +1,6 @@
 
 use std::{convert::TryFrom, path::PathBuf};
-use crate::utils::{boolean_to_pjbool, check_boolean};
+use crate::{pj::FileAccess, utils::{boolean_to_pjbool, check_boolean}};
 
 use super::*;
 
@@ -32,8 +32,8 @@ pub trait LogConfigExt {
     ///
     /// # Default
     /// is 0.
-    fn set_log_file_flags(&mut self, value: LogConfigFileFlags);
-    fn get_log_file_flags(&self) -> LogConfigFileFlags;
+    fn set_log_file_flags(&mut self, value: FileAccess);
+    fn get_log_file_flags(&self) -> FileAccess;
 
     // TODO Implement callback API.
     // pub cb: Option< unsafe extern "C" fn( level: c_int, data: *const c_char, len: c_int, ) >
@@ -81,12 +81,12 @@ impl LogConfigExt for LogConfig {
         self.log_filename = pj_str_t::from_string(String::from(value.to_str().unwrap()));
     }
 
-    fn get_log_file_flags(&self) -> LogConfigFileFlags {
-        LogConfigFileFlags::try_from(self.log_file_flags)
+    fn get_log_file_flags(&self) -> FileAccess {
+        FileAccess::try_from(self.log_file_flags)
         .expect("Error LogConfig get log_file_flags")
     }
 
-    fn set_log_file_flags(&mut self, value: LogConfigFileFlags) {
+    fn set_log_file_flags(&mut self, value: FileAccess) {
         self.log_file_flags = value.into();
     }
 }

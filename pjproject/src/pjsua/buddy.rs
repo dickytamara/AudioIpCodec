@@ -1,5 +1,5 @@
 
-use crate::utils::{boolean_to_pjbool, check_boolean};
+use crate::{pjsip_simple::SIPEvsubState, utils::{boolean_to_pjbool, check_boolean}};
 use std::convert::TryFrom;
 use super::*;
 
@@ -45,7 +45,7 @@ pub trait BuddyInfoExt {
     /// PJSIP_EVSUB_STATE_ACTIVE. If presence subscription request has been rejected, the value
     /// will be PJSIP_EVSUB_STATE_TERMINATED, and the termination reason will be specified in
     /// sub_term_reason.
-    fn get_sub_state (&self) ->  BuddyEvsubState;
+    fn get_sub_state (&self) ->  SIPEvsubState;
 
     // fn get_sub_state_name (&self) ->  *const ::std::os::raw::c_char;
 
@@ -112,8 +112,8 @@ impl BuddyInfoExt for BuddyInfo {
         check_boolean(self.monitor_pres)
     }
 
-    fn get_sub_state (&self) ->  BuddyEvsubState {
-        BuddyEvsubState::try_from(self.sub_state)
+    fn get_sub_state (&self) ->  SIPEvsubState {
+        SIPEvsubState::try_from(self.sub_state)
         .expect("Error BuddyInfo get sub_state")
     }
 
