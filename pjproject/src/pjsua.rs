@@ -22,51 +22,56 @@ pub mod auto;
 pub mod ua;
 pub mod media;
 pub mod account;
-pub mod log;
 pub mod transport;
 pub mod buddy;
 pub mod call;
 pub mod codec;
-pub mod message;
 
 // config, Options and setting struct
-pub use pjsua_sys::pjsua_config as UAConfig;
-pub use pjsua_sys::pjsua_logging_config as LogConfig;
-pub use pjsua_sys::pjsua_media_config as MediaConfig;
-pub use pjsua_sys::pjsua_acc_config as AccountConfig;
-pub use pjsua_sys::pjsua_transport_config as TransportConfig;
-pub use pjsua_sys::pjsua_ice_config as ICEConfig;
-pub use pjsua_sys::pjsua_turn_config as TurnConfig;
-pub use pjsua_sys::pjsua_buddy_config as BuddyConfig;
-pub use pjsua_sys::pjsua_call_setting as CallSetting;
-pub use pjsua_sys::pjsua_srtp_opt as SRTPOption;
-pub use pjsua_sys::pjsua_ip_change_acc_cfg as IPChangeAccountConfig;
-pub use pjsua_sys::pjsua_turn_config as TURNConfig;
 
-pub type RtcpFbSetting = pjmedia_sys::pjmedia_rtcp_fb_setting;
-pub type RtcpFbInfo = pjmedia_sys::pjmedia_rtcp_fb_info;
-pub type RtcpFbCapability = pjmedia_sys::pjmedia_rtcp_fb_cap;
+
+// basic api struct
+pub type UALoggingConfig = pjsua_sys::pjsua_logging_config;
+pub type UAMwiInfo = pjsua_sys::pjsua_mwi_info;
+pub type UARegInfo = pjsua_sys::pjsua_reg_info;
+pub type UAOnStreamCreatedParam = pjsua_sys::pjsua_on_stream_created_param;
+pub type UAMedTpStateInfo = pjsua_sys::pjsua_med_tp_state_info;
+pub type UASrtpOpt = pjsua_sys::pjsua_srtp_opt;
+pub type UAIpChangeOpInfo = pjsua_sys::pjsua_ip_change_op_info;
+pub type UADtmfInfo = pjsua_sys::pjsua_dtmf_info;
+pub type UACallSetting = pjsua_sys::pjsua_call_setting;
+pub type UACallback = pjsua_sys::pjsua_callback;
+pub type UAConfig = pjsua_sys::pjsua_config;
+pub type UAMsgData = pjsua_sys::pjsua_msg_data;
+pub type UAStunResolveResult = pjsua_sys::pj_stun_resolve_result;
+pub type UAIpChangeParam = pjsua_sys::pjsua_ip_change_param;
+pub type UAIpChangeAccCfg = pjsua_sys::pjsua_ip_change_acc_cfg;
+
+// signalling and trasport
+pub type UATransportConfig = pjsua_sys::pjsua_transport_config;
+pub type UATransportInfo = pjsua_sys::pjsua_transport_info;
+
+// media config
+pub type UAIceConfig = pjsua_sys::pjsua_ice_config;
+pub type UATurnConfig = pjsua_sys::pjsua_turn_config;
+pub type UAAccConfig = pjsua_sys::pjsua_acc_config;
+pub type UAAccInfo = pjsua_sys::pjsua_acc_info;
+
+
+pub type UAMediaConfig = pjsua_sys::pjsua_media_config;
+pub type UABuddyConfig = pjsua_sys::pjsua_buddy_config;
+
+
 
 // info and status struct
-pub use pjsua_sys::pjsua_acc_info as AccountInfo;
-pub use pjsua_sys::pjsua_buddy_info as BuddyInfo;
-pub use pjsua_sys::pjsua_transport_info as TransportInfo;
-pub use pjsua_sys::pjsua_call_media_info as CallMediaInfo;
-pub use pjsua_sys::pjsua_call_info as CallInfo;
-pub use pjsua_sys::pjsua_conf_port_info as ConferencePortInfo;
-pub use pjsua_sys::pjsua_stream_info as StreamInfo;
-pub use pjmedia_sys::pjmedia_stream_info as MediaStreamInfo;
-pub use pjmedia_sys::pjmedia_codec_info as MediaCodecInfo;
-pub use pjmedia_sys::pjmedia_codec_param as MediaCodecParam;
-pub use pjsua_sys::pjsua_stream_stat as StreamStatus;
-pub use pjsua_sys::pjsua_codec_info as CodecInfo;
-pub use pjsip_sys::pjsip_cred_info as CredentialInfo;
-
-// data struct
-pub use pjsua_sys::pjsua_msg_data as MessageData;
-
-// callback struct
-pub use pjsua_sys::pjsua_callback as UACallback;
+pub type BuddyInfo = pjsua_sys::pjsua_buddy_info;
+pub type CallMediaInfo = pjsua_sys::pjsua_call_media_info;
+pub type CallInfo = pjsua_sys::pjsua_call_info;
+pub type ConferencePortInfo = pjsua_sys::pjsua_conf_port_info;
+pub type StreamInfo = pjsua_sys::pjsua_stream_info;
+pub type StreamStatus = pjsua_sys::pjsua_stream_stat;
+pub type UACodecInfo = pjsua_sys::pjsua_codec_info;
+pub type CredentialInfo = pjsip_sys::pjsip_cred_info;
 
 pub const INVALID_ID: i32 = -1;
 pub const MAX_ACC: usize = pjsua_sys::PJSUA_MAX_ACC as usize;
@@ -76,7 +81,7 @@ pub const MAX_BUDDIES: usize = pjsua_sys::PJSUA_MAX_BUDDIES as usize;
 /// pub type pjsua_state = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUAState {
+pub enum UAState {
     Null = pjsua_sys::PJSUA_STATE_NULL,
     Created = pjsua_sys::PJSUA_STATE_CREATED,
     Init = pjsua_sys::PJSUA_STATE_INIT,
@@ -88,19 +93,19 @@ pub enum SUAState {
 /// pub type pjsua_med_tp_st = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUAMedTpSt {
+pub enum UAMedTpSt {
     Null = pjsua_sys::PJSUA_MED_TP_NULL,
     Creating = pjsua_sys::PJSUA_MED_TP_CREATING,
-    Idle = pjsua_sys::PJSUA_MED_TP_IDLE, 
-    Init = pjsua_sys::PJSUA_MED_TP_INIT, 
-    Running = pjsua_sys::PJSUA_MED_TP_RUNNING, 
-    Disabled = pjsua_sys::PJSUA_MED_TP_DISABLED, 
+    Idle = pjsua_sys::PJSUA_MED_TP_IDLE,
+    Init = pjsua_sys::PJSUA_MED_TP_INIT,
+    Running = pjsua_sys::PJSUA_MED_TP_RUNNING,
+    Disabled = pjsua_sys::PJSUA_MED_TP_DISABLED,
 }
 
 /// pub type pjsua_contact_rewrite_method = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUAContactRewriteMethod {
+pub enum UAContactRewriteMethod {
     Unregister = pjsua_sys::PJSUA_CONTACT_REWRITE_UNREGISTER,
     NoUnreg = pjsua_sys::PJSUA_CONTACT_REWRITE_NO_UNREG,
     AlwaysUpdate = pjsua_sys::PJSUA_CONTACT_REWRITE_ALWAYS_UPDATE,
@@ -109,14 +114,14 @@ pub enum SUAContactRewriteMethod {
 /// pub type pjsua_ip_change_op = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUAIpChangeOp {
+pub enum UAIpChangeOp {
     Null = pjsua_sys::PJSUA_IP_CHANGE_OP_NULL,
     RestartLis = pjsua_sys::PJSUA_IP_CHANGE_OP_RESTART_LIS,
-    AccShutdownTp = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP, 
-    AccUpdateContact = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT, 
-    AccHangupCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS, 
-    AccReinviteCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS, 
-    Completed = pjsua_sys::PJSUA_IP_CHANGE_OP_COMPLETED, 
+    AccShutdownTp = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_SHUTDOWN_TP,
+    AccUpdateContact = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_UPDATE_CONTACT,
+    AccHangupCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS,
+    AccReinviteCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS,
+    Completed = pjsua_sys::PJSUA_IP_CHANGE_OP_COMPLETED,
 }
 
 /// pub type pjsua_sip_timer_use = u32;
@@ -141,7 +146,7 @@ pub enum UAConfig100relUse {
 /// pub type pjsua_destroy_flag = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUADestroyFlag {
+pub enum UADestroyFlag {
     NoRxMsg = pjsua_sys::PJSUA_DESTROY_NO_RX_MSG,
     NoTxMsg = pjsua_sys::PJSUA_DESTROY_NO_TX_MSG,
     NoNetwork = pjsua_sys::PJSUA_DESTROY_NO_NETWORK,
@@ -183,7 +188,7 @@ pub enum AccountConfigTurnUse {
 /// pub type pjsua_ipv6_use = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUAIpV6Use {
+pub enum UAIpV6Use {
     Disabled = pjsua_sys::PJSUA_IPV6_DISABLED,
     Enabled = pjsua_sys::PJSUA_IPV6_ENABLED,
 }
@@ -191,7 +196,7 @@ pub enum SUAIpV6Use {
 /// pub type pjsua_nat64_opt = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUANat64Use {
+pub enum UANat64Use {
     Disabled = pjsua_sys::PJSUA_NAT64_DISABLED,
     Enabled = pjsua_sys::PJSUA_NAT64_ENABLED,
 }
@@ -231,7 +236,7 @@ pub enum CallFlags {
 /// pub type pjsua_call_vid_strm_op = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUACallVidStrmOp {
+pub enum UACallVidStrmOp {
     NoOp = pjsua_sys::PJSUA_CALL_VID_STRM_NO_OP,
     Add = pjsua_sys::PJSUA_CALL_VID_STRM_ADD, 
     Remove = pjsua_sys::PJSUA_CALL_VID_STRM_REMOVE, 
@@ -254,7 +259,7 @@ pub enum BuddyStatus {
 /// pub type pjsua_snd_dev_id = i32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(i32)]
-pub enum SUASndDevId {
+pub enum UASndDevId {
     DefaultCaptureDev = pjsua_sys::PJSUA_SND_DEFAULT_CAPTURE_DEV,
     DefaultPlaybackDev = pjsua_sys::PJSUA_SND_DEFAULT_PLAYBACK_DEV,
     NoDev = pjsua_sys::PJSUA_SND_NO_DEV,
@@ -264,12 +269,10 @@ pub enum SUASndDevId {
 /// pub type pjsua_snd_dev_mode = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum SUASndDevMode {
+pub enum UASndDevMode {
     SpeakerOnly = pjsua_sys::PJSUA_SND_DEV_SPEAKER_ONLY,
     ImmediateOpen = pjsua_sys::PJSUA_SND_DEV_NO_IMMEDIATE_OPEN,
 }
-
-
 
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
@@ -282,14 +285,14 @@ pub enum UAConfigSrtpSecureSignaling {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaConfigChannel {
+pub enum ConfigChannel {
     Mono = 1,
     Stereo = 2
 }
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaConfigClockRate {
+pub enum ClockRate {
     ClockRate8000 = 8000,
     ClockRate16000 = 16000,
     ClockRate24000 = 24000,
@@ -300,7 +303,7 @@ pub enum MediaConfigClockRate {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaConfigEncodingQuality {
+pub enum EncodingQuality {
     Level1 = 1, Level2 = 2, Level3 = 3, Level4 = 4,
     Level5 = 5, Level6 = 6, Level7 = 7, Level8 = 8,
     Level9 = 9, Level10 = 10,
@@ -308,7 +311,7 @@ pub enum MediaConfigEncodingQuality {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum MediaConfigIlbcMode {
+pub enum IlbcMode {
     Mode20 = 20,
     Mode30 = 30,
 }
@@ -389,7 +392,7 @@ pub fn pool_safe_release(ppool: *mut *mut pj_pool_t) {
     }
 }
 
-pub fn logging_config_default(cfg: &mut LogConfig) {
+pub fn logging_config_default(cfg: &mut UALoggingConfig) {
     unsafe { pjsua_sys::pjsua_logging_config_default(cfg as *mut _); }
 }
 
@@ -401,7 +404,7 @@ pub fn create () -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_create()) }
 }
 
-pub fn init (ua_cfg: &mut UAConfig, log_cfg: &mut LogConfig, media_cfg: &mut MediaConfig) -> Result<(), i32> {
+pub fn init (ua_cfg: &mut UAConfig, log_cfg: &mut UALoggingConfig, media_cfg: &mut UAMediaConfig) -> Result<(), i32> {
     unsafe {
         let status = pjsua_sys::pjsua_init(
         ua_cfg as *const _,
@@ -429,7 +432,7 @@ pub fn destroy2 (flags: u32) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_destroy2(flags)) }
 }
 
-pub fn logging_config_dup (dst: &mut LogConfig, src: &mut LogConfig) {
+pub fn logging_config_dup (dst: &mut UALoggingConfig, src: &mut UALoggingConfig) {
     unsafe {
 
         let pool = pool_create("tmp-pool");
@@ -459,11 +462,11 @@ pub fn config_dup (dst: &mut UAConfig, src: &mut UAConfig) {
     }
 }
 
-pub fn msg_data_init(msg_data: &mut MessageData) {
+pub fn msg_data_init(msg_data: &mut UAMsgData) {
     unsafe { pjsua_sys::pjsua_msg_data_init(msg_data as *mut _); }
 }
 
-pub fn msg_data_clone (rhs: &mut MessageData) -> *mut MessageData {
+pub fn msg_data_clone (rhs: &mut UAMsgData) -> *mut UAMsgData {
     unsafe {
 
         let pool = pool_create("tmp-pool");
@@ -484,7 +487,7 @@ pub fn stop_worker_threads() {
     unsafe { pjsua_sys::pjsua_stop_worker_threads() }
 }
 
-pub fn reconfigure_logging (c: &mut LogConfig) -> Result<(), i32> {
+pub fn reconfigure_logging (c: &mut UALoggingConfig) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_reconfigure_logging(c as *const _)) }
 }
 
@@ -622,7 +625,7 @@ pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> Result<(), i32> {
 
 // call helper function
 
-pub fn call_setting_default (opt: &mut CallSetting) {
+pub fn call_setting_default (opt: &mut UACallSetting) {
     unsafe { pjsua_sys::pjsua_call_setting_default(opt as * mut _) }
 }
 
@@ -648,8 +651,8 @@ pub fn enum_calls (ids: &mut [i32; pjsua_sys::PJSUA_MAX_CALLS as usize], count: 
 pub fn call_make_call (
     acc_id: i32,
     dst_uri: String,
-    opt: Option<&mut CallSetting>,
-    msg_data: Option<&mut MessageData>,
+    opt: Option<&mut UACallSetting>,
+    msg_data: Option<&mut UAMsgData>,
     p_call_id: Option<&mut i32>
 ) -> Result<(), i32> {
 
@@ -719,7 +722,7 @@ pub fn call_get_rem_nat_type (call_id: i32, p_type: &mut pj_stun_nat_type) -> Re
     }
 }
 
-pub fn call_answer (call_id: i32, code: u32, reason: Option<String>, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_answer (call_id: i32, code: u32, reason: Option<String>, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let reason = match reason {
         Some(value) => &mut pj_str_t::from_string(value) as *const pj_str_t,
@@ -736,10 +739,10 @@ pub fn call_answer (call_id: i32, code: u32, reason: Option<String>, msg_data: O
 
 pub fn call_answer2 (
     call_id: i32,
-    opt: &mut CallSetting,
+    opt: &mut UACallSetting,
     code: c_uint,
     reason: Option<String>,
-    msg_data: Option<&mut MessageData>
+    msg_data: Option<&mut UAMsgData>
 ) -> Result<(), i32> {
 
     let reason = match reason {
@@ -758,10 +761,10 @@ pub fn call_answer2 (
 pub fn call_answer_with_sdp(
     call_id: i32,
     sdp: &mut pjmedia_sdp_session,
-    opt: &mut CallSetting,
+    opt: &mut UACallSetting,
     code: u32,
     reason: Option<String>,
-    msg_data: Option<&mut MessageData>
+    msg_data: Option<&mut UAMsgData>
 ) -> Result<(), i32> {
 
     let reason = match reason {
@@ -785,7 +788,7 @@ pub fn call_hangup(
     call_id: i32,
     code: c_uint,
     reason: Option<String>,
-    msg_data: Option<&mut MessageData>
+    msg_data: Option<&mut UAMsgData>
 ) -> Result<(), i32> {
 
     let reason = match reason {
@@ -805,7 +808,7 @@ pub fn call_process_redirect (call_id: i32, cmd: pjsip_redirect_op) -> Result<()
     unsafe { utils::check_status(pjsua_sys::pjsua_call_process_redirect(call_id, cmd)) }
 }
 
-pub fn call_set_hold (call_id: i32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_set_hold (call_id: i32, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -815,7 +818,7 @@ pub fn call_set_hold (call_id: i32, msg_data: Option<&mut MessageData>) -> Resul
     unsafe { utils::check_status(pjsua_sys::pjsua_call_set_hold( call_id, msg_data)) }
 }
 
-pub fn call_set_hold2 (call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_set_hold2 (call_id: i32, options: u32, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -825,7 +828,7 @@ pub fn call_set_hold2 (call_id: i32, options: u32, msg_data: Option<&mut Message
     unsafe { utils::check_status(pjsua_sys::pjsua_call_set_hold2(call_id, options, msg_data)) }
 }
 
-pub fn call_reinvite(call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_reinvite(call_id: i32, options: u32, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -835,7 +838,7 @@ pub fn call_reinvite(call_id: i32, options: u32, msg_data: Option<&mut MessageDa
     unsafe { utils::check_status(pjsua_sys::pjsua_call_reinvite( call_id, options, msg_data)) }
 }
 
-pub fn call_reinvite2(call_id: i32, opt: &mut CallSetting, msg_data: Option<&mut MessageData> ) -> Result<(), i32> {
+pub fn call_reinvite2(call_id: i32, opt: &mut UACallSetting, msg_data: Option<&mut UAMsgData> ) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -845,7 +848,7 @@ pub fn call_reinvite2(call_id: i32, opt: &mut CallSetting, msg_data: Option<&mut
     unsafe { utils::check_status(pjsua_sys::pjsua_call_reinvite2( call_id, opt as *const _, msg_data )) }
 }
 
-pub fn call_update (call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_update (call_id: i32, options: u32, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -855,7 +858,7 @@ pub fn call_update (call_id: i32, options: u32, msg_data: Option<&mut MessageDat
     unsafe { utils::check_status(pjsua_sys::pjsua_call_update( call_id, options, msg_data)) }
 }
 
-pub fn call_update2 (call_id: i32, opt: &mut CallSetting, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_update2 (call_id: i32, opt: &mut UACallSetting, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -867,7 +870,7 @@ pub fn call_update2 (call_id: i32, opt: &mut CallSetting, msg_data: Option<&mut 
     }
 }
 
-pub fn call_xfer (call_id: i32, dest: String, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_xfer (call_id: i32, dest: String, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let mut dest = pj_str_t::from_string(dest);
 
@@ -881,7 +884,7 @@ pub fn call_xfer (call_id: i32, dest: String, msg_data: Option<&mut MessageData>
     }
 }
 
-pub fn call_xfer_replaces(call_id: i32, dest_call_id: i32, options: u32, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_xfer_replaces(call_id: i32, dest_call_id: i32, options: u32, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -909,7 +912,7 @@ pub fn call_send_dtmf (call_id: i32, param: &mut pjsua_call_send_dtmf_param) -> 
     }
 }
 
-pub fn call_send_im (call_id: i32, mime_type: String, content: String, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_send_im (call_id: i32, mime_type: String, content: String, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let mut mime_type = pj_str_t::from_string(mime_type);
     let mut content = pj_str_t::from_string(content);
@@ -931,7 +934,7 @@ pub fn call_send_im (call_id: i32, mime_type: String, content: String, msg_data:
     }
 }
 
-pub fn call_send_typing_ind (call_id: i32, is_typing: bool, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_send_typing_ind (call_id: i32, is_typing: bool, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let msg_data = match msg_data {
         Some(value) => value as *const _,
@@ -949,7 +952,7 @@ pub fn call_send_typing_ind (call_id: i32, is_typing: bool, msg_data: Option<&mu
     }
 }
 
-pub fn call_send_request (call_id: i32, method: String, msg_data: Option<&mut MessageData>) -> Result<(), i32> {
+pub fn call_send_request (call_id: i32, method: String, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
     let mut method = pj_str_t::from_string(method);
 
@@ -1023,7 +1026,7 @@ pub fn call_get_med_transport_info (call_id: i32, med_idx: u32, t: &mut pjmedia_
 
 
 // pjsua sound and media device function helper
-pub fn media_config_default(cfg: &mut MediaConfig) {
+pub fn media_config_default(cfg: &mut UAMediaConfig) {
     unsafe { pjsua_sys::pjsua_media_config_default(cfg as *mut _); }
 }
 
@@ -1231,7 +1234,7 @@ pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> i32 {
     unsafe { pjsua_sys::pjsua_ext_snd_dev_get_conf_port( snd as *mut _ ) }
 }
 
-pub fn enum_codecs(id: &mut [CodecInfo; 32], count: &mut u32) -> Result<(), i32> {
+pub fn enum_codecs(id: &mut [UACodecInfo; 32], count: &mut u32) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(), count as *mut _ ))
     }
@@ -1261,7 +1264,7 @@ pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Res
 
 // pjsua account helper
 
-pub fn ice_config_from_media_config(dst: &mut ICEConfig, src: &mut MediaConfig) {
+pub fn ice_config_from_media_config(dst: &mut UAIceConfig, src: &mut UAMediaConfig) {
 
     let pool = pool_create("tmp-pool");
 
@@ -1276,7 +1279,7 @@ pub fn ice_config_from_media_config(dst: &mut ICEConfig, src: &mut MediaConfig) 
     pool_release(pool);
 }
 
-pub fn ice_config_dup(dst: &mut ICEConfig, src: &mut ICEConfig) {
+pub fn ice_config_dup(dst: &mut UAIceConfig, src: &mut UAIceConfig) {
 
     let pool = pool_create("tmp-pool");
 
@@ -1291,7 +1294,7 @@ pub fn ice_config_dup(dst: &mut ICEConfig, src: &mut ICEConfig) {
     pool_release(pool);
 }
 
-pub fn turn_config_from_media_config(dst: &mut TURNConfig, src: &mut MediaConfig) {
+pub fn turn_config_from_media_config(dst: &mut UATurnConfig, src: &mut UAMediaConfig) {
 
     let pool = pool_create("tmp-pool");
 
@@ -1306,7 +1309,7 @@ pub fn turn_config_from_media_config(dst: &mut TURNConfig, src: &mut MediaConfig
     pool_release(pool);
 }
 
-pub fn turn_config_dup(dst: &mut TURNConfig, src: &mut TURNConfig) {
+pub fn turn_config_dup(dst: &mut UATurnConfig, src: &mut UATurnConfig) {
 
     let pool = pool_create("tmp-pool");
 
@@ -1321,7 +1324,7 @@ pub fn turn_config_dup(dst: &mut TURNConfig, src: &mut TURNConfig) {
     pool_release(pool);
 }
 
-pub fn srtp_opt_default(cfg: &mut SRTPOption) {
+pub fn srtp_opt_default(cfg: &mut UASrtpOpt) {
     unsafe {
         pjsua_sys::pjsua_srtp_opt_default(
             cfg as *mut _
@@ -1329,7 +1332,7 @@ pub fn srtp_opt_default(cfg: &mut SRTPOption) {
     }
 }
 
-pub fn srtp_opt_dup(dst: &mut SRTPOption, src: &mut SRTPOption, check_str: bool) {
+pub fn srtp_opt_dup(dst: &mut UASrtpOpt, src: &mut UASrtpOpt, check_str: bool) {
 
     let pool = pool_create("tmp-pool");
 
@@ -1345,11 +1348,11 @@ pub fn srtp_opt_dup(dst: &mut SRTPOption, src: &mut SRTPOption, check_str: bool)
     pool_release(pool);
 }
 
-pub fn acc_config_default (cfg: &mut AccountConfig) {
+pub fn acc_config_default (cfg: &mut UAAccConfig) {
     unsafe { pjsua_sys::pjsua_acc_config_default(cfg as *mut _); }
 }
 
-pub fn acc_config_dup (dst: &mut AccountConfig, src: &mut AccountConfig) {
+pub fn acc_config_dup (dst: &mut UAAccConfig, src: &mut UAAccConfig) {
     unsafe {
         let pool = pool_create("tmp-pool");
 
@@ -1379,7 +1382,7 @@ pub fn acc_get_default() -> i32 {
     unsafe { pjsua_sys::pjsua_acc_get_default() }
 }
 
-pub fn acc_add(acc_cfg: &mut AccountConfig, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
+pub fn acc_add(acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
     unsafe {
 
         let status = pjsua_sys::pjsua_acc_add(
@@ -1414,7 +1417,7 @@ pub fn acc_del(acc_id: i32) -> Result<(), i32> {
     }
 }
 
-pub fn acc_get_config (acc_id: i32, acc_cfg: &mut AccountConfig) -> Result<(), i32> {
+pub fn acc_get_config (acc_id: i32, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
     unsafe {
         let pool = pool_create("tmp-pool");
 
@@ -1426,7 +1429,7 @@ pub fn acc_get_config (acc_id: i32, acc_cfg: &mut AccountConfig) -> Result<(), i
     }
 }
 
-pub fn acc_modify(acc_id: i32, acc_cfg: &mut AccountConfig) -> Result<(), i32> {
+pub fn acc_modify(acc_id: i32, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_acc_modify( acc_id, acc_cfg as *const _ ))
     }
@@ -1456,7 +1459,7 @@ pub fn acc_set_registration(acc_id: i32, renew: bool) -> Result<(), i32> {
     }
 }
 
-pub fn acc_get_info (acc_id: i32, info: &mut AccountInfo) -> Result<(), i32> {
+pub fn acc_get_info (acc_id: i32, info: &mut UAAccInfo) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_acc_get_info(acc_id, info as *mut _))
     }
@@ -1468,7 +1471,7 @@ pub fn enum_accs(ids: &mut [i32; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut
     }
 }
 
-pub fn acc_enum_info(info: &mut [AccountInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
+pub fn acc_enum_info(info: &mut [UAAccInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
     }
@@ -1559,7 +1562,7 @@ pub fn acc_set_transport(acc_id: i32, tp_id: i32) -> Result<(), i32> {
 
 // JSUA-API Buddy, Presence, and Instant Messaging
 
-pub fn buddy_config_default(cfg: &mut BuddyConfig) {
+pub fn buddy_config_default(cfg: &mut UABuddyConfig) {
     unsafe {
         pjsua_sys::pjsua_buddy_config_default(
             cfg as *mut _
@@ -1594,7 +1597,7 @@ pub fn buddy_get_info(buddy_id: i32, info: &mut BuddyInfo) -> Result<(), i32> {
 // i32 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
 // void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
 
-pub fn buddy_add(buddy_cfg: &mut BuddyConfig, p_buddy_id: *mut i32) -> Result<(), i32> {
+pub fn buddy_add(buddy_cfg: &mut UABuddyConfig, p_buddy_id: *mut i32) -> Result<(), i32> {
     unsafe {
         let status = pjsua_sys::pjsua_buddy_add (
             buddy_cfg as *const _,
@@ -1625,7 +1628,7 @@ pub fn pres_notify(
     state_str: String,
     reason: String,
     with_body: bool,
-    msg_data: Option<&mut MessageData>
+    msg_data: Option<&mut UAMsgData>
 ) -> Result<(), i32> {
 
     let mut state_str = pj_str_t::from_string(state_str);
@@ -1660,7 +1663,7 @@ pub fn im_send(
     to: String,
     mime_type: String,
     content: String,
-    msg_data: Option<&mut MessageData>
+    msg_data: Option<&mut UAMsgData>
 ) -> Result<(), i32> {
 
     let mut to = pj_str_t::from_string(to);
@@ -1690,7 +1693,7 @@ pub fn im_typing(
     acc_id: i32,
     to:String,
     is_typing: bool,
-    msg_data: Option<&mut MessageData>
+    msg_data: Option<&mut UAMsgData>
 ) -> Result<(), i32> {
 
     let mut to = pj_str_t::from_string(to);
@@ -1715,11 +1718,11 @@ pub fn im_typing(
 
 // PJSUA-API Signaling Transport
 
-pub fn transport_config_default(cfg: &mut TransportConfig) {
+pub fn transport_config_default(cfg: &mut UATransportConfig) {
     unsafe { pjsua_sys::pjsua_transport_config_default(cfg as *mut _) }
 }
 
-pub fn transport_config_dup(dst: &mut TransportConfig, src: &mut TransportConfig) {
+pub fn transport_config_dup(dst: &mut UATransportConfig, src: &mut UATransportConfig) {
     let pool = pool_create("tmp-pool");
 
     unsafe {
@@ -1733,7 +1736,7 @@ pub fn transport_config_dup(dst: &mut TransportConfig, src: &mut TransportConfig
     pool_release(pool)
 }
 
-pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut TransportConfig, p_id: Option<&mut i32>) -> Result<(), i32> {
+pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut UATransportConfig, p_id: Option<&mut i32>) -> Result<(), i32> {
 
     let p_id = match p_id {
         Some(value) => value as *mut _,
@@ -1779,7 +1782,7 @@ pub fn enum_transports(id: &mut [i32; PJSIP_MAX_TRANSPORTS as usize], count: &mu
     }
 }
 
-pub fn transport_get_info(id: i32, info: &mut TransportInfo) -> Result<(), i32> {
+pub fn transport_get_info(id: i32, info: &mut UATransportInfo) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_transport_get_info(id, info as *mut _))
     }
@@ -1797,7 +1800,7 @@ pub fn transport_close (id: i32, force: bool) -> Result<(), i32> {
     }
 }
 
-pub fn transport_lis_start(id: i32, cfg: &mut TransportConfig) -> Result<(), i32> {
+pub fn transport_lis_start(id: i32, cfg: &mut UATransportConfig) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_transport_lis_start( id, cfg as *const _)) }
 }
 

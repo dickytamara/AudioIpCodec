@@ -3,21 +3,21 @@ use std::{convert::TryFrom, path::PathBuf};
 use crate::{pjmedia::{MediaEchoFlag, MediaJbDiscardAlgo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
-pub trait MediaConfigExt {
+pub trait UAMediaConfigExt {
 
     /// Clock rate to be applied to the conference bridge. If value is zero,
     /// default clock rate will be used (PJSUA_DEFAULT_CLOCK_RATE, which by default is 16KHz).
-    fn set_clock_rate(&mut self, value: MediaConfigClockRate);
-    fn get_clock_rate(&self) -> MediaConfigClockRate;
+    fn set_clock_rate(&mut self, value: ClockRate);
+    fn get_clock_rate(&self) -> ClockRate;
 
     /// Clock rate to be applied when opening the sound device. If value is zero,
     /// conference bridge clock rate will be used.
-    fn set_snd_clock_rate(&mut self, value: MediaConfigClockRate);
-    fn get_snd_clock_rate(&self) -> MediaConfigClockRate;
+    fn set_snd_clock_rate(&mut self, value: ClockRate);
+    fn get_snd_clock_rate(&self) -> ClockRate;
 
     /// Channel count be applied when opening the sound device and conference bridge.
-    fn set_channel_count(&mut self, value: MediaConfigChannel);
-    fn get_channel_count(&self) -> MediaConfigChannel;
+    fn set_channel_count(&mut self, value: ConfigChannel);
+    fn get_channel_count(&self) -> ConfigChannel;
 
     /// Specify audio frame ptime. The value here will affect the samples per frame of both the
     /// sound device and the conference bridge. Specifying lower ptime will normally reduce the latency.
@@ -59,8 +59,8 @@ pub trait MediaConfigExt {
     ///
     /// # Default
     /// 5 (PJSUA_DEFAULT_CODEC_QUALITY).
-    fn set_quality(&mut self, value: MediaConfigEncodingQuality);
-    fn get_quality(&self) -> MediaConfigEncodingQuality;
+    fn set_quality(&mut self, value: EncodingQuality);
+    fn get_quality(&self) -> EncodingQuality;
 
     /// Specify default codec ptime.
     ///
@@ -80,8 +80,8 @@ pub trait MediaConfigExt {
     ///
     /// # Default
     /// 30 (PJSUA_DEFAULT_ILBC_MODE)
-    fn set_ilbc_mode(&mut self, value: MediaConfigIlbcMode);
-    fn get_ilbc_mode(&self) -> MediaConfigIlbcMode;
+    fn set_ilbc_mode(&mut self, value: IlbcMode);
+    fn get_ilbc_mode(&self) -> IlbcMode;
 
     /// Percentage of RTP packet to drop in TX direction (to simulate packet lost).
     ///
@@ -269,32 +269,32 @@ pub trait MediaConfigExt {
 }
 
 
-impl MediaConfigExt for MediaConfig {
+impl UAMediaConfigExt for UAMediaConfig {
 
-    fn set_clock_rate(&mut self, value: MediaConfigClockRate) {
+    fn set_clock_rate(&mut self, value: ClockRate) {
         self.clock_rate = value.into();
     }
 
-    fn get_clock_rate(&self) -> MediaConfigClockRate {
-        MediaConfigClockRate::try_from(self.clock_rate)
+    fn get_clock_rate(&self) -> ClockRate {
+        ClockRate::try_from(self.clock_rate)
         .expect("Error MediaConfig get clock_rate")
     }
 
-    fn set_snd_clock_rate(&mut self, value: MediaConfigClockRate) {
+    fn set_snd_clock_rate(&mut self, value: ClockRate) {
         self.snd_clock_rate = value.into();
     }
 
-    fn get_snd_clock_rate(&self) -> MediaConfigClockRate {
-        MediaConfigClockRate::try_from(self.snd_clock_rate)
+    fn get_snd_clock_rate(&self) -> ClockRate {
+        ClockRate::try_from(self.snd_clock_rate)
         .expect("Error MediaConfig get snd_clock_rate")
     }
 
-    fn set_channel_count(&mut self, value: MediaConfigChannel) {
+    fn set_channel_count(&mut self, value: ConfigChannel) {
         self.channel_count = value.into();
     }
 
-    fn get_channel_count(&self) -> MediaConfigChannel {
-        MediaConfigChannel::try_from(self.channel_count)
+    fn get_channel_count(&self) -> ConfigChannel {
+        ConfigChannel::try_from(self.channel_count)
         .expect("Error MediaConfig get channel_count")
     }
 
@@ -330,12 +330,12 @@ impl MediaConfigExt for MediaConfig {
         self.thread_cnt
     }
 
-    fn set_quality(&mut self, value: MediaConfigEncodingQuality) {
+    fn set_quality(&mut self, value: EncodingQuality) {
         self.quality = value.into();
     }
 
-    fn get_quality(&self) -> MediaConfigEncodingQuality {
-        MediaConfigEncodingQuality::try_from(self.quality)
+    fn get_quality(&self) -> EncodingQuality {
+        EncodingQuality::try_from(self.quality)
         .expect("Error MediaConfig get quality")
     }
 
@@ -355,12 +355,12 @@ impl MediaConfigExt for MediaConfig {
         check_boolean(self.no_vad)
     }
 
-    fn set_ilbc_mode(&mut self, value: MediaConfigIlbcMode) {
+    fn set_ilbc_mode(&mut self, value: IlbcMode) {
         self.ilbc_mode = value.into();
     }
 
-    fn get_ilbc_mode(&self) -> MediaConfigIlbcMode {
-        MediaConfigIlbcMode::try_from(self.ilbc_mode)
+    fn get_ilbc_mode(&self) -> IlbcMode {
+        IlbcMode::try_from(self.ilbc_mode)
         .expect("Error MediaConfig get ilbc_mode")
     }
 

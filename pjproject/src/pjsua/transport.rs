@@ -4,7 +4,7 @@ use crate::{pj::QOSType, pjsip::{SIPTransportFlags, SIPTransportType}};
 
 use super::*;
 
-pub trait TransportConfigExt {
+pub trait UATransportConfigExt {
 
     /// UDP port number to bind locally. This setting MUST be specified even when default
     /// port is desired. If the value is zero, the transport will be bound to any
@@ -62,7 +62,7 @@ pub trait TransportConfigExt {
 }
 
 // read only implementation
-pub trait TransportInfoExt {
+pub trait UATransportInfoExt {
 
     /// PJSUA transport identification.
     fn get_id (&self) -> i32;
@@ -93,7 +93,7 @@ pub trait TransportInfoExt {
 }
 
 
-impl TransportConfigExt for TransportConfig {
+impl UATransportConfigExt for UATransportConfig {
 
     fn set_port(&mut self, value: u32) {
         self.port = value;
@@ -137,7 +137,7 @@ impl TransportConfigExt for TransportConfig {
     }
 }
 
-impl TransportInfoExt for TransportInfo {
+impl UATransportInfoExt for UATransportInfo {
     fn get_id (&self) -> i32 {
         self.id
     }

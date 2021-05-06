@@ -67,7 +67,7 @@ pub trait BuddyInfoExt {
     // fn get_buf_ (&self) ->  [::std::os::raw::c_char; 512usize];
 }
 
-impl BuddyConfigExt for BuddyConfig {
+impl BuddyConfigExt for UABuddyConfig {
 
     fn set_uri(&mut self, value: String) {
         self.uri = pj_str_t::from_string(value);

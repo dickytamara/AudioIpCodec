@@ -9,7 +9,7 @@ use pjsip_ua_sys::pjsip_timer_setting;
 use super::utils::AutoCreate;
 use super::*;
 
-impl AutoCreate<SRTPOption> for SRTPOption {
+impl AutoCreate<UASrtpOpt> for UASrtpOpt {
     fn new() -> Self {
         Self {
             crypto_count: 0,
@@ -86,7 +86,7 @@ impl AutoCreate<UACallback> for UACallback {
     }
 }
 
-impl AutoCreate<LogConfig> for LogConfig {
+impl AutoCreate<UALoggingConfig> for UALoggingConfig {
 
     fn new() -> Self {
 
@@ -160,7 +160,7 @@ impl AutoCreate<UAConfig> for UAConfig {
     }
 }
 
-impl AutoCreate<MediaConfig> for MediaConfig {
+impl AutoCreate<UAMediaConfig> for UAMediaConfig {
     fn new() -> Self {
         let mut config = Self {
             clock_rate: 0,
@@ -211,7 +211,7 @@ impl AutoCreate<MediaConfig> for MediaConfig {
     }
 }
 
-impl AutoCreate<TransportConfig> for TransportConfig {
+impl AutoCreate<UATransportConfig> for UATransportConfig {
     fn new() -> Self {
         let mut config = Self {
             port: 0,
@@ -232,7 +232,7 @@ impl AutoCreate<TransportConfig> for TransportConfig {
     }
 }
 
-impl AutoCreate<ICEConfig> for ICEConfig {
+impl AutoCreate<UAIceConfig> for UAIceConfig {
     fn new() -> Self {
         Self {
             enable_ice: 0,
@@ -244,7 +244,7 @@ impl AutoCreate<ICEConfig> for ICEConfig {
     }
 }
 
-impl AutoCreate<TurnConfig> for TurnConfig {
+impl AutoCreate<UATurnConfig> for UATurnConfig {
     fn new() -> Self {
         Self {
             enable_turn: 0,
@@ -256,7 +256,7 @@ impl AutoCreate<TurnConfig> for TurnConfig {
     }
 }
 
-impl AutoCreate<IPChangeAccountConfig> for IPChangeAccountConfig {
+impl AutoCreate<UAIpChangeAccCfg> for UAIpChangeAccCfg {
     fn new() -> Self {
         Self {
             shutdown_tp: 0,
@@ -266,7 +266,7 @@ impl AutoCreate<IPChangeAccountConfig> for IPChangeAccountConfig {
     }
 }
 
-impl AutoCreate<AccountConfig> for AccountConfig {
+impl AutoCreate<UAAccConfig> for UAAccConfig {
     fn new() -> Self {
         let mut config = Self {
             user_data: ptr::null_mut(),
@@ -320,7 +320,7 @@ impl AutoCreate<AccountConfig> for AccountConfig {
             vid_rend_dev: 0,
             vid_stream_rc_cfg: pjmedia_vid_stream_rc_config::new(),
             vid_stream_sk_cfg: pjmedia_vid_stream_sk_config::new(),
-            rtp_cfg: TransportConfig::new(),
+            rtp_cfg: UATransportConfig::new(),
             nat64_opt: 0,
             ipv6_media_use: 0,
             sip_stun_use: 0,
@@ -328,13 +328,13 @@ impl AutoCreate<AccountConfig> for AccountConfig {
             use_loop_med_tp: 0,
             enable_loopback: 0,
             ice_cfg_use: 0,
-            ice_cfg: ICEConfig::new(),
+            ice_cfg: UAIceConfig::new(),
             turn_cfg_use: 0,
-            turn_cfg: TurnConfig::new(),
+            turn_cfg: UATurnConfig::new(),
             use_srtp: 0,
             srtp_secure_signaling: 0,
             srtp_optional_dup_offer: 0,
-            srtp_opt: SRTPOption::new(),
+            srtp_opt: UASrtpOpt::new(),
             reg_retry_interval: 0,
             reg_first_retry_interval: 0,
             reg_retry_random_interval: 0,
@@ -342,7 +342,7 @@ impl AutoCreate<AccountConfig> for AccountConfig {
             reg_use_proxy: 0,
             call_hold_type: 0,
             register_on_acc_add: 0,
-            ip_change_cfg: IPChangeAccountConfig::new(),
+            ip_change_cfg: UAIpChangeAccCfg::new(),
             enable_rtcp_mux: 0,
             rtcp_fb_cfg: pjmedia_rtcp_fb_setting::new(),
         };
@@ -363,7 +363,7 @@ impl AutoCreate<AccountConfig> for AccountConfig {
     }
 }
 
-impl AutoCreate<BuddyConfig> for BuddyConfig {
+impl AutoCreate<UABuddyConfig> for UABuddyConfig {
     fn new() -> Self {
         let mut config = Self {
             uri: pj_str_t::new(),
@@ -379,7 +379,7 @@ impl AutoCreate<BuddyConfig> for BuddyConfig {
     }
 }
 
-impl AutoCreate<TransportInfo> for TransportInfo {
+impl AutoCreate<UATransportInfo> for UATransportInfo {
     fn new() -> Self {
         Self {
             id: -1,
@@ -395,7 +395,7 @@ impl AutoCreate<TransportInfo> for TransportInfo {
     }
 }
 
-impl AutoCreate<AccountInfo> for AccountInfo {
+impl AutoCreate<UAAccInfo> for UAAccInfo {
     fn new() -> Self {
         Self {
             id: -1,
@@ -414,7 +414,7 @@ impl AutoCreate<AccountInfo> for AccountInfo {
     }
 }
 
-impl AutoCreate<CallSetting> for CallSetting {
+impl AutoCreate<UACallSetting> for UACallSetting {
     fn new() -> Self {
 
         let mut ret = Self {
@@ -505,7 +505,7 @@ impl AutoCreate<CallInfo> for CallInfo {
             remote_info: pj_str_t::new(),
             remote_contact: pj_str_t::new(),
             call_id: pj_str_t::new(),
-            setting: CallSetting::new(),
+            setting: UACallSetting::new(),
             state: 0,
             state_text: pj_str_t::new(),
             last_status: 0,
@@ -565,7 +565,7 @@ impl AutoCreate<BuddyInfo> for BuddyInfo {
     }
 }
 
-impl AutoCreate<MessageData> for MessageData {
+impl AutoCreate<UAMsgData> for UAMsgData {
     fn new () -> Self {
         let mut ret = Self {
             target_uri: pj_str_t::new(),
@@ -638,9 +638,9 @@ impl AutoCreate<StreamStatus> for StreamStatus {
     }
 }
 
-impl AutoCreate<CodecInfo> for CodecInfo {
+impl AutoCreate<UACodecInfo> for UACodecInfo {
     fn new () -> Self {
-        CodecInfo {
+        Self {
             codec_id: pj_str_t::from_string(String::new()),
             priority: 0,
             desc: pj_str_t::from_string(String::new()),

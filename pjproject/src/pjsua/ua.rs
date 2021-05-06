@@ -1,9 +1,13 @@
 
 use std::convert::TryFrom;
-use crate::{pjmedia::MediaSrtpUse, utils::{boolean_to_pjbool, check_boolean}};
+use pjsip_sys::{pjsip_hdr, pjsip_media_type, pjsip_multipart_part};
 
+use crate::{pj::FileAccess, pjmedia::MediaSrtpUse, utils::{boolean_to_pjbool, check_boolean}};
+use std::path::PathBuf;
 use super::*;
 
+
+/// UAConfig trait
 pub trait UAConfigExt {
 
     /// Set Maximum calls to support (default: 4). The value specified here must be smaller
@@ -198,8 +202,8 @@ pub trait UAConfigExt {
 
     /// Specify SRTP transport setting. Application can initialize it with
     /// default values using pjsua_srtp_opt_default().
-    fn set_srtp_opt(&mut self, value: SRTPOption);
-    fn get_srtp_opt(&self) -> SRTPOption;
+    fn set_srtp_opt(&mut self, value: UASrtpOpt);
+    fn get_srtp_opt(&self) -> UASrtpOpt;
 
     /// Disconnect other call legs when more than one 2xx responses for outgoing INVITE
     /// are received due to forking. Currently the library is not able to handle simultaneous
@@ -212,30 +216,6 @@ pub trait UAConfigExt {
     /// PJ_TRUE (only disable this setting for testing purposes).
     fn set_hangup_forked_call(&mut self, value: bool);
     fn get_hangup_forked_call(&self) -> bool;
-}
-
-pub trait CredentialInfoExt {
-
-    /// Realm. Use "*" to make a credential that can be used to authenticate
-    /// against any challenges.
-    fn set_realm(&mut self, value: String);
-    fn get_realm(&self) -> String;
-
-    /// Scheme (e.g. "digest").
-    fn set_scheme(&mut self, value: String);
-    fn get_scheme(&self) -> String;
-
-    /// User name.
-    fn set_username(&mut self, value: String);
-    fn get_username(&self) -> String;
-
-    /// Type of data (0 for plaintext passwd).
-    fn set_data_type(&mut self, value: CredentialInfoType);
-    fn get_data_type(&self) -> CredentialInfoType;
-
-    /// The data, which can be a plaintext password or a hashed digest.
-    fn set_data(&mut self, value: String);
-    fn get_data(&self) -> String;
 }
 
 
@@ -546,11 +526,11 @@ impl UAConfigExt for UAConfig {
         check_boolean(self.srtp_optional_dup_offer)
     }
 
-    fn set_srtp_opt(&mut self, value: SRTPOption) {
+    fn set_srtp_opt(&mut self, value: UASrtpOpt) {
         self.srtp_opt = value;
     }
 
-    fn get_srtp_opt(&self) -> SRTPOption {
+    fn get_srtp_opt(&self) -> UASrtpOpt {
         todo!()
     }
 
@@ -561,6 +541,208 @@ impl UAConfigExt for UAConfig {
     fn get_hangup_forked_call(&self) -> bool {
         check_boolean(self.hangup_forked_call)
     }
+}
+
+
+/// UALoggingConfig Trait
+pub trait UALoggingConfigExt {
+
+    /// Get Log incoming and outgoing SIP message? Yes!
+    fn set_msg_logging(&mut self, value: bool);
+    fn get_msg_logging(&self) -> bool;
+
+    /// Get Input verbosity level. Value 5 is reasonable.
+    fn set_level(&mut self, value: u32);
+    fn get_level(&self) -> u32;
+
+    /// Get Verbosity level for console. Value 4 is reasonable.
+    fn set_console_level(&mut self, value: u32);
+    fn get_console_level(&self) -> u32;
+
+    /// Get Log decoration.
+    fn set_decor(&mut self, value: u32);
+    fn get_decor (&self) -> u32;
+
+    /// Set Optional log filename.
+    fn set_log_filename(&mut self, value: PathBuf);
+    fn get_log_filename(&self) -> PathBuf;
+
+    /// Get Additional flags to be given to pj_file_open() when opening the log file. By default,
+    /// the flag is PJ_O_WRONLY. Application may set PJ_O_APPEND here so that
+    /// logs are appended to existing file instead of overwriting it.
+    ///
+    /// # Default
+    /// is 0.
+    fn set_log_file_flags(&mut self, value: FileAccess);
+    fn get_log_file_flags(&self) -> FileAccess;
+
+    // TODO Implement callback API.
+    // pub cb: Option< unsafe extern "C" fn( level: c_int, data: *const c_char, len: c_int, ) >
+}
+
+impl UALoggingConfigExt for UALoggingConfig {
+
+    fn get_msg_logging(&self) -> bool {
+        check_boolean(self.msg_logging)
+    }
+
+    fn set_msg_logging(&mut self, value: bool) {
+        self.msg_logging = boolean_to_pjbool(value);
+    }
+
+    fn get_level(&self) -> u32 {
+        self.level
+    }
+
+    fn set_level(&mut self, value: u32) {
+        self.level = value;
+    }
+
+    fn get_console_level(&self) -> u32 {
+        self.console_level
+    }
+
+    fn set_console_level(&mut self, value: u32) {
+        self.console_level = value;
+    }
+
+    fn get_decor (&self) -> u32 {
+        self.decor
+    }
+
+    fn set_decor(&mut self, value: u32) {
+        self.decor = value;
+    }
+
+    fn get_log_filename(&self) -> PathBuf {
+        PathBuf::from(self.log_filename.to_string().as_str())
+    }
+
+    fn set_log_filename(&mut self, value: PathBuf) {
+        self.log_filename = pj_str_t::from_string(String::from(value.to_str().unwrap()));
+    }
+
+    fn get_log_file_flags(&self) -> FileAccess {
+        FileAccess::try_from(self.log_file_flags)
+        .expect("Error LogConfig get log_file_flags")
+    }
+
+    fn set_log_file_flags(&mut self, value: FileAccess) {
+        self.log_file_flags = value.into();
+    }
+}
+
+
+pub trait UAMsgDataExt {
+
+    /// Optional remote target URI (i.e. Target header). If NULL, the target will be set to the
+    /// remote URI (To header). This field is used by pjsua_call_make_call(), pjsua_im_send(),
+    /// pjsua_call_reinvite(), pjsua_call_set_hold(), and pjsua_call_update().
+    fn set_target_uri (&mut self, value: String);
+    fn get_target_uri (&self) -> String;
+
+    /// Additional message headers as linked list. Application can add headers to the list by
+    /// creating the header, either from the heap/pool or from temporary local variable, and add
+    /// the header using linked list operation. See pjsua_app.c for some sample codes.
+    fn set_hdr_list (&mut self, value: pjsip_hdr);
+    fn get_hdr_list (&self) -> &pjsip_hdr;
+
+    /// MIME type of optional message body.
+    fn set_content_type (&mut self, value: String);
+    fn get_content_type (&self) -> String;
+
+    /// Optional message body to be added to the message, only when the message doesn't have a
+    /// body.
+    fn set_msg_body (&mut self, value: String);
+    fn get_msg_body (&self) -> String;
+
+    /// Content type of the multipart body. If application wants to send multipart message bodies,
+    /// it puts the parts in parts and set the content type in multipart_ctype. If the message
+    /// already contains a body, the body will be added to the multipart bodies.
+    fn set_multipart_ctype (&mut self, value: pjsip_media_type);
+    fn get_multipart_ctype (&self) -> pjsip_media_type;
+
+    /// List of multipart parts. If application wants to send multipart message bodies, it puts the
+    /// parts in parts and set the content type in multipart_ctype. If the message already contains
+    /// a body, the body will be added to the multipart bodies.
+    fn get_multipart_parts (&mut self) -> pjsip_multipart_part;
+    fn set_multipart_parts (&self, value: pjsip_multipart_part);
+
+}
+
+impl UAMsgDataExt for UAMsgData {
+
+    fn set_target_uri (&mut self, value: String) {
+        self.target_uri = pj_str_t::from_string(value);
+    }
+
+    fn get_target_uri (&self) -> String {
+        self.target_uri.to_string()
+    }
+
+    fn set_hdr_list (&mut self, value: pjsip_hdr) {
+        self.hdr_list = value;
+    }
+
+    fn get_hdr_list (&self) -> &pjsip_hdr {
+        &self.hdr_list
+    }
+
+    fn set_content_type (&mut self, value: String) {
+        self.content_type = pj_str_t::from_string(value);
+    }
+
+    fn get_content_type (&self) -> String {
+        self.content_type.to_string()
+    }
+
+    fn set_msg_body (&mut self, value: String) {
+        self.content_type = pj_str_t::from_string(value);
+    }
+
+    fn get_msg_body (&self) -> String {
+        self.content_type.to_string()
+    }
+
+    fn set_multipart_ctype (&mut self, value: pjsip_media_type) {
+        todo!()
+    }
+
+    fn get_multipart_ctype (&self) -> pjsip_media_type {
+        todo!()
+    }
+
+    fn get_multipart_parts (&mut self) -> pjsip_multipart_part {
+        todo!()
+    }
+
+    fn set_multipart_parts (&self, value: pjsip_multipart_part) {
+        todo!()
+    }
+}
+
+pub trait CredentialInfoExt {
+
+    /// Realm. Use "*" to make a credential that can be used to authenticate
+    /// against any challenges.
+    fn set_realm(&mut self, value: String);
+    fn get_realm(&self) -> String;
+
+    /// Scheme (e.g. "digest").
+    fn set_scheme(&mut self, value: String);
+    fn get_scheme(&self) -> String;
+
+    /// User name.
+    fn set_username(&mut self, value: String);
+    fn get_username(&self) -> String;
+
+    /// Type of data (0 for plaintext passwd).
+    fn set_data_type(&mut self, value: CredentialInfoType);
+    fn get_data_type(&self) -> CredentialInfoType;
+
+    /// The data, which can be a plaintext password or a hashed digest.
+    fn set_data(&mut self, value: String);
+    fn get_data(&self) -> String;
 }
 
 
