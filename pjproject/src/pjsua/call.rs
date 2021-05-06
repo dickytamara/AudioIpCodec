@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::{pjmedia::MediaDir, pjsip::{SIPRole, SIPStatusCode}, utils::check_boolean};
+use crate::{pjmedia::MediaDir, pjsip::{SIPRole, SIPStatusCode}, pjsip_ua::SIPInvState, utils::check_boolean};
 
 use super::*;
 
@@ -36,7 +36,7 @@ pub trait CallInfoExt {
     fn get_setting (&self) -> (CallFlags, KeyFrameMethod, u32, u32);
 
     /// Call state
-    fn get_state (&self) -> InviteState;
+    fn get_state (&self) -> SIPInvState;
 
     /// Text describing the state
     fn get_state_text (&self) -> String;
@@ -142,8 +142,8 @@ impl CallInfoExt for CallInfo {
         )
     }
 
-    fn get_state (&self) -> InviteState {
-        InviteState::try_from(self.state)
+    fn get_state (&self) -> SIPInvState {
+        SIPInvState::try_from(self.state)
         .expect("Error CallInfo get state")
     }
 

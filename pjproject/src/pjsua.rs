@@ -230,18 +230,6 @@ pub enum BuddyEvsubState {
 
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
-pub enum InviteState {
-    Null = pjsip_ua_sys::PJSIP_INV_STATE_NULL,
-    Calling = pjsip_ua_sys::PJSIP_INV_STATE_CALLING,
-    Incoming = pjsip_ua_sys::PJSIP_INV_STATE_INCOMING,
-    Early = pjsip_ua_sys::PJSIP_INV_STATE_EARLY,
-    Connecting = pjsip_ua_sys::PJSIP_INV_STATE_CONNECTING,
-    Confirmed = pjsip_ua_sys::PJSIP_INV_STATE_CONFIRMED,
-    Disconnected = pjsip_ua_sys::PJSIP_INV_STATE_DISCONNECTED,
-}
-
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
-#[repr(u32)]
 pub enum CallMediaStatus {
     None = pjsua_sys::PJSUA_CALL_MEDIA_NONE,
     Active = pjsua_sys::PJSUA_CALL_MEDIA_ACTIVE,
