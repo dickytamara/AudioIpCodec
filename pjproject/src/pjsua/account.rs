@@ -1,7 +1,7 @@
 use std::convert::TryFrom;
 use pjnath_sys::{pj_ice_sess_options, pj_stun_auth_cred};
 
-use crate::{pjmedia::{MediaRtcpFbType, MediaSrtpUse, RtcpFbCapability, RtcpFbSetting}, pjnath::TurnTpType, pjsip::SIPStatusCode, utils::{boolean_to_pjbool, check_boolean}};
+use crate::{pjmedia::{MediaSrtpUse, RtcpFbSetting}, pjnath::TurnTpType, pjsip::SIPStatusCode, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 pub trait UAIceConfigExt {
@@ -1296,6 +1296,198 @@ impl UAAccInfoExt for UAAccInfo {
 }
 
 
+pub struct UAAccount { id: i32 }
+
+impl UAAccount {
+
+    /// check if this account valid or not
+    pub fn is_valid(&self) -> bool {
+        unsafe { utils::check_boolean(pjsua_sys::pjsua_acc_is_valid(self.id)) }
+    }
+
+    /// set this account to be default
+    pub fn set_default(&self) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_default(self.id)) }
+    }
+
+    /// remove account from internal pjsua
+    pub fn del(&self) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_acc_del(self.id))
+        }
+    }
+
+    /// get inner config
+    pub fn get_config (&self) -> Result<UAAccConfig, i32> {
+        unsafe {
+            let pool = pool_create("tmp-pool");
+            let mut acc_cfg = UAAccConfig::new();
+
+            let status = pjsua_sys::pjsua_acc_get_config(self.id, pool, &mut acc_cfg as *mut _);
+
+            pool_release(pool);
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(acc_cfg); },
+                Err(e) => { return Err(e); }
+            }
+        }
+    }
+
+    // modify acoount config
+    pub fn modify(&self, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_acc_modify(self.id, acc_cfg as *const _ ))
+        }
+    }
+
+    // set online or ofline status
+    pub fn set_online_status(&self, is_online: bool) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_acc_set_online_status(self.id, utils::boolean_to_pjbool(is_online)))
+        }
+    }
+
+    pub fn set_online_status2(&self, is_online: bool, pr: &mut  pjrpid_element) -> Result<(), i32> {
+        unsafe {
+            let status = pjsua_sys::pjsua_acc_set_online_status2(
+                self.id,
+                utils::boolean_to_pjbool(is_online),
+                pr as *const _
+            );
+            utils::check_status(status)
+        }
+    }
+
+    // set registration process
+    pub fn set_registration(&self, renew: bool) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_acc_set_registration(self.id, utils::boolean_to_pjbool(renew)))
+        }
+    }
+
+    // get inner account info
+    pub fn get_info (&self) -> Result<UAAccInfo, i32> {
+        unsafe {
+            let mut info = UAAccInfo::new();
+            match utils::check_status(pjsua_sys::pjsua_acc_get_info(self.id, &mut info as *mut _)) {
+                Ok(()) => { return Ok(info); },
+                Err(e) => { return Err(e); }
+            }
+        }
+    }
+
+    // Create arbitrary requests using the account.
+    // Application should only use this function to create auxiliary requests outside dialog,
+    // such as OPTIONS, and use the call or presence API to create dialog related requests.
+    pub fn create_request(&self, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), i32> {
+
+        let mut target = pj_str_t::from_string(target);
+
+        unsafe {
+            let status = pjsua_sys::pjsua_acc_create_request(
+                self.id,
+                method as *const _,
+                &mut target as *const _,
+                (p_tdata as *mut _) as *mut _
+            );
+    
+            utils::check_status(status)
+        }
+    }
+
+    // Create a suitable Contact header value,
+    // based on the specified target URI for the specified account.
+    pub fn create_uac_contact(&self, contact: String, uri: String) -> Result<(), i32> {
+    
+        let mut contact = pj_str_t::from_string(contact);
+        let mut uri = pj_str_t::from_string(uri);
+    
+        unsafe {
+            let pool = pool_create("tmp-pool");
+    
+            let status = pjsua_sys::pjsua_acc_create_uac_contact(
+                pool,
+                &mut contact as *mut _,
+                self.id,
+                &mut uri as *mut _
+            );
+    
+            pool_release(pool);
+    
+            utils::check_status(status)
+        }
+    }
+
+    // Create a suitable Contact header value, based on the information in the incoming request.
+    pub fn create_uas_contact(&self, contact: String, rdata: &mut pjsip_rx_data) -> Result<(), i32> {
+
+        let mut contact = pj_str_t::from_string(contact);
+
+        unsafe {
+            let pool = pool_create("tmp-pool");
+
+            let status = pjsua_sys::pjsua_acc_create_uas_contact(
+                pool,
+                &mut contact as *mut _,
+                self.id,
+                rdata as *mut _
+            );
+    
+            pool_release(pool);
+
+            utils::check_status(status)
+        }
+    }
+
+    // set transport by given id transport id for account
+    pub fn set_transport(&self, tp_id: i32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(
+                pjsua_sys::pjsua_acc_set_transport(self.id, tp_id)
+            )
+        }
+    }
+
+    pub fn get_count() -> u32 {
+        unsafe { pjsua_sys::pjsua_acc_get_count() }
+    }
+
+    pub fn get_default() -> i32 {
+        unsafe { pjsua_sys::pjsua_acc_get_default() }
+    }
+
+    pub fn enum_accs(ids: &mut [i32; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _))
+        }
+    }
+
+    pub fn enum_info(info: &mut [UAAccInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
+        }
+    }
+
+    pub fn find_for_outgoing(url: String) -> i32 {
+        let mut url = pj_str_t::from_string(url);
+        unsafe {
+            pjsua_sys::pjsua_acc_find_for_outgoing(
+                &mut url as *const _
+            )
+        }
+
+    }
+
+    pub fn find_for_incoming(rdata: &mut pjsip_rx_data) -> i32 {
+        unsafe {
+            pjsua_sys::pjsua_acc_find_for_incoming(
+                rdata as *mut _
+            )
+        }
+    }
+
+}
+
 // pjsua account helper
 
 pub fn ice_config_from_media_config(dst: &mut UAIceConfig, src: &mut UAMediaConfig) {
@@ -1400,21 +1592,7 @@ pub fn acc_config_dup (dst: &mut UAAccConfig, src: &mut UAAccConfig) {
     }
 }
 
-pub fn acc_get_count() -> u32 {
-    unsafe { pjsua_sys::pjsua_acc_get_count() }
-}
 
-pub fn acc_is_valid(acc_id: i32) -> bool {
-    unsafe { utils::check_boolean(pjsua_sys::pjsua_acc_is_valid(acc_id)) }
-}
-
-pub fn acc_set_default(acc_id: i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_default(acc_id)) }
-}
-
-pub fn acc_get_default() -> i32 {
-    unsafe { pjsua_sys::pjsua_acc_get_default() }
-}
 
 pub fn acc_add(acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
     unsafe {
@@ -1444,151 +1622,3 @@ pub fn acc_add_local(tid: i32, is_default: bool, p_acc_id: &mut i32) -> Result<(
 
 // i32 	pjsua_acc_set_user_data (i32 acc_id, void *user_data)
 // void * 	pjsua_acc_get_user_data (i32 acc_id)
-
-pub fn acc_del(acc_id: i32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_acc_del(acc_id))
-    }
-}
-
-pub fn acc_get_config (acc_id: i32, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
-    unsafe {
-        let pool = pool_create("tmp-pool");
-
-        let status = pjsua_sys::pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
-
-        pool_release(pool);
-
-        utils::check_status(status)
-    }
-}
-
-pub fn acc_modify(acc_id: i32, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_acc_modify( acc_id, acc_cfg as *const _ ))
-    }
-}
-
-pub fn acc_set_online_status(acc_id: i32, is_online: bool) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_acc_set_online_status( acc_id, utils::boolean_to_pjbool(is_online)))
-    }
-}
-
-pub fn acc_set_online_status2(acc_id: i32, is_online: bool, pr: &mut  pjrpid_element) -> Result<(), i32> {
-
-    unsafe {
-        let status = pjsua_sys::pjsua_acc_set_online_status2(
-            acc_id,
-            utils::boolean_to_pjbool(is_online),
-            pr as *const _
-        );
-        utils::check_status(status)
-    }
-}
-
-pub fn acc_set_registration(acc_id: i32, renew: bool) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_acc_set_registration( acc_id, utils::boolean_to_pjbool(renew)))
-    }
-}
-
-pub fn acc_get_info (acc_id: i32, info: &mut UAAccInfo) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_acc_get_info(acc_id, info as *mut _))
-    }
-}
-
-pub fn enum_accs(ids: &mut [i32; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _))
-    }
-}
-
-pub fn acc_enum_info(info: &mut [UAAccInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
-    }
-}
-
-pub fn acc_find_for_outgoing(url: String) -> i32 {
-
-    let mut url = pj_str_t::from_string(url);
-
-    unsafe {
-        pjsua_sys::pjsua_acc_find_for_outgoing(
-            &mut url as *const _
-        )
-    }
-
-}
-
-pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> i32 {
-
-    unsafe {
-        pjsua_sys::pjsua_acc_find_for_incoming(
-            rdata as *mut _
-        )
-    }
-}
-
-pub fn acc_create_request(acc_id: i32, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), i32> {
-
-    let mut target = pj_str_t::from_string(target);
-
-    unsafe {
-        let status = pjsua_sys::pjsua_acc_create_request(
-            acc_id,
-            method as *const _,
-            &mut target as *const _,
-            (p_tdata as *mut _) as *mut _
-        );
-
-        utils::check_status(status)
-    }
-}
-
-pub fn acc_create_uac_contact(contact: String, acc_id: i32, uri: String) -> Result<(), i32> {
-
-    let mut contact = pj_str_t::from_string(contact);
-    let mut uri = pj_str_t::from_string(uri);
-
-    unsafe {
-        let pool = pool_create("tmp-pool");
-
-        let status = pjsua_sys::pjsua_acc_create_uac_contact(
-            pool,
-            &mut contact as *mut _,
-            acc_id,
-            &mut uri as *mut _
-        );
-
-        pool_release(pool);
-
-        utils::check_status(status)
-    }
-}
-
-pub fn acc_create_uas_contact(contact: String, acc_id: i32, rdata: &mut pjsip_rx_data) -> Result<(), i32> {
-
-    let mut contact = pj_str_t::from_string(contact);
-
-    unsafe {
-        let pool = pool_create("tmp-pool");
-
-        let status = pjsua_sys::pjsua_acc_create_uas_contact(
-            pool,
-            &mut contact as *mut _,
-            acc_id,
-            rdata as *mut _
-        );
-
-        pool_release(pool);
-
-        utils::check_status(status)
-    }
-}
-
-pub fn acc_set_transport(acc_id: i32, tp_id: i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_transport( acc_id, tp_id )) }
-}

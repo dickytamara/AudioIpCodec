@@ -175,7 +175,41 @@ impl UATransportInfoExt for UATransportInfo {
     }
 }
 
+pub struct UATransport { id: i32 }
 
+impl UATransport {
+
+    pub fn new() -> Self {
+        Self { id: -1 }
+    }
+
+    pub fn get_info(&self) -> Result<UATransportInfo, i32> {
+        unsafe {
+            let mut info = UATransportInfo::new();
+            match utils::check_status(pjsua_sys::pjsua_transport_get_info(self.id, &mut info as *mut _)) {
+                Ok(()) => { return Ok(info); },
+                Err(e) => { return Err(e); }
+            }
+        }
+    }
+
+    pub fn set_enable(&self, enabled: bool) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(
+                pjsua_sys::pjsua_transport_set_enable(self.id, utils::boolean_to_pjbool(enabled))
+            )
+        }
+    }
+
+    pub fn close (&self, force: bool) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(
+                pjsua_sys::pjsua_transport_close (self.id, utils::boolean_to_pjbool(force))
+            )
+        }
+    }
+
+}
 
 // PJSUA-API Signaling Transport
 
@@ -243,23 +277,6 @@ pub fn enum_transports(id: &mut [i32; PJSIP_MAX_TRANSPORTS as usize], count: &mu
     }
 }
 
-pub fn transport_get_info(id: i32, info: &mut UATransportInfo) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_transport_get_info(id, info as *mut _))
-    }
-}
-
-pub fn transport_set_enable(id: i32, enabled: bool) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_transport_set_enable( id, utils::boolean_to_pjbool(enabled) ))
-    }
-}
-
-pub fn transport_close (id: i32, force: bool) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_transport_close ( id, utils::boolean_to_pjbool(force)))
-    }
-}
 
 pub fn transport_lis_start(id: i32, cfg: &mut UATransportConfig) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_transport_lis_start( id, cfg as *const _)) }
