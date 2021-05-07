@@ -12,6 +12,7 @@ pub use super::pjsua::account::RtcpFbSettingExt;
 pub use super::pjsua::buddy::BuddyConfigExt;
 pub use super::pjsua::buddy::BuddyInfoExt;
 
+pub use super::pjsua::call::UACallMediaInfoExt;
 pub use super::pjsua::call::UACallInfoExt;
 pub use super::pjsua::call::UAStreamInfoExt;
 pub use super::pjsua::call::UAStreamStatExt;

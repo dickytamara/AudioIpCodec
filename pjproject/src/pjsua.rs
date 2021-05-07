@@ -65,10 +65,10 @@ pub type UAStreamStat = pjsua_sys::pjsua_stream_stat;
 pub type UACallVidStrmOpParam = pjsua_sys::pjsua_call_vid_strm_op_param;
 pub type UACallSendDtmfParam = pjsua_sys::pjsua_call_send_dtmf_param;
 
+
+
 pub type UAMediaConfig = pjsua_sys::pjsua_media_config;
 pub type UABuddyConfig = pjsua_sys::pjsua_buddy_config;
-
-
 
 // info and status struct
 pub type BuddyInfo = pjsua_sys::pjsua_buddy_info;
@@ -125,6 +125,14 @@ pub enum UAIpChangeOp {
     AccHangupCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_HANGUP_CALLS,
     AccReinviteCalls = pjsua_sys::PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS,
     Completed = pjsua_sys::PJSUA_IP_CHANGE_OP_COMPLETED,
+}
+
+/// pub type pjsua_dtmf_method = u32;
+#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[repr(u32)]
+pub enum UADtmfMethod {
+    Rfc2833 = pjsua_sys::PJSUA_DTMF_METHOD_RFC2833,
+    SipInfo = pjsua_sys::PJSUA_DTMF_METHOD_SIP_INFO,
 }
 
 /// pub type pjsua_sip_timer_use = u32;

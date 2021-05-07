@@ -660,13 +660,13 @@ pub trait UAMsgDataExt {
     /// it puts the parts in parts and set the content type in multipart_ctype. If the message
     /// already contains a body, the body will be added to the multipart bodies.
     fn set_multipart_ctype (&mut self, value: pjsip_media_type);
-    fn get_multipart_ctype (&self) -> pjsip_media_type;
+    fn get_multipart_ctype (&self) -> &pjsip_media_type;
 
     /// List of multipart parts. If application wants to send multipart message bodies, it puts the
     /// parts in parts and set the content type in multipart_ctype. If the message already contains
     /// a body, the body will be added to the multipart bodies.
-    fn get_multipart_parts (&mut self) -> pjsip_multipart_part;
-    fn set_multipart_parts (&self, value: pjsip_multipart_part);
+    fn set_multipart_parts (&mut self, value: pjsip_multipart_part);
+    fn get_multipart_parts (&self) -> &pjsip_multipart_part;
 
 }
 
@@ -705,20 +705,21 @@ impl UAMsgDataExt for UAMsgData {
     }
 
     fn set_multipart_ctype (&mut self, value: pjsip_media_type) {
-        todo!()
+        self.multipart_ctype = value;
     }
 
-    fn get_multipart_ctype (&self) -> pjsip_media_type {
-        todo!()
+    fn get_multipart_ctype (&self) -> &pjsip_media_type {
+        &self.multipart_ctype
     }
 
-    fn get_multipart_parts (&mut self) -> pjsip_multipart_part {
-        todo!()
+    fn set_multipart_parts (&mut self, value: pjsip_multipart_part) {
+        self.multipart_parts = value;
     }
 
-    fn set_multipart_parts (&self, value: pjsip_multipart_part) {
-        todo!()
+    fn get_multipart_parts (&self) -> &pjsip_multipart_part {
+        &self.multipart_parts
     }
+
 }
 
 pub trait CredentialInfoExt {

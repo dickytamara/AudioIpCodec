@@ -1,11 +1,19 @@
 
 use std::convert::TryFrom;
-use crate::{pjmedia::MediaDir, pjsip::{SIPRole, SIPStatusCode}, pjsip_ua::SIPInvState, utils::check_boolean};
+use crate::{pjmedia::{MediaDir, MediaType}, pjsip::{SIPRole, SIPStatusCode}, pjsip_ua::SIPInvState, utils::check_boolean};
 
 use super::*;
 
 
 // readonly
+pub trait UACallMediaInfoExt {
+    fn get_index(&self) -> u32;
+    fn get_type_(&self) -> MediaType;
+    fn get_dir(&self) -> MediaDir;
+    fn get_status(&self) -> CallMediaStatus;
+    // fn get_stream(&self) -> pjsua_call_media_info__bindgen_ty_1,
+}
+
 pub trait UACallInfoExt {
 
     /// Call identification.
@@ -96,22 +104,62 @@ pub trait UACallInfoExt {
 }
 
 pub trait UAStreamInfoExt {
-
+    fn get_type_(&self) -> MediaType;
+    // fn get_info(&self) -> pjsua_stream_info__bindgen_ty_1;
 }
 
 pub trait UAStreamStatExt {
-
+    fn get_rtcp(&self) -> &pjmedia_sys::pjmedia_rtcp_stat;
+    fn get_jbuf(&self) -> &pjmedia_sys::pjmedia_jb_state;
 }
 
 pub trait UACallVidStrmOpParamExt {
-    
+
+    fn set_med_idx(&mut self, value: i32);
+    fn get_med_idx(&self) -> i32;
+
+    fn set_dir(&mut self, value: MediaDir);
+    fn get_dir(&self) -> MediaDir;
+
+    fn set_cap_dev(&mut self, value: i32);
+    fn get_cap_dev(&self) -> i32;
+
 }
 
 pub trait UACallSendDtmfParamExt {
-    
+
+    fn set_method(&mut self, value: UADtmfMethod);
+    fn get_method(&self) -> UADtmfMethod;
+
+    fn set_duration(&mut self, value: u32);
+    fn get_duration(&self) -> u32;
+
+    fn set_digits(&mut self, value: String);
+    fn get_digits(&self) -> String;
+
 }
 
+impl UACallMediaInfoExt for UACallMediaInfo {
 
+    fn get_index(&self) -> u32 {
+        self.index
+    }
+
+    fn get_type_(&self) -> MediaType {
+        MediaType::try_from(self.type_)
+        .expect("Error UACallMediaInfoExt get type_")
+    }
+
+    fn get_dir(&self) -> MediaDir {
+        MediaDir::try_from(self.dir)
+        .expect("Error UACallMediaInfo get dir")
+    }
+
+    fn get_status(&self) -> CallMediaStatus {
+        CallMediaStatus::try_from(self.status)
+        .expect("Error UACallMediaInfo get status")
+    }
+}
 
 impl UACallInfoExt for UACallInfo {
 
@@ -234,4 +282,83 @@ impl UACallInfoExt for UACallInfo {
     }
 }
 
+impl UAStreamInfoExt for UAStreamInfo {
+
+    fn get_type_(&self) -> MediaType {
+        MediaType::try_from(self.type_)
+        .expect("Error UAStreamInfo get type_")
+    }
+
+}
+
+impl UAStreamStatExt for UAStreamStat {
+
+    fn get_rtcp(&self) -> &pjmedia_sys::pjmedia_rtcp_stat {
+        &self.rtcp
+    }
+
+    fn get_jbuf(&self) -> &pjmedia_sys::pjmedia_jb_state {
+        &self.jbuf
+    }
+
+}
+
+impl UACallVidStrmOpParamExt for UACallVidStrmOpParam {
+
+    fn set_med_idx(&mut self, value: i32) {
+        self.med_idx = value;
+    }
+
+    fn get_med_idx(&self) -> i32 {
+        self.med_idx
+    }
+
+    fn set_dir(&mut self, value: MediaDir) {
+        self.dir = value.into();
+    }
+
+    fn get_dir(&self) -> MediaDir {
+        MediaDir::try_from(self.dir)
+        .expect("Error UACallVidStrmOpParam get dir")
+    }
+
+    fn set_cap_dev(&mut self, value: i32) {
+        self.cap_dev = value;
+    }
+
+    fn get_cap_dev(&self) -> i32 {
+        self.cap_dev
+    }
+
+}
+
+impl UACallSendDtmfParamExt for UACallSendDtmfParam {
+
+    fn set_method(&mut self, value: UADtmfMethod) {
+        self.method = value.into();
+    }
+
+    fn get_method(&self) -> UADtmfMethod {
+        UADtmfMethod::try_from(self.method)
+        .expect("Error UACallSendDtmfParam get methof")
+    }
+
+    fn set_duration(&mut self, value: u32) {
+        self.duration = value;
+    }
+
+    fn get_duration(&self) -> u32 {
+        self.duration
+    }
+
+    fn set_digits(&mut self, value: String) {
+        self.digits = pj_str_t::from_string(value);
+    }
+
+
+    fn get_digits(&self) -> String {
+        self.digits.to_string()
+    }
+
+}
 
