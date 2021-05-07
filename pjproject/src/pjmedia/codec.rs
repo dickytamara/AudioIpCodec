@@ -204,3 +204,119 @@ impl MediaStreamInfoExt for MediaStreamInfo {
         check_boolean(self.rtcp_sdes_bye_disabled)
     }
 }
+
+
+// pub trait RtcpFbSettingExt {
+
+//     /// Specify whether transport protocol in SDP media description uses RTP/AVP instead
+//     /// of RTP/AVPF. Note that RFC4585 mandates to signal RTP/AVPF profile, but it may
+//     /// cause SDP negotiation failure when negotiating with endpoints that does not
+//     /// support RTP/AVPF (including older version of PJSIP), furthermore, there is RFC8643
+//     /// that promotes interoperability over the strictness of RTP profile specifications.
+//     ///
+//     /// # default
+//     /// true
+//     fn set_dont_use_avpf (&mut self, value: bool);
+//     fn get_dont_use_avpf (&self) -> bool;
+
+//     /// Number of RTCP Feedback capabilities.
+//     fn set_cap_count (&mut self, value: u32);
+//     fn get_cap_count (&self) -> u32;
+
+//     /// The RTCP Feedback capabilities.
+//     fn set_caps (&mut self, value: [RtcpFbCapability; 16usize]);
+//     fn get_caps (&self) -> &[RtcpFbCapability; 16usize];
+// }
+
+
+// pub trait RtcpFbCapabilityExt {
+
+//     /// Specify the codecs to which the capability is applicable. Codec ID is using the same
+//     /// format as in pjmedia_codec_mgr_find_codecs_by_id() and
+//     /// pjmedia_vid_codec_mgr_find_codecs_by_id(), e.g: "L16/8000/1", "PCMU", "H264".
+//     /// This can also be an asterisk ("*") to represent all codecs.
+//     fn set_codec_id (&mut self, value: String);
+//     fn get_codec_id (&self) -> String ;
+
+//     /// Specify the RTCP Feedback type.
+//     fn set_type_ (&mut self, value: MediaRtcpFbType);
+//     fn get_type_ (&self) -> MediaRtcpFbType;
+
+//     /// Specify the type name if RTCP Feedback type is PJMEDIA_RTCP_FB_OTHER.
+//     fn set_type_name (&mut self, value: String);
+//     fn get_type_name (&self) -> String;
+
+//     /// Specify the RTCP Feedback parameters. Feedback subtypes should be specified in this field, e.g:
+//     ///
+//     /// - 'pli' for Picture Loss Indication feedback,
+//     /// - 'sli' for Slice Loss Indication feedback,
+//     /// - 'rpsi' for Reference Picture Selection Indication feedback,
+//     /// - 'app' for specific/proprietary application layer feedback.
+//     fn set_param (&mut self, value: String);
+//     fn get_param (&self) -> String;
+// }
+
+
+// impl RtcpFbSettingExt for RtcpFbSetting {
+
+//     fn set_dont_use_avpf (&mut self, value: bool) {
+//         self.dont_use_avpf = boolean_to_pjbool(value);
+//     }
+
+//     fn get_dont_use_avpf (&self) -> bool {
+//         check_boolean(self.dont_use_avpf)
+//     }
+
+//     fn set_cap_count (&mut self, value: u32) {
+//         self.cap_count = value;
+//     }
+
+//     fn get_cap_count (&self) -> u32 {
+//         self.cap_count
+//     }
+
+//     fn set_caps (&mut self, value: [RtcpFbCapability; 16usize]) {
+//         self.caps = value;
+//     }
+
+//     fn get_caps (&self) -> &[RtcpFbCapability; 16usize] {
+//         &self.caps
+//     }
+// }
+
+
+// impl RtcpFbCapabilityExt for RtcpFbCapability {
+
+//     fn set_codec_id (&mut self, value: String) {
+//         self.codec_id = pj_str_t::from_string(value);
+//     }
+
+//     fn get_codec_id (&self) -> String  {
+//         self.codec_id.to_string()
+//     }
+
+//     fn set_type_ (&mut self, value: MediaRtcpFbType) {
+//         self.type_ = value.into();
+//     }
+
+//     fn get_type_ (&self) -> MediaRtcpFbType {
+//         MediaRtcpFbType::try_from(self.type_)
+//         .expect("Error RtcpFbCapability get type_")
+//     }
+
+//     fn set_type_name (&mut self, value: String) {
+//         self.type_name = pj_str_t::from_string(value);
+//     }
+
+//     fn get_type_name (&self) -> String {
+//         self.type_name.to_string()
+//     }
+
+//     fn set_param (&mut self, value: String) {
+//         self.param = pj_str_t::from_string(value);
+//     }
+
+//     fn get_param (&self) -> String {
+//         self.param.to_string()
+//     }
+// }

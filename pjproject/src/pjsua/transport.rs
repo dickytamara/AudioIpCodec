@@ -175,3 +175,92 @@ impl UATransportInfoExt for UATransportInfo {
     }
 }
 
+
+
+// PJSUA-API Signaling Transport
+
+pub fn transport_config_default(cfg: &mut UATransportConfig) {
+    unsafe { pjsua_sys::pjsua_transport_config_default(cfg as *mut _) }
+}
+
+pub fn transport_config_dup(dst: &mut UATransportConfig, src: &mut UATransportConfig) {
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_sys::pjsua_transport_config_dup(
+            pool,
+            dst as *mut _,
+            src as *mut _
+        );
+    }
+
+    pool_release(pool)
+}
+
+pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut UATransportConfig, p_id: Option<&mut i32>) -> Result<(), i32> {
+
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        let status = pjsua_sys::pjsua_transport_create(
+            type_,
+            cfg as *const _,
+            p_id
+        );
+        utils::check_status(status)
+    }
+}
+
+pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut i32>) -> Result<(), i32> {
+
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_transport_register( tp as *mut _, p_id))
+    }
+}
+
+pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut i32>) -> Result<(), i32> {
+    let p_id = match p_id {
+        Some(value) => value as *mut _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_tpfactory_register( tf as *mut _, p_id ))
+    }
+}
+
+pub fn enum_transports(id: &mut [i32; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_enum_transports( id.as_mut_ptr(), count as *mut _))
+    }
+}
+
+pub fn transport_get_info(id: i32, info: &mut UATransportInfo) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_transport_get_info(id, info as *mut _))
+    }
+}
+
+pub fn transport_set_enable(id: i32, enabled: bool) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_transport_set_enable( id, utils::boolean_to_pjbool(enabled) ))
+    }
+}
+
+pub fn transport_close (id: i32, force: bool) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_transport_close ( id, utils::boolean_to_pjbool(force)))
+    }
+}
+
+pub fn transport_lis_start(id: i32, cfg: &mut UATransportConfig) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_transport_lis_start( id, cfg as *const _)) }
+}

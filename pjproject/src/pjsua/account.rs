@@ -41,7 +41,6 @@ pub trait UAIceConfigExt {
     fn get_ice_always_update(&self) -> bool;
 }
 
-
 pub trait UATurnConfigExt {
 
     /// Enable TURN candidate in ICE.
@@ -71,7 +70,6 @@ pub trait UATurnConfigExt {
     fn set_turn_tls_setting(&mut self, value: pj_turn_sock_tls_cfg);
     fn get_turn_tls_setting(&self) -> &pj_turn_sock_tls_cfg;
 }
-
 
 pub trait UAAccConfigExt {
     // no implementation for user_data fields
@@ -576,8 +574,6 @@ pub trait UAAccConfigExt {
     fn get_rtcp_fb_cfg(&self) -> &RtcpFbSetting;
 }
 
-
-// todo: only read only operation
 pub trait UAAccInfoExt {
     fn get_id (&self) -> pjsua_acc_id;
     fn get_is_default (&self) -> bool;
@@ -1300,115 +1296,299 @@ impl UAAccInfoExt for UAAccInfo {
 }
 
 
-pub trait RtcpFbSettingExt {
+// pjsua account helper
 
-    /// Specify whether transport protocol in SDP media description uses RTP/AVP instead
-    /// of RTP/AVPF. Note that RFC4585 mandates to signal RTP/AVPF profile, but it may
-    /// cause SDP negotiation failure when negotiating with endpoints that does not
-    /// support RTP/AVPF (including older version of PJSIP), furthermore, there is RFC8643
-    /// that promotes interoperability over the strictness of RTP profile specifications.
-    ///
-    /// # default
-    /// true
-    fn set_dont_use_avpf (&mut self, value: bool);
-    fn get_dont_use_avpf (&self) -> bool;
+pub fn ice_config_from_media_config(dst: &mut UAIceConfig, src: &mut UAMediaConfig) {
 
-    /// Number of RTCP Feedback capabilities.
-    fn set_cap_count (&mut self, value: u32);
-    fn get_cap_count (&self) -> u32;
+    let pool = pool_create("tmp-pool");
 
-    /// The RTCP Feedback capabilities.
-    fn set_caps (&mut self, value: [RtcpFbCapability; 16usize]);
-    fn get_caps (&self) -> &[RtcpFbCapability; 16usize];
+    unsafe {
+        pjsua_sys::pjsua_ice_config_from_media_config(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
+    }
+
+    pool_release(pool);
 }
 
+pub fn ice_config_dup(dst: &mut UAIceConfig, src: &mut UAIceConfig) {
 
-pub trait RtcpFbCapabilityExt {
+    let pool = pool_create("tmp-pool");
 
-    /// Specify the codecs to which the capability is applicable. Codec ID is using the same
-    /// format as in pjmedia_codec_mgr_find_codecs_by_id() and
-    /// pjmedia_vid_codec_mgr_find_codecs_by_id(), e.g: "L16/8000/1", "PCMU", "H264".
-    /// This can also be an asterisk ("*") to represent all codecs.
-    fn set_codec_id (&mut self, value: String);
-    fn get_codec_id (&self) -> String ;
+    unsafe {
+        pjsua_sys::pjsua_ice_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
+    }
 
-    /// Specify the RTCP Feedback type.
-    fn set_type_ (&mut self, value: MediaRtcpFbType);
-    fn get_type_ (&self) -> MediaRtcpFbType;
-
-    /// Specify the type name if RTCP Feedback type is PJMEDIA_RTCP_FB_OTHER.
-    fn set_type_name (&mut self, value: String);
-    fn get_type_name (&self) -> String;
-
-    /// Specify the RTCP Feedback parameters. Feedback subtypes should be specified in this field, e.g:
-    ///
-    /// - 'pli' for Picture Loss Indication feedback,
-    /// - 'sli' for Slice Loss Indication feedback,
-    /// - 'rpsi' for Reference Picture Selection Indication feedback,
-    /// - 'app' for specific/proprietary application layer feedback.
-    fn set_param (&mut self, value: String);
-    fn get_param (&self) -> String;
+    pool_release(pool);
 }
 
+pub fn turn_config_from_media_config(dst: &mut UATurnConfig, src: &mut UAMediaConfig) {
 
-impl RtcpFbSettingExt for RtcpFbSetting {
-    fn set_dont_use_avpf (&mut self, value: bool) {
-        self.dont_use_avpf = boolean_to_pjbool(value);
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_sys::pjsua_turn_config_from_media_config(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
     }
 
-    fn get_dont_use_avpf (&self) -> bool {
-        check_boolean(self.dont_use_avpf)
+    pool_release(pool);
+}
+
+pub fn turn_config_dup(dst: &mut UATurnConfig, src: &mut UATurnConfig) {
+
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_sys::pjsua_turn_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        )
     }
 
-    fn set_cap_count (&mut self, value: u32) {
-        self.cap_count = value;
-    }
+    pool_release(pool);
+}
 
-    fn get_cap_count (&self) -> u32 {
-        self.cap_count
-    }
-
-    fn set_caps (&mut self, value: [RtcpFbCapability; 16usize]) {
-        self.caps = value;
-    }
-
-    fn get_caps (&self) -> &[RtcpFbCapability; 16usize] {
-        &self.caps
+pub fn srtp_opt_default(cfg: &mut UASrtpOpt) {
+    unsafe {
+        pjsua_sys::pjsua_srtp_opt_default(
+            cfg as *mut _
+        )
     }
 }
 
+pub fn srtp_opt_dup(dst: &mut UASrtpOpt, src: &mut UASrtpOpt, check_str: bool) {
 
-impl RtcpFbCapabilityExt for RtcpFbCapability {
-    fn set_codec_id (&mut self, value: String) {
-        self.codec_id = pj_str_t::from_string(value);
+    let pool = pool_create("tmp-pool");
+
+    unsafe {
+        pjsua_sys::pjsua_srtp_opt_dup(
+            pool,
+            dst as *mut _,
+            src as *const _,
+            utils::boolean_to_pjbool(check_str)
+        )
     }
 
-    fn get_codec_id (&self) -> String  {
-        self.codec_id.to_string()
+    pool_release(pool);
+}
+
+pub fn acc_config_default (cfg: &mut UAAccConfig) {
+    unsafe { pjsua_sys::pjsua_acc_config_default(cfg as *mut _); }
+}
+
+pub fn acc_config_dup (dst: &mut UAAccConfig, src: &mut UAAccConfig) {
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        pjsua_sys::pjsua_acc_config_dup(
+            pool,
+            dst as *mut _,
+            src as *const _
+        );
+
+        pool_release(pool);
+    }
+}
+
+pub fn acc_get_count() -> u32 {
+    unsafe { pjsua_sys::pjsua_acc_get_count() }
+}
+
+pub fn acc_is_valid(acc_id: i32) -> bool {
+    unsafe { utils::check_boolean(pjsua_sys::pjsua_acc_is_valid(acc_id)) }
+}
+
+pub fn acc_set_default(acc_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_default(acc_id)) }
+}
+
+pub fn acc_get_default() -> i32 {
+    unsafe { pjsua_sys::pjsua_acc_get_default() }
+}
+
+pub fn acc_add(acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
+    unsafe {
+
+        let status = pjsua_sys::pjsua_acc_add(
+            acc_cfg as *const _,
+            utils::boolean_to_pjbool(is_default),
+            p_acc_id as *mut _
+        );
+
+        utils::check_status(status)
+    }
+}
+
+pub fn acc_add_local(tid: i32, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
+    unsafe {
+
+        let status = pjsua_sys::pjsua_acc_add_local(
+            tid,
+            utils::boolean_to_pjbool(is_default),
+            p_acc_id as *mut _
+        );
+
+        utils::check_status(status)
+    }
+}
+
+// i32 	pjsua_acc_set_user_data (i32 acc_id, void *user_data)
+// void * 	pjsua_acc_get_user_data (i32 acc_id)
+
+pub fn acc_del(acc_id: i32) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_acc_del(acc_id))
+    }
+}
+
+pub fn acc_get_config (acc_id: i32, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let status = pjsua_sys::pjsua_acc_get_config(acc_id, pool, acc_cfg as *mut _);
+
+        pool_release(pool);
+
+        utils::check_status(status)
+    }
+}
+
+pub fn acc_modify(acc_id: i32, acc_cfg: &mut UAAccConfig) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_acc_modify( acc_id, acc_cfg as *const _ ))
+    }
+}
+
+pub fn acc_set_online_status(acc_id: i32, is_online: bool) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_acc_set_online_status( acc_id, utils::boolean_to_pjbool(is_online)))
+    }
+}
+
+pub fn acc_set_online_status2(acc_id: i32, is_online: bool, pr: &mut  pjrpid_element) -> Result<(), i32> {
+
+    unsafe {
+        let status = pjsua_sys::pjsua_acc_set_online_status2(
+            acc_id,
+            utils::boolean_to_pjbool(is_online),
+            pr as *const _
+        );
+        utils::check_status(status)
+    }
+}
+
+pub fn acc_set_registration(acc_id: i32, renew: bool) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_acc_set_registration( acc_id, utils::boolean_to_pjbool(renew)))
+    }
+}
+
+pub fn acc_get_info (acc_id: i32, info: &mut UAAccInfo) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_acc_get_info(acc_id, info as *mut _))
+    }
+}
+
+pub fn enum_accs(ids: &mut [i32; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _))
+    }
+}
+
+pub fn acc_enum_info(info: &mut [UAAccInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
+    }
+}
+
+pub fn acc_find_for_outgoing(url: String) -> i32 {
+
+    let mut url = pj_str_t::from_string(url);
+
+    unsafe {
+        pjsua_sys::pjsua_acc_find_for_outgoing(
+            &mut url as *const _
+        )
     }
 
-    fn set_type_ (&mut self, value: MediaRtcpFbType) {
-        self.type_ = value.into();
-    }
+}
 
-    fn get_type_ (&self) -> MediaRtcpFbType {
-        MediaRtcpFbType::try_from(self.type_)
-        .expect("Error RtcpFbCapability get type_")
-    }
+pub fn acc_find_for_incoming(rdata: &mut pjsip_rx_data) -> i32 {
 
-    fn set_type_name (&mut self, value: String) {
-        self.type_name = pj_str_t::from_string(value);
+    unsafe {
+        pjsua_sys::pjsua_acc_find_for_incoming(
+            rdata as *mut _
+        )
     }
+}
 
-    fn get_type_name (&self) -> String {
-        self.type_name.to_string()
-    }
+pub fn acc_create_request(acc_id: i32, method: &mut pjsip_method, target: String, p_tdata: &mut pjsip_tx_data) -> Result<(), i32> {
 
-    fn set_param (&mut self, value: String) {
-        self.param = pj_str_t::from_string(value);
-    }
+    let mut target = pj_str_t::from_string(target);
 
-    fn get_param (&self) -> String {
-        self.param.to_string()
+    unsafe {
+        let status = pjsua_sys::pjsua_acc_create_request(
+            acc_id,
+            method as *const _,
+            &mut target as *const _,
+            (p_tdata as *mut _) as *mut _
+        );
+
+        utils::check_status(status)
     }
+}
+
+pub fn acc_create_uac_contact(contact: String, acc_id: i32, uri: String) -> Result<(), i32> {
+
+    let mut contact = pj_str_t::from_string(contact);
+    let mut uri = pj_str_t::from_string(uri);
+
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let status = pjsua_sys::pjsua_acc_create_uac_contact(
+            pool,
+            &mut contact as *mut _,
+            acc_id,
+            &mut uri as *mut _
+        );
+
+        pool_release(pool);
+
+        utils::check_status(status)
+    }
+}
+
+pub fn acc_create_uas_contact(contact: String, acc_id: i32, rdata: &mut pjsip_rx_data) -> Result<(), i32> {
+
+    let mut contact = pj_str_t::from_string(contact);
+
+    unsafe {
+        let pool = pool_create("tmp-pool");
+
+        let status = pjsua_sys::pjsua_acc_create_uas_contact(
+            pool,
+            &mut contact as *mut _,
+            acc_id,
+            rdata as *mut _
+        );
+
+        pool_release(pool);
+
+        utils::check_status(status)
+    }
+}
+
+pub fn acc_set_transport(acc_id: i32, tp_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_acc_set_transport( acc_id, tp_id )) }
 }

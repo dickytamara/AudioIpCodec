@@ -10,8 +10,6 @@ pub use super::pjsua::account::UAIceConfigExt;
 pub use super::pjsua::account::UATurnConfigExt;
 pub use super::pjsua::account::UAAccConfigExt;
 pub use super::pjsua::account::UAAccInfoExt;
-pub use super::pjsua::account::RtcpFbCapabilityExt;
-pub use super::pjsua::account::RtcpFbSettingExt;
 
 pub use super::pjsua::buddy::BuddyConfigExt;
 pub use super::pjsua::buddy::BuddyInfoExt;

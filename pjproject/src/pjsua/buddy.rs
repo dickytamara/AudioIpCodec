@@ -126,3 +126,158 @@ impl BuddyInfoExt for BuddyInfo {
     }
 }
 
+// JSUA-API Buddy, Presence, and Instant Messaging
+
+pub fn buddy_config_default(cfg: &mut UABuddyConfig) {
+    unsafe {
+        pjsua_sys::pjsua_buddy_config_default(
+            cfg as *mut _
+        )
+    }
+}
+
+pub fn get_buddy_count() -> u32 {
+    unsafe { pjsua_sys::pjsua_get_buddy_count() }
+}
+
+pub fn buddy_is_valid(buddy_id: i32) -> bool {
+    unsafe {utils::check_boolean(pjsua_sys::pjsua_buddy_is_valid(buddy_id)) }
+}
+
+pub fn enum_buddies(ids: &mut [i32; pjsua_sys::PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_enum_buddies( ids.as_mut_ptr(), count as *mut _ ))
+    }
+}
+
+pub fn buddy_find(uri: String) -> i32 {
+    let uri: *const pj_str_t = &mut pj_str_t::from_string(uri) as *const _;
+    unsafe { pjsua_sys::pjsua_buddy_find( uri ) }
+}
+
+pub fn buddy_get_info(buddy_id: i32, info: &mut BuddyInfo) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_buddy_get_info( buddy_id, info as *mut _ )) }
+}
+
+// skiped function this mosly for trasfer data
+// i32 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
+// void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
+
+pub fn buddy_add(buddy_cfg: &mut UABuddyConfig, p_buddy_id: *mut i32) -> Result<(), i32> {
+    unsafe {
+        let status = pjsua_sys::pjsua_buddy_add (
+            buddy_cfg as *const _,
+            p_buddy_id as *mut _
+        );
+        utils::check_status(status)
+    }
+}
+
+pub fn buddy_del(buddy_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_buddy_del(buddy_id)) }
+}
+
+pub fn buddy_subscribe_pres(buddy_id: i32, subscribe: bool) -> Result<(), i32> {
+    unsafe {
+        utils::check_status(pjsua_sys::pjsua_buddy_subscribe_pres(buddy_id, utils::boolean_to_pjbool(subscribe)))
+    }
+}
+
+pub fn buddy_update_pres(buddy_id: i32) -> Result<(), i32> {
+    unsafe { utils::check_status(pjsua_sys::pjsua_buddy_update_pres(buddy_id)) }
+}
+
+pub fn pres_notify(
+    acc_id: i32,
+    srv_pres: &mut pjsua_srv_pres,
+    state: pjsip_evsub_state,
+    state_str: String,
+    reason: String,
+    with_body: bool,
+    msg_data: Option<&mut UAMsgData>
+) -> Result<(), i32> {
+
+    let mut state_str = pj_str_t::from_string(state_str);
+    let mut reason = pj_str_t::from_string(reason);
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        let status = pjsua_sys::pjsua_pres_notify(
+            acc_id,
+            srv_pres,
+            state,
+            &mut state_str as *const _,
+            &mut reason as *const _,
+            utils::boolean_to_pjbool(with_body),
+            msg_data
+        );
+
+        utils::check_status(status)
+    }
+}
+
+pub fn pres_dump(verbose: bool) {
+    unsafe { pjsua_sys::pjsua_pres_dump ( utils::boolean_to_pjbool(verbose))}
+}
+
+pub fn im_send(
+    acc_id: i32,
+    to: String,
+    mime_type: String,
+    content: String,
+    msg_data: Option<&mut UAMsgData>
+) -> Result<(), i32> {
+
+    let mut to = pj_str_t::from_string(to);
+    let mut mime_type = pj_str_t::from_string(mime_type);
+    let mut content = pj_str_t::from_string(content);
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        let status = pjsua_sys::pjsua_im_send(
+            acc_id,
+            &mut to as *const _,
+            &mut mime_type as *const _,
+            &mut content as *const _,
+            msg_data,
+            ptr::null_mut()
+        );
+        utils::check_status(status)
+    }
+
+}
+
+pub fn im_typing(
+    acc_id: i32,
+    to:String,
+    is_typing: bool,
+    msg_data: Option<&mut UAMsgData>
+) -> Result<(), i32> {
+
+    let mut to = pj_str_t::from_string(to);
+
+    let msg_data = match msg_data {
+        Some(value) => value as *const _,
+        None => ptr::null_mut()
+    };
+
+    unsafe {
+        let status = pjsua_sys::pjsua_im_typing(
+            acc_id,
+            &mut to as *const _,
+            utils::boolean_to_pjbool(is_typing),
+            msg_data
+        );
+
+        utils::check_status(status)
+    }
+
+}
