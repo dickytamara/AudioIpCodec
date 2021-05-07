@@ -268,6 +268,67 @@ pub trait UAMediaConfigExt {
     //     pub on_aud_prev_rec_frame: Option<unsafe extern "C" fn(frame: *mut pjmedia_frame)>,
 }
 
+pub trait UACodecInfoExt {
+
+    /// Codec unique identification.
+    fn get_codec_id (&self) -> String;
+
+
+    /// Codec priority (integer 0-255).
+    fn get_priority (&self) -> u8;
+
+    ///Codec description.
+    fn get_desc (&self) -> String;
+    // fn get_buf_ (&self) -> [::std::os::raw::c_char; 64usize],
+}
+
+pub trait UAConfPortInfoExt {
+
+    fn get_slot_id (&self) -> i32;
+    fn get_name (&self) -> String;
+    fn get_format (&self) -> &pjmedia_sys::pjmedia_format;
+    fn get_clock_rate (&self) -> ClockRate;
+    fn get_channel_count (&self) -> ConfigChannel;
+    fn get_samples_per_frame (&self) -> u32;
+    fn get_bits_per_sample (&self) -> u32;
+    fn get_tx_level_adj (&self) -> f32;
+    fn get_rx_level_adj (&self) -> f32;
+    fn get_listener_cnt (&self) -> u32;
+    // fn get_listeners (&self) -> [pjsua_conf_port_id; 254usize];
+
+}
+
+pub trait UAMediaTransportExt {
+
+    fn set_skinfo (&mut self, value: pjmedia_sys::pjmedia_sock_info);
+    fn get_skinfo (&self) -> &pjmedia_sys::pjmedia_sock_info;
+
+    // fn set_transport (&mut self, value: pjmedia_sys::pjmedia_transport);
+    fn get_transport (&self) -> *mut pjmedia_sys::pjmedia_transport;
+
+}
+
+pub trait UASndDevParamExt {
+
+    fn set_capture_dev(&mut self, value: i32);
+    fn get_capture_dev(&self) -> i32;
+
+    fn set_playback_dev(&mut self, value: i32);
+    fn get_playback_dev(&self) -> i32;
+
+    fn set_mode(&mut self, value: u32);
+    fn get_mode(&self) -> u32;
+
+}
+
+pub trait UAConfConectParamExt {
+
+    fn set_level(&mut self, value: f32);
+    fn get_level(&self) -> f32;
+
+}
+
+
 
 impl UAMediaConfigExt for UAMediaConfig {
 
@@ -683,3 +744,118 @@ impl UAMediaConfigExt for UAMediaConfig {
         check_boolean(self.no_rtcp_sdes_bye)
     }
 }
+
+impl UACodecInfoExt for UACodecInfo  {
+    fn get_codec_id (&self) -> String {
+        self.codec_id.to_string()
+    }
+    fn get_priority (&self) -> u8 {
+        self.priority
+    }
+    fn get_desc (&self) -> String {
+        self.desc.to_string()
+    }
+}
+
+impl UAConfPortInfoExt for UAConfPortInfo {
+
+    fn get_slot_id (&self) -> i32 {
+        self.slot_id
+    }
+
+    fn get_name (&self) -> String {
+        self.name.to_string()
+    }
+
+    fn get_format (&self) -> &pjmedia_sys::pjmedia_format {
+        &self.format
+    }
+
+    fn get_clock_rate (&self) -> ClockRate {
+        ClockRate::try_from(self.clock_rate)
+        .expect("Error UAConfPortInfo get clock_rate")
+    }
+
+    fn get_channel_count (&self) -> ConfigChannel {
+        ConfigChannel::try_from(self.channel_count)
+        .expect("Error UAConfPortInfo get channel_count")
+    }
+
+    fn get_samples_per_frame (&self) -> u32 {
+        self.samples_per_frame
+    }
+
+    fn get_bits_per_sample (&self) -> u32 {
+        self.bits_per_sample
+    }
+
+    fn get_tx_level_adj (&self) -> f32 {
+        self.tx_level_adj
+    }
+
+    fn get_rx_level_adj (&self) -> f32 {
+        self.rx_level_adj
+    }
+
+    fn get_listener_cnt (&self) -> u32 {
+        self.listener_cnt
+    }
+
+}
+
+impl UAMediaTransportExt for UAMediaTransport {
+
+    fn set_skinfo (&mut self, value: pjmedia_sys::pjmedia_sock_info) {
+        self.skinfo = value;
+    }
+
+    fn get_skinfo (&self) -> &pjmedia_sys::pjmedia_sock_info {
+        &self.skinfo
+    }
+
+    fn get_transport (&self) -> *mut pjmedia_sys::pjmedia_transport {
+        self.transport
+    }
+
+}
+
+impl UASndDevParamExt for UASndDevParam {
+
+    fn set_capture_dev(&mut self, value: i32) {
+        self.capture_dev = value;
+    }
+
+    fn get_capture_dev(&self) -> i32 {
+        self.capture_dev
+    }
+
+    fn set_playback_dev(&mut self, value: i32) {
+        self.playback_dev = value;
+    }
+
+    fn get_playback_dev(&self) -> i32 {
+        self.playback_dev
+    }
+
+    fn set_mode(&mut self, value: u32) {
+        self.mode = value;
+    }
+
+    fn get_mode(&self) -> u32 {
+        self.mode
+    }
+
+}
+
+impl UAConfConectParamExt for UAConfConectParam {
+
+    fn set_level(&mut self, value: f32) {
+        self.level = value;
+    }
+
+    fn get_level(&self) -> f32 {
+        self.level
+    }
+
+}
+

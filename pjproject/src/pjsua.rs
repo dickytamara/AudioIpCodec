@@ -25,10 +25,6 @@ pub mod account;
 pub mod transport;
 pub mod buddy;
 pub mod call;
-pub mod codec;
-
-// config, Options and setting struct
-
 
 // basic api struct
 pub type UALoggingConfig = pjsua_sys::pjsua_logging_config;
@@ -51,13 +47,13 @@ pub type UAIpChangeAccCfg = pjsua_sys::pjsua_ip_change_acc_cfg;
 pub type UATransportConfig = pjsua_sys::pjsua_transport_config;
 pub type UATransportInfo = pjsua_sys::pjsua_transport_info;
 
-// media config
+// PJSUA-API Accounts Management
 pub type UAIceConfig = pjsua_sys::pjsua_ice_config;
 pub type UATurnConfig = pjsua_sys::pjsua_turn_config;
 pub type UAAccConfig = pjsua_sys::pjsua_acc_config;
 pub type UAAccInfo = pjsua_sys::pjsua_acc_info;
 
-// calls management
+// PJSUA-API Calls Management
 pub type UACallMediaInfo = pjsua_sys::pjsua_call_media_info;
 pub type UACallInfo = pjsua_sys::pjsua_call_info;
 pub type UAStreamInfo = pjsua_sys::pjsua_stream_info;
@@ -65,20 +61,27 @@ pub type UAStreamStat = pjsua_sys::pjsua_stream_stat;
 pub type UACallVidStrmOpParam = pjsua_sys::pjsua_call_vid_strm_op_param;
 pub type UACallSendDtmfParam = pjsua_sys::pjsua_call_send_dtmf_param;
 
-
-
-pub type UAMediaConfig = pjsua_sys::pjsua_media_config;
+// PJSUA-API Buddy, Presence, and Instant Messaging
+pub type BuddyInfo = pjsua_sys::pjsua_buddy_info;
 pub type UABuddyConfig = pjsua_sys::pjsua_buddy_config;
 
-// info and status struct
-pub type BuddyInfo = pjsua_sys::pjsua_buddy_info;
-pub type ConferencePortInfo = pjsua_sys::pjsua_conf_port_info;
+/// PJSUA-API Media Manipulation
+pub type UAMediaConfig = pjsua_sys::pjsua_media_config;
 pub type UACodecInfo = pjsua_sys::pjsua_codec_info;
+pub type UAConfPortInfo = pjsua_sys::pjsua_conf_port_info;
+pub type UAMediaTransport = pjsua_sys::pjsua_media_transport;
+pub type UASndDevParam = pjsua_sys::pjsua_snd_dev_param;
+pub type UAConfConectParam = pjsua_sys::pjsua_conf_connect_param;
+
+/// PJSUA-API Video
+
+// outside
 pub type CredentialInfo = pjsip_sys::pjsip_cred_info;
 
 pub const INVALID_ID: i32 = -1;
 pub const MAX_ACC: usize = pjsua_sys::PJSUA_MAX_ACC as usize;
 pub const MAX_BUDDIES: usize = pjsua_sys::PJSUA_MAX_BUDDIES as usize;
+pub const PRES_TIMER: usize = pjsua_sys::PJSUA_PRES_TIMER as usize;
 
 
 /// pub type pjsua_state = u32;
@@ -333,12 +336,6 @@ pub enum CredentialInfoType {
     PlainText = 0,
     HashDigest = 1,
 }
-
-
-
-
-
-
 
 
 #[link(name="pjsua")]
@@ -1063,7 +1060,7 @@ pub fn enum_conf_ports(id: &mut [i32; pjsua_sys::PJSUA_MAX_CONF_PORTS as usize],
     }
 }
 
-pub fn conf_get_port_info (port_id: i32, info: &mut ConferencePortInfo) -> Result<(), i32> {
+pub fn conf_get_port_info (port_id: i32, info: &mut UAConfPortInfo) -> Result<(), i32> {
     unsafe {
         utils::check_status(pjsua_sys::pjsua_conf_get_port_info( port_id, info as *mut _ ))
     }

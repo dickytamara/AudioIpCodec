@@ -584,7 +584,7 @@ impl AutoCreate<UAMsgData> for UAMsgData {
     }
 }
 
-impl AutoCreate<ConferencePortInfo> for ConferencePortInfo {
+impl AutoCreate<UAConfPortInfo> for UAConfPortInfo {
     fn new () -> Self {
         Self {
             slot_id: 0,
