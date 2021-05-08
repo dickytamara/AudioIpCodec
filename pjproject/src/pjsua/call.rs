@@ -365,6 +365,14 @@ impl UACallSendDtmfParamExt for UACallSendDtmfParam {
 
 pub struct UACall { id: i32 }
 
+impl From<i32> for UACall {
+    fn from(id: i32) -> Self {
+        Self { id }
+    }
+}
+
+
+
 impl UACall {
 
     pub fn is_active (&self) -> bool {

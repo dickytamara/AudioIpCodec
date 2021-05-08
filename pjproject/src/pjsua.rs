@@ -3,7 +3,7 @@ use pj_sys::{PJ_SUCCESS, pj_pool_factory, pj_pool_release, pj_pool_safe_release,
 use pjmedia_sys::{pjmedia_aud_dev_info, pjmedia_codec_param, pjmedia_echo_stat, pjmedia_endpt, pjmedia_port, pjmedia_sdp_session, pjmedia_snd_dev_info, pjmedia_snd_port, pjmedia_snd_port_param, pjmedia_srtp_crypto, pjmedia_stream_info, pjmedia_transport_info, pjmedia_wav_player_info};
 use pjnath_sys::{pj_stun_nat_type, pj_turn_sock_tls_cfg};
 use pjsip_simple_sys::{pjrpid_element, pjsip_evsub_state};
-use pjsip_sys::{PJSIP_MAX_TRANSPORTS, pjsip_dialog_cap_status, pjsip_endpoint, pjsip_method, pjsip_redirect_op, pjsip_rx_data, pjsip_tpfactory, pjsip_transport, pjsip_transport_type_e, pjsip_tx_data};
+use pjsip_sys::{PJSIP_MAX_TRANSPORTS, pjsip_endpoint, pjsip_method, pjsip_rx_data, pjsip_tpfactory, pjsip_transport, pjsip_transport_type_e, pjsip_tx_data};
 use pjsua_sys::*;
 
 use super::prelude::*;
@@ -626,7 +626,8 @@ pub fn dump(detail: bool) {
     unsafe { pjsua_sys::pjsua_dump(utils::boolean_to_pjbool(detail)); }
 }
 
-pub fn handle_ip_change(param: &mut pjsua_ip_change_param) -> Result<(), i32> {
+// pjsua_ip_change_param
+pub fn handle_ip_change(param: &mut UAIpChangeParam) -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_handle_ip_change( param as *const _ )) }
 }
 

@@ -1298,7 +1298,26 @@ impl UAAccInfoExt for UAAccInfo {
 
 pub struct UAAccount { id: i32 }
 
+impl From<i32> for UAAccount {
+    fn from(id: i32) -> Self {
+        Self { id }
+    }
+}
+
 impl UAAccount {
+
+    /// create new normal account
+    pub fn new(acc_cfg: Options<UAAccConfig>, is_default: bool) -> Result<Self, i32> {
+        // acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32
+        // TODO : expand add function
+        todo!();
+    }
+
+    /// create new local account
+    pub fn new_local(tid: i32, is_default: bool) -> Result<Self, i32> {
+        /// TODO Expand add_local function
+        todo!();
+    }
 
     /// check if this account valid or not
     pub fn is_valid(&self) -> bool {
@@ -1486,6 +1505,44 @@ impl UAAccount {
         }
     }
 
+    /// add account and return UAAccount
+    pub fn add(acc_cfg: &mut UAAccConfig, is_default: bool) -> Result<UAAccount, i32> {
+        unsafe {
+
+            let mut p_acc_id = -1_i32;
+
+            let status = pjsua_sys::pjsua_acc_add(
+                acc_cfg as *const _,
+                utils::boolean_to_pjbool(is_default),
+                &mut p_acc_id as *mut _
+            );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UAAccount::from(p_acc_id)); },
+                Err(e) => { return Err(e); }
+            }
+        }
+    }
+
+    /// add local accout and return UAAccount
+    pub fn add_local(tid: i32, is_default: bool) -> Result<UAAccount, i32> {
+        unsafe {
+
+            let mut p_acc_id = -1_i32;
+
+            let status = pjsua_sys::pjsua_acc_add_local(
+                tid,
+                utils::boolean_to_pjbool(is_default),
+                &mut p_acc_id as *mut _
+            );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UAAccount::from(p_acc_id)); },
+                Err(e) => { return Err(e); }
+            }
+        }
+    }
+
 }
 
 // pjsua account helper
@@ -1592,33 +1649,6 @@ pub fn acc_config_dup (dst: &mut UAAccConfig, src: &mut UAAccConfig) {
     }
 }
 
-
-
-pub fn acc_add(acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
-    unsafe {
-
-        let status = pjsua_sys::pjsua_acc_add(
-            acc_cfg as *const _,
-            utils::boolean_to_pjbool(is_default),
-            p_acc_id as *mut _
-        );
-
-        utils::check_status(status)
-    }
-}
-
-pub fn acc_add_local(tid: i32, is_default: bool, p_acc_id: &mut i32) -> Result<(), i32> {
-    unsafe {
-
-        let status = pjsua_sys::pjsua_acc_add_local(
-            tid,
-            utils::boolean_to_pjbool(is_default),
-            p_acc_id as *mut _
-        );
-
-        utils::check_status(status)
-    }
-}
 
 // i32 	pjsua_acc_set_user_data (i32 acc_id, void *user_data)
 // void * 	pjsua_acc_get_user_data (i32 acc_id)
