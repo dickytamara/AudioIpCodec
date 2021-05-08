@@ -873,11 +873,11 @@ impl UAConf {
         unsafe { pjsua_sys::pjsua_conf_connect_param_default(prm as *mut _); }
     }
 
-    pub fn conf_get_max_ports() -> u32 {
+    pub fn get_max_ports() -> u32 {
         unsafe { pjsua_sys::pjsua_conf_get_max_ports() }
     }
-    
-    pub fn conf_get_active_ports() -> u32 {
+
+    pub fn get_active_ports() -> u32 {
         unsafe { pjsua_sys::pjsua_conf_get_active_ports() }
     }
 
@@ -886,14 +886,14 @@ impl UAConf {
             utils::check_status(pjsua_sys::pjsua_enum_conf_ports( id.as_mut_ptr(), count as *mut _))
         }
     }
-    
-    pub fn conf_get_port_info (port_id: i32, info: &mut UAConfPortInfo) -> Result<(), i32> {
+
+    pub fn get_port_info (port_id: i32, info: &mut UAConfPortInfo) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_conf_get_port_info( port_id, info as *mut _ ))
         }
     }
-    
-    pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut i32>) -> Result<(), i32> {
+
+    pub fn add_port(port: *mut pjmedia_port, p_id: Option<&mut i32>) -> Result<(), i32> {
     
         let p_id = match p_id {
             Some(value) => value as *mut _,
@@ -915,38 +915,38 @@ impl UAConf {
             }
         }
     }
-    
-    pub fn conf_remove_port (port_id: i32) -> Result<(), i32> {
+
+    pub fn remove_port (port_id: i32) -> Result<(), i32> {
         unsafe { utils::check_status(pjsua_sys::pjsua_conf_remove_port(port_id)) }
     }
-    
-    pub fn conf_connect(source: i32, sink: i32) -> Result<(), i32> {
+
+    pub fn connect(source: i32, sink: i32) -> Result<(), i32> {
         unsafe { utils::check_status(pjsua_sys::pjsua_conf_connect(source, sink)) }
     }
-    
-    pub fn conf_connect2 (source: i32, sink: i32, prm: &mut pjsua_conf_connect_param) -> Result<(), i32> {
+
+    pub fn connect2 (source: i32, sink: i32, prm: &mut pjsua_conf_connect_param) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_conf_connect2( source, sink, prm as *const _ ))
         }
     }
-    
-    pub fn conf_disconnect(source: i32, sink: i32) -> Result<(), i32> {
+
+    pub fn disconnect(source: i32, sink: i32) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_conf_disconnect(source, sink))
         }
     }
-    
-    pub fn conf_adjust_tx_level (slot: i32, level: f32) -> Result<(), i32> {
+
+    pub fn adjust_tx_level (slot: i32, level: f32) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_conf_adjust_tx_level(slot, level))
         }
     }
-    
-    pub fn conf_adjust_rx_level (slot: i32, level: f32) -> Result<(), i32> {
+
+    pub fn adjust_rx_level (slot: i32, level: f32) -> Result<(), i32> {
         unsafe { utils::check_status(pjsua_sys::pjsua_conf_adjust_rx_level(slot, level)) }
     }
-    
-    pub fn conf_get_signal_level (slot: i32, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), i32> {
+
+    pub fn get_signal_level (slot: i32, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_conf_get_signal_level (slot, tx_level as *mut _, rx_level as *mut _))
         }
@@ -1084,7 +1084,7 @@ impl UASound {
     pub fn set_no_snd_dev() -> *mut pjmedia_port {
         unsafe { pjsua_sys::pjsua_set_no_snd_dev() }
     }
-    
+
 }
 
 pub struct UAExtSound { }
@@ -1128,13 +1128,13 @@ impl UACodecManager {
         }
     }
 
-    pub fn codec_set_priority(codec_id: String, priority: u8) -> Result<(), i32> {
+    pub fn set_priority(codec_id: String, priority: u8) -> Result<(), i32> {
         let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
         unsafe { utils::check_status(pjsua_sys::pjsua_codec_set_priority( codec_id, priority)) }
     }
 
-    pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
-    
+    pub fn get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
+
         let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
 
         unsafe {
@@ -1142,7 +1142,7 @@ impl UACodecManager {
         }
     }
 
-    pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
+    pub fn set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
         let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
         unsafe {
             utils::check_status(pjsua_sys::pjsua_codec_set_param( codec_id, param as *const _ ))
