@@ -256,7 +256,7 @@ pub trait UAAccConfigExt {
     /// More credentials can be specified, for example when the requests are expected to be
     /// challenged by the proxies in the route set.
     fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]);
-    fn get_cred_info(&self) -> [CredentialInfo; 8usize];
+    fn get_cred_info(&self) -> &[CredentialInfo; 8usize];
 
     /// Optionally bind this account to specific transport. This normally is not a good idea,
     /// as account should be able to send requests using any available transports according
@@ -925,11 +925,11 @@ impl UAAccConfigExt for UAAccConfig {
     }
 
     fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]) {
-        todo!()
+        self.cred_info = value;
     }
 
-    fn get_cred_info(&self) -> [CredentialInfo; 8usize] {
-        todo!()
+    fn get_cred_info(&self) -> &[CredentialInfo; 8usize] {
+        &self.cred_info
     }
 
     fn set_transport_id(&mut self, value: i32) {

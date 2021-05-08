@@ -137,68 +137,90 @@ impl From<i32> for UABuddy {
 
 impl UABuddy {
 
-    pub fn buddy_is_valid(&self) -> bool {
+    pub fn is_valid(&self) -> bool {
         unsafe {utils::check_boolean(pjsua_sys::pjsua_buddy_is_valid(self.id)) }
     }
 
-    pub fn buddy_find(uri: String) -> i32 {
-        let uri: *const pj_str_t = &mut pj_str_t::from_string(uri) as *const _;
-        unsafe { pjsua_sys::pjsua_buddy_find( uri ) }
-    }
+    pub fn get_info(&self) -> Result<BuddyInfo, i32> {
+        unsafe {
+            let mut info = BuddyInfo::new();
+            let status = pjsua_sys::pjsua_buddy_get_info(self.id, &mut info as *mut _ );
 
-    pub fn buddy_get_info(buddy_id: i32, info: &mut BuddyInfo) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_buddy_get_info( buddy_id, info as *mut _ )) }
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(info); },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
 
     // skiped function this mosly for trasfer data
     // i32 	pjsua_buddy_set_user_data (pjsua_buddy_id buddy_id, void *user_data)
     // void * 	pjsua_buddy_get_user_data (pjsua_buddy_id buddy_id)
 
-    pub fn buddy_add(buddy_cfg: &mut UABuddyConfig, p_buddy_id: *mut i32) -> Result<(), i32> {
+    pub fn del(&self) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_buddy_del(self.id)) }
+    }
+
+    pub fn subscribe_pres(&self, subscribe: bool) -> Result<(), i32> {
         unsafe {
-            let status = pjsua_sys::pjsua_buddy_add (
-                buddy_cfg as *const _,
-                p_buddy_id as *mut _
-            );
-            utils::check_status(status)
+            utils::check_status(pjsua_sys::pjsua_buddy_subscribe_pres(self.id, utils::boolean_to_pjbool(subscribe)))
         }
     }
 
-    pub fn buddy_del(buddy_id: i32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_buddy_del(buddy_id)) }
+    pub fn update_pres(&self) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_buddy_update_pres(self.id)) }
     }
 
-    pub fn buddy_subscribe_pres(buddy_id: i32, subscribe: bool) -> Result<(), i32> {
+    pub fn find(uri: String) -> Option<UABuddy> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_buddy_subscribe_pres(buddy_id, utils::boolean_to_pjbool(subscribe)))
-        }
-    }
+            let uri: *const pj_str_t = &mut pj_str_t::from_string(uri) as *const _;
+            let ret = pjsua_sys::pjsua_buddy_find(uri);
 
-    pub fn buddy_update_pres(buddy_id: i32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_buddy_update_pres(buddy_id)) }
+            if ret != INVALID_ID {
+                Some(UABuddy::from(ret))
+            } else {
+                None
+            }
+        }
     }
 
     pub fn get_buddy_count() -> u32 {
         unsafe { pjsua_sys::pjsua_get_buddy_count() }
     }
 
-    pub fn buddy_config_default(cfg: &mut UABuddyConfig) {
+    pub fn add(buddy_cfg: &mut UABuddyConfig) -> Result<UABuddy, i32> {
         unsafe {
-            pjsua_sys::pjsua_buddy_config_default(
-                cfg as *mut _
-            )
+            let mut p_buddy_id = -1_i32;
+
+            let status = pjsua_sys::pjsua_buddy_add (
+                buddy_cfg as *const _,
+                &mut p_buddy_id as *mut _
+            );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UABuddy::from(status)); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
+    pub fn buddy_config_default() -> UABuddyConfig {
+        unsafe {
+            let mut cfg = UABuddyConfig::new();
+            pjsua_sys::pjsua_buddy_config_default( &mut cfg as *mut _);
+
+            cfg
+        }
+    }
+
+    /// TODO: fix with return value Resutl<Vec<UABuddy>, i32>
     pub fn enum_buddies(ids: &mut [i32; pjsua_sys::PJSUA_MAX_BUDDIES as usize], count: &mut u32) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_enum_buddies( ids.as_mut_ptr(), count as *mut _ ))
         }
     }
-    
-}
 
-// JSUA-API Buddy, Presence, and Instant Messaging
+}
 
 
 pub fn pres_notify(
@@ -233,7 +255,6 @@ pub fn pres_notify(
         utils::check_status(status)
     }
 }
-
 
 pub fn pres_dump(verbose: bool) {
     unsafe { pjsua_sys::pjsua_pres_dump ( utils::boolean_to_pjbool(verbose))}
