@@ -859,6 +859,178 @@ impl UAConfConectParamExt for UAConfConectParam {
 
 }
 
+pub struct UAConf {}
+
+impl Default for UAConf {
+    fn default() -> Self {
+        Self {}
+    }
+}
+
+impl UAConf {
+
+    pub fn conf_connect_param_default(prm: &mut pjsua_conf_connect_param) {
+        unsafe { pjsua_sys::pjsua_conf_connect_param_default(prm as *mut _); }
+    }
+
+    pub fn conf_get_max_ports() -> u32 {
+        unsafe { pjsua_sys::pjsua_conf_get_max_ports() }
+    }
+    
+    pub fn conf_get_active_ports() -> u32 {
+        unsafe { pjsua_sys::pjsua_conf_get_active_ports() }
+    }
+
+    pub fn enum_conf_ports(id: &mut [i32; pjsua_sys::PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_enum_conf_ports( id.as_mut_ptr(), count as *mut _))
+        }
+    }
+    
+    pub fn conf_get_port_info (port_id: i32, info: &mut UAConfPortInfo) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_conf_get_port_info( port_id, info as *mut _ ))
+        }
+    }
+    
+    pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut i32>) -> Result<(), i32> {
+    
+        let p_id = match p_id {
+            Some(value) => value as *mut _,
+            None => ptr::null_mut()
+        };
+
+    
+        unsafe {
+            let pool = pool_create("tmp-pool");
+    
+            let result = pjsua_sys::pjsua_conf_add_port(pool, port, p_id);
+    
+            pool_release(pool);
+    
+            if result == PJ_SUCCESS as i32 {
+                Ok(())
+            } else {
+                Err(result)
+            }
+        }
+    }
+    
+    pub fn conf_remove_port (port_id: i32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_conf_remove_port(port_id)) }
+    }
+    
+    pub fn conf_connect(source: i32, sink: i32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_conf_connect(source, sink)) }
+    }
+    
+    pub fn conf_connect2 (source: i32, sink: i32, prm: &mut pjsua_conf_connect_param) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_conf_connect2( source, sink, prm as *const _ ))
+        }
+    }
+    
+    pub fn conf_disconnect(source: i32, sink: i32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_conf_disconnect(source, sink))
+        }
+    }
+    
+    pub fn conf_adjust_tx_level (slot: i32, level: f32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_conf_adjust_tx_level(slot, level))
+        }
+    }
+    
+    pub fn conf_adjust_rx_level (slot: i32, level: f32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_conf_adjust_rx_level(slot, level)) }
+    }
+    
+    pub fn conf_get_signal_level (slot: i32, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_conf_get_signal_level (slot, tx_level as *mut _, rx_level as *mut _))
+        }
+    }
+
+}
+
+
+pub struct UAPlayer { id: i32 }
+
+impl From<i32> for UAPlayer {
+    fn from(id: i32) -> Self {
+        Self { id }
+    }
+}
+
+impl UAPlayer {
+
+    pub fn player_create(filename: String, options: u32, p_id: &mut i32) -> Result<(), i32> {
+
+        let filename: *const pj_str_t = &mut pj_str_t::from_string(filename) as *const _;
+
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_player_create( filename, options, p_id as *mut _))
+        }
+    }
+
+    // i32 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label,
+    // unsigned options, pjsua_player_id *p_id)
+
+    pub fn player_get_conf_port(id: i32) -> i32 {
+        unsafe { pjsua_sys::pjsua_player_get_conf_port(id) }
+    }
+
+    pub fn player_get_port(id: i32, p_port: &mut pjmedia_port) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_player_get_port(id, &mut (p_port as *mut _) as *mut _))
+        }
+    }
+
+    pub fn player_get_info(id: i32, info: &mut pjmedia_wav_player_info) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_player_get_info( id, info as *mut _))
+        }
+    }
+
+    pub fn player_get_pos(id: i32) -> i64 {
+        unsafe { pjsua_sys::pjsua_player_get_pos(id) }
+    }
+
+    pub fn player_set_pos(id: i32, samples: u32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_player_set_pos(id, samples)) }
+    }
+
+    pub fn player_destroy (id: i32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_player_destroy(id)) }
+    }
+
+}
+
+
+pub struct UAEchoCancelar {}
+
+impl Default for UAEchoCancelar {
+    fn default() -> Self {
+        Self {}
+    }
+}
+
+impl UAEchoCancelar {
+
+    pub fn set_ec(&self, tail_ms: u32, options: u32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_set_ec(tail_ms, options)) }
+    }
+
+    pub fn get_ec_tail(&self, p_tail_ms: &mut u32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_tail(p_tail_ms)) }
+    }
+
+    pub fn get_ec_stat(&self, p_stat: &mut pjmedia_echo_stat) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_stat( p_stat as *mut _ )) }
+    }
+
+}
 
 // pjsua sound and media device function helper
 pub fn media_config_default(cfg: &mut UAMediaConfig) {
@@ -867,128 +1039,6 @@ pub fn media_config_default(cfg: &mut UAMediaConfig) {
 
 pub fn snd_dev_param_default (prm: &mut pjsua_snd_dev_param) {
     unsafe { pjsua_sys::pjsua_snd_dev_param_default(prm as *mut _); }
-}
-
-pub fn conf_connect_param_defautl(prm: &mut pjsua_conf_connect_param) {
-    unsafe { pjsua_sys::pjsua_conf_connect_param_default(prm as *mut _); }
-}
-
-pub fn conf_get_max_ports() -> u32 {
-    unsafe { pjsua_sys::pjsua_conf_get_max_ports() }
-}
-
-pub fn conf_get_active_ports() -> u32 {
-    unsafe { pjsua_sys::pjsua_conf_get_active_ports() }
-}
-
-pub fn enum_conf_ports(id: &mut [i32; pjsua_sys::PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_enum_conf_ports( id.as_mut_ptr(), count as *mut _))
-    }
-}
-
-pub fn conf_get_port_info (port_id: i32, info: &mut UAConfPortInfo) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_conf_get_port_info( port_id, info as *mut _ ))
-    }
-}
-
-pub fn conf_add_port(port: *mut pjmedia_port, p_id: Option<&mut i32>) -> Result<(), i32> {
-
-    let p_id = match p_id {
-        Some(value) => value as *mut _,
-        None => ptr::null_mut()
-    };
-
-
-    unsafe {
-        let pool = pool_create("tmp-pool");
-
-        let result = pjsua_sys::pjsua_conf_add_port(pool, port, p_id);
-
-        pool_release(pool);
-
-        if result == PJ_SUCCESS as i32 {
-            Ok(())
-        } else {
-            Err(result)
-        }
-    }
-}
-
-pub fn conf_remove_port (port_id: i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_conf_remove_port(port_id)) }
-}
-
-pub fn conf_connect(source: i32, sink: i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_conf_connect(source, sink)) }
-}
-
-pub fn conf_connect2 (source: i32, sink: i32, prm: &mut pjsua_conf_connect_param) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_conf_connect2( source, sink, prm as *const _ ))
-    }
-}
-
-pub fn conf_disconnect(source: i32, sink: i32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_conf_disconnect(source, sink))
-    }
-}
-
-pub fn conf_adjust_tx_level (slot: i32, level: f32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_conf_adjust_tx_level(slot, level))
-    }
-}
-
-pub fn conf_adjust_rx_level (slot: i32, level: f32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_conf_adjust_rx_level(slot, level)) }
-}
-
-pub fn conf_get_signal_level (slot: i32, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_conf_get_signal_level (slot, tx_level as *mut _, rx_level as *mut _))
-    }
-}
-
-pub fn player_create(filename: String, options: u32, p_id: &mut i32) -> Result<(), i32> {
-
-    let filename: *const pj_str_t = &mut pj_str_t::from_string(filename) as *const _;
-
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_player_create( filename, options, p_id as *mut _))
-    }
-}
-
-// i32 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label, unsigned options, pjsua_player_id *p_id)
-
-pub fn player_get_conf_port(id: i32) -> i32 {
-    unsafe { pjsua_sys::pjsua_player_get_conf_port(id) }
-}
-
-pub fn player_get_port(id: i32, p_port: &mut pjmedia_port) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_player_get_port(id, &mut (p_port as *mut _) as *mut _))
-    }
-}
-
-pub fn player_get_info(id: i32, info: &mut pjmedia_wav_player_info) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_player_get_info( id, info as *mut _))
-    }
-}
-
-pub fn player_get_pos(id: i32) -> i64 {
-    unsafe { pjsua_sys::pjsua_player_get_pos(id) }
-}
-
-pub fn player_set_pos(id: i32, samples: u32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_player_set_pos(id, samples)) }
-}
-
-pub fn player_destroy (id: i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_player_destroy(id)) }
 }
 
 // skiped function
@@ -1028,17 +1078,9 @@ pub fn set_no_snd_dev() -> *mut pjmedia_port {
     unsafe { pjsua_sys::pjsua_set_no_snd_dev() }
 }
 
-pub fn set_ec(tail_ms: u32, options: u32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_set_ec(tail_ms, options)) }
-}
 
-pub fn get_ec_tail(p_tail_ms: &mut u32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_tail(p_tail_ms)) }
-}
 
-pub fn get_ec_stat(p_stat: &mut pjmedia_echo_stat) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_stat( p_stat as *mut _ )) }
-}
+
 
 pub fn snd_is_active() -> bool {
     unsafe { utils::check_boolean(pjsua_sys::pjsua_snd_is_active()) }

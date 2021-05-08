@@ -1307,17 +1307,17 @@ impl From<i32> for UAAccount {
 impl UAAccount {
 
     /// create new normal account
-    pub fn new(acc_cfg: Options<UAAccConfig>, is_default: bool) -> Result<Self, i32> {
-        // acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32
-        // TODO : expand add function
-        todo!();
-    }
+    // pub fn new(acc_cfg: Options<UAAccConfig>, is_default: bool) -> Result<Self, i32> {
+    //     // acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32
+    //     // TODO : expand add function
+    //     todo!();
+    // }
 
     /// create new local account
-    pub fn new_local(tid: i32, is_default: bool) -> Result<Self, i32> {
-        /// TODO Expand add_local function
-        todo!();
-    }
+    // pub fn new_local(tid: i32, is_default: bool) -> Result<Self, i32> {
+    //     /// TODO Expand add_local function
+    //     todo!();
+    // }
 
     /// check if this account valid or not
     pub fn is_valid(&self) -> bool {
@@ -1475,18 +1475,21 @@ impl UAAccount {
         unsafe { pjsua_sys::pjsua_acc_get_default() }
     }
 
+    /// TODO fix with Return<Vec<UAAccount>, i32>
     pub fn enum_accs(ids: &mut [i32; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_enum_accs( ids.as_mut_ptr(), count as *mut _))
         }
     }
 
+    /// TODO fix with Return<Vec<UAAccountConf>, i32>
     pub fn enum_info(info: &mut [UAAccInfo; pjsua_sys::PJSUA_MAX_ACC as usize], count: &mut u32) -> Result<(), i32> {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_acc_enum_info( info.as_mut_ptr(), count as *mut _ ))
         }
     }
 
+    /// TODO fix with Options<UAAccount>
     pub fn find_for_outgoing(url: String) -> i32 {
         let mut url = pj_str_t::from_string(url);
         unsafe {
@@ -1497,6 +1500,7 @@ impl UAAccount {
 
     }
 
+    /// TODO fix with Options<UAAcount>
     pub fn find_for_incoming(rdata: &mut pjsip_rx_data) -> i32 {
         unsafe {
             pjsua_sys::pjsua_acc_find_for_incoming(
