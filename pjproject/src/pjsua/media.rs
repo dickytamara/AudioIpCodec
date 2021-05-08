@@ -1032,15 +1032,129 @@ impl UAEchoCancelar {
 
 }
 
+pub struct UASound {  }
+
+impl Default for UASound {
+    fn default() -> Self {
+        Self {}
+    }
+}
+
+impl UASound {
+
+    pub fn snd_is_active(&self) -> bool {
+        unsafe { utils::check_boolean(pjsua_sys::pjsua_snd_is_active()) }
+    }
+
+    pub fn set_snd_dev(&self, capture_dev: i32, playback_dev: i32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev(capture_dev, playback_dev)) }
+    }
+
+    pub fn get_snd_dev(&self, capture_dev: &mut i32, playback_dev: &mut i32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_get_snd_dev( capture_dev as *mut _, playback_dev as *mut _ )) }
+    }
+
+    // TODO: fix with Result<pjsua_snd_dev_param, i32>
+    pub fn snd_dev_param_default (prm: &mut pjsua_snd_dev_param) {
+        unsafe { pjsua_sys::pjsua_snd_dev_param_default(prm as *mut _); }
+    }
+
+    // current stable api
+    // TODO: fix with Result<Vec<pjmedia_aud_dev_info>>
+    pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_enum_aud_devs( info.as_mut_ptr(), count as *mut _)) }
+    }
+
+    // old api
+    // TODO: fix with Result<Vec<pjmedia_snd_dev_info>>
+    pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), count as *mut _))
+        }
+    }
+
+    pub fn set_snd_dev2(snd_param: &mut pjsua_snd_dev_param) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev2( snd_param as *mut _)) }
+    }
+    
+    pub fn set_null_snd_dev() -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_set_null_snd_dev()) }
+    }
+    
+    pub fn set_no_snd_dev() -> *mut pjmedia_port {
+        unsafe { pjsua_sys::pjsua_set_no_snd_dev() }
+    }
+    
+}
+
+pub struct UAExtSound { }
+
+impl UAExtSound {
+
+    // TODO check this create and destroy
+    pub fn ext_snd_dev_create(param: &mut pjmedia_snd_port_param, p_snd: &mut pjsua_ext_snd_dev) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_ext_snd_dev_create( param as *mut _, &mut (p_snd as *mut _) as *mut _ ))
+        }
+    }
+
+    pub fn ext_snd_dev_destroy(snd: &mut pjsua_ext_snd_dev) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_ext_snd_dev_destroy(snd as *mut _)) }
+    }
+
+    pub fn ext_snd_dev_get_snd_port(snd: &mut pjsua_ext_snd_dev) -> *mut pjmedia_snd_port {
+        unsafe { pjsua_sys::pjsua_ext_snd_dev_get_snd_port( snd as *mut _) }
+    }
+
+    pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> i32 {
+        unsafe { pjsua_sys::pjsua_ext_snd_dev_get_conf_port( snd as *mut _ ) }
+    }
+
+}
+
+pub struct UACodecManager {}
+
+impl Default for UACodecManager {
+    fn default() -> Self {
+        Self {}
+    }
+}
+
+impl UACodecManager {
+
+    pub fn enum_codecs(id: &mut [UACodecInfo; 32], count: &mut u32) -> Result<(), i32> {
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(), count as *mut _ ))
+        }
+    }
+
+    pub fn codec_set_priority(codec_id: String, priority: u8) -> Result<(), i32> {
+        let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
+        unsafe { utils::check_status(pjsua_sys::pjsua_codec_set_priority( codec_id, priority)) }
+    }
+
+    pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
+    
+        let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
+
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_codec_get_param( codec_id, param as *mut _))
+        }
+    }
+
+    pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
+        let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
+        unsafe {
+            utils::check_status(pjsua_sys::pjsua_codec_set_param( codec_id, param as *const _ ))
+        }
+    }
+
+}
+
 // pjsua sound and media device function helper
 pub fn media_config_default(cfg: &mut UAMediaConfig) {
     unsafe { pjsua_sys::pjsua_media_config_default(cfg as *mut _); }
 }
-
-pub fn snd_dev_param_default (prm: &mut pjsua_snd_dev_param) {
-    unsafe { pjsua_sys::pjsua_snd_dev_param_default(prm as *mut _); }
-}
-
 // skiped function
 
 // i32 	pjsua_recorder_create (const pj_str_t *filename, unsigned enc_type, void *enc_param, pj_ssize_t max_size, unsigned options, pjsua_recorder_id *p_id)
@@ -1048,92 +1162,9 @@ pub fn snd_dev_param_default (prm: &mut pjsua_snd_dev_param) {
 // i32 	pjsua_recorder_get_port (pjsua_recorder_id id, pjmedia_port **p_port)
 // i32 	pjsua_recorder_destroy (pjsua_recorder_id id)
 
-pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_enum_aud_devs( info.as_mut_ptr(), count as *mut _)) }
-}
-
-pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), count as *mut _))
-    }
-}
-
-pub fn get_snd_dev(capture_dev: &mut i32, playback_dev: &mut i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_get_snd_dev( capture_dev as *mut _, playback_dev as *mut _ )) }
-}
-
-pub fn set_snd_dev(capture_dev: i32, playback_dev: i32) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev(capture_dev, playback_dev)) }
-}
-
-pub fn set_snd_dev2(snd_param: &mut pjsua_snd_dev_param) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev2( snd_param as *mut _)) }
-}
-
-pub fn set_null_snd_dev() -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_set_null_snd_dev()) }
-}
-
-pub fn set_no_snd_dev() -> *mut pjmedia_port {
-    unsafe { pjsua_sys::pjsua_set_no_snd_dev() }
-}
-
-
-
-
-
-pub fn snd_is_active() -> bool {
-    unsafe { utils::check_boolean(pjsua_sys::pjsua_snd_is_active()) }
-}
 
 
 // skiped function for detailed audio dev setting
 // i32 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
 // i32 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
 
-
-// TODO check this create and destroy
-pub fn ext_snd_dev_create(param: &mut pjmedia_snd_port_param, p_snd: &mut pjsua_ext_snd_dev) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_ext_snd_dev_create( param as *mut _, &mut (p_snd as *mut _) as *mut _ ))
-    }
-}
-
-pub fn ext_snd_dev_destroy(snd: &mut pjsua_ext_snd_dev) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_ext_snd_dev_destroy(snd as *mut _)) }
-}
-
-pub fn ext_snd_dev_get_snd_port(snd: &mut pjsua_ext_snd_dev) -> *mut pjmedia_snd_port {
-    unsafe { pjsua_sys::pjsua_ext_snd_dev_get_snd_port( snd as *mut _) }
-}
-
-pub fn ext_snd_dev_get_conf_port(snd: &mut pjsua_ext_snd_dev) -> i32 {
-    unsafe { pjsua_sys::pjsua_ext_snd_dev_get_conf_port( snd as *mut _ ) }
-}
-
-pub fn enum_codecs(id: &mut [UACodecInfo; 32], count: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(), count as *mut _ ))
-    }
-}
-
-pub fn codec_set_priority(codec_id: String, priority: u8) -> Result<(), i32> {
-    let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
-    unsafe { utils::check_status(pjsua_sys::pjsua_codec_set_priority( codec_id, priority)) }
-}
-
-pub fn codec_get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
-
-    let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
-
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_codec_get_param( codec_id, param as *mut _))
-    }
-}
-
-pub fn codec_set_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
-    let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_codec_set_param( codec_id, param as *const _ ))
-    }
-}
