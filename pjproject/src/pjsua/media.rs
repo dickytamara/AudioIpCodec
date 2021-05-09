@@ -1,6 +1,6 @@
 
 use std::{convert::TryFrom, path::PathBuf};
-use crate::{pjmedia::{MediaEchoFlag, MediaJbDiscardAlgo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
+use crate::{pjmedia::{MediaEchoFlag, MediaJbDiscardAlgo, MediaPort, MediaWavPlayerInfo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 pub trait UAMediaConfigExt {
@@ -965,44 +965,67 @@ impl From<i32> for UAPlayer {
 
 impl UAPlayer {
 
-    pub fn player_create(filename: String, options: u32, p_id: &mut i32) -> Result<(), i32> {
+    // TODO: set the new function
+    // overiding player_create
+    pub fn new(filename: PathBuf, playloop: bool) -> Self {
+        UAPlayer::player_create(
+            filename,
+            boolean_to_pjbool(!playloop) as u32
+        ).unwrap()
+    }
 
-        let filename: *const pj_str_t = &mut pj_str_t::from_string(filename) as *const _;
 
+    pub fn player_create(filename: PathBuf, options: u32) -> Result<UAPlayer, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_player_create( filename, options, p_id as *mut _))
+            let filename = &mut pj_str_t::from_string(filename.to_str().unwrap().to_string()) as *const _;
+            let mut p_id = -1_i32;
+            let status = pjsua_sys::pjsua_player_create( filename, options, &mut p_id as *mut _);
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UAPlayer::from(p_id)); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
     // i32 	pjsua_playlist_create (const pj_str_t file_names[], unsigned file_count, const pj_str_t *label,
     // unsigned options, pjsua_player_id *p_id)
 
-    pub fn player_get_conf_port(id: i32) -> i32 {
-        unsafe { pjsua_sys::pjsua_player_get_conf_port(id) }
+    pub fn get_conf_port(&self) -> i32 {
+        unsafe { pjsua_sys::pjsua_player_get_conf_port(self.id) }
     }
 
-    pub fn player_get_port(id: i32, p_port: &mut pjmedia_port) -> Result<(), i32> {
+    pub fn get_port(&self) -> Result<MediaPort, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_player_get_port(id, &mut (p_port as *mut _) as *mut _))
+            let mut p_port = MediaPort::new();
+            let status = pjsua_sys::pjsua_player_get_port(self.id, &mut (&mut p_port as *mut _) as *mut _);
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(p_port) },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
-    pub fn player_get_info(id: i32, info: &mut pjmedia_wav_player_info) -> Result<(), i32> {
+    pub fn get_info(&self) -> Result<MediaWavPlayerInfo, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_player_get_info( id, info as *mut _))
+            let mut info: MediaWavPlayerInfo = std::mem::zeroed();
+            let status = pjsua_sys::pjsua_player_get_info(self.id, &mut info as *mut _);
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(info); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
-    pub fn player_get_pos(id: i32) -> i64 {
-        unsafe { pjsua_sys::pjsua_player_get_pos(id) }
+    pub fn get_pos(&self) -> i64 {
+        unsafe { pjsua_sys::pjsua_player_get_pos(self.id) }
     }
 
-    pub fn player_set_pos(id: i32, samples: u32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_player_set_pos(id, samples)) }
+    pub fn set_pos(&self, samples: u32) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_player_set_pos(self.id, samples)) }
     }
 
-    pub fn player_destroy (id: i32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_player_destroy(id)) }
+    pub fn player_destroy (self) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_player_destroy(self.id)) }
     }
 
 }
@@ -1120,11 +1143,27 @@ impl Default for UACodecManager {
     }
 }
 
+
 impl UACodecManager {
 
-    pub fn enum_codecs(id: &mut [UACodecInfo; 32], count: &mut u32) -> Result<(), i32> {
+    pub fn enum_codecs(id: &mut [UACodecInfo; 32], count: &mut u32) -> Result<Vec<UACodecInfo>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(), count as *mut _ ))
+            let mut id: [UACodecInfo; 32] = std::mem::zeroed();
+            let mut count = 0_u32;
+            let status = pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(),  &mut count as *mut _);
+            match utils::check_status(status) {
+                Ok(()) => {
+                    let vec = Vec::<UACodecInfo>::new();
+
+                    for i in 0..count as usize {
+                        todo!();
+                        // vec.push(id[i]);
+                    }
+
+                    return Ok(vec);
+                },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 

@@ -7,7 +7,6 @@ use std::path::PathBuf;
 use super::*;
 
 
-/// UAConfig trait
 pub trait UAConfigExt {
 
     /// Set Maximum calls to support (default: 4). The value specified here must be smaller
