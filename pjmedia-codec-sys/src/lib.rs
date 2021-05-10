@@ -52,6 +52,7 @@ impl<T> ::std::cmp::PartialEq for __BindgenUnionField<T> {
 }
 impl<T> ::std::cmp::Eq for __BindgenUnionField<T> {}
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pjmedia_vid_dev_hwnd__bindgen_ty_1 {
     pub win: __BindgenUnionField<pjmedia_vid_dev_hwnd__bindgen_ty_1__bindgen_ty_1>,
     pub x11: __BindgenUnionField<pjmedia_vid_dev_hwnd__bindgen_ty_1__bindgen_ty_2>,
@@ -187,6 +188,7 @@ pub const PJMEDIA_AMR_NO_NB: pjmedia_amr_options = 1;
 pub const PJMEDIA_AMR_NO_WB: pjmedia_amr_options = 2;
 pub type pjmedia_amr_options = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_amr_config {
     pub octet_align: pj_bool_t,
     pub bitrate: ::std::os::raw::c_uint,
@@ -231,6 +233,7 @@ extern "C" {
     pub fn pjmedia_codec_openh264_vid_deinit() -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_opus_config {
     pub sample_rate: ::std::os::raw::c_uint,
     pub channel_cnt: ::std::os::raw::c_uint,
@@ -256,6 +259,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_silk_setting {
     pub enabled: pj_bool_t,
     pub quality: ::std::os::raw::c_int,

@@ -59,7 +59,7 @@ use settings::{SettingsCurrentActivePage, SettingsWidget};
 use helper::{HelperFileSettings, application_config_path};
 
 use sipua::prelude::*;
-use sipua::sip_account::SIPAccount;
+// use sipua::sip_account::SIPAccount;
 use sipua::SIPInviteState;
 use pjproject::utils::AutoCreate;
 
@@ -67,7 +67,7 @@ use pjproject::utils::AutoCreate;
 // use pjmedia_sys::*;
 use sipua::*;
 
-use sip_account::SIPAccountExt;
+// use sip_account::SIPAccountExt;
 
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
 

@@ -190,6 +190,11 @@ pub struct pj_timestamp__bindgen_ty_1 {
     pub lo: pj_uint32_t,
     pub hi: pj_uint32_t,
 }
+impl ::std::fmt::Debug for pj_timestamp {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "pj_timestamp {{ union }}")
+    }
+}
 pub type pj_list_type = ::std::os::raw::c_void;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -527,6 +532,16 @@ pub union in6_addr__bindgen_ty_1 {
     pub __u6_addr16: [u16; 8usize],
     pub __u6_addr32: [u32; 4usize],
 }
+impl ::std::fmt::Debug for in6_addr__bindgen_ty_1 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "in6_addr__bindgen_ty_1 {{ union }}")
+    }
+}
+impl ::std::fmt::Debug for in6_addr {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "in6_addr {{ __in6_u: {:?} }}", self.__in6_u)
+    }
+}
 extern "C" {
     pub static PJ_AF_UNSPEC: pj_uint16_t;
 }
@@ -661,6 +676,11 @@ pub struct pj_sockaddr_in6 {
     pub sin6_addr: pj_in6_addr,
     pub sin6_scope_id: pj_uint32_t,
 }
+impl ::std::fmt::Debug for pj_sockaddr_in6 {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write ! (f , "pj_sockaddr_in6 {{ sin6_family: {:?}, sin6_port: {:?}, sin6_flowinfo: {:?}, sin6_addr: {:?}, sin6_scope_id: {:?} }}" , self . sin6_family , self . sin6_port , self . sin6_flowinfo , self . sin6_addr , self . sin6_scope_id)
+    }
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_addr_hdr {
@@ -672,6 +692,11 @@ pub union pj_sockaddr {
     pub addr: pj_addr_hdr,
     pub ipv4: pj_sockaddr_in,
     pub ipv6: pj_sockaddr_in6,
+}
+impl ::std::fmt::Debug for pj_sockaddr {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "pj_sockaddr {{ union }}")
+    }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -1174,6 +1199,20 @@ pub struct pj_hostent {
 pub struct pj_addrinfo {
     pub ai_canonname: [::std::os::raw::c_char; 128usize],
     pub ai_addr: pj_sockaddr,
+}
+impl ::std::fmt::Debug for pj_addrinfo {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "pj_addrinfo {{ ai_canonname: [{}], ai_addr: {:?} }}",
+            self.ai_canonname
+                .iter()
+                .enumerate()
+                .map(|(i, v)| format!("{}{:?}", if i > 0 { ", " } else { "" }, v))
+                .collect::<String>(),
+            self.ai_addr
+        )
+    }
 }
 extern "C" {
     pub fn pj_gethostbyname(name: *const pj_str_t, he: *mut pj_hostent) -> pj_status_t;
@@ -1885,6 +1924,11 @@ pub struct pj_ip_route_entry__bindgen_ty_1 {
     pub dst_addr: pj_in_addr,
     pub mask: pj_in_addr,
 }
+impl ::std::fmt::Debug for pj_ip_route_entry {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(f, "pj_ip_route_entry {{ union }}")
+    }
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_enum_ip_option {
@@ -2587,6 +2631,11 @@ pub struct pj_caching_pool {
     pub pool_buf: [::std::os::raw::c_char; 512usize],
     pub lock: *mut pj_lock_t,
 }
+impl ::std::fmt::Debug for pj_caching_pool {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write ! (f , "pj_caching_pool {{ factory: {:?}, capacity: {:?}, max_capacity: {:?}, used_count: {:?}, used_size: {:?}, peak_used_size: {:?}, free_list: {:?}, used_list: {:?}, pool_buf: [{}], lock: {:?} }}" , self . factory , self . capacity , self . max_capacity , self . used_count , self . used_size , self . peak_used_size , self . free_list , self . used_list , self . pool_buf . iter () . enumerate () . map (| (i , v) | format ! ("{}{:?}" , if i > 0 { ", " } else { "" } , v)) . collect :: < String > () , self . lock)
+    }
+}
 extern "C" {
     pub fn pj_caching_pool_init(
         ch_pool: *mut pj_caching_pool,
@@ -2746,6 +2795,19 @@ extern "C" {
 #[derive(Copy, Clone)]
 pub struct pj_fd_set_t {
     pub data: [pj_sock_t; 68usize],
+}
+impl ::std::fmt::Debug for pj_fd_set_t {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write!(
+            f,
+            "pj_fd_set_t {{ data: [{}] }}",
+            self.data
+                .iter()
+                .enumerate()
+                .map(|(i, v)| format!("{}{:?}", if i > 0 { ", " } else { "" }, v))
+                .collect::<String>()
+        )
+    }
 }
 extern "C" {
     pub fn PJ_FD_ZERO(fdsetp: *mut pj_fd_set_t);
@@ -3108,6 +3170,11 @@ pub struct pj_ssl_sock_info {
     pub verify_status: pj_uint32_t,
     pub last_native_err: ::std::os::raw::c_ulong,
     pub grp_lock: *mut pj_grp_lock_t,
+}
+impl ::std::fmt::Debug for pj_ssl_sock_info {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        write ! (f , "pj_ssl_sock_info {{ established: {:?}, proto: {:?}, cipher: {:?}, local_addr: {:?}, remote_addr: {:?}, local_cert_info: {:?}, remote_cert_info: {:?}, verify_status: {:?}, last_native_err: {:?}, grp_lock: {:?} }}" , self . established , self . proto , self . cipher , self . local_addr , self . remote_addr , self . local_cert_info , self . remote_cert_info , self . verify_status , self . last_native_err , self . grp_lock)
+    }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

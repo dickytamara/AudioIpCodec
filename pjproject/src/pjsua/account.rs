@@ -267,7 +267,7 @@ pub trait UAAccConfigExt {
     /// -1 (PJSUA_INVALID_ID)
     ///
     /// # See also
-    ///     pjsua_acc_set_transport()
+    /// pjsua_acc_set_transport
     fn set_transport_id(&mut self, value: i32);
     fn get_transport_id(&self) -> i32;
 

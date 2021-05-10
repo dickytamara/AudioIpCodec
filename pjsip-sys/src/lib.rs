@@ -244,6 +244,7 @@ pub const PJSIP_AKA_RANDLEN: u32 = 16;
 pub const PJSIP_AKA_RESLEN: u32 = 8;
 pub const PJSIP_AKA_SQNLEN: u32 = 6;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cfg_t {
     pub endpt: pjsip_cfg_t__bindgen_ty_1,
     pub tsx: pjsip_cfg_t__bindgen_ty_2,
@@ -252,6 +253,7 @@ pub struct pjsip_cfg_t {
     pub tls: pjsip_cfg_t__bindgen_ty_5,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cfg_t__bindgen_ty_1 {
     pub allow_port_in_fromto_hdr: pj_bool_t,
     pub accept_replace_in_early_state: pj_bool_t,
@@ -276,6 +278,7 @@ pub struct pjsip_cfg_t__bindgen_ty_2 {
     pub td: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cfg_t__bindgen_ty_3 {
     pub check_contact: pj_bool_t,
     pub add_xuid_param: pj_bool_t,
@@ -337,11 +340,13 @@ pub struct pjsip_buffer {
     pub end: *mut ::std::os::raw::c_char,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_host_port {
     pub host: pj_str_t,
     pub port: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_host_info {
     pub flag: ::std::os::raw::c_uint,
     pub type_: pjsip_transport_type_e,
@@ -355,6 +360,7 @@ extern "C" {
     ) -> pj_str_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_param {
     pub prev: *mut pjsip_param,
     pub next: *mut pjsip_param,
@@ -441,6 +447,7 @@ pub struct pjsip_uri {
     pub vptr: *mut pjsip_uri_vptr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_sip_uri {
     pub vptr: *mut pjsip_uri_vptr,
     pub user: pj_str_t,
@@ -457,6 +464,7 @@ pub struct pjsip_sip_uri {
     pub header_param: pjsip_param,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_name_addr {
     pub vptr: *mut pjsip_uri_vptr,
     pub display: pj_str_t,
@@ -492,6 +500,7 @@ extern "C" {
     );
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_other_uri {
     pub vptr: *mut pjsip_uri_vptr,
     pub scheme: pj_str_t,
@@ -501,6 +510,7 @@ extern "C" {
     pub fn pjsip_other_uri_create(pool: *mut pj_pool_t) -> *mut pjsip_other_uri;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tel_uri {
     pub vptr: *mut pjsip_uri_vptr,
     pub number: pj_str_t,
@@ -524,6 +534,7 @@ pub const PJSIP_OPTIONS_METHOD: pjsip_method_e = 5;
 pub const PJSIP_OTHER_METHOD: pjsip_method_e = 6;
 pub type pjsip_method_e = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_method {
     pub id: pjsip_method_e,
     pub name: pj_str_t,
@@ -656,6 +667,7 @@ pub struct pjsip_hdr_vptr {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_hdr {
     pub prev: *mut pjsip_hdr,
     pub next: *mut pjsip_hdr,
@@ -684,11 +696,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_request_line {
     pub method: pjsip_method,
     pub uri: *mut pjsip_uri,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_status_line {
     pub code: ::std::os::raw::c_int,
     pub reason: pj_str_t,
@@ -779,6 +793,7 @@ extern "C" {
     pub fn pjsip_get_status_text(status_code: ::std::os::raw::c_int) -> *const pj_str_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_media_type {
     pub type_: pj_str_t,
     pub subtype: pj_str_t,
@@ -820,6 +835,7 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_msg_body {
     pub content_type: pjsip_media_type,
     pub data: *mut ::std::os::raw::c_void,
@@ -878,6 +894,7 @@ pub const PJSIP_REQUEST_MSG: pjsip_msg_type_e = 0;
 pub const PJSIP_RESPONSE_MSG: pjsip_msg_type_e = 1;
 pub type pjsip_msg_type_e = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_msg {
     pub type_: pjsip_msg_type_e,
     pub line: pjsip_msg__bindgen_ty_1,
@@ -885,6 +902,7 @@ pub struct pjsip_msg {
     pub body: *mut pjsip_msg_body,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_msg__bindgen_ty_1 {
     pub req: __BindgenUnionField<pjsip_request_line>,
     pub status: __BindgenUnionField<pjsip_status_line>,
@@ -933,6 +951,7 @@ extern "C" {
     ) -> pj_ssize_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_generic_string_hdr {
     pub prev: *mut pjsip_generic_string_hdr,
     pub next: *mut pjsip_generic_string_hdr,
@@ -965,6 +984,7 @@ extern "C" {
     );
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_generic_int_hdr {
     pub prev: *mut pjsip_generic_int_hdr,
     pub next: *mut pjsip_generic_int_hdr,
@@ -990,6 +1010,7 @@ extern "C" {
     ) -> *mut pjsip_generic_int_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_generic_array_hdr {
     pub prev: *mut pjsip_generic_array_hdr,
     pub next: *mut pjsip_generic_array_hdr,
@@ -1034,6 +1055,7 @@ extern "C" {
     ) -> *mut pjsip_allow_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cid_hdr {
     pub prev: *mut pjsip_cid_hdr,
     pub next: *mut pjsip_cid_hdr,
@@ -1053,6 +1075,7 @@ extern "C" {
     ) -> *mut pjsip_cid_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_clen_hdr {
     pub prev: *mut pjsip_clen_hdr,
     pub next: *mut pjsip_clen_hdr,
@@ -1072,6 +1095,7 @@ extern "C" {
     ) -> *mut pjsip_clen_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cseq_hdr {
     pub prev: *mut pjsip_cseq_hdr,
     pub next: *mut pjsip_cseq_hdr,
@@ -1092,6 +1116,7 @@ extern "C" {
     ) -> *mut pjsip_cseq_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_contact_hdr {
     pub prev: *mut pjsip_contact_hdr,
     pub next: *mut pjsip_contact_hdr,
@@ -1115,6 +1140,7 @@ extern "C" {
     ) -> *mut pjsip_contact_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_ctype_hdr {
     pub prev: *mut pjsip_ctype_hdr,
     pub next: *mut pjsip_ctype_hdr,
@@ -1148,6 +1174,7 @@ extern "C" {
     ) -> *mut pjsip_expires_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_fromto_hdr {
     pub prev: *mut pjsip_fromto_hdr,
     pub next: *mut pjsip_fromto_hdr,
@@ -1214,6 +1241,7 @@ extern "C" {
     ) -> *mut pjsip_min_expires_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_routing_hdr {
     pub prev: *mut pjsip_routing_hdr,
     pub next: *mut pjsip_routing_hdr,
@@ -1261,6 +1289,7 @@ extern "C" {
     ) -> *mut pjsip_require_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_retry_after_hdr {
     pub prev: *mut pjsip_retry_after_hdr,
     pub next: *mut pjsip_retry_after_hdr,
@@ -1306,6 +1335,7 @@ extern "C" {
     ) -> *mut pjsip_unsupported_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_via_hdr {
     pub prev: *mut pjsip_via_hdr,
     pub next: *mut pjsip_via_hdr,
@@ -1369,6 +1399,7 @@ pub type pjsip_subject_hdr = pjsip_generic_string_hdr;
 pub type pjsip_timestamp_hdr = pjsip_generic_string_hdr;
 pub type pjsip_user_agent_hdr = pjsip_generic_string_hdr;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_multipart_part {
     pub prev: *mut pjsip_multipart_part,
     pub next: *mut pjsip_multipart_part,
@@ -1440,6 +1471,7 @@ extern "C" {
     pub static mut PJSIP_EINVAL_ERR_EXCEPTION: ::std::os::raw::c_int;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_parser_err_report {
     pub prev: *mut pjsip_parser_err_report,
     pub next: *mut pjsip_parser_err_report,
@@ -1534,6 +1566,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_parser_const_t {
     pub pjsip_USER_STR: pj_str_t,
     pub pjsip_METHOD_STR: pj_str_t,
@@ -1625,6 +1658,7 @@ pub const PJSIP_EVENT_TSX_STATE: pjsip_event_id_e = 5;
 pub const PJSIP_EVENT_USER: pjsip_event_id_e = 6;
 pub type pjsip_event_id_e = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_event {
     pub prev: *mut pjsip_event,
     pub next: *mut pjsip_event,
@@ -1632,6 +1666,7 @@ pub struct pjsip_event {
     pub body: pjsip_event__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_event__bindgen_ty_1 {
     pub timer: __BindgenUnionField<pjsip_event__bindgen_ty_1__bindgen_ty_1>,
     pub tsx_state: __BindgenUnionField<pjsip_event__bindgen_ty_1__bindgen_ty_2>,
@@ -1647,6 +1682,7 @@ pub struct pjsip_event__bindgen_ty_1__bindgen_ty_1 {
     pub entry: *mut pj_timer_entry,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_event__bindgen_ty_1__bindgen_ty_2 {
     pub src: pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1,
     pub tsx: *mut pjsip_transaction,
@@ -1654,6 +1690,7 @@ pub struct pjsip_event__bindgen_ty_1__bindgen_ty_2 {
     pub type_: pjsip_event_id_e,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 {
     pub rdata: __BindgenUnionField<*mut pjsip_rx_data>,
     pub tdata: __BindgenUnionField<*mut pjsip_tx_data>,
@@ -1690,6 +1727,7 @@ extern "C" {
     pub fn pjsip_event_str(e: pjsip_event_id_e) -> *const ::std::os::raw::c_char;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_module {
     pub prev: *mut pjsip_module,
     pub next: *mut pjsip_module,
@@ -1720,11 +1758,13 @@ pub const PJSIP_MOD_PRIORITY_DIALOG_USAGE: pjsip_module_priority = 48;
 pub const PJSIP_MOD_PRIORITY_APPLICATION: pjsip_module_priority = 64;
 pub type pjsip_module_priority = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_server_addresses {
     pub count: ::std::os::raw::c_uint,
     pub entry: [pjsip_server_addresses__bindgen_ty_1; 16usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_server_addresses__bindgen_ty_1 {
     pub type_: pjsip_transport_type_e,
     pub priority: ::std::os::raw::c_uint,
@@ -1852,11 +1892,13 @@ extern "C" {
     pub fn pjsip_tpselector_dec_ref(sel: *mut pjsip_tpselector);
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_rx_data_op_key {
     pub op_key: pj_ioqueue_op_key_t,
     pub rdata: *mut pjsip_rx_data,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_rx_data {
     pub tp_info: pjsip_rx_data__bindgen_ty_1,
     pub pkt_info: pjsip_rx_data__bindgen_ty_2,
@@ -1864,6 +1906,7 @@ pub struct pjsip_rx_data {
     pub endpt_info: pjsip_rx_data__bindgen_ty_4,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_rx_data__bindgen_ty_1 {
     pub pool: *mut pj_pool_t,
     pub transport: *mut pjsip_transport,
@@ -1871,6 +1914,7 @@ pub struct pjsip_rx_data__bindgen_ty_1 {
     pub op_key: pjsip_rx_data_op_key,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_rx_data__bindgen_ty_2 {
     pub timestamp: pj_time_val,
     pub packet: [::std::os::raw::c_char; 4000usize],
@@ -1882,6 +1926,7 @@ pub struct pjsip_rx_data__bindgen_ty_2 {
     pub src_port: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_rx_data__bindgen_ty_3 {
     pub msg_buf: *mut ::std::os::raw::c_char,
     pub len: ::std::os::raw::c_int,
@@ -1920,6 +1965,7 @@ extern "C" {
     pub fn pjsip_rx_data_free_cloned(rdata: *mut pjsip_rx_data) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tx_data_op_key {
     pub key: pj_ioqueue_op_key_t,
     pub tdata: *mut pjsip_tx_data,
@@ -1965,12 +2011,14 @@ pub struct pjsip_tx_data {
     pub via_tp: *const ::std::os::raw::c_void,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tx_data__bindgen_ty_1 {
     pub name: pj_str_t,
     pub addr: pjsip_server_addresses,
     pub cur_addr: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tx_data__bindgen_ty_2 {
     pub transport: *mut pjsip_transport,
     pub dst_addr: pj_sockaddr,
@@ -2023,6 +2071,7 @@ pub type pjsip_transport_callback = ::std::option::Option<
     ),
 >;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_transport_key {
     pub type_: ::std::os::raw::c_long,
     pub rem_addr: pj_sockaddr,
@@ -2032,6 +2081,7 @@ pub const PJSIP_TP_DIR_OUTGOING: pjsip_transport_dir = 1;
 pub const PJSIP_TP_DIR_INCOMING: pjsip_transport_dir = 2;
 pub type pjsip_transport_dir = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_transport {
     pub obj_name: [::std::os::raw::c_char; 32usize],
     pub pool: *mut pj_pool_t,
@@ -2098,6 +2148,7 @@ extern "C" {
     ) -> pj_ssize_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tpfactory {
     pub prev: *mut pjsip_tpfactory,
     pub next: *mut pjsip_tpfactory,
@@ -2172,6 +2223,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tpmgr_fla2_param {
     pub tp_type: pjsip_transport_type_e,
     pub tp_sel: *const pjsip_tpselector,
@@ -2259,6 +2311,7 @@ pub const PJSIP_TP_STATE_DESTROY: pjsip_transport_state = 3;
 pub type pjsip_transport_state = u32;
 pub type pjsip_tp_state_listener_key = ::std::os::raw::c_void;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_transport_state_info {
     pub status: pj_status_t,
     pub ext_info: *mut ::std::os::raw::c_void,
@@ -2296,6 +2349,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tp_dropped_data {
     pub tp: *mut pjsip_transport,
     pub data: *mut ::std::os::raw::c_void,
@@ -2377,6 +2431,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_process_rdata_param {
     pub start_prio: ::std::os::raw::c_uint,
     pub start_mod: *mut ::std::os::raw::c_void,
@@ -2515,6 +2570,7 @@ extern "C" {
     );
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_target {
     pub prev: *mut pjsip_target,
     pub next: *mut pjsip_target,
@@ -2524,6 +2580,7 @@ pub struct pjsip_target {
     pub reason: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_target_set {
     pub head: pjsip_target,
     pub current: *mut pjsip_target,
@@ -2688,6 +2745,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_response_addr {
     pub transport: *mut pjsip_transport,
     pub addr: pj_sockaddr,
@@ -2778,6 +2836,7 @@ pub const PJSIP_UDP_TRANSPORT_KEEP_SOCKET: u32 = 1;
 pub const PJSIP_UDP_TRANSPORT_DESTROY_SOCKET: u32 = 2;
 pub type _bindgen_ty_15 = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_udp_transport_cfg {
     pub af: ::std::os::raw::c_int,
     pub bind_addr: pj_sockaddr,
@@ -2905,6 +2964,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tcp_transport_cfg {
     pub af: ::std::os::raw::c_int,
     pub bind_addr: pj_sockaddr,
@@ -2973,6 +3033,7 @@ pub const PJSIP_TLSV1_3_METHOD: pjsip_ssl_method = 34;
 pub const PJSIP_SSLV23_METHOD: pjsip_ssl_method = 23;
 pub type pjsip_ssl_method = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tls_on_accept_fail_param {
     pub local_addr: *const pj_sockaddr_t,
     pub remote_addr: *const pj_sockaddr_t,
@@ -2980,6 +3041,7 @@ pub struct pjsip_tls_on_accept_fail_param {
     pub last_native_err: pj_status_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_tls_setting {
     pub ca_list_file: pj_str_t,
     pub ca_list_path: pj_str_t,
@@ -3054,11 +3116,13 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_common_credential {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_digest_credential {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
@@ -3073,6 +3137,7 @@ pub struct pjsip_digest_credential {
     pub nc: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_pgp_credential {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
@@ -3082,6 +3147,7 @@ pub struct pjsip_pgp_credential {
     pub nonce: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_oauth_credential {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
@@ -3089,6 +3155,7 @@ pub struct pjsip_oauth_credential {
     pub token: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_authorization_hdr {
     pub prev: *mut pjsip_authorization_hdr,
     pub next: *mut pjsip_authorization_hdr,
@@ -3100,6 +3167,7 @@ pub struct pjsip_authorization_hdr {
     pub credential: pjsip_authorization_hdr__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_authorization_hdr__bindgen_ty_1 {
     pub common: __BindgenUnionField<pjsip_common_credential>,
     pub digest: __BindgenUnionField<pjsip_digest_credential>,
@@ -3117,11 +3185,13 @@ extern "C" {
     ) -> *mut pjsip_proxy_authorization_hdr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_common_challenge {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_digest_challenge {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
@@ -3133,6 +3203,7 @@ pub struct pjsip_digest_challenge {
     pub qop: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_pgp_challenge {
     pub realm: pj_str_t,
     pub other_param: pjsip_param,
@@ -3142,6 +3213,7 @@ pub struct pjsip_pgp_challenge {
     pub nonce: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_www_authenticate_hdr {
     pub prev: *mut pjsip_www_authenticate_hdr,
     pub next: *mut pjsip_www_authenticate_hdr,
@@ -3153,6 +3225,7 @@ pub struct pjsip_www_authenticate_hdr {
     pub challenge: pjsip_www_authenticate_hdr__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_www_authenticate_hdr__bindgen_ty_1 {
     pub common: __BindgenUnionField<pjsip_common_challenge>,
     pub digest: __BindgenUnionField<pjsip_digest_challenge>,
@@ -3189,6 +3262,7 @@ pub type pjsip_cred_cb = ::std::option::Option<
     ) -> pj_status_t,
 >;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cred_info {
     pub realm: pj_str_t,
     pub scheme: pj_str_t,
@@ -3198,11 +3272,13 @@ pub struct pjsip_cred_info {
     pub ext: pjsip_cred_info__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cred_info__bindgen_ty_1 {
     pub aka: __BindgenUnionField<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>,
     pub bindgen_union_field: [u64; 7usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {
     pub k: pj_str_t,
     pub op: pj_str_t,
@@ -3210,6 +3286,7 @@ pub struct pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {
     pub cb: pjsip_cred_cb,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cached_auth_hdr {
     pub prev: *mut pjsip_cached_auth_hdr,
     pub next: *mut pjsip_cached_auth_hdr,
@@ -3217,6 +3294,7 @@ pub struct pjsip_cached_auth_hdr {
     pub hdr: *mut pjsip_authorization_hdr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_cached_auth {
     pub prev: *mut pjsip_cached_auth,
     pub next: *mut pjsip_cached_auth,
@@ -3230,6 +3308,7 @@ pub struct pjsip_cached_auth {
     pub last_chal: *mut pjsip_www_authenticate_hdr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_auth_clt_pref {
     pub initial_auth: pj_bool_t,
     pub algorithm: pj_str_t,
@@ -3242,6 +3321,7 @@ extern "C" {
     );
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_auth_clt_sess {
     pub pool: *mut pj_pool_t,
     pub endpt: *mut pjsip_endpoint,
@@ -3272,6 +3352,7 @@ pub type pjsip_auth_lookup_cred = ::std::option::Option<
     ) -> pj_status_t,
 >;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_auth_lookup_cred_param {
     pub realm: pj_str_t,
     pub acc_name: pj_str_t,
@@ -3285,6 +3366,7 @@ pub type pjsip_auth_lookup_cred2 = ::std::option::Option<
     ) -> pj_status_t,
 >;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_auth_srv {
     pub realm: pj_str_t,
     pub is_proxy: pj_bool_t,
@@ -3604,6 +3686,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_dlg_party {
     pub info: *mut pjsip_fromto_hdr,
     pub info_str: pj_str_t,
@@ -3654,6 +3737,7 @@ pub struct pjsip_dialog {
     pub via_tp: *const ::std::os::raw::c_void,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_dlg_create_uac_param {
     pub ua: *mut pjsip_user_agent,
     pub local_uri: pj_str_t,

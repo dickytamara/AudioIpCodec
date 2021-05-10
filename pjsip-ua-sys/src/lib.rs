@@ -105,6 +105,7 @@ pub struct pjsip_timer {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_inv_session {
     pub obj_name: [::std::os::raw::c_char; 32usize],
     pub pool: *mut pj_pool_t,
@@ -135,6 +136,7 @@ pub struct pjsip_inv_session {
     pub updated_sdp_answer: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_rdata_sdp_info {
     pub body: pj_str_t,
     pub sdp_err: pj_status_t,
@@ -330,6 +332,7 @@ pub struct pjsip_regc {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_regc_cbparam {
     pub regc: *mut pjsip_regc,
     pub token: *mut ::std::os::raw::c_void,
@@ -345,6 +348,7 @@ pub struct pjsip_regc_cbparam {
 pub type pjsip_regc_cb =
     ::std::option::Option<unsafe extern "C" fn(param: *mut pjsip_regc_cbparam)>;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_regc_tsx_cb_param {
     pub cbparam: pjsip_regc_cbparam,
     pub contact_cnt: ::std::os::raw::c_int,
@@ -353,6 +357,7 @@ pub struct pjsip_regc_tsx_cb_param {
 pub type pjsip_regc_tsx_cb =
     ::std::option::Option<unsafe extern "C" fn(param: *mut pjsip_regc_tsx_cb_param)>;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_regc_info {
     pub server_uri: pj_str_t,
     pub client_uri: pj_str_t,
@@ -480,6 +485,7 @@ extern "C" {
     pub fn pjsip_regc_send(regc: *mut pjsip_regc, tdata: *mut pjsip_tx_data) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_replaces_hdr {
     pub prev: *mut pjsip_replaces_hdr,
     pub next: *mut pjsip_replaces_hdr,
@@ -615,6 +621,7 @@ pub struct pjsip_timer_setting {
     pub sess_expires: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_sess_expires_hdr {
     pub prev: *mut pjsip_sess_expires_hdr,
     pub next: *mut pjsip_sess_expires_hdr,
@@ -627,6 +634,7 @@ pub struct pjsip_sess_expires_hdr {
     pub other_param: pjsip_param,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_min_se_hdr {
     pub prev: *mut pjsip_min_se_hdr,
     pub next: *mut pjsip_min_se_hdr,

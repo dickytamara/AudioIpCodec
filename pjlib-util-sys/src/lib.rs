@@ -188,9 +188,11 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct pj_crc32_context {
     pub crc_state: pj_uint32_t,
 }
+
 extern "C" {
     pub fn pj_crc32_init(ctx: *mut pj_crc32_context);
 }
@@ -208,6 +210,7 @@ extern "C" {
     pub fn pj_crc32_calc(data: *const pj_uint8_t, nbytes: pj_size_t) -> pj_uint32_t;
 }
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct pj_md5_context {
     pub buf: [pj_uint32_t; 4usize],
     pub bits: [pj_uint32_t; 2usize],
@@ -227,6 +230,7 @@ extern "C" {
     pub fn pj_md5_final(pms: *mut pj_md5_context, digest: *mut pj_uint8_t);
 }
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct pj_hmac_md5_context {
     pub context: pj_md5_context,
     pub k_opad: [pj_uint8_t; 64usize],
@@ -258,6 +262,7 @@ extern "C" {
     pub fn pj_hmac_md5_final(hctx: *mut pj_hmac_md5_context, digest: *mut pj_uint8_t);
 }
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct pj_sha1_context {
     pub state: [pj_uint32_t; 5usize],
     pub count: [pj_uint32_t; 2usize],
@@ -273,6 +278,7 @@ extern "C" {
     pub fn pj_sha1_final(ctx: *mut pj_sha1_context, digest: *mut pj_uint8_t);
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_hmac_sha1_context {
     pub context: pj_sha1_context,
     pub k_opad: [pj_uint8_t; 64usize],
@@ -354,6 +360,7 @@ pub const PJ_DNS_TYPE_NSEC: pj_dns_type = 47;
 pub const PJ_DNS_TYPE_DNSKEY: pj_dns_type = 48;
 pub type pj_dns_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_hdr {
     pub id: pj_uint16_t,
     pub flags: pj_uint16_t,
@@ -374,12 +381,14 @@ pub const PJ_DNS_RCODE_NOTAUTH: pj_dns_rcode = 9;
 pub const PJ_DNS_RCODE_NOTZONE: pj_dns_rcode = 10;
 pub type pj_dns_rcode = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_query {
     pub name: pj_str_t,
     pub type_: pj_uint16_t,
     pub dnsclass: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr {
     pub name: pj_str_t,
     pub type_: pj_uint16_t,
@@ -390,6 +399,7 @@ pub struct pj_dns_parsed_rr {
     pub rdata: pj_dns_parsed_rr_rdata,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata {
     pub srv: __BindgenUnionField<pj_dns_parsed_rr_rdata_srv>,
     pub cname: __BindgenUnionField<pj_dns_parsed_rr_rdata_cname>,
@@ -400,6 +410,7 @@ pub struct pj_dns_parsed_rr_rdata {
     pub bindgen_union_field: [u64; 3usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_srv {
     pub prio: pj_uint16_t,
     pub weight: pj_uint16_t,
@@ -407,26 +418,32 @@ pub struct pj_dns_parsed_rr_rdata_srv {
     pub target: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_cname {
     pub name: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_ns {
     pub name: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_ptr {
     pub name: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_a {
     pub ip_addr: pj_in_addr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_aaaa {
     pub ip_addr: pj_in6_addr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_packet {
     pub hdr: pj_dns_hdr,
     pub q: *mut pj_dns_parsed_query,
@@ -537,6 +554,7 @@ pub struct pj_dns_settings {
     pub bad_ns_ttl: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_dns_a_record {
     pub name: pj_str_t,
     pub alias: pj_str_t,
@@ -545,6 +563,7 @@ pub struct pj_dns_a_record {
     pub buf_: [::std::os::raw::c_char; 128usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_dns_addr_record {
     pub name: pj_str_t,
     pub alias: pj_str_t,
@@ -553,11 +572,13 @@ pub struct pj_dns_addr_record {
     pub buf_: [::std::os::raw::c_char; 128usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_dns_addr_record__bindgen_ty_1 {
     pub af: ::std::os::raw::c_int,
     pub ip: pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1 {
     pub v4: __BindgenUnionField<pj_in_addr>,
     pub v6: __BindgenUnionField<pj_in6_addr>,
@@ -658,11 +679,13 @@ pub const PJ_DNS_SRV_RESOLVE_AAAA: pj_dns_srv_option = 4;
 pub const PJ_DNS_SRV_RESOLVE_AAAA_ONLY: pj_dns_srv_option = 8;
 pub type pj_dns_srv_option = u32;
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_dns_srv_record {
     pub count: ::std::os::raw::c_uint,
     pub entry: [pj_dns_srv_record__bindgen_ty_1; 8usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_dns_srv_record__bindgen_ty_1 {
     pub priority: ::std::os::raw::c_uint,
     pub weight: ::std::os::raw::c_uint,
@@ -735,6 +758,7 @@ extern "C" {
 }
 pub type pj_cis_elem_t = pj_uint32_t;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cis_buf_t {
     pub cis_buf: [pj_cis_elem_t; 256usize],
     pub use_mask: pj_cis_elem_t,
@@ -955,6 +979,7 @@ extern "C" {
     ) -> pj_ssize_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_xml_attr {
     pub prev: *mut pj_xml_attr,
     pub next: *mut pj_xml_attr,
@@ -968,6 +993,7 @@ pub struct pj_xml_node_head {
     pub next: *mut pj_xml_node,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_xml_node {
     pub prev: *mut pj_xml_node,
     pub next: *mut pj_xml_node,
@@ -1073,6 +1099,7 @@ pub struct pj_json_list {
     pub next: *mut pj_json_elem,
 }
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_json_elem {
     pub prev: *mut pj_json_elem,
     pub next: *mut pj_json_elem,
@@ -1081,6 +1108,7 @@ pub struct pj_json_elem {
     pub value: pj_json_elem__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct pj_json_elem__bindgen_ty_1 {
     pub is_true: __BindgenUnionField<pj_bool_t>,
     pub num: __BindgenUnionField<f32>,
@@ -1166,17 +1194,20 @@ pub const PJSTUN_ATTR_REFLECTED_FROM: pjstun_attr_type = 11;
 pub const PJSTUN_ATTR_XOR_MAPPED_ADDR: pjstun_attr_type = 32;
 pub type pjstun_attr_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_msg_hdr {
     pub type_: pj_uint16_t,
     pub length: pj_uint16_t,
     pub tsx: [pj_uint32_t; 4usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_attr_hdr {
     pub type_: pj_uint16_t,
     pub length: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_mapped_addr_attr {
     pub hdr: pjstun_attr_hdr,
     pub ignored: pj_uint8_t,
@@ -1189,17 +1220,20 @@ pub type pjstun_changed_addr_attr = pjstun_mapped_addr_attr;
 pub type pjstun_src_addr_attr = pjstun_mapped_addr_attr;
 pub type pjstun_reflected_form_attr = pjstun_mapped_addr_attr;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_change_request_attr {
     pub hdr: pjstun_attr_hdr,
     pub value: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_username_attr {
     pub hdr: pjstun_attr_hdr,
     pub value: [pj_uint32_t; 1usize],
 }
 pub type pjstun_password_attr = pjstun_username_attr;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_error_code_attr {
     pub hdr: pjstun_attr_hdr,
     pub ignored: pj_uint16_t,
@@ -1249,6 +1283,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjstun_setting {
     pub use_stun2: pj_bool_t,
     pub af: ::std::os::raw::c_int,
@@ -1271,6 +1306,7 @@ pub type pj_pcap_link_type = u32;
 pub const PJ_PCAP_PROTO_TYPE_UDP: pj_pcap_proto_type = 17;
 pub type pj_pcap_proto_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_pcap_udp_hdr {
     pub src_port: pj_uint16_t,
     pub dst_port: pj_uint16_t,
@@ -1278,6 +1314,7 @@ pub struct pj_pcap_udp_hdr {
     pub csum: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_pcap_filter {
     pub link: pj_pcap_link_type,
     pub proto: pj_pcap_proto_type,
@@ -1324,16 +1361,19 @@ pub struct pj_http_req {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_header_elmt {
     pub name: pj_str_t,
     pub value: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_headers {
     pub count: ::std::os::raw::c_uint,
     pub header: [pj_http_header_elmt; 32usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_auth_cred {
     pub scheme: pj_str_t,
     pub realm: pj_str_t,
@@ -1342,6 +1382,7 @@ pub struct pj_http_auth_cred {
     pub data: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_req_param {
     pub addr_family: ::std::os::raw::c_int,
     pub method: pj_str_t,
@@ -1356,12 +1397,14 @@ pub struct pj_http_req_param {
     pub max_retries: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_req_param_pj_http_reqdata {
     pub data: *mut ::std::os::raw::c_void,
     pub size: pj_size_t,
     pub total_size: pj_size_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_auth_chal {
     pub scheme: pj_str_t,
     pub realm: pj_str_t,
@@ -1373,6 +1416,7 @@ pub struct pj_http_auth_chal {
     pub qop: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_resp {
     pub version: pj_str_t,
     pub status_code: pj_uint16_t,
@@ -1384,6 +1428,7 @@ pub struct pj_http_resp {
     pub size: pj_size_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_http_url {
     pub username: pj_str_t,
     pub passwd: pj_str_t,
@@ -1476,6 +1521,7 @@ pub struct pj_cli_t {
 }
 pub type pj_cli_cmd_id = ::std::os::raw::c_int;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_cfg {
     pub name: pj_str_t,
     pub title: pj_str_t,
@@ -1493,6 +1539,7 @@ pub struct pj_cli_arg_spec {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_cmd_val {
     pub sess: *mut pj_cli_sess,
     pub cmd: *const pj_cli_cmd_spec,
@@ -1500,12 +1547,14 @@ pub struct pj_cli_cmd_val {
     pub argv: [pj_str_t; 8usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_hint_info {
     pub name: pj_str_t,
     pub type_: pj_str_t,
     pub desc: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_exec_info {
     pub err_pos: ::std::os::raw::c_int,
     pub cmd_id: pj_cli_cmd_id,
@@ -1514,11 +1563,13 @@ pub struct pj_cli_exec_info {
     pub hint: [pj_cli_hint_info; 32usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_arg_choice_val {
     pub value: pj_str_t,
     pub desc: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_dyn_choice_param {
     pub sess: *mut pj_cli_sess,
     pub cmd: *mut pj_cli_cmd_spec,
@@ -1643,6 +1694,7 @@ pub struct pj_cli_sess_op {
     pub destroy: ::std::option::Option<unsafe extern "C" fn(sess: *mut pj_cli_sess)>,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_sess {
     pub prev: *mut pj_cli_sess,
     pub next: *mut pj_cli_sess,
@@ -1652,6 +1704,7 @@ pub struct pj_cli_sess {
     pub log_level: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_console_cfg {
     pub log_level: ::std::os::raw::c_int,
     pub prompt_str: pj_str_t,
@@ -1676,6 +1729,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_telnet_info {
     pub ip_address: pj_str_t,
     pub port: pj_uint16_t,
@@ -1684,6 +1738,7 @@ pub struct pj_cli_telnet_info {
 pub type pj_cli_telnet_on_started =
     ::std::option::Option<unsafe extern "C" fn(status: pj_status_t)>;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_cli_telnet_cfg {
     pub port: pj_uint16_t,
     pub ioqueue: *mut pj_ioqueue_t,

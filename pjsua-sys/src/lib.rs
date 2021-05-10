@@ -121,6 +121,7 @@ pub const PJSUA_STATE_RUNNING: pjsua_state = 4;
 pub const PJSUA_STATE_CLOSING: pjsua_state = 5;
 pub type pjsua_state = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_logging_config {
     pub msg_logging: pj_bool_t,
     pub level: ::std::os::raw::c_uint,
@@ -153,33 +154,39 @@ pub struct pjsua_mwi_info {
     pub rdata: *mut pjsip_rx_data,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_reg_info {
     pub cbparam: *mut pjsip_regc_cbparam,
     pub regc: *mut pjsip_regc,
     pub renew: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_stream_info {
     pub type_: pjmedia_type,
     pub info: pjsua_stream_info__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_stream_info__bindgen_ty_1 {
     pub aud: __BindgenUnionField<pjmedia_stream_info>,
     pub vid: __BindgenUnionField<pjmedia_vid_stream_info>,
     pub bindgen_union_field: [u64; 277usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_stream_stat {
     pub rtcp: pjmedia_rtcp_stat,
     pub jbuf: pjmedia_jb_state,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_on_stream_precreate_param {
     pub stream_idx: ::std::os::raw::c_uint,
     pub stream_info: pjsua_stream_info,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_on_stream_created_param {
     pub stream: *mut pjmedia_stream,
     pub stream_idx: ::std::os::raw::c_uint,
@@ -194,6 +201,7 @@ pub const PJSUA_MED_TP_RUNNING: pjsua_med_tp_st = 4;
 pub const PJSUA_MED_TP_DISABLED: pjsua_med_tp_st = 5;
 pub type pjsua_med_tp_st = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_med_tp_state_info {
     pub med_idx: ::std::os::raw::c_uint,
     pub state: pjsua_med_tp_st,
@@ -212,6 +220,7 @@ pub type pj_stun_resolve_cb =
 pub const PJSUA_MED_TP_CLOSE_MEMBER: pjsua_create_media_transport_flag = 1;
 pub type pjsua_create_media_transport_flag = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_srtp_opt {
     pub crypto_count: ::std::os::raw::c_uint,
     pub crypto: [pjmedia_srtp_crypto; 16usize],
@@ -231,6 +240,7 @@ pub const PJSUA_IP_CHANGE_OP_ACC_REINVITE_CALLS: pjsua_ip_change_op = 5;
 pub const PJSUA_IP_CHANGE_OP_COMPLETED: pjsua_ip_change_op = 6;
 pub type pjsua_ip_change_op = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_ip_change_op_info {
     pub lis_restart: __BindgenUnionField<pjsua_ip_change_op_info__bindgen_ty_1>,
     pub acc_shutdown_tp: __BindgenUnionField<pjsua_ip_change_op_info__bindgen_ty_2>,
@@ -250,6 +260,7 @@ pub struct pjsua_ip_change_op_info__bindgen_ty_2 {
     pub acc_id: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_ip_change_op_info__bindgen_ty_3 {
     pub acc_id: pjsua_acc_id,
     pub is_register: pj_bool_t,
@@ -295,6 +306,7 @@ pub struct pjsua_call_setting {
     pub vid_cnt: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_callback {
     pub on_call_state:
         ::std::option::Option<unsafe extern "C" fn(call_id: pjsua_call_id, e: *mut pjsip_event)>,
@@ -597,6 +609,7 @@ pub const PJSUA_100REL_MANDATORY: pjsua_100rel_use = 1;
 pub const PJSUA_100REL_OPTIONAL: pjsua_100rel_use = 2;
 pub type pjsua_100rel_use = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_config {
     pub max_calls: ::std::os::raw::c_uint,
     pub thread_cnt: ::std::os::raw::c_uint,
@@ -638,6 +651,7 @@ extern "C" {
     pub fn pjsua_config_dup(pool: *mut pj_pool_t, dst: *mut pjsua_config, src: *const pjsua_config);
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_msg_data {
     pub target_uri: pj_str_t,
     pub hdr_list: pjsip_hdr,
@@ -703,6 +717,7 @@ extern "C" {
     pub fn pjsua_get_pool_factory() -> *mut pj_pool_factory;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_resolve_result {
     pub token: *mut ::std::os::raw::c_void,
     pub status: pj_status_t,
@@ -711,11 +726,13 @@ pub struct pj_stun_resolve_result {
     pub index: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_ip_change_param {
     pub restart_listener: pj_bool_t,
     pub restart_lis_delay: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_ip_change_acc_cfg {
     pub shutdown_tp: pj_bool_t,
     pub hangup_calls: pj_bool_t,
@@ -793,6 +810,7 @@ extern "C" {
 }
 pub type pjsua_transport_id = ::std::os::raw::c_int;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_transport_config {
     pub port: ::std::os::raw::c_uint,
     pub port_range: ::std::os::raw::c_uint,
@@ -814,6 +832,7 @@ extern "C" {
     );
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_transport_info {
     pub id: pjsua_transport_id,
     pub type_: pjsip_transport_type_e,
@@ -882,6 +901,7 @@ pub const PJSUA_TURN_CONFIG_USE_DEFAULT: pjsua_turn_config_use = 0;
 pub const PJSUA_TURN_CONFIG_USE_CUSTOM: pjsua_turn_config_use = 1;
 pub type pjsua_turn_config_use = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_ice_config {
     pub enable_ice: pj_bool_t,
     pub ice_max_host_cands: ::std::os::raw::c_int,
@@ -890,6 +910,7 @@ pub struct pjsua_ice_config {
     pub ice_always_update: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_turn_config {
     pub enable_turn: pj_bool_t,
     pub turn_server: pj_str_t,
@@ -904,6 +925,7 @@ pub const PJSUA_NAT64_DISABLED: pjsua_nat64_opt = 0;
 pub const PJSUA_NAT64_ENABLED: pjsua_nat64_opt = 1;
 pub type pjsua_nat64_opt = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_acc_config {
     pub user_data: *mut ::std::os::raw::c_void,
     pub priority: ::std::os::raw::c_int,
@@ -1027,6 +1049,7 @@ extern "C" {
     );
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_acc_info {
     pub id: pjsua_acc_id,
     pub is_default: pj_bool_t,
@@ -1161,6 +1184,7 @@ pub const PJSUA_VID_REQ_KEYFRAME_SIP_INFO: pjsua_vid_req_keyframe_method = 1;
 pub const PJSUA_VID_REQ_KEYFRAME_RTCP_PLI: pjsua_vid_req_keyframe_method = 2;
 pub type pjsua_vid_req_keyframe_method = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_call_media_info {
     pub index: ::std::os::raw::c_uint,
     pub type_: pjmedia_type,
@@ -1169,6 +1193,7 @@ pub struct pjsua_call_media_info {
     pub stream: pjsua_call_media_info__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_call_media_info__bindgen_ty_1 {
     pub aud: __BindgenUnionField<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1>,
     pub vid: __BindgenUnionField<pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2>,
@@ -1180,6 +1205,7 @@ pub struct pjsua_call_media_info__bindgen_ty_1__bindgen_ty_1 {
     pub conf_slot: pjsua_conf_port_id,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_call_media_info__bindgen_ty_1__bindgen_ty_2 {
     pub win_in: pjsua_vid_win_id,
     pub dec_slot: pjsua_conf_port_id,
@@ -1243,12 +1269,14 @@ pub const PJSUA_CALL_VID_STRM_STOP_TRANSMIT: pjsua_call_vid_strm_op = 6;
 pub const PJSUA_CALL_VID_STRM_SEND_KEYFRAME: pjsua_call_vid_strm_op = 7;
 pub type pjsua_call_vid_strm_op = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_call_vid_strm_op_param {
     pub med_idx: ::std::os::raw::c_int,
     pub dir: pjmedia_dir,
     pub cap_dev: pjmedia_vid_dev_index,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_call_send_dtmf_param {
     pub method: pjsua_dtmf_method,
     pub duration: ::std::os::raw::c_uint,
@@ -1480,6 +1508,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_buddy_config {
     pub uri: pj_str_t,
     pub subscribe: pj_bool_t,
@@ -1490,6 +1519,7 @@ pub const PJSUA_BUDDY_STATUS_ONLINE: pjsua_buddy_status = 1;
 pub const PJSUA_BUDDY_STATUS_OFFLINE: pjsua_buddy_status = 2;
 pub type pjsua_buddy_status = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_buddy_info {
     pub id: pjsua_buddy_id,
     pub uri: pj_str_t,
@@ -1589,6 +1619,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_media_config {
     pub clock_rate: ::std::os::raw::c_uint,
     pub snd_clock_rate: ::std::os::raw::c_uint,
@@ -1635,6 +1666,7 @@ extern "C" {
     pub fn pjsua_media_config_default(cfg: *mut pjsua_media_config);
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_codec_info {
     pub codec_id: pj_str_t,
     pub priority: pj_uint8_t,
@@ -1642,6 +1674,7 @@ pub struct pjsua_codec_info {
     pub buf_: [::std::os::raw::c_char; 64usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_conf_port_info {
     pub slot_id: pjsua_conf_port_id,
     pub name: pj_str_t,
@@ -1656,6 +1689,7 @@ pub struct pjsua_conf_port_info {
     pub listeners: [pjsua_conf_port_id; 254usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_media_transport {
     pub skinfo: pjmedia_sock_info,
     pub transport: *mut pjmedia_transport,
@@ -1936,6 +1970,7 @@ pub struct pjsua_vid_win_info {
     pub size: pjmedia_rect_size,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsua_vid_conf_port_info {
     pub slot_id: pjsua_conf_port_id,
     pub name: pj_str_t,

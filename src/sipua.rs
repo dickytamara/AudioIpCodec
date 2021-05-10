@@ -1,19 +1,19 @@
 #![allow(dead_code, unused_variables, non_upper_case_globals)]
 
 pub mod prelude;
-pub mod sip_account;
-pub mod sip_buddy;
-pub mod sip_calls;
-pub mod sip_codec;
+// pub mod sip_account;
+// pub mod sip_buddy;
+// pub mod sip_calls;
+// pub mod sip_codec;
 pub mod sip_core;
-pub mod sip_log;
-pub mod sip_media;
-pub mod sip_module;
-pub mod sip_presence;
-pub mod sip_tones;
-pub mod sip_transport;
+// pub mod sip_log;
+// pub mod sip_media;
+// pub mod sip_module;
+// pub mod sip_presence;
+// pub mod sip_tones;
+// pub mod sip_transport;
 pub mod sip_ua;
-pub mod sip_wav;
+// pub mod sip_wav;
 
 use prelude::*;
 use sip_core::{SIPCore, SIPCoreEventsExt, SIP_CORE};

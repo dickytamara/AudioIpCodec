@@ -45,6 +45,7 @@ pub struct pjmedia_aud_test_stat {
     pub max_burst: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_aud_test_results {
     pub rec: pjmedia_aud_test_stat,
     pub play: pjmedia_aud_test_stat,

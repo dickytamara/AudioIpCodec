@@ -610,6 +610,7 @@ pub type pjrpid_activity = u32;
 pub const PJRPID_ELEMENT_TYPE_PERSON: pjrpid_element_type = 0;
 pub type pjrpid_element_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjrpid_element {
     pub type_: pjrpid_element_type,
     pub id: pj_str_t,
@@ -648,12 +649,14 @@ extern "C" {
     pub fn pjsip_pres_instance() -> *mut pjsip_module;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_pres_status {
     pub info_cnt: ::std::os::raw::c_uint,
     pub info: [pjsip_pres_status__bindgen_ty_1; 8usize],
     pub _is_valid: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_pres_status__bindgen_ty_1 {
     pub basic_open: pj_bool_t,
     pub rpid: pjrpid_element,
@@ -781,10 +784,12 @@ pub struct pjsip_publishc {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_publishc_opt {
     pub queue_request: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjsip_publishc_cbparam {
     pub pubc: *mut pjsip_publishc,
     pub token: *mut ::std::os::raw::c_void,

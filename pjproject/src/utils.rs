@@ -5,6 +5,10 @@ pub trait AutoCreate<T> {
     fn new() -> T;
 }
 
+pub trait AutoDefault<T> {
+    fn default() -> T;
+}
+
 pub trait ToString {
     fn to_string(&self) -> String;
 }

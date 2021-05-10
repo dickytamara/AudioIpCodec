@@ -205,6 +205,7 @@ pub const PJ_STUN_SC_INSUFFICIENT_CAPACITY: pj_stun_status = 508;
 pub const PJ_STUN_SC_GLOBAL_FAILURE: pj_stun_status = 600;
 pub type pj_stun_status = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_msg_hdr {
     pub type_: pj_uint16_t,
     pub length: pj_uint16_t,
@@ -212,36 +213,43 @@ pub struct pj_stun_msg_hdr {
     pub tsx_id: [pj_uint8_t; 12usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_attr_hdr {
     pub type_: pj_uint16_t,
     pub length: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_sockaddr_attr {
     pub hdr: pj_stun_attr_hdr,
     pub xor_ed: pj_bool_t,
     pub sockaddr: pj_sockaddr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_empty_attr {
     pub hdr: pj_stun_attr_hdr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_string_attr {
     pub hdr: pj_stun_attr_hdr,
     pub value: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_uint_attr {
     pub hdr: pj_stun_attr_hdr,
     pub value: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_uint64_attr {
     pub hdr: pj_stun_attr_hdr,
     pub value: pj_timestamp,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_binary_attr {
     pub hdr: pj_stun_attr_hdr,
     pub magic: pj_uint32_t,
@@ -249,12 +257,14 @@ pub struct pj_stun_binary_attr {
     pub data: *mut pj_uint8_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_msgint_attr {
     pub hdr: pj_stun_attr_hdr,
     pub hmac: [pj_uint8_t; 20usize],
 }
 pub type pj_stun_fingerprint_attr = pj_stun_uint_attr;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_errcode_attr {
     pub hdr: pj_stun_attr_hdr,
     pub err_code: ::std::os::raw::c_int,
@@ -263,6 +273,7 @@ pub struct pj_stun_errcode_attr {
 pub type pj_stun_realm_attr = pj_stun_string_attr;
 pub type pj_stun_nonce_attr = pj_stun_string_attr;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_unknown_attr {
     pub hdr: pj_stun_attr_hdr,
     pub attr_count: ::std::os::raw::c_uint,
@@ -299,6 +310,7 @@ pub type pj_stun_ice_controlling_attr = pj_stun_uint64_attr;
 pub type pj_stun_ice_controlled_attr = pj_stun_uint64_attr;
 pub type pj_stun_icmp_attr = pj_stun_uint_attr;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_msg {
     pub hdr: pj_stun_msg_hdr,
     pub attr_count: ::std::os::raw::c_uint,
@@ -589,17 +601,20 @@ pub const PJ_STUN_PASSWD_PLAIN: pj_stun_passwd_type = 0;
 pub const PJ_STUN_PASSWD_HASHED: pj_stun_passwd_type = 1;
 pub type pj_stun_passwd_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_auth_cred {
     pub type_: pj_stun_auth_cred_type,
     pub data: pj_stun_auth_cred__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_auth_cred__bindgen_ty_1 {
     pub static_cred: __BindgenUnionField<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>,
     pub dyn_cred: __BindgenUnionField<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2>,
     pub bindgen_union_field: [u64; 9usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
     pub realm: pj_str_t,
     pub username: pj_str_t,
@@ -653,6 +668,7 @@ pub struct pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_req_cred_info {
     pub realm: pj_str_t,
     pub username: pj_str_t,
@@ -706,6 +722,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_config {
     pub pf: *mut pj_pool_factory,
     pub ioqueue: *mut pj_ioqueue_t,
@@ -850,11 +867,13 @@ pub struct pj_stun_session_cb {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_rx_data {
     pub msg: *mut pj_stun_msg,
     pub info: pj_stun_req_cred_info,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_tx_data {
     pub prev: *mut pj_stun_tx_data,
     pub next: *mut pj_stun_tx_data,
@@ -1042,6 +1061,7 @@ pub struct pj_ice_msg_data_data_request_data {
     pub rcand: *mut pj_ice_sess_cand,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_sess_cand {
     pub id: ::std::os::raw::c_uint,
     pub type_: pj_ice_cand_type,
@@ -1062,6 +1082,7 @@ pub const PJ_ICE_SESS_CHECK_STATE_SUCCEEDED: pj_ice_sess_check_state = 3;
 pub const PJ_ICE_SESS_CHECK_STATE_FAILED: pj_ice_sess_check_state = 4;
 pub type pj_ice_sess_check_state = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_sess_check {
     pub lcand: *mut pj_ice_sess_cand,
     pub rcand: *mut pj_ice_sess_cand,
@@ -1077,6 +1098,7 @@ pub const PJ_ICE_SESS_CHECKLIST_ST_RUNNING: pj_ice_sess_checklist_state = 1;
 pub const PJ_ICE_SESS_CHECKLIST_ST_COMPLETED: pj_ice_sess_checklist_state = 2;
 pub type pj_ice_sess_checklist_state = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_sess_checklist {
     pub state: pj_ice_sess_checklist_state,
     pub count: ::std::os::raw::c_uint,
@@ -1119,6 +1141,7 @@ pub const PJ_ICE_SESS_ROLE_CONTROLLED: pj_ice_sess_role = 1;
 pub const PJ_ICE_SESS_ROLE_CONTROLLING: pj_ice_sess_role = 2;
 pub type pj_ice_sess_role = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_rx_check {
     pub prev: *mut pj_ice_rx_check,
     pub next: *mut pj_ice_rx_check,
@@ -1135,6 +1158,7 @@ pub const PJ_ICE_SESS_TRICKLE_HALF: pj_ice_sess_trickle = 1;
 pub const PJ_ICE_SESS_TRICKLE_FULL: pj_ice_sess_trickle = 2;
 pub type pj_ice_sess_trickle = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_sess_options {
     pub aggressive: pj_bool_t,
     pub nominated_check_delay: ::std::os::raw::c_uint,
@@ -1342,6 +1366,7 @@ pub struct pj_stun_sock_cb {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_sock_info {
     pub bound_addr: pj_sockaddr,
     pub srv_addr: pj_sockaddr,
@@ -1350,6 +1375,7 @@ pub struct pj_stun_sock_info {
     pub aliases: [pj_sockaddr; 8usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_sock_cfg {
     pub grp_lock: *mut pj_grp_lock_t,
     pub max_pkt_size: ::std::os::raw::c_uint,
@@ -1516,6 +1542,7 @@ pub struct pj_turn_alloc_param {
     pub peer_conn_type: pj_turn_tp_type,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_turn_session_info {
     pub state: pj_turn_state_t,
     pub last_status: pj_status_t,
@@ -1526,6 +1553,7 @@ pub struct pj_turn_session_info {
     pub lifetime: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_turn_session_on_rx_pkt_param {
     pub pkt: *mut ::std::os::raw::c_void,
     pub pkt_len: pj_size_t,
@@ -1709,6 +1737,7 @@ pub struct pj_turn_sock_cb {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_turn_sock_tls_cfg {
     pub ca_list_file: pj_str_t,
     pub ca_list_path: pj_str_t,
@@ -1734,6 +1763,7 @@ extern "C" {
     pub fn pj_turn_sock_tls_cfg_wipe_keys(tls_cfg: *mut pj_turn_sock_tls_cfg);
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_turn_sock_cfg {
     pub grp_lock: *mut pj_grp_lock_t,
     pub max_pkt_size: ::std::os::raw::c_uint,
@@ -1868,6 +1898,7 @@ pub struct pj_ice_strans_cb {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_strans_stun_cfg {
     pub af: ::std::os::raw::c_int,
     pub cfg: pj_stun_sock_cfg,
@@ -1878,6 +1909,7 @@ pub struct pj_ice_strans_stun_cfg {
     pub ignore_stun_error: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_strans_turn_cfg {
     pub af: ::std::os::raw::c_int,
     pub cfg: pj_turn_sock_cfg,
@@ -1888,6 +1920,7 @@ pub struct pj_ice_strans_turn_cfg {
     pub alloc_param: pj_turn_alloc_param,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_strans_cfg {
     pub af: ::std::os::raw::c_int,
     pub stun_cfg: pj_stun_config,
@@ -1904,6 +1937,7 @@ pub struct pj_ice_strans_cfg {
     pub comp: [pj_ice_strans_cfg__bindgen_ty_1; 2usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_ice_strans_cfg__bindgen_ty_1 {
     pub qos_type: pj_qos_type,
     pub qos_params: pj_qos_params,
@@ -2096,6 +2130,7 @@ pub const PJ_STUN_NAT_TYPE_RESTRICTED: pj_stun_nat_type = 7;
 pub const PJ_STUN_NAT_TYPE_PORT_RESTRICTED: pj_stun_nat_type = 8;
 pub type pj_stun_nat_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pj_stun_nat_detect_result {
     pub status: pj_status_t,
     pub status_text: *const ::std::os::raw::c_char,

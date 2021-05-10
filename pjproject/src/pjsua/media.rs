@@ -1,6 +1,6 @@
 
 use std::{convert::TryFrom, path::PathBuf};
-use crate::{pjmedia::{MediaEchoFlag, MediaJbDiscardAlgo, MediaPort, MediaWavPlayerInfo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
+use crate::{pjmedia::{MediaAudDevInfo, MediaCodecParam, MediaEchoFlag, MediaJbDiscardAlgo, MediaPort, MediaWavPlayerInfo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 pub trait UAMediaConfigExt {
@@ -1084,8 +1084,27 @@ impl UASound {
 
     // current stable api
     // TODO: fix with Result<Vec<pjmedia_aud_dev_info>>
-    pub fn enum_aud_devs(info: &mut [pjmedia_aud_dev_info; 256], count: &mut u32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_enum_aud_devs( info.as_mut_ptr(), count as *mut _)) }
+    pub fn enum_aud_devs () -> Result<Vec<MediaAudDevInfo>, i32> {
+        unsafe {
+            let mut infos: [MediaAudDevInfo; 256] = std::mem::zeroed();
+            let mut count = 0_u32;
+
+            let status = pjsua_sys::pjsua_enum_aud_devs( infos.as_mut_ptr(),  &mut count as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => {
+                    let mut vec = Vec::<MediaAudDevInfo>::new();
+
+                    for i in 0..count as usize {
+                        vec.push(infos[i].clone());
+                    }
+
+                    return Ok(vec);
+                },
+                Err(e) => { return Err(e); }
+            }
+
+        }
     }
 
     // old api
@@ -1143,21 +1162,25 @@ impl Default for UACodecManager {
     }
 }
 
-
 impl UACodecManager {
 
-    pub fn enum_codecs(id: &mut [UACodecInfo; 32], count: &mut u32) -> Result<Vec<UACodecInfo>, i32> {
+    pub fn enum_codecs() -> Result<Vec<UACodecInfo>, i32> {
         unsafe {
             let mut id: [UACodecInfo; 32] = std::mem::zeroed();
             let mut count = 0_u32;
             let status = pjsua_sys::pjsua_enum_codecs( id.as_mut_ptr(),  &mut count as *mut _);
             match utils::check_status(status) {
                 Ok(()) => {
-                    let vec = Vec::<UACodecInfo>::new();
+                    let mut vec = Vec::<UACodecInfo>::new();
 
                     for i in 0..count as usize {
-                        todo!();
-                        // vec.push(id[i]);
+                        // let mut item: UACodecInfo = std::mem::zeroed();
+                        // item.codec_id = id[i].codec_id;
+                        // item.priority = id[i].priority;
+                        // item.desc = id[i].desc;
+                        // item.buf_ = id[i].buf_;
+
+                        vec.push(id[i].clone());
                     }
 
                     return Ok(vec);
@@ -1172,12 +1195,16 @@ impl UACodecManager {
         unsafe { utils::check_status(pjsua_sys::pjsua_codec_set_priority( codec_id, priority)) }
     }
 
-    pub fn get_param(codec_id: String, param: &mut pjmedia_codec_param) -> Result<(), i32> {
-
-        let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
-
+    pub fn get_param(codec_id: String) -> Result<MediaCodecParam, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_codec_get_param( codec_id, param as *mut _))
+            let codec_id: *const pj_str_t = &mut pj_str_t::from_string(codec_id) as *const _;
+            let mut param = MediaCodecParam::new();
+
+            let status = pjsua_sys::pjsua_codec_get_param(codec_id,  &mut param as *mut _);
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(param); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 

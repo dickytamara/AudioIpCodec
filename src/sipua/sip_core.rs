@@ -1,11 +1,5 @@
 
-
-// use pj_sys::*;
-// use pjnath_sys::*;
-// use pjsip_sys::*;
-// use pjmedia_sys::*;
-// use pjsip_simple_sys::*;
-// use pjsua_sys::*;
+use pjproject::{pjsip::SIPRedirectOp, pjsua::{UAConfig, UALoggingConfig, UAMediaConfig, transport::UATransport}};
 
 use crate::pjproject::{prelude::*, utils::boolean_to_pjbool};
 
@@ -14,18 +8,6 @@ use crate::pjproject::pjsip;
 use crate::pjproject::pjsua;
 use crate::pjproject::pjmedia;
 
-use super::{sip_account::*, sip_module::SIPModule};
-use super::sip_module::SIPModuleExt;
-
-use super::sip_calls::*;
-use super::sip_ua::*;
-use super::sip_log::*;
-use super::sip_media::*;
-use super::sip_presence::*;
-use super::sip_tones::*;
-use super::sip_transport::*;
-use super::sip_wav::*;
-
 use std::ptr;
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_int, c_void, c_uint};
@@ -33,25 +15,22 @@ use super::SIPInviteState;
 
 
 pub static mut SIP_CORE: Option<SIPCore> = None;
-pub static mut CURRENT_CALL: Option<pjsua_call_id> = None;
+pub static mut CURRENT_CALL: Option<i32> = None;
 
 
 pub struct SIPCore {
-    pub ua_config: SIPUaConfig,
-    pub log_config: SIPLogConfig,
-    pub media_config: SIPMediaConfig,
+    pub ua_config: UAConfig,
+    pub log_config: UALoggingConfig,
+    pub media_config: UAMediaConfig,
     module: SIPModule,
     no_udp: bool,
     no_tcp: bool,
     use_ipv6: bool,
-    transports: SIPTransports,
-    presence: SIPPresence,
-    tones: Vec<SIPTones>,
-    ringback: SIPRingback,
-    ringtone: SIPRingtone,
-    wav_player: Option<SIPWavPlayer>,
-    wav_recorder: Option<SIPWavRecorder>,
-    redir_op: pjsip_redirect_op,
+    transport_udp: Option<UATransport>,
+    transport_tcp: Option<UATransport>,
+    transport_udp6: Option<UATransport>,
+    transport_tcp6: Option<UATransport>,
+    redir_op: SIPRedirectOp,
     input_dev: i32,
     output_dev: i32,
     input_latency: u32,
@@ -90,20 +69,14 @@ impl SIPCore {
         // pjsua::create().expect("SIPCore::pjsua_create");
         //SIPUa::create();
         SIPCore {
-            ua_config: SIPUaConfig::new(),
-            log_config: SIPLogConfig::new(),
-            media_config: SIPMediaConfig::new(),
+            ua_config: UAConfig::default(),
+            log_config: UALoggingConfig::new(),
+            media_config: UAMediaConfig::new(),
             module: SIPModule::new(),
-            no_udp: false,
-            no_tcp: false,
-            use_ipv6: false,
-            transports: SIPTransports::new(),
-            presence: SIPPresence::new(),
-            tones: Vec::new(),
-            ringback: SIPRingback::new(),
-            ringtone: SIPRingtone::new(),
-            wav_player: None,
-            wav_recorder: None,
+            transport_udp: None,
+            transport_tcp: None,
+            transport_udp6: None,
+            transport_tcp6: None,
             redir_op: PJSIP_REDIRECT_ACCEPT_REPLACE,
             input_dev: pjsua::PJSUA_INVALID_ID,
             output_dev: pjsua::PJSUA_INVALID_ID,
@@ -116,14 +89,16 @@ impl SIPCore {
             events: SIPCoreEvents::new(),
             no_refersub: false,
             compact_form: false,
+            no_udp: false,
+            no_tcp: true,
+            use_ipv6: false,
         }
     }
 
     pub fn init(&mut self) {
 
-        // self.app_config.create();
-        //self.ua_config = SIPUaConfig::new();
-        SIPUa::create();
+        pjsua::create().unwrap();
+
         // set all default media event
         self.ua_config.connect_on_call_state(Some(on_call_state));
         self.ua_config.connect_on_stream_destroyed(Some(on_stream_destroyed));
@@ -170,28 +145,20 @@ impl SIPCore {
         //     self.tones.push(tones);
         // }
 
-        // init ringback
-        // TODO fix code bellow
-        // self.ringback.init(self.ua_config.get_pool(), *self.media_config.get_context());
-
-        // init ringtone
-        // TODO fix code bellow
-        // self.ringtone.init(self.ua_config.get_pool(), *self.media_config.get_context());
+        // check if setting not have atleast 1 protocol
+        if self.no_udp & self.no_tcp {
+            self.no_udp = false;
+        }
 
         // Initialize UDP Transport
         if !self.no_udp {
-            self.transports.add(PJSIP_TRANSPORT_UDP);
-            if self.use_ipv6 == true {
-                self.transports.add(PJSIP_TRANSPORT_UDP6);
-            }
+            let tp = UATransport::new();
+            
         }
 
         // initialize TCP transport
         if !self.no_tcp {
-            self.transports.add(PJSIP_TRANSPORT_TCP);
-            if self.use_ipv6 {
-                self.transports.add(PJSIP_TRANSPORT_TCP6);
-            }
+
         }
 
         // TODO create local account
@@ -216,7 +183,7 @@ impl SIPCore {
         self.media_config.init();
 
 
-        SIPUa::start();
+        pjsua::start();
     }
 
     pub fn restart(&mut self) {
@@ -305,7 +272,6 @@ impl SIPCore {
     pub fn set_compact_form(&mut self, value: bool) {
         self.compact_form = value;
     }
-
 
     pub fn on_call_audio_state(&mut self, ci: &pjsua_call_info, mi: u32, has_error: &mut bool) {
 
@@ -907,8 +873,6 @@ fn simple_registrar(rdata: *mut pjsip_rx_data) {
     // }
 }
 
-
-
 unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
     println!("OnRxRequest");
     // base rx request handle undefined state.
@@ -992,7 +956,6 @@ unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
 
     PJ_TRUE as pj_status_t
 }
-
 
 // On Call State
 unsafe extern "C" fn on_call_state(call_id: pjsua_call_id, e: *mut pjsip_event) {

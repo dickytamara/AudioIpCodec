@@ -591,6 +591,7 @@ extern "C" {
     pub static pjmedia_alaw2linear_tab: [pj_int16_t; 256usize];
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_clock_src {
     pub media_type: pjmedia_type,
     pub clock_rate: ::std::os::raw::c_uint,
@@ -727,6 +728,7 @@ pub const PJMEDIA_FORMAT_DETAIL_VIDEO: pjmedia_format_detail_type = 2;
 pub const PJMEDIA_FORMAT_DETAIL_MAX: pjmedia_format_detail_type = 3;
 pub type pjmedia_format_detail_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_audio_format_detail {
     pub clock_rate: ::std::os::raw::c_uint,
     pub channel_count: ::std::os::raw::c_uint,
@@ -736,6 +738,7 @@ pub struct pjmedia_audio_format_detail {
     pub max_bps: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_video_format_detail {
     pub size: pjmedia_rect_size,
     pub fps: pjmedia_ratio,
@@ -743,6 +746,7 @@ pub struct pjmedia_video_format_detail {
     pub max_bps: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_format {
     pub id: pj_uint32_t,
     pub type_: pjmedia_type,
@@ -750,6 +754,7 @@ pub struct pjmedia_format {
     pub det: pjmedia_format__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_format__bindgen_ty_1 {
     pub aud: __BindgenUnionField<pjmedia_audio_format_detail>,
     pub vid: __BindgenUnionField<pjmedia_video_format_detail>,
@@ -761,6 +766,7 @@ pub const PJMEDIA_COLOR_MODEL_RGB: pjmedia_color_model = 1;
 pub const PJMEDIA_COLOR_MODEL_YUV: pjmedia_color_model = 2;
 pub type pjmedia_color_model = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_video_apply_fmt_param {
     pub size: pjmedia_rect_size,
     pub buffer: *mut pj_uint8_t,
@@ -770,6 +776,7 @@ pub struct pjmedia_video_apply_fmt_param {
     pub plane_bytes: [pj_size_t; 4usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_video_format_info {
     pub id: pj_uint32_t,
     pub name: [::std::os::raw::c_char; 8usize],
@@ -806,6 +813,7 @@ pub const PJMEDIA_FRAME_TYPE_EXTENDED: pjmedia_frame_type = 2;
 pub const PJMEDIA_FRAME_TYPE_VIDEO: pjmedia_frame_type = 3;
 pub type pjmedia_frame_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_frame {
     pub type_: pjmedia_frame_type,
     pub buf: *mut ::std::os::raw::c_void,
@@ -851,6 +859,7 @@ pub struct pjmedia_aud_driver {
     pub dev_idx: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_aud_subsys {
     pub init_count: ::std::os::raw::c_uint,
     pub pf: *mut pj_pool_factory,
@@ -883,6 +892,7 @@ pub const PJMEDIA_AUD_DEV_ROUTE_BLUETOOTH: pjmedia_aud_dev_route = 4;
 pub const PJMEDIA_AUD_DEV_ROUTE_CUSTOM: pjmedia_aud_dev_route = 128;
 pub type pjmedia_aud_dev_route = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_aud_dev_info {
     pub name: [::std::os::raw::c_char; 64usize],
     pub input_count: ::std::os::raw::c_uint,
@@ -907,6 +917,7 @@ pub type pjmedia_aud_rec_cb = ::std::option::Option<
     ) -> pj_status_t,
 >;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_aud_param {
     pub dir: pjmedia_dir,
     pub rec_id: pjmedia_aud_dev_index,
@@ -1290,11 +1301,13 @@ impl pjmedia_rtcp_xr_pkt__bindgen_ty_1 {
     }
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_stream_stat {
     pub stat_sum: pjmedia_rtcp_xr_stream_stat__bindgen_ty_1,
     pub voip_mtc: pjmedia_rtcp_xr_stream_stat__bindgen_ty_2,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_stream_stat__bindgen_ty_1 {
     pub update: pj_time_val,
     pub begin_seq: pj_uint32_t,
@@ -1380,6 +1393,7 @@ impl pjmedia_rtcp_xr_stream_stat__bindgen_ty_1 {
     }
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_stream_stat__bindgen_ty_2 {
     pub update: pj_time_val,
     pub loss_rate: pj_uint8_t,
@@ -1404,6 +1418,7 @@ pub struct pjmedia_rtcp_xr_stream_stat__bindgen_ty_2 {
     pub jb_abs_max: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_stat {
     pub rx: pjmedia_rtcp_xr_stream_stat,
     pub tx: pjmedia_rtcp_xr_stream_stat,
@@ -1425,6 +1440,7 @@ pub struct pjmedia_rtcp_xr_session {
     pub rtcp_session: *mut pjmedia_rtcp_session,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_session__bindgen_ty_1 {
     pub pkt: pj_uint32_t,
     pub lost: pj_uint32_t,
@@ -1550,6 +1566,7 @@ impl pjmedia_rtp_hdr {
     }
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtp_ext_hdr {
     pub profile_data: pj_uint16_t,
     pub length: pj_uint16_t,
@@ -1568,6 +1585,7 @@ pub struct pjmedia_rtp_dtmf_event {
     pub duration: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtp_seq_session {
     pub max_seq: pj_uint16_t,
     pub cycles: pj_uint32_t,
@@ -1586,11 +1604,13 @@ pub struct pjmedia_rtp_session {
     pub received: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtp_status {
     pub status: pjmedia_rtp_status__bindgen_ty_1,
     pub diff: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtp_status__bindgen_ty_1 {
     pub flag: __BindgenUnionField<pjmedia_rtp_status__bindgen_ty_1_flag>,
     pub value: __BindgenUnionField<pj_uint16_t>,
@@ -1725,6 +1745,7 @@ impl pjmedia_rtp_status__bindgen_ty_1_flag {
     }
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtp_session_setting {
     pub flags: pj_uint8_t,
     pub default_pt: ::std::os::raw::c_int,
@@ -1999,6 +2020,7 @@ pub struct pjmedia_rtcp_rr_pkt {
     pub rr: pjmedia_rtcp_rr,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_sdes {
     pub cname: pj_str_t,
     pub name: pj_str_t,
@@ -2009,11 +2031,13 @@ pub struct pjmedia_rtcp_sdes {
     pub note: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_ntp_rec {
     pub hi: pj_uint32_t,
     pub lo: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_stream_stat {
     pub update: pj_time_val,
     pub update_cnt: ::std::os::raw::c_uint,
@@ -2076,6 +2100,7 @@ impl pjmedia_rtcp_stream_stat__bindgen_ty_1 {
     }
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_stat {
     pub start: pj_time_val,
     pub tx: pjmedia_rtcp_stream_stat,
@@ -2110,6 +2135,7 @@ pub struct pjmedia_rtcp_session {
     pub stat: pjmedia_rtcp_stat,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_session_setting {
     pub name: *mut ::std::os::raw::c_char,
     pub clock_rate: ::std::os::raw::c_uint,
@@ -2204,6 +2230,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_attr {
     pub name: pj_str_t,
     pub value: pj_str_t,
@@ -2259,6 +2286,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_rtpmap {
     pub pt: pj_str_t,
     pub enc_name: pj_str_t,
@@ -2286,6 +2314,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_fmtp {
     pub fmt: pj_str_t,
     pub fmt_param: pj_str_t,
@@ -2297,6 +2326,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_rtcp_attr {
     pub port: ::std::os::raw::c_uint,
     pub net_type: pj_str_t,
@@ -2316,6 +2346,7 @@ extern "C" {
     ) -> *mut pjmedia_sdp_attr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_ssrc_attr {
     pub ssrc: pj_uint32_t,
     pub cname: pj_str_t,
@@ -2334,6 +2365,7 @@ extern "C" {
     ) -> *mut pjmedia_sdp_attr;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_conn {
     pub net_type: pj_str_t,
     pub addr_type: pj_str_t,
@@ -2353,6 +2385,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_bandw {
     pub modifier: pj_str_t,
     pub value: pj_uint32_t,
@@ -2364,6 +2397,7 @@ extern "C" {
     ) -> *mut pjmedia_sdp_bandw;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_media {
     pub desc: pjmedia_sdp_media__bindgen_ty_1,
     pub conn: *mut pjmedia_sdp_conn,
@@ -2373,6 +2407,7 @@ pub struct pjmedia_sdp_media {
     pub attr: [*mut pjmedia_sdp_attr; 68usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_media__bindgen_ty_1 {
     pub media: pj_str_t,
     pub port: pj_uint16_t,
@@ -2445,6 +2480,7 @@ extern "C" {
     ) -> *mut pjmedia_sdp_media;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_session {
     pub origin: pjmedia_sdp_session__bindgen_ty_1,
     pub name: pj_str_t,
@@ -2458,6 +2494,7 @@ pub struct pjmedia_sdp_session {
     pub media: [*mut pjmedia_sdp_media; 16usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_session__bindgen_ty_1 {
     pub user: pj_str_t,
     pub id: pj_uint32_t,
@@ -2467,6 +2504,7 @@ pub struct pjmedia_sdp_session__bindgen_ty_1 {
     pub addr: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sdp_session__bindgen_ty_2 {
     pub start: pj_uint32_t,
     pub stop: pj_uint32_t,
@@ -2518,6 +2556,7 @@ pub const PJMEDIA_RTCP_FB_TRR_INT: pjmedia_rtcp_fb_type = 2;
 pub const PJMEDIA_RTCP_FB_OTHER: pjmedia_rtcp_fb_type = 3;
 pub type pjmedia_rtcp_fb_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_fb_cap {
     pub codec_id: pj_str_t,
     pub type_: pjmedia_rtcp_fb_type,
@@ -2525,39 +2564,46 @@ pub struct pjmedia_rtcp_fb_cap {
     pub param: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_fb_info {
     pub cap_count: ::std::os::raw::c_uint,
     pub caps: [pjmedia_rtcp_fb_cap; 16usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_fb_setting {
     pub dont_use_avpf: pj_bool_t,
     pub cap_count: ::std::os::raw::c_uint,
     pub caps: [pjmedia_rtcp_fb_cap; 16usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_fb_nack {
     pub pid: pj_int32_t,
     pub blp: pj_uint16_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_fb_sli {
     pub first: pj_uint16_t,
     pub number: pj_uint16_t,
     pub pict_id: pj_uint8_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_fb_rpsi {
     pub pt: pj_uint8_t,
     pub rpsi: pj_str_t,
     pub rpsi_bit_len: pj_size_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_rx_rtcp_fb_data {
     pub cap: pjmedia_rtcp_fb_cap,
     pub msg: pjmedia_event_rx_rtcp_fb_data__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_rx_rtcp_fb_data__bindgen_ty_1 {
     pub nack: __BindgenUnionField<pjmedia_rtcp_fb_nack>,
     pub sli: __BindgenUnionField<pjmedia_rtcp_fb_sli>,
@@ -2724,6 +2770,7 @@ pub struct pjmedia_vid_dev_hwnd__bindgen_ty_1__bindgen_ty_5 {
     pub window: *mut ::std::os::raw::c_void,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_dev_switch_param {
     pub target_id: pjmedia_vid_dev_index,
 }
@@ -2748,6 +2795,7 @@ pub const PJMEDIA_VID_DEV_CAP_OUTPUT_FULLSCREEN: pjmedia_vid_dev_cap = 1024;
 pub const PJMEDIA_VID_DEV_CAP_MAX: pjmedia_vid_dev_cap = 16384;
 pub type pjmedia_vid_dev_cap = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_dev_info {
     pub id: pjmedia_vid_dev_index,
     pub name: [::std::os::raw::c_char; 64usize],
@@ -2777,6 +2825,7 @@ pub struct pjmedia_vid_dev_cb {
     >,
 }
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct pjmedia_vid_dev_param {
     pub dir: pjmedia_dir,
     pub cap_id: pjmedia_vid_dev_index,
@@ -2808,6 +2857,7 @@ pub struct pjmedia_vid_driver {
     pub rend_dev_idx: ::std::os::raw::c_int,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_subsys {
     pub init_count: ::std::os::raw::c_uint,
     pub pf: *mut pj_pool_factory,
@@ -2832,6 +2882,7 @@ pub const PJMEDIA_EVENT_MEDIA_TP_ERR: pjmedia_event_type = 1381123412;
 pub const PJMEDIA_EVENT_CALLBACK: pjmedia_event_type = 538985027;
 pub type pjmedia_event_type = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_fmt_changed_data {
     pub dir: pjmedia_dir,
     pub new_fmt: pjmedia_format,
@@ -2847,22 +2898,26 @@ pub struct pjmedia_event_wnd_resized_data {
     pub new_size: pjmedia_rect_size,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_wnd_closing_data {
     pub cancel: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_aud_dev_err_data {
     pub dir: pjmedia_dir,
     pub id: pjmedia_aud_dev_index,
     pub status: pj_status_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_vid_dev_err_data {
     pub dir: pjmedia_dir,
     pub id: pjmedia_vid_dev_index,
     pub status: pj_status_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_media_tp_err_data {
     pub type_: pjmedia_type,
     pub is_rtp: pj_bool_t,
@@ -2875,6 +2930,7 @@ pub type pjmedia_event_keyframe_found_data = pjmedia_event_dummy_data;
 pub type pjmedia_event_keyframe_missing_data = pjmedia_event_dummy_data;
 pub type pjmedia_event_user_data = [::std::os::raw::c_char; 40usize];
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event {
     pub type_: pjmedia_event_type,
     pub timestamp: pj_timestamp,
@@ -2883,6 +2939,7 @@ pub struct pjmedia_event {
     pub data: pjmedia_event__bindgen_ty_1,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event__bindgen_ty_1 {
     pub fmt_changed: __BindgenUnionField<pjmedia_event_fmt_changed_data>,
     pub wnd_resized: __BindgenUnionField<pjmedia_event_wnd_resized_data>,
@@ -2969,6 +3026,7 @@ pub const PJMEDIA_PORT_MUTE: pjmedia_port_op = 2;
 pub const PJMEDIA_PORT_ENABLE: pjmedia_port_op = 3;
 pub type pjmedia_port_op = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_port_info {
     pub name: pj_str_t,
     pub signature: pj_uint32_t,
@@ -2976,6 +3034,7 @@ pub struct pjmedia_port_info {
     pub fmt: pjmedia_format,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_port {
     pub info: pjmedia_port_info,
     pub port_data: pjmedia_port_port_data,
@@ -3099,6 +3158,7 @@ pub const PJMEDIA_RTP_PT_H263: pjmedia_rtp_pt = 34;
 pub const PJMEDIA_RTP_PT_DYNAMIC: pjmedia_rtp_pt = 96;
 pub type pjmedia_rtp_pt = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_info {
     pub type_: pjmedia_type,
     pub pt: ::std::os::raw::c_uint,
@@ -3107,21 +3167,25 @@ pub struct pjmedia_codec_info {
     pub channel_cnt: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_fmtp {
     pub cnt: pj_uint8_t,
     pub param: [pjmedia_codec_fmtp_param; 16usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_fmtp_param {
     pub name: pj_str_t,
     pub val: pj_str_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_param {
     pub info: pjmedia_codec_param__bindgen_ty_1,
     pub setting: pjmedia_codec_param__bindgen_ty_2,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_param__bindgen_ty_1 {
     pub clock_rate: ::std::os::raw::c_uint,
     pub channel_cnt: ::std::os::raw::c_uint,
@@ -3135,6 +3199,7 @@ pub struct pjmedia_codec_param__bindgen_ty_1 {
     pub fmt_id: pjmedia_format_id,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_param__bindgen_ty_2 {
     pub frm_per_pkt: pj_uint8_t,
     pub _bitfield_align_1: [u8; 0],
@@ -3358,6 +3423,7 @@ pub struct pjmedia_codec_default_param {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_desc {
     pub info: pjmedia_codec_info,
     pub id: pjmedia_codec_id,
@@ -3366,6 +3432,7 @@ pub struct pjmedia_codec_desc {
     pub param: *mut pjmedia_codec_default_param,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_mgr {
     pub pf: *mut pj_pool_factory,
     pub pool: *mut pj_pool_t,
@@ -3466,6 +3533,7 @@ pub struct pjmedia_conf {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_conf_port_info {
     pub slot: ::std::os::raw::c_uint,
     pub name: pj_str_t,
@@ -3630,6 +3698,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_conversion_param {
     pub src: pjmedia_format,
     pub dst: pjmedia_format,
@@ -3806,6 +3875,7 @@ pub const PJMEDIA_ECHO_AGGRESSIVENESS_AGGRESSIVE: pjmedia_echo_flag = 768;
 pub const PJMEDIA_ECHO_AGGRESSIVENESS_MASK: pjmedia_echo_flag = 3840;
 pub type pjmedia_echo_flag = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_echo_stat {
     pub name: *const ::std::os::raw::c_char,
     pub median: ::std::os::raw::c_int,
@@ -3900,6 +3970,7 @@ pub const PJMEDIA_TPMED_NO_TRANSPORT_CHECKING: pjmedia_tranport_media_option = 1
 pub const PJMEDIA_TPMED_RTCP_MUX: pjmedia_tranport_media_option = 2;
 pub type pjmedia_tranport_media_option = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_sock_info {
     pub rtp_sock: pj_sock_t,
     pub rtp_addr_name: pj_sockaddr,
@@ -4031,6 +4102,7 @@ pub struct pjmedia_transport_specific_info {
     pub buffer: [::std::os::raw::c_char; 288usize],
 }
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct pjmedia_transport_info {
     pub sock_info: pjmedia_sock_info,
     pub src_rtp_name: pj_sockaddr,
@@ -4039,6 +4111,7 @@ pub struct pjmedia_transport_info {
     pub spc_info: [pjmedia_transport_specific_info; 4usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_tp_cb_param {
     pub user_data: *mut ::std::os::raw::c_void,
     pub pkt: *mut ::std::os::raw::c_void,
@@ -4047,6 +4120,7 @@ pub struct pjmedia_tp_cb_param {
     pub rem_switch: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_transport_attach_param {
     pub stream: *mut ::std::os::raw::c_void,
     pub media_type: pjmedia_type,
@@ -4876,6 +4950,7 @@ extern "C" {
 pub const PJMEDIA_SND_PORT_NO_AUTO_START: pjmedia_snd_port_option = 1;
 pub type pjmedia_snd_port_option = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_snd_port_param {
     pub base: pjmedia_aud_param,
     pub options: ::std::os::raw::c_uint,
@@ -5028,10 +5103,12 @@ pub type pjmedia_vid_packing = u32;
 pub const PJMEDIA_VID_FRM_KEYFRAME: pjmedia_vid_frm_bit_info = 1;
 pub type pjmedia_vid_frm_bit_info = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_encode_opt {
     pub force_keyframe: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_codec_info {
     pub fmt_id: pjmedia_format_id,
     pub pt: ::std::os::raw::c_uint,
@@ -5046,6 +5123,7 @@ pub struct pjmedia_vid_codec_info {
     pub fps: [pjmedia_ratio; 16usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_codec_param {
     pub dir: pjmedia_dir,
     pub packing: pjmedia_vid_packing,
@@ -5197,6 +5275,7 @@ pub struct pjmedia_channel {
     _unused: [u8; 0],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_stream_info {
     pub type_: pjmedia_type,
     pub proto: pjmedia_tp_proto,
@@ -5232,6 +5311,7 @@ pub const PJMEDIA_STREAM_DTMF_IS_UPDATE: pjmedia_stream_dtmf_event_flags = 1;
 pub const PJMEDIA_STREAM_DTMF_IS_END: pjmedia_stream_dtmf_event_flags = 2;
 pub type pjmedia_stream_dtmf_event_flags = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_stream_dtmf_event {
     pub digit: ::std::os::raw::c_int,
     pub timestamp: pj_uint32_t,
@@ -5488,6 +5568,7 @@ pub struct pjmedia_ice_cb {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_ice_transport_info {
     pub active: pj_bool_t,
     pub sess_state: pj_ice_strans_state,
@@ -5496,6 +5577,7 @@ pub struct pjmedia_ice_transport_info {
     pub comp: [pjmedia_ice_transport_info__bindgen_ty_1; 2usize],
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_ice_transport_info__bindgen_ty_1 {
     pub lcand_type: pj_ice_cand_type,
     pub lcand_addr: pj_sockaddr,
@@ -5607,6 +5689,7 @@ extern "C" {
     ) -> pj_status_t;
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_loop_tp_setting {
     pub af: ::std::os::raw::c_int,
     pub addr: pj_str_t,
@@ -5640,6 +5723,7 @@ pub const PJMEDIA_SRTP_NO_ENCRYPTION: pjmedia_srtp_crypto_option = 1;
 pub const PJMEDIA_SRTP_NO_AUTHENTICATION: pjmedia_srtp_crypto_option = 2;
 pub type pjmedia_srtp_crypto_option = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_srtp_crypto {
     pub key: pj_str_t,
     pub name: pj_str_t,
@@ -5662,6 +5746,7 @@ pub struct pjmedia_srtp_cb {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_srtp_setting {
     pub use_: pjmedia_srtp_use,
     pub close_member_tp: pj_bool_t,
@@ -5673,6 +5758,7 @@ pub struct pjmedia_srtp_setting {
     pub user_data: *mut ::std::os::raw::c_void,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_srtp_info {
     pub active: pj_bool_t,
     pub rx_policy: pjmedia_srtp_crypto,
@@ -5681,6 +5767,7 @@ pub struct pjmedia_srtp_info {
     pub peer_use: pjmedia_srtp_use,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_srtp_dtls_nego_param {
     pub rem_fingerprint: pj_str_t,
     pub rem_addr: pj_sockaddr,
@@ -5809,6 +5896,7 @@ pub struct pjmedia_vid_conf_setting {
     pub layout: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_conf_port_info {
     pub slot: ::std::os::raw::c_uint,
     pub name: pj_str_t,
@@ -5819,6 +5907,7 @@ pub struct pjmedia_vid_conf_port_info {
     pub transmitter_slots: *mut ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Clone, Copy)]
 pub struct pjmedia_vid_port_param {
     pub vidparam: pjmedia_vid_dev_param,
     pub active: pj_bool_t,
@@ -5844,6 +5933,7 @@ pub struct pjmedia_vid_stream_sk_config {
     pub interval: ::std::os::raw::c_uint,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_stream_info {
     pub type_: pjmedia_type,
     pub proto: pjmedia_tp_proto,
@@ -5881,6 +5971,7 @@ pub struct pjmedia_vid_stream {
 pub const PJMEDIA_FILE_NO_LOOP: pjmedia_file_player_option = 1;
 pub type pjmedia_file_player_option = u32;
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_wav_player_info {
     pub fmt_id: pjmedia_format_id,
     pub payload_bits_per_sample: ::std::os::raw::c_uint,
@@ -6045,6 +6136,7 @@ pub struct pjmedia_wave_hdr__bindgen_ty_3 {
     pub len: pj_uint32_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_wave_subchunk {
     pub id: pj_uint32_t,
     pub len: pj_uint32_t,
@@ -6204,16 +6296,19 @@ pub struct pjmedia_vid_dev_stream_op {
     >,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_dev_stream {
     pub sys: pjmedia_vid_dev_stream__bindgen_ty_1,
     pub op: *mut pjmedia_vid_dev_stream_op,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_vid_dev_stream__bindgen_ty_1 {
     pub drv_idx: ::std::os::raw::c_uint,
     pub is_running: pj_bool_t,
 }
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct pjmedia_avi_dev_param {
     pub path: pj_str_t,
     pub title: pj_str_t,

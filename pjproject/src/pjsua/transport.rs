@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::{pj::QOSType, pjsip::{SIPTransportFlags, SIPTransportType}};
+use crate::{pj::QOSType, pjsip::{SIPTransportFlags, SIPTransportType}, utils::AutoDefault};
 
 use super::*;
 
@@ -59,6 +59,18 @@ pub trait UATransportConfigExt {
     // fn get_tls_setting(&self) -> pjsip_tls_setting;
     // fn get_qos_params(&self) -> pj_qos_params,
     // fn get_sockopt_params(&self) -> pj_sockopt_params,
+
+
+}
+
+impl AutoDefault<UATransportConfig> for UATransportConfig {
+    fn default() -> Self {
+        unsafe {
+            let mut cfg = UATransportConfig::new();
+            pjsua_sys::pjsua_transport_config_default(&mut cfg as *mut _);
+            cfg
+        }
+    }
 }
 
 // read only implementation
@@ -177,10 +189,16 @@ impl UATransportInfoExt for UATransportInfo {
 
 pub struct UATransport { id: i32 }
 
+impl From<i32> for UATransport {
+    fn from (id: i32) -> Self {
+        Self { id }
+    }
+}
+
 impl UATransport {
 
-    pub fn new() -> Self {
-        Self { id: -1 }
+    pub fn new(type_: SIPTransportType, cfg: &UATransportConfig) -> Self {
+        UATransport::transport_create(type_, cfg).unwrap()
     }
 
     pub fn get_info(&self) -> Result<UATransportInfo, i32> {
@@ -209,75 +227,97 @@ impl UATransport {
         }
     }
 
-}
+    pub fn enum_transports() -> Result<Vec<UATransport>, i32> {
+        unsafe {
+            let mut id: [i32; PJSIP_MAX_TRANSPORTS as usize] = [-1; PJSIP_MAX_TRANSPORTS as usize];
+            let mut count = 0_u32;
+            let status = pjsua_sys::pjsua_enum_transports( id.as_mut_ptr(), &mut count as *mut _);
 
-// PJSUA-API Signaling Transport
+            match utils::check_status(status) {
+                Ok(()) => {
+                    let mut vec = Vec::<UATransport>::new();
 
-pub fn transport_config_default(cfg: &mut UATransportConfig) {
-    unsafe { pjsua_sys::pjsua_transport_config_default(cfg as *mut _) }
-}
+                    for i in 0..count as usize {
+                        vec.push(UATransport::from(id[i]));
+                    }
 
-pub fn transport_config_dup(dst: &mut UATransportConfig, src: &mut UATransportConfig) {
-    let pool = pool_create("tmp-pool");
-
-    unsafe {
-        pjsua_sys::pjsua_transport_config_dup(
-            pool,
-            dst as *mut _,
-            src as *mut _
-        );
+                    return Ok(vec);
+                },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
 
-    pool_release(pool)
-}
-
-pub fn transport_create(type_: pjsip_transport_type_e, cfg: &mut UATransportConfig, p_id: Option<&mut i32>) -> Result<(), i32> {
-
-    let p_id = match p_id {
-        Some(value) => value as *mut _,
-        None => ptr::null_mut()
-    };
-
-    unsafe {
-        let status = pjsua_sys::pjsua_transport_create(
-            type_,
-            cfg as *const _,
-            p_id
-        );
-        utils::check_status(status)
+    pub fn transport_lis_start(&self, cfg: &mut UATransportConfig) -> Result<(), i32> {
+        unsafe { utils::check_status(pjsua_sys::pjsua_transport_lis_start(self.id, cfg as *const _)) }
     }
-}
 
-pub fn transport_register(tp: &mut pjsip_transport, p_id: Option<&mut i32>) -> Result<(), i32> {
+    pub fn transport_create(type_: SIPTransportType, cfg: &UATransportConfig) -> Result<UATransport, i32> {
+        unsafe {
+            let mut p_id = -1_i32;
+            let status = pjsua_sys::pjsua_transport_create(
+                type_.into(),
+                cfg as *const _,
+                &mut p_id as *mut _
+            );
 
-    let p_id = match p_id {
-        Some(value) => value as *mut _,
-        None => ptr::null_mut()
-    };
-
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_transport_register( tp as *mut _, p_id))
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UATransport::from(p_id)); },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
-}
 
-pub fn tpfactory_register(tf: &mut pjsip_tpfactory, p_id: Option<&mut i32>) -> Result<(), i32> {
-    let p_id = match p_id {
-        Some(value) => value as *mut _,
-        None => ptr::null_mut()
-    };
+    pub fn config_dup(dst: &mut UATransportConfig, src: &mut UATransportConfig) {
+        let pool = pool_create("tmp-pool");
 
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_tpfactory_register( tf as *mut _, p_id ))
+        unsafe {
+            pjsua_sys::pjsua_transport_config_dup(
+                pool,
+                dst as *mut _,
+                src as *mut _
+            );
+        }
+
+        pool_release(pool)
     }
-}
 
-pub fn enum_transports(id: &mut [i32; PJSIP_MAX_TRANSPORTS as usize], count: &mut u32) -> Result<(), i32> {
-    unsafe {
-        utils::check_status(pjsua_sys::pjsua_enum_transports( id.as_mut_ptr(), count as *mut _))
+    pub fn transport_register(tp: &mut pjsip_transport) -> Result<UATransport, i32> {
+        unsafe {
+            let mut p_id = -1_i32;
+            let status = pjsua_sys::pjsua_transport_register( tp as *mut _, &mut p_id as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UATransport::from(p_id)); },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
+
+    pub fn tpfactory_register(tf: &mut pjsip_tpfactory) -> Result<UATransport, i32> {
+        unsafe {
+            let mut p_id = -1_i32;
+            let status = pjsua_sys::pjsua_tpfactory_register( tf as *mut _, &mut p_id as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(UATransport::from(p_id)); },
+                Err(e) => { return Err(e); }
+            }
+
+        }
+    }
+
 }
 
 
-pub fn transport_lis_start(id: i32, cfg: &mut UATransportConfig) -> Result<(), i32> {
-    unsafe { utils::check_status(pjsua_sys::pjsua_transport_lis_start( id, cfg as *const _)) }
-}
+
+
+
+
+
+
+
+
+
+
+
