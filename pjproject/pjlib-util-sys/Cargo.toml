@@ -1,0 +1,17 @@
+[package]
+name = "pjlib-util-sys"
+version = "0.1.0"
+authors = ["dickytamara <dickytamara@hotmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[lib]
+name = "pjlib_util_sys"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pj-sys = { path = "../pj-sys" }
+
+
+[build-dependencies]
+# bindgen = "0.58.1"

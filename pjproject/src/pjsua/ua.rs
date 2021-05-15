@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use pjsip_sys::{pjsip_hdr, pjsip_media_type, pjsip_multipart_part};
+use pjsip_sys::{pjsip_event, pjsip_hdr, pjsip_media_type, pjsip_multipart_part};
 
 use crate::{pj::FileAccess, pjmedia::MediaSrtpUse, utils::{boolean_to_pjbool, check_boolean}};
 use std::path::PathBuf;
@@ -216,7 +216,6 @@ pub trait UAConfigExt {
     fn set_hangup_forked_call(&mut self, value: bool);
     fn get_hangup_forked_call(&self) -> bool;
 }
-
 
 impl UAConfigExt for UAConfig {
     fn set_max_calls (&mut self, value: u32) {
@@ -542,6 +541,16 @@ impl UAConfigExt for UAConfig {
     }
 }
 
+impl AutoDefault<UAConfig> for UAConfig {
+    fn default() -> Self {
+        unsafe {
+            let mut cfg = UAConfig::new();
+            pjsua_sys::pjsua_config_default(&mut cfg as *mut _);
+
+            cfg
+        }
+    }
+}
 
 /// UALoggingConfig Trait
 pub trait UALoggingConfigExt {
@@ -631,6 +640,17 @@ impl UALoggingConfigExt for UALoggingConfig {
     }
 }
 
+impl AutoDefault<UALoggingConfig> for UALoggingConfig {
+    fn default() -> Self {
+        unsafe {
+            let mut cfg = UALoggingConfig::new();
+            pjsua_sys::pjsua_logging_config_default(&mut cfg as *mut _);
+
+            cfg
+        }
+    }
+}
+
 
 pub trait UAMsgDataExt {
 
@@ -668,6 +688,7 @@ pub trait UAMsgDataExt {
     fn get_multipart_parts (&self) -> &pjsip_multipart_part;
 
 }
+
 
 impl UAMsgDataExt for UAMsgData {
 
@@ -788,3 +809,24 @@ impl CredentialInfoExt for CredentialInfo {
         self.data.to_string()
     }
 }
+
+
+
+pub trait UACallbackExt {
+    /// connect_call_state(call_id, pjsip_event)
+    fn connect_call_state <F: FnMut(i32, *mut pjsip_event) + 'static> (&mut self, f: F );
+}
+
+impl UACallbackExt for UAConfig {
+    fn connect_call_state <F: FnMut(i32, *mut pjsip_event) + 'static> (&mut self, f: F )
+    {
+        let func = unsafe {
+            // let pointer: *const F = &f as *const F;
+            std::mem::transmute::<*const F, unsafe extern "C" fn (i32, *mut pjsip_event)> (&f as *const F)
+        };
+        self.cb.on_call_state = Some(func);
+    }
+}
+
+
+

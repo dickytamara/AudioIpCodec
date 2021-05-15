@@ -1,8 +1,9 @@
 use std::convert::TryFrom;
 use pjnath_sys::{pj_ice_sess_options, pj_stun_auth_cred};
 
-use crate::{pjmedia::{MediaSrtpUse, RtcpFbSetting}, pjnath::TurnTpType, pjsip::SIPStatusCode, utils::{boolean_to_pjbool, check_boolean}};
+use crate::{pjmedia::{MediaSrtpUse, RtcpFbSetting}, pjnath::TurnTpType, pjsip::SIPStatusCode, utils::{AutoDefault, boolean_to_pjbool, check_boolean}};
 use super::*;
+use super::transport::UATransport;
 
 pub trait UAIceConfigExt {
 
@@ -1251,6 +1252,18 @@ impl UAAccConfigExt for UAAccConfig {
 }
 
 
+impl AutoDefault<UAAccConfig> for UAAccConfig {
+    fn default() -> Self {
+        unsafe {
+            let mut cfg = UAAccConfig::new();
+            pjsua_sys::pjsua_acc_config_default(&mut cfg as *mut _);
+
+            cfg
+        }
+    }
+}
+
+
 impl UAAccInfoExt for UAAccInfo {
 
     fn get_id (&self) -> pjsua_acc_id {
@@ -1307,17 +1320,14 @@ impl From<i32> for UAAccount {
 impl UAAccount {
 
     /// create new normal account
-    // pub fn new(acc_cfg: Options<UAAccConfig>, is_default: bool) -> Result<Self, i32> {
-    //     // acc_cfg: &mut UAAccConfig, is_default: bool, p_acc_id: &mut i32
-    //     // TODO : expand add function
-    //     todo!();
-    // }
+    pub fn new(acc_cfg: &UAAccConfig, is_default: bool) -> Result<Self, i32> {
+        UAAccount::add(acc_cfg, is_default)
+    }
 
     /// create new local account
-    // pub fn new_local(tid: i32, is_default: bool) -> Result<Self, i32> {
-    //     /// TODO Expand add_local function
-    //     todo!();
-    // }
+    pub fn new_local(tp: &UATransport, is_default: bool) -> Result<Self, i32> {
+        UAAccount::add_local(tp, is_default)
+    }
 
     /// check if this account valid or not
     pub fn is_valid(&self) -> bool {
@@ -1337,12 +1347,12 @@ impl UAAccount {
     }
 
     /// get inner config
-    pub fn get_config (&self) -> Result<UAAccConfig, i32> {
+    pub fn get_config (&self) -> Result<Box<UAAccConfig>, i32> {
         unsafe {
             let pool = pool_create("tmp-pool");
-            let mut acc_cfg = UAAccConfig::new();
+            let mut acc_cfg = Box::new(UAAccConfig::default());
 
-            let status = pjsua_sys::pjsua_acc_get_config(self.id, pool, &mut acc_cfg as *mut _);
+            let status = pjsua_sys::pjsua_acc_get_config(self.id, pool, acc_cfg.as_mut() as *mut _);
 
             pool_release(pool);
             match utils::check_status(status) {
@@ -1510,10 +1520,11 @@ impl UAAccount {
     }
 
     /// add account and return UAAccount
-    pub fn add(acc_cfg: &mut UAAccConfig, is_default: bool) -> Result<UAAccount, i32> {
+    pub fn add(acc_cfg: &UAAccConfig, is_default: bool) -> Result<UAAccount, i32> {
         unsafe {
 
             let mut p_acc_id = -1_i32;
+            // let mut acc_cfg = acc_cfg.clone();
 
             let status = pjsua_sys::pjsua_acc_add(
                 acc_cfg as *const _,
@@ -1529,10 +1540,11 @@ impl UAAccount {
     }
 
     /// add local accout and return UAAccount
-    pub fn add_local(tid: i32, is_default: bool) -> Result<UAAccount, i32> {
+    pub fn add_local(tp: &UATransport, is_default: bool) -> Result<UAAccount, i32> {
         unsafe {
 
             let mut p_acc_id = -1_i32;
+            let tid = tp.get_id();
 
             let status = pjsua_sys::pjsua_acc_add_local(
                 tid,
@@ -1633,10 +1645,6 @@ pub fn srtp_opt_dup(dst: &mut UASrtpOpt, src: &mut UASrtpOpt, check_str: bool) {
     }
 
     pool_release(pool);
-}
-
-pub fn acc_config_default (cfg: &mut UAAccConfig) {
-    unsafe { pjsua_sys::pjsua_acc_config_default(cfg as *mut _); }
 }
 
 pub fn acc_config_dup (dst: &mut UAAccConfig, src: &mut UAAccConfig) {

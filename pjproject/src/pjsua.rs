@@ -3,8 +3,10 @@ use pj_sys::{PJ_SUCCESS, pj_pool_factory, pj_pool_release, pj_pool_safe_release,
 use pjmedia_sys::{pjmedia_codec_param, pjmedia_echo_stat, pjmedia_endpt, pjmedia_port, pjmedia_sdp_session, pjmedia_snd_dev_info, pjmedia_snd_port, pjmedia_snd_port_param, pjmedia_srtp_crypto, pjmedia_stream_info, pjmedia_transport_info};
 use pjnath_sys::{pj_stun_nat_type, pj_turn_sock_tls_cfg};
 use pjsip_simple_sys::{pjrpid_element, pjsip_evsub_state};
-use pjsip_sys::{PJSIP_MAX_TRANSPORTS, pjsip_endpoint, pjsip_method, pjsip_rx_data, pjsip_tpfactory, pjsip_transport, pjsip_transport_type_e, pjsip_tx_data};
+use pjsip_sys::{PJSIP_MAX_TRANSPORTS, pjsip_endpoint, pjsip_method, pjsip_rx_data, pjsip_tpfactory, pjsip_transport, pjsip_tx_data};
 use pjsua_sys::*;
+
+use crate::pj::PJPool;
 
 use super::prelude::*;
 use super::utils;
@@ -77,6 +79,8 @@ pub type UAConfConectParam = pjsua_sys::pjsua_conf_connect_param;
 
 // outside
 pub type CredentialInfo = pjsip_sys::pjsip_cred_info;
+
+pub type UASrvPres = pjsua_sys::pjsua_srv_pres;
 
 pub const INVALID_ID: i32 = -1;
 pub const MAX_ACC: usize = pjsua_sys::PJSUA_MAX_ACC as usize;
@@ -372,7 +376,7 @@ pub fn conf_get_msignal_level(
 
 
 // function helper
-pub fn pool_create(pool_name: &str) -> *mut pj_pool_t {
+pub fn pool_create(pool_name: &str) -> *mut PJPool {
     unsafe {
 
         let ret = pjsua_sys::pjsua_pool_create(
@@ -400,13 +404,7 @@ pub fn pool_safe_release(ppool: *mut *mut pj_pool_t) {
     }
 }
 
-pub fn logging_config_default(cfg: &mut UALoggingConfig) {
-    unsafe { pjsua_sys::pjsua_logging_config_default(cfg as *mut _); }
-}
 
-pub fn config_default(cfg: &mut UAConfig) {
-    unsafe { pjsua_sys::pjsua_config_default(cfg as *mut _); }
-}
 
 pub fn create () -> Result<(), i32> {
     unsafe { utils::check_status(pjsua_sys::pjsua_create()) }

@@ -68,6 +68,7 @@ impl AutoDefault<UATransportConfig> for UATransportConfig {
         unsafe {
             let mut cfg = UATransportConfig::new();
             pjsua_sys::pjsua_transport_config_default(&mut cfg as *mut _);
+
             cfg
         }
     }
@@ -187,6 +188,7 @@ impl UATransportInfoExt for UATransportInfo {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct UATransport { id: i32 }
 
 impl From<i32> for UATransport {
@@ -199,6 +201,10 @@ impl UATransport {
 
     pub fn new(type_: SIPTransportType, cfg: &UATransportConfig) -> Self {
         UATransport::transport_create(type_, cfg).unwrap()
+    }
+
+    pub fn get_id(&self) -> i32 {
+        self.id
     }
 
     pub fn get_info(&self) -> Result<UATransportInfo, i32> {

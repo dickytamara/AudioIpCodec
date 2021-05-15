@@ -1,10 +1,63 @@
-#![allow(non_camel_case_types)]
-#![allow(non_upper_case_globals)]
-#![allow(dead_code)]
-
 
 use num_enum::IntoPrimitive;
 use num_enum::TryFromPrimitive;
+
+// pub type pj_stun_msg_hdr = pjnath_sys::pj_stun_msg_hdr;
+// pub type pj_stun_attr_hdr = pjnath_sys::pj_stun_attr_hdr;
+// pub type pj_stun_sockaddr_attr = pjnath_sys::pj_stun_sockaddr_attr;
+// pub type pj_stun_empty_attr = pjnath_sys::pj_stun_empty_attr;
+// pub type pj_stun_string_attr = pjnath_sys::pj_stun_string_attr;
+// pub type pj_stun_uint_attr = pjnath_sys::pj_stun_uint_attr;
+// pub type pj_stun_uint64_attr = pjnath_sys::pj_stun_uint64_attr;
+// pub type pj_stun_binary_attr = pjnath_sys::pj_stun_binary_attr;
+// pub type pj_stun_msgint_attr = pjnath_sys::pj_stun_msgint_attr;
+// pub type pj_stun_errcode_attr = pjnath_sys::pj_stun_errcode_attr;
+// pub type pj_stun_unknown_attr = pjnath_sys::pj_stun_unknown_attr;
+// pub type pj_stun_msg = pjnath_sys::pj_stun_msg;
+// pub type pj_stun_auth_cred = pjnath_sys::pj_stun_auth_cred;
+// pub type pj_stun_auth_cred__bindgen_ty_1 = pjnath_sys::pj_stun_auth_cred__bindgen_ty_1;
+// pub type pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 = pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1;
+// pub type pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 = pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2;
+// pub type pj_stun_req_cred_info = pjnath_sys::pj_stun_req_cred_info;
+// pub type pj_stun_config = pjnath_sys::pj_stun_config;
+// pub type pj_stun_client_tsx = pjnath_sys::pj_stun_client_tsx;
+// pub type pj_stun_tsx_cb = pjnath_sys::pj_stun_tsx_cb;
+// pub type pj_stun_session = pjnath_sys::pj_stun_session;
+// pub type pj_stun_session_cb = pjnath_sys::pj_stun_session_cb;
+// pub type pj_stun_rx_data = pjnath_sys::pj_stun_rx_data;
+// pub type pj_stun_tx_data = pjnath_sys::pj_stun_tx_data;
+// pub type pj_ice_sess_comp = pjnath_sys::pj_ice_sess_comp;
+// pub type pj_ice_msg_data = pjnath_sys::pj_ice_msg_data;
+// pub type pj_ice_msg_data_data_request_data = pjnath_sys::pj_ice_msg_data_data_request_data;
+// pub type pj_ice_sess_cand = pjnath_sys::pj_ice_sess_cand;
+// pub type pj_ice_sess_check = pjnath_sys::pj_ice_sess_check;
+// pub type pj_ice_sess_checklist = pjnath_sys::pj_ice_sess_checklist;
+// pub type pj_ice_sess_cb = pjnath_sys::pj_ice_sess_cb;
+// pub type pj_ice_rx_check = pjnath_sys::pj_ice_rx_check;
+// pub type pj_ice_sess_options = pjnath_sys::pj_ice_sess_options;
+// pub type pj_ice_sess = pjnath_sys::pj_ice_sess;
+// pub type pj_stun_sock = pjnath_sys::pj_stun_sock;
+// pub type pj_stun_sock_cb = pjnath_sys::pj_stun_sock_cb;
+// pub type pj_stun_sock_info = pjnath_sys::pj_stun_sock_info;
+// pub type pj_stun_sock_cfg = pjnath_sys::pj_stun_sock_cfg;
+// pub type pj_turn_session = pjnath_sys::pj_turn_session;
+// pub type pj_turn_channel_data = pjnath_sys::pj_turn_channel_data;
+// pub type pj_turn_session_cb = pjnath_sys::pj_turn_session_cb;
+// pub type pj_turn_alloc_param = pjnath_sys::pj_turn_alloc_param;
+// pub type pj_turn_session_info = pjnath_sys::pj_turn_session_info;
+// pub type pj_turn_session_on_rx_pkt_param = pjnath_sys::pj_turn_session_on_rx_pkt_param;
+// pub type pj_turn_sock = pjnath_sys::pj_turn_sock;
+// pub type pj_turn_sock_cb = pjnath_sys::pj_turn_sock_cb;
+// pub type pj_turn_sock_tls_cfg = pjnath_sys::pj_turn_sock_tls_cfg;
+// pub type pj_turn_sock_cfg = pjnath_sys::pj_turn_sock_cfg;
+// pub type pj_ice_strans = pjnath_sys::pj_ice_strans;
+// pub type pj_ice_strans_cb = pjnath_sys::pj_ice_strans_cb;
+// pub type pj_ice_strans_stun_cfg = pjnath_sys::pj_ice_strans_stun_cfg;
+// pub type pj_ice_strans_turn_cfg = pjnath_sys::pj_ice_strans_turn_cfg;
+// pub type pj_ice_strans_cfg = pjnath_sys::pj_ice_strans_cfg;
+// pub type pj_ice_strans_cfg__bindgen_ty_1 = pjnath_sys::pj_ice_strans_cfg__bindgen_ty_1;
+pub type STUNNatDetectResult = pjnath_sys::pj_stun_nat_detect_result;
+
 
 /// pub type pj_stun_method_e = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]

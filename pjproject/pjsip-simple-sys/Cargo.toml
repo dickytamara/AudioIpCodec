@@ -1,0 +1,19 @@
+[package]
+name = "pjsip-simple-sys"
+version = "0.1.0"
+authors = ["tamara"]
+edition = "2018"
+build = "build.rs"
+
+[lib]
+name = "pjsip_simple_sys"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pj-sys = { path = "../pj-sys" }
+pjlib-util-sys = { path = "../pjlib-util-sys" }
+pjsip-sys = { path = "../pjsip-sys" }
+
+[build-dependencies]
+# bindgen = "0.58.1"

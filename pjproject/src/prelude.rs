@@ -1,10 +1,12 @@
 pub use super::utils::AutoCreate;
+pub use super::utils::AutoDefault;
 pub use super::utils::FromString;
 pub use super::utils::ToString;
 
 pub use super::pjsua::ua::UALoggingConfigExt;
 pub use super::pjsua::ua::UAConfigExt;
 pub use super::pjsua::ua::UAMsgDataExt;
+pub use super::pjsua::ua::UACallbackExt;
 
 pub use super::pjsua::account::UAIceConfigExt;
 pub use super::pjsua::account::UATurnConfigExt;

@@ -16,6 +16,117 @@ use num_enum::*;
 
 use std::{ffi::CString, ptr};
 
+// pub type pjsip_cfg_t = pjsip_cfg_t;
+// pub type pjsip_cfg_t__bindgen_ty_1 = pjsip_cfg_t__bindgen_ty_1;
+// pub type pjsip_cfg_t__bindgen_ty_2 = pjsip_cfg_t__bindgen_ty_2;
+// pub type pjsip_cfg_t__bindgen_ty_3 = pjsip_cfg_t__bindgen_ty_3;
+// pub type pjsip_cfg_t__bindgen_ty_4 = pjsip_cfg_t__bindgen_ty_4;
+// pub type pjsip_cfg_t__bindgen_ty_5 = pjsip_cfg_t__bindgen_ty_5;
+// pub type pjsip_tpmgr = pjsip_tpmgr;
+// pub type pjsip_endpoint = pjsip_endpoint;
+// pub type pjsip_resolver_t = pjsip_resolver_t;
+// pub type pjsip_buffer = pjsip_buffer;
+// pub type pjsip_host_port = pjsip_host_port;
+// pub type pjsip_host_info = pjsip_host_info;
+// pub type pjsip_param = pjsip_param;
+// pub type pjsip_uri_vptr = pjsip_uri_vptr;
+pub type SIPUri = pjsip_uri;
+// pub type pjsip_sip_uri = pjsip_sip_uri;
+// pub type pjsip_name_addr = pjsip_name_addr;
+// pub type pjsip_other_uri = pjsip_other_uri;
+// pub type pjsip_tel_uri = pjsip_tel_uri;
+// pub type pjsip_method = pjsip_method;
+// pub type pjsip_hdr_vptr = pjsip_hdr_vptr;
+// pub type pjsip_hdr = pjsip_hdr;
+// pub type pjsip_request_line = pjsip_request_line;
+// pub type pjsip_status_line = pjsip_status_line;
+// pub type pjsip_media_type = pjsip_media_type;
+// pub type pjsip_msg_body = pjsip_msg_body;
+// pub type pjsip_msg = pjsip_msg;
+// pub type pjsip_msg__bindgen_ty_1 = pjsip_msg__bindgen_ty_1;
+// pub type pjsip_generic_string_hdr = pjsip_generic_string_hdr;
+// pub type pjsip_generic_int_hdr = pjsip_generic_int_hdr;
+// pub type pjsip_generic_array_hdr = pjsip_generic_array_hdr;
+// pub type pjsip_cid_hdr = pjsip_cid_hdr;
+// pub type pjsip_clen_hdr = pjsip_clen_hdr;
+// pub type pjsip_cseq_hdr = pjsip_cseq_hdr;
+// pub type pjsip_contact_hdr = pjsip_contact_hdr;
+// pub type pjsip_ctype_hdr = pjsip_ctype_hdr;
+// pub type pjsip_fromto_hdr = pjsip_fromto_hdr;
+// pub type pjsip_routing_hdr = pjsip_routing_hdr;
+// pub type pjsip_retry_after_hdr = pjsip_retry_after_hdr;
+// pub type pjsip_via_hdr = pjsip_via_hdr;
+// pub type pjsip_multipart_part = pjsip_multipart_part;
+// pub type pjsip_parser_err_report = pjsip_parser_err_report;
+// pub type pjsip_parse_ctx = pjsip_parse_ctx;
+// pub type pjsip_parser_const_t = pjsip_parser_const_t;
+pub type SIPEvent = pjsip_event;
+// pub type pjsip_event__bindgen_ty_1 = pjsip_event__bindgen_ty_1;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_1 = pjsip_event__bindgen_ty_1__bindgen_ty_1;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_2 = pjsip_event__bindgen_ty_1__bindgen_ty_2;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 = pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_3 = pjsip_event__bindgen_ty_1__bindgen_ty_3;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_4 = pjsip_event__bindgen_ty_1__bindgen_ty_4;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_5 = pjsip_event__bindgen_ty_1__bindgen_ty_5;
+// pub type pjsip_event__bindgen_ty_1__bindgen_ty_6 = pjsip_event__bindgen_ty_1__bindgen_ty_6;
+// pub type pjsip_module = pjsip_module;
+// pub type pjsip_server_addresses = pjsip_server_addresses;
+// pub type pjsip_server_addresses__bindgen_ty_1 = pjsip_server_addresses__bindgen_ty_1;
+// pub type pjsip_ext_resolver = pjsip_ext_resolver;
+// pub type pjsip_tpselector = pjsip_tpselector;
+// pub type pjsip_rx_data_op_key = pjsip_rx_data_op_key;
+pub type SIPRxData = pjsip_rx_data;
+// pub type pjsip_rx_data__bindgen_ty_1 = pjsip_rx_data__bindgen_ty_1;
+// pub type pjsip_rx_data__bindgen_ty_2 = pjsip_rx_data__bindgen_ty_2;
+// pub type pjsip_rx_data__bindgen_ty_3 = pjsip_rx_data__bindgen_ty_3;
+// pub type pjsip_rx_data__bindgen_ty_4 = pjsip_rx_data__bindgen_ty_4;
+// pub type pjsip_tx_data_op_key = pjsip_tx_data_op_key;
+// pub type pjsip_tx_data = pjsip_tx_data;
+// pub type pjsip_tx_data__bindgen_ty_1 = pjsip_tx_data__bindgen_ty_1;
+// pub type pjsip_tx_data__bindgen_ty_2 = pjsip_tx_data__bindgen_ty_2;
+// pub type pjsip_transport_key = pjsip_transport_key;
+pub type SIPTransport = pjsip_transport;
+// pub type pjsip_tpfactory = pjsip_tpfactory;
+// pub type pjsip_tpmgr_fla2_param = pjsip_tpmgr_fla2_param;
+pub type SIPTransportStateInfo = pjsip_transport_state_info;
+// pub type pjsip_tp_dropped_data = pjsip_tp_dropped_data;
+// pub type pjsip_process_rdata_param = pjsip_process_rdata_param;
+// pub type pjsip_target = pjsip_target;
+// pub type pjsip_target_set = pjsip_target_set;
+// pub type pjsip_send_state = pjsip_send_state;
+// pub type pjsip_response_addr = pjsip_response_addr;
+// pub type pjsip_udp_transport_cfg = pjsip_udp_transport_cfg;
+// pub type pjsip_tcp_transport_cfg = pjsip_tcp_transport_cfg;
+// pub type pjsip_tls_on_accept_fail_param = pjsip_tls_on_accept_fail_param;
+// pub type pjsip_tls_setting = pjsip_tls_setting;
+// pub type pjsip_tls_state_info = pjsip_tls_state_info;
+// pub type pjsip_common_credential = pjsip_common_credential;
+// pub type pjsip_digest_credential = pjsip_digest_credential;
+// pub type pjsip_pgp_credential = pjsip_pgp_credential;
+// pub type pjsip_oauth_credential = pjsip_oauth_credential;
+// pub type pjsip_authorization_hdr = pjsip_authorization_hdr;
+// pub type pjsip_authorization_hdr__bindgen_ty_1 = pjsip_authorization_hdr__bindgen_ty_1;
+// pub type pjsip_common_challenge = pjsip_common_challenge;
+// pub type pjsip_digest_challenge = pjsip_digest_challenge;
+// pub type pjsip_pgp_challenge = pjsip_pgp_challenge;
+// pub type pjsip_www_authenticate_hdr = pjsip_www_authenticate_hdr;
+// pub type pjsip_www_authenticate_hdr__bindgen_ty_1 = pjsip_www_authenticate_hdr__bindgen_ty_1;
+// pub type pjsip_cred_info = pjsip_cred_info;
+// pub type pjsip_cred_info__bindgen_ty_1 = pjsip_cred_info__bindgen_ty_1;
+// pub type pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 = pjsip_cred_info__bindgen_ty_1__bindgen_ty_1;
+// pub type pjsip_cached_auth_hdr = pjsip_cached_auth_hdr;
+// pub type pjsip_cached_auth = pjsip_cached_auth;
+// pub type pjsip_auth_clt_pref = pjsip_auth_clt_pref;
+// pub type pjsip_auth_clt_sess = pjsip_auth_clt_sess;
+// pub type pjsip_auth_lookup_cred_param = pjsip_auth_lookup_cred_param;
+// pub type pjsip_auth_srv = pjsip_auth_srv;
+// pub type pjsip_auth_srv_init_param = pjsip_auth_srv_init_param;
+// pub type pjsip_transaction = pjsip_transaction;
+// pub type pjsip_ua_init_param = pjsip_ua_init_param;
+// pub type pjsip_dlg_party = pjsip_dlg_party;
+// pub type pjsip_dialog = pjsip_dialog;
+// pub type pjsip_dlg_create_uac_param = pjsip_dlg_create_uac_param;
+
 
 /// pub type pjsip_transport_type_e = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
@@ -281,7 +392,7 @@ pub enum SIPTransportState {
 }
 
 /// pub type pjsip_redirect_op = u32;
-#[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum SIPRedirectOp {
     Reject = PJSIP_REDIRECT_REJECT,

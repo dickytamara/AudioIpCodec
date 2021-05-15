@@ -1,0 +1,288 @@
+// extern crate bindgen;
+// use std::env;
+
+
+fn main () {
+
+    // dynamic
+    println!("cargo:rustc-link-lib=pjlib-util");
+    println!("cargo:rustc-link-search=native=/usr/local/lib");
+    println!("cargo:rerun-if-changed=wrapper.h");
+
+    // dynamic
+    // println!("cargo:rustc-link-lib=static=pjlib-util-x86_64-unknown-linux-gnu");
+    // println!("cargo:rustc-link-search=native=/usr/local/lib");
+    // println!("cargo:rerun-if-changed=wrapper.h");
+
+    // generate lib.rs
+    // create_bindgen();
+}
+
+// fn create_bindgen() {
+
+//     let pjlib_util = bindgen::Builder::default().header("wrapper.h")
+
+//     .raw_line("#![allow(non_upper_case_globals)]")
+//     .raw_line("#![allow(non_camel_case_types)]")
+//     .raw_line("#![allow(non_snake_case)]")
+//     .raw_line("extern crate pj_sys;")
+//     .raw_line("use pj_sys::*;")
+
+//     .allowlist_function("pj_base64_decode")
+//     .allowlist_function("pj_base64_encode")
+//     .allowlist_type("PJ_BASE64.*")
+//     .allowlist_type("pj_base64.*")
+//     .allowlist_var("PJ_BASE64.*")
+//     .allowlist_var("pj_base64.*")
+
+//     .allowlist_function("pj_cli_add_cmd_from_xml")
+//     .allowlist_function("pj_cli_cfg_default")
+//     .allowlist_function("pj_cli_console_cfg_default")
+//     .allowlist_function("pj_cli_console_create")
+//     .allowlist_function("pj_cli_console_process")
+//     .allowlist_function("pj_cli_create")
+//     .allowlist_function("pj_cli_destroy")
+//     .allowlist_function("pj_cli_exec_info_default")
+//     .allowlist_function("pj_cli_get_cmd_id")
+//     .allowlist_function("pj_cli_get_param")
+//     .allowlist_function("pj_cli_is_quitting")
+//     .allowlist_function("pj_cli_is_restarting")
+//     .allowlist_function("pj_cli_quit")
+//     .allowlist_function("pj_cli_register_front_end")
+//     .allowlist_function("pj_cli_sess_end_session")
+//     .allowlist_function("pj_cli_sess_exec")
+//     .allowlist_function("pj_cli_sess_parse")
+//     .allowlist_function("pj_cli_sess_write_msg")
+//     .allowlist_function("pj_cli_telnet_cfg_default")
+//     .allowlist_function("pj_cli_telnet_create")
+//     .allowlist_function("pj_cli_telnet_get_info")
+//     .allowlist_function("pj_cli_write_log")
+//     .allowlist_type("PJ_CLI.*")
+//     .allowlist_type("pj_cli.*")
+//     .allowlist_var("PJ_CLI.*")
+//     .allowlist_var("pj_cli.*")
+
+
+//     .allowlist_function("pj_crc32_calc")
+//     .allowlist_function("pj_crc32_final")
+//     .allowlist_function("pj_crc32_init")
+//     .allowlist_function("pj_crc32_update")
+//     .allowlist_type("PJ_CRC32.*")
+//     .allowlist_type("pj_crc32.*")
+//     .allowlist_var("PJ_CRC32.*")
+//     .allowlist_var("pj_crc32.*")
+
+//     .allowlist_function("pj_dns_dump_packet")
+//     .allowlist_function("pj_dns_get_type_name")
+//     .allowlist_function("pj_dns_init_aaaa_rr")
+//     .allowlist_function("pj_dns_init_a_rr")
+//     .allowlist_function("pj_dns_init_cname_rr")
+//     .allowlist_function("pj_dns_init_srv_rr")
+//     .allowlist_function("pj_dns_make_query")
+//     .allowlist_function("pj_dns_packet_dup")
+//     .allowlist_function("pj_dns_parse_addr_response")
+//     .allowlist_function("pj_dns_parse_a_response")
+//     .allowlist_function("pj_dns_parse_packet")
+//     .allowlist_function("pj_dns_resolver_add_entry")
+//     .allowlist_function("pj_dns_resolver_cancel_query")
+//     .allowlist_function("pj_dns_resolver_create")
+//     .allowlist_function("pj_dns_resolver_destroy")
+//     .allowlist_function("pj_dns_resolver_dump")
+//     .allowlist_function("pj_dns_resolver_get_cached_count")
+//     .allowlist_function("pj_dns_resolver_get_settings")
+//     .allowlist_function("pj_dns_resolver_handle_events")
+//     .allowlist_function("pj_dns_resolver_set_ns")
+//     .allowlist_function("pj_dns_resolver_set_settings")
+//     .allowlist_function("pj_dns_resolver_start_query")
+//     .allowlist_function("pj_dns_server_add_rec")
+//     .allowlist_function("pj_dns_server_create")
+//     .allowlist_function("pj_dns_server_del_rec")
+//     .allowlist_function("pj_dns_server_destroy")
+//     .allowlist_function("pj_dns_settings_default")
+//     .allowlist_function("pj_dns_srv_cancel_query")
+//     .allowlist_function("pj_dns_srv_resolve")
+//     .allowlist_type("PJ_DNS.*")
+//     .allowlist_type("pj_dns.*")
+//     .allowlist_var("PJ_DNS.*")
+//     .allowlist_var("pj_dns.*")
+
+//     .allowlist_function("pj_getopt")
+//     .allowlist_function("pj_getopt_long")
+//     .allowlist_type("PJ_GETOPT_.*")
+//     .allowlist_type("pj_getopt_.*")
+
+//     .allowlist_function("pj_hmac_md5")
+//     .allowlist_function("pj_hmac_md5_final")
+//     .allowlist_function("pj_hmac_md5_init")
+//     .allowlist_function("pj_hmac_md5_update")
+//     .allowlist_type("PJ_HMAC_MD5_.*")
+//     .allowlist_type("pj_hmac_md5_.*")
+
+//     .allowlist_function("pj_hmac_sha1")
+//     .allowlist_function("pj_hmac_sha1_final")
+//     .allowlist_function("pj_hmac_sha1_init")
+//     .allowlist_function("pj_hmac_sha1_update")
+//     .allowlist_type("PJ_HMAC_SHA1_.*")
+//     .allowlist_type("pj_hmac_sha1_.*")
+
+//     .allowlist_function("pj_http_headers_add_elmt")
+//     .allowlist_function("pj_http_headers_add_elmt2")
+//     .allowlist_function("pj_http_req_cancel")
+//     .allowlist_function("pj_http_req_create")
+//     .allowlist_function("pj_http_req_destroy")
+//     .allowlist_function("pj_http_req_get_user_data")
+//     .allowlist_function("pj_http_req_is_running")
+//     .allowlist_function("pj_http_req_param_default")
+//     .allowlist_function("pj_http_req_parse_url")
+//     .allowlist_function("pj_http_req_set_timeout")
+//     .allowlist_function("pj_http_req_start")
+//     .allowlist_type("PJ_HTTP.*")
+//     .allowlist_type("pj_http.*")
+//     .allowlist_var("PJ_HTTP.*")
+//     .allowlist_var("pj_http.*")
+
+//     .allowlist_function("pj_json_elem_add")
+//     .allowlist_function("pj_json_elem_array")
+//     .allowlist_function("pj_json_elem_bool")
+//     .allowlist_function("pj_json_elem_null")
+//     .allowlist_function("pj_json_elem_number")
+//     .allowlist_function("pj_json_elem_obj")
+//     .allowlist_function("pj_json_elem_string")
+//     .allowlist_function("pj_json_parse")
+//     .allowlist_function("pj_json_write")
+//     .allowlist_function("pj_json_writef")
+//     .allowlist_type("PJ_JSON.*")
+//     .allowlist_type("pj_json.*")
+//     .allowlist_var("PJ_JSON.*")
+//     .allowlist_var("pj_json.*")
+
+//     .allowlist_function("pjlib_util_init")
+//     .allowlist_function("pjlib_util_strerror")
+//     .allowlist_type("PJLIB_UTIL.*")
+//     .allowlist_type("pjlib_util.*")
+//     .allowlist_var("PJLIB_UTIL.*")
+//     .allowlist_var("pjlib_util.*")
+
+//     .allowlist_function("pj_md5_final")
+//     .allowlist_function("pj_md5_init")
+//     .allowlist_function("pj_md5_update")
+//     .allowlist_type("PJ_MD5.*")
+//     .allowlist_type("pj_md5.*")
+
+
+//     .allowlist_function("pj_pcap_close")
+//     .allowlist_function("pj_pcap_filter_default")
+//     .allowlist_function("pj_pcap_open")
+//     .allowlist_function("pj_pcap_read_udp")
+//     .allowlist_function("pj_pcap_set_filter")
+//     .allowlist_type("PJ_PCAP.*")
+//     .allowlist_type("pj_pcap.*")
+//     .allowlist_type("PJ_PCAP.*")
+//     .allowlist_type("pj_pcap.*")
+
+//     .allowlist_function("pj_cis_add_alpha")
+//     .allowlist_function("pj_cis_add_cis")
+//     .allowlist_function("pj_cis_add_num")
+//     .allowlist_function("pj_cis_add_range")
+//     .allowlist_function("pj_cis_add_str")
+//     .allowlist_function("pj_cis_buf_init")
+//     .allowlist_function("pj_cis_del_range")
+//     .allowlist_function("pj_cis_del_str")
+//     .allowlist_function("pj_cis_dup")
+//     .allowlist_function("pj_cis_init")
+//     .allowlist_function("pj_cis_invert")
+//     .allowlist_type("PJ_CIS.*")
+//     .allowlist_type("pj_cis.*")
+//     .allowlist_var("PJ_CIS.*")
+//     .allowlist_var("pj_cis.*")
+
+//     .allowlist_function("pj_scan_advance_n")
+//     .allowlist_function("pj_scan_fini")
+//     .allowlist_function("pj_scan_get")
+//     .allowlist_function("pj_scan_get_char")
+//     .allowlist_function("pj_scan_get_n")
+//     .allowlist_function("pj_scan_get_newline")
+//     .allowlist_function("pj_scan_get_quote")
+//     .allowlist_function("pj_scan_get_quotes")
+//     .allowlist_function("pj_scan_get_unescape")
+//     .allowlist_function("pj_scan_get_until")
+//     .allowlist_function("pj_scan_get_until_ch")
+//     .allowlist_function("pj_scan_get_until_chr")
+//     .allowlist_function("pj_scan_init")
+//     .allowlist_function("pj_scan_peek")
+//     .allowlist_function("pj_scan_peek_n")
+//     .allowlist_function("pj_scan_peek_until")
+//     .allowlist_function("pj_scan_restore_state")
+//     .allowlist_function("pj_scan_save_state")
+//     .allowlist_function("pj_scan_skip_line")
+//     .allowlist_function("pj_scan_skip_whitespace")
+//     .allowlist_function("pj_scan_strcmp")
+//     .allowlist_function("pj_scan_stricmp")
+//     .allowlist_function("pj_scan_stricmp_alnum")
+//     .allowlist_type("pj_syn_err_func_ptr")
+//     .allowlist_type("PJ_SCAN.*")
+//     .allowlist_type("pj_scan.*")
+//     .allowlist_var("PJ_SCAN.*")
+//     .allowlist_var("pj_scan.*")
+
+//     .allowlist_function("pj_sha1_final")
+//     .allowlist_function("pj_sha1_init")
+//     .allowlist_function("pj_sha1_update")
+//     .allowlist_type("PJ_SHA1_.*")
+//     .allowlist_type("pj_sha1_.*")
+//     .allowlist_var("PJ_SHA1_.*")
+//     .allowlist_var("pj_sha1_.*")
+
+//     .allowlist_function("pj_strcpy_unescape")
+//     .allowlist_function("pj_strncpy2_escape")
+//     .allowlist_function("pj_strncpy_escape")
+//     .allowlist_function("pj_str_unescape")
+
+//     .allowlist_function("pjstun_create_bind_req")
+//     .allowlist_function("pjstun_get_mapped_addr")
+//     .allowlist_function("pjstun_get_mapped_addr2")
+//     .allowlist_function("pjstun_msg_find_attr")
+//     .allowlist_function("pjstun_parse_msg")
+//     .allowlist_type("PJSTUN_.*")
+//     .allowlist_type("pjstun_.*")
+//     .allowlist_var("PJSTUN_.*")
+//     .allowlist_var("pjstun_.*")
+
+
+
+//     .allowlist_function("pj_xml_add_attr")
+//     .allowlist_function("pj_xml_add_node")
+//     .allowlist_function("pj_xml_attr_new")
+//     .allowlist_function("pj_xml_clone")
+//     .allowlist_function("pj_xml_find")
+//     .allowlist_function("pj_xml_find_attr")
+//     .allowlist_function("pj_xml_find_next_node")
+//     .allowlist_function("pj_xml_find_node")
+//     .allowlist_function("pj_xml_find_node_rec")
+//     .allowlist_function("pj_xml_find_rec")
+//     .allowlist_function("pj_xml_node_new")
+//     .allowlist_function("pj_xml_parse")
+//     .allowlist_function("pj_xml_print")
+//     .allowlist_type("PJ_XML_.*")
+//     .allowlist_type("pj_xml_.*")
+//     .allowlist_var("PJ_XML_.*")
+//     .allowlist_var("pj_xml_.*")
+
+//     .allowlist_var("arg_type")
+//     .allowlist_var("pj_optind")
+//     .allowlist_var("pj_optopt")
+
+//     .allowlist_recursively(false)
+//     .translate_enum_integer_types(true)
+//     .layout_tests(false)
+//     .prepend_enum_name(false)
+//     .generate()
+//     // Unwrap the Result and panic on failure.
+//     .expect("Unable to generate bindings");
+
+//     // Write the bindings to the $OUT_DIR/bindings.rs file.
+//     let out_path = env::current_dir().unwrap();
+//     pjlib_util.write_to_file(out_path.join("src/lib.rs")).expect("Error write src/lib.rs");
+// }
+
+

@@ -745,6 +745,17 @@ impl UAMediaConfigExt for UAMediaConfig {
     }
 }
 
+impl AutoDefault<UAMediaConfig> for UAMediaConfig {
+    fn default() -> Self {
+        unsafe {
+            let mut cfg = UAMediaConfig::new();
+            pjsua_sys::pjsua_media_config_default(&mut cfg as *mut _);
+
+            cfg
+        }
+    }
+} 
+
 impl UACodecInfoExt for UACodecInfo  {
     fn get_codec_id (&self) -> String {
         self.codec_id.to_string()
@@ -1218,9 +1229,7 @@ impl UACodecManager {
 }
 
 // pjsua sound and media device function helper
-pub fn media_config_default(cfg: &mut UAMediaConfig) {
-    unsafe { pjsua_sys::pjsua_media_config_default(cfg as *mut _); }
-}
+
 // skiped function
 
 // i32 	pjsua_recorder_create (const pj_str_t *filename, unsigned enc_type, void *enc_param, pj_ssize_t max_size, unsigned options, pjsua_recorder_id *p_id)
