@@ -858,7 +858,7 @@ impl UASndDevParamExt for UASndDevParam {
 
 }
 
-impl UAConfConectParamExt for UAConfConectParam {
+impl UAConfConectParamExt for UAConfConnectParam {
 
     fn set_level(&mut self, value: f32) {
         self.level = value;
@@ -868,6 +868,17 @@ impl UAConfConectParamExt for UAConfConectParam {
         self.level
     }
 
+}
+
+impl AutoDefault<UAConfConnectParam> for UAConfConnectParam {
+    fn default() -> Self {
+        let mut param = Self { level: 0_f32 };
+        unsafe {
+            pjsua_sys::pjsua_conf_connect_param_default(&mut param as *mut _);
+        }
+
+        param
+    }
 }
 
 pub struct UAConf {}
@@ -880,10 +891,6 @@ impl Default for UAConf {
 
 impl UAConf {
 
-    pub fn conf_connect_param_default(prm: &mut pjsua_conf_connect_param) {
-        unsafe { pjsua_sys::pjsua_conf_connect_param_default(prm as *mut _); }
-    }
-
     pub fn get_max_ports() -> u32 {
         unsafe { pjsua_sys::pjsua_conf_get_max_ports() }
     }
@@ -892,20 +899,42 @@ impl UAConf {
         unsafe { pjsua_sys::pjsua_conf_get_active_ports() }
     }
 
-    pub fn enum_conf_ports(id: &mut [i32; pjsua_sys::PJSUA_MAX_CONF_PORTS as usize], count: &mut u32) -> Result<(), i32> {
+    // TODO: fix return value to Result<Vec<i32>, i32>
+    pub fn enum_conf_ports() -> Result<Vec<i32>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_enum_conf_ports( id.as_mut_ptr(), count as *mut _))
+            let mut id = [-1_i32; pjsua_sys::PJSUA_MAX_CONF_PORTS as usize];
+            let mut count = 0_u32;
+            let status = pjsua_sys::pjsua_enum_conf_ports( id.as_mut_ptr(), &mut count as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => {
+                    let mut ports = Vec::<i32>::new();
+
+                    for i in 0..count as usize {
+                        ports.push(id[i]);
+                    }
+
+                    return Ok(ports);
+                },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
-    pub fn get_port_info (port_id: i32, info: &mut UAConfPortInfo) -> Result<(), i32> {
+    pub fn get_port_info (port_id: i32) -> Result<Box<UAConfPortInfo>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_conf_get_port_info( port_id, info as *mut _ ))
+            let mut info = Box::new(UAConfPortInfo::new());
+            let status = pjsua_sys::pjsua_conf_get_port_info(port_id, info.as_mut() as *mut _ );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(info); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
     pub fn add_port(port: *mut pjmedia_port, p_id: Option<&mut i32>) -> Result<(), i32> {
-    
+
         let p_id = match p_id {
             Some(value) => value as *mut _,
             None => ptr::null_mut()
@@ -957,9 +986,35 @@ impl UAConf {
         unsafe { utils::check_status(pjsua_sys::pjsua_conf_adjust_rx_level(slot, level)) }
     }
 
-    pub fn get_signal_level (slot: i32, tx_level: &mut u32, rx_level: &mut u32) -> Result<(), i32> {
+    /// Result<( tx_level: u32, tx_level: u32 ), i32>
+    pub fn get_signal_level (slot: i32) -> Result<(u32, u32), i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_conf_get_signal_level (slot, tx_level as *mut _, rx_level as *mut _))
+            let mut signal: (u32, u32) = (0, 0);
+            let status = pjsua_sys::pjsua_conf_get_signal_level (slot, &mut signal.0 as *mut _, &mut signal.1 as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(signal); },
+                Err(e) => { return Err(e); }
+            }
+        }
+    }
+
+    /// Result<( tx_level_l: u32, tx_level_r: u32, rx_level_l: u32, rx_level_r: u32 ), i32>
+    pub fn get_msignal_level(slot: i32) -> Result<(u32, u32, u32, u32), i32> {
+        unsafe {
+            let mut signal: (u32, u32, u32, u32) = (0, 0, 0, 0);
+            let status = pjsua_conf_get_msignal_level(
+                slot,
+                &mut signal.0 as *mut _,
+                &mut signal.1 as *mut _,
+                &mut signal.2 as *mut _,
+                &mut signal.3 as *mut _
+            );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(signal); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
@@ -1242,4 +1297,17 @@ impl UACodecManager {
 // skiped function for detailed audio dev setting
 // i32 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
 // i32 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
+
+
+
+// #[link(name="pjsua")]
+// extern "C" {
+//     pub fn pjsua_conf_get_msignal_level(
+//         slot: i32,
+//         tx_level_l: *mut c_uint,
+//         tx_level_r: *mut c_uint,
+//         rx_level_l: *mut c_uint,
+//         rx_level_r: *mut c_uint,
+//     ) -> i32;
+// }
 

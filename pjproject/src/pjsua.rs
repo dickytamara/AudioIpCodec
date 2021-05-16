@@ -1,6 +1,6 @@
 
 use pj_sys::{PJ_SUCCESS, pj_pool_factory, pj_pool_release, pj_pool_safe_release, pj_pool_t, pj_str_t, pj_time_val, pj_timer_entry};
-use pjmedia_sys::{pjmedia_codec_param, pjmedia_echo_stat, pjmedia_endpt, pjmedia_port, pjmedia_sdp_session, pjmedia_snd_dev_info, pjmedia_snd_port, pjmedia_snd_port_param, pjmedia_srtp_crypto, pjmedia_stream_info, pjmedia_transport_info};
+use pjmedia_sys::{pjmedia_codec_param, pjmedia_echo_stat, pjmedia_endpt, pjmedia_port, pjmedia_sdp_session, pjmedia_snd_dev_info, pjmedia_snd_port, pjmedia_snd_port_param, pjmedia_srtp_crypto, pjmedia_stream_info};
 use pjnath_sys::{pj_stun_nat_type, pj_turn_sock_tls_cfg};
 use pjsip_simple_sys::{pjrpid_element, pjsip_evsub_state};
 use pjsip_sys::{PJSIP_MAX_TRANSPORTS, pjsip_endpoint, pjsip_method, pjsip_rx_data, pjsip_tpfactory, pjsip_transport, pjsip_tx_data};
@@ -12,7 +12,7 @@ use super::prelude::*;
 use super::utils;
 
 
-use std::os::raw::{c_uint, c_void};
+use std::os::raw::{c_void};
 use std::ffi::CString;
 use std::ptr;
 
@@ -73,7 +73,7 @@ pub type UACodecInfo = pjsua_sys::pjsua_codec_info;
 pub type UAConfPortInfo = pjsua_sys::pjsua_conf_port_info;
 pub type UAMediaTransport = pjsua_sys::pjsua_media_transport;
 pub type UASndDevParam = pjsua_sys::pjsua_snd_dev_param;
-pub type UAConfConectParam = pjsua_sys::pjsua_conf_connect_param;
+pub type UAConfConnectParam = pjsua_sys::pjsua_conf_connect_param;
 
 /// PJSUA-API Video
 
@@ -340,39 +340,6 @@ pub enum CredentialInfoType {
     PlainText = 0,
     HashDigest = 1,
 }
-
-
-#[link(name="pjsua")]
-extern "C" {
-    pub fn pjsua_conf_get_msignal_level(
-        slot: i32,
-        tx_level_l: *mut c_uint,
-        tx_level_r: *mut c_uint,
-        rx_level_l: *mut c_uint,
-        rx_level_r: *mut c_uint,
-    ) -> i32;
-}
-
-pub fn conf_get_msignal_level(
-    slot: i32,
-    tx_level_l: &mut u32,
-    tx_level_r: &mut u32,
-    rx_level_l: &mut u32,
-    rx_level_r: &mut u32
-) -> i32 {
-
-    unsafe {
-        pjsua_conf_get_msignal_level(
-            slot,
-            tx_level_l as *mut _,
-            tx_level_r as *mut _,
-            rx_level_l as *mut _,
-            rx_level_r as *mut _
-        )
-    }
-
-}
-
 
 
 // function helper

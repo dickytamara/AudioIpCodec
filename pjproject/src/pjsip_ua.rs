@@ -17,7 +17,7 @@ pub enum SIPInvState {
     Incoming = pjsip_ua_sys::PJSIP_INV_STATE_INCOMING,
     Early = pjsip_ua_sys::PJSIP_INV_STATE_EARLY,
     Connecting = pjsip_ua_sys::PJSIP_INV_STATE_CONNECTING,
-    Confirment = pjsip_ua_sys::PJSIP_INV_STATE_CONFIRMED,
+    Confirmed = pjsip_ua_sys::PJSIP_INV_STATE_CONFIRMED,
     Disconnected = pjsip_ua_sys::PJSIP_INV_STATE_DISCONNECTED,
 }
 

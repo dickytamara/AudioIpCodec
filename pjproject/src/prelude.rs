@@ -32,3 +32,6 @@ pub use super::pjsua::media::UASndDevParamExt;
 
 pub use super::pjsua::transport::UATransportConfigExt;
 pub use super::pjsua::transport::UATransportInfoExt;
+
+pub use super::pjsip::core::SIPModuleExt;
+pub use super::pjsip::core::SIPModuleOps;

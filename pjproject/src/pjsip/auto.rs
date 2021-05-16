@@ -5,8 +5,7 @@ use pjsip_sys::*;
 use super::utils::AutoCreate;
 use super::*;
 
-impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>
-for pjsip_cred_info__bindgen_ty_1__bindgen_ty_1
+impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1__bindgen_ty_1
 {
 fn new() -> Self {
     Self {
@@ -104,7 +103,7 @@ fn new() -> Self {
 }
 }
 
-impl AutoCreate<pjsip_module> for pjsip_module {
+impl AutoCreate<SIPModule> for SIPModule {
 fn new() -> Self {
     // unsafe { std::mem::zeroed() }
     Self {

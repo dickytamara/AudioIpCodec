@@ -649,3 +649,12 @@ impl AutoCreate<UACodecInfo> for UACodecInfo {
     }
 }
 
+impl AutoCreate<UACallSendDtmfParam> for UACallSendDtmfParam {
+    fn new() -> Self {
+        Self {
+            method: 0,
+            duration: 0,
+            digits: pj_str_t::new(),
+        }
+    }
+}

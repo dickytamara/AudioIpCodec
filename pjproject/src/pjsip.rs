@@ -4,6 +4,7 @@
 
 
 pub mod auto;
+pub mod core;
 
 use pj_sys::*;
 use pjlib_util_sys::*;
@@ -23,7 +24,7 @@ use std::{ffi::CString, ptr};
 // pub type pjsip_cfg_t__bindgen_ty_4 = pjsip_cfg_t__bindgen_ty_4;
 // pub type pjsip_cfg_t__bindgen_ty_5 = pjsip_cfg_t__bindgen_ty_5;
 // pub type pjsip_tpmgr = pjsip_tpmgr;
-// pub type pjsip_endpoint = pjsip_endpoint;
+pub type SIPEndpoint = pjsip_endpoint;
 // pub type pjsip_resolver_t = pjsip_resolver_t;
 // pub type pjsip_buffer = pjsip_buffer;
 // pub type pjsip_host_port = pjsip_host_port;
@@ -69,7 +70,7 @@ pub type SIPEvent = pjsip_event;
 // pub type pjsip_event__bindgen_ty_1__bindgen_ty_4 = pjsip_event__bindgen_ty_1__bindgen_ty_4;
 // pub type pjsip_event__bindgen_ty_1__bindgen_ty_5 = pjsip_event__bindgen_ty_1__bindgen_ty_5;
 // pub type pjsip_event__bindgen_ty_1__bindgen_ty_6 = pjsip_event__bindgen_ty_1__bindgen_ty_6;
-// pub type pjsip_module = pjsip_module;
+pub type SIPModule = pjsip_module;
 // pub type pjsip_server_addresses = pjsip_server_addresses;
 // pub type pjsip_server_addresses__bindgen_ty_1 = pjsip_server_addresses__bindgen_ty_1;
 // pub type pjsip_ext_resolver = pjsip_ext_resolver;
@@ -486,30 +487,30 @@ pub fn method_cmp(m1: &pjsip_method, m2: &pjsip_method) -> i32 {
     }
 }
 
-pub fn endpt_create(pf: *mut pj_pool_factory, name: String, endpt: &mut Box<*mut pjsip_endpoint>) -> Result<(), i32> {
+pub fn endpt_create(pf: *mut pj_pool_factory, name: String, endpt: &mut Box<*mut SIPEndpoint>) -> Result<(), i32> {
     let name = CString::new(name.as_str()).expect("pjsip_endpt_create").into_raw();
     unsafe { check_status( pjsip_endpt_create(pf, name as *const _, endpt.as_mut() as *mut _)) }
 }
 
-pub fn endpt_destroy(endpt: &mut pjsip_endpoint) {
+pub fn endpt_destroy(endpt: &mut SIPEndpoint) {
     unsafe { pjsip_endpt_destroy(endpt as *mut _); }
 }
 
-// const pj_str_t * 	pjsip_endpt_name (const pjsip_endpoint *endpt)
+// const pj_str_t * 	pjsip_endpt_name (const SIPEndpoint *endpt)
 
-pub fn endpt_handle_events(endpt: &mut pjsip_endpoint, max_timeout: &mut pj_time_val) -> Result<(), i32> {
+pub fn endpt_handle_events(endpt: &mut SIPEndpoint, max_timeout: &mut pj_time_val) -> Result<(), i32> {
     unsafe {
         check_status( pjsip_endpt_handle_events(endpt as *mut _, max_timeout as *const _))
     }
 }
 
-pub fn endpt_handle_events2(endpt: &mut pjsip_endpoint, max_timeout: &mut pj_time_val, count: &mut u32) -> Result<(), i32> {
+pub fn endpt_handle_events2(endpt: &mut SIPEndpoint, max_timeout: &mut pj_time_val, count: &mut u32) -> Result<(), i32> {
     unsafe {
         check_status(pjsip_endpt_handle_events2(endpt as *mut _, max_timeout as *const _, count as *mut _))}
 }
 
-// pj_status_t 	pjsip_endpt_schedule_timer (pjsip_endpoint *endpt, pj_timer_entry *entry, const pj_time_val *delay)
-// pub fn enpt_schedule_timer(endpt: &mut pjsip_endpoint, entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> Result<(), i32> {
+// pj_status_t 	pjsip_endpt_schedule_timer (SIPEndpoint *endpt, pj_timer_entry *entry, const pj_time_val *delay)
+// pub fn enpt_schedule_timer(endpt: &mut SIPEndpoint, entry: &mut pj_timer_entry, delay: &mut pj_time_val) -> Result<(), i32> {
 //     unsafe {
 //         check_status(
 //             pjsip_endpt_schedule_timer_dbg(
@@ -519,21 +520,21 @@ pub fn endpt_handle_events2(endpt: &mut pjsip_endpoint, max_timeout: &mut pj_tim
 //     }
 // }
 
-// pj_status_t 	pjsip_endpt_schedule_timer_w_grp_lock (pjsip_endpoint *endpt, pj_timer_entry *entry, const pj_time_val *delay, int id_val, pj_grp_lock_t *grp_lock)
+// pj_status_t 	pjsip_endpt_schedule_timer_w_grp_lock (SIPEndpoint *endpt, pj_timer_entry *entry, const pj_time_val *delay, int id_val, pj_grp_lock_t *grp_lock)
 
-pub fn endpt_cancel_timer(endpt: &mut pjsip_endpoint, entry: &mut pj_timer_entry) {
+pub fn endpt_cancel_timer(endpt: &mut SIPEndpoint, entry: &mut pj_timer_entry) {
     unsafe { pjsip_endpt_cancel_timer(endpt as *mut _, entry as *mut _) }
 }
 
-pub fn endpt_get_timer_heap(endpt: &mut pjsip_endpoint) -> *mut pj_timer_heap_t {
+pub fn endpt_get_timer_heap(endpt: &mut SIPEndpoint) -> *mut pj_timer_heap_t {
     unsafe { pjsip_endpt_get_timer_heap(endpt as *mut _) }
 }
 
-pub fn endpt_register_module(endpt: *mut pjsip_endpoint, module: &mut pjsip_module) -> Result<(), i32> {
+pub fn endpt_register_module(endpt: *mut SIPEndpoint, module: &mut pjsip_module) -> Result<(), i32> {
     unsafe { check_status( pjsip_endpt_register_module(endpt, module as *mut _)) }
 }
 
-pub fn endpt_unregister_module(endpt: *mut pjsip_endpoint, module: &mut pjsip_module) -> Result<(), i32> {
+pub fn endpt_unregister_module(endpt: *mut SIPEndpoint, module: &mut pjsip_module) -> Result<(), i32> {
     unsafe { check_status(pjsip_endpt_unregister_module(endpt, module as *mut _)) }
 }
 
@@ -542,35 +543,35 @@ pub fn process_rdata_param_default(p: &mut pjsip_process_rdata_param) {
     unsafe { pjsip_process_rdata_param_default(p as *mut _); }
 }
 
-// pj_status_t 	pjsip_endpt_process_rx_data (pjsip_endpoint *endpt, pjsip_rx_data *rdata, pjsip_process_rdata_param *p, pj_bool_t *p_handled)
-// pj_pool_t * 	pjsip_endpt_create_pool (pjsip_endpoint *endpt, const char *pool_name, pj_size_t initial, pj_size_t increment)
-// void 	pjsip_endpt_release_pool (pjsip_endpoint *endpt, pj_pool_t *pool)
-// pjsip_transaction * 	pjsip_endpt_find_tsx (pjsip_endpoint *endpt, const pj_str_t *key)
+// pj_status_t 	pjsip_endpt_process_rx_data (SIPEndpoint *endpt, pjsip_rx_data *rdata, pjsip_process_rdata_param *p, pj_bool_t *p_handled)
+// pj_pool_t * 	pjsip_endpt_create_pool (SIPEndpoint *endpt, const char *pool_name, pj_size_t initial, pj_size_t increment)
+// void 	pjsip_endpt_release_pool (SIPEndpoint *endpt, pj_pool_t *pool)
+// pjsip_transaction * 	pjsip_endpt_find_tsx (SIPEndpoint *endpt, const pj_str_t *key)
 
-// void 	pjsip_endpt_register_tsx (pjsip_endpoint *endpt, pjsip_transaction *tsx)
-// void 	pjsip_endpt_destroy_tsx (pjsip_endpoint *endpt, pjsip_transaction *tsx)
+// void 	pjsip_endpt_register_tsx (SIPEndpoint *endpt, pjsip_transaction *tsx)
+// void 	pjsip_endpt_destroy_tsx (SIPEndpoint *endpt, pjsip_transaction *tsx)
 
-// pj_status_t 	pjsip_endpt_create_tdata (pjsip_endpoint *endpt, pjsip_tx_data **p_tdata)
-pub fn endpt_create_tdata(endpt: &mut pjsip_endpoint, p_tdata: &mut Box<*mut pjsip_tx_data> ) -> Result<(), i32> {
+// pj_status_t 	pjsip_endpt_create_tdata (SIPEndpoint *endpt, pjsip_tx_data **p_tdata)
+pub fn endpt_create_tdata(endpt: &mut SIPEndpoint, p_tdata: &mut Box<*mut pjsip_tx_data> ) -> Result<(), i32> {
     unsafe {
         check_status( pjsip_endpt_create_tdata( endpt as *mut _, (p_tdata.as_mut() as *mut _) as *mut _))
     }
 }
 
-// pj_status_t 	pjsip_endpt_create_resolver (pjsip_endpoint *endpt, pj_dns_resolver **p_resv)
-pub fn endpt_create_resolver(endpt: &mut pjsip_endpoint, p_resv: &mut Box<*mut pjsip_tx_data>) -> Result<(), i32> {
+// pj_status_t 	pjsip_endpt_create_resolver (SIPEndpoint *endpt, pj_dns_resolver **p_resv)
+pub fn endpt_create_resolver(endpt: &mut SIPEndpoint, p_resv: &mut Box<*mut pjsip_tx_data>) -> Result<(), i32> {
     unsafe {
         check_status( pjsip_endpt_create_resolver( endpt as *mut _, (p_resv.as_mut() as *mut _) as *mut _))
     }
 }
 
-// pj_status_t 	pjsip_endpt_set_resolver (pjsip_endpoint *endpt, pj_dns_resolver *resv)
-pub fn endpt_set_resolver(endpt: &mut pjsip_endpoint, resv: &mut pj_dns_resolver) -> Result<(), i32> {
+// pj_status_t 	pjsip_endpt_set_resolver (SIPEndpoint *endpt, pj_dns_resolver *resv)
+pub fn endpt_set_resolver(endpt: &mut SIPEndpoint, resv: &mut pj_dns_resolver) -> Result<(), i32> {
     unsafe { check_status(pjsip_endpt_set_resolver( endpt as *mut _, resv as *mut _)) }
 }
 
-// pj_status_t 	pjsip_endpt_set_ext_resolver (pjsip_endpoint *endpt, pjsip_ext_resolver *ext_res)
-pub fn endpt_set_ext_resolver(endpt: &mut pjsip_endpoint, ext_res: &mut pjsip_ext_resolver) -> Result<(), i32> {
+// pj_status_t 	pjsip_endpt_set_ext_resolver (SIPEndpoint *endpt, pjsip_ext_resolver *ext_res)
+pub fn endpt_set_ext_resolver(endpt: &mut SIPEndpoint, ext_res: &mut pjsip_ext_resolver) -> Result<(), i32> {
     unsafe { check_status( pjsip_endpt_set_ext_resolver( endpt as *mut _, ext_res as *mut _))}
 }
 

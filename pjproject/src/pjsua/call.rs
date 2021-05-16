@@ -1,6 +1,6 @@
 
 use std::convert::TryFrom;
-use crate::{pjmedia::{MediaDir, MediaType}, pjnath::StunNatType, pjsip::{SIPDialogCapStatus, SIPRedirectOp, SIPRole, SIPStatusCode}, pjsip_ua::SIPInvState, utils::check_boolean};
+use crate::{pjmedia::{MediaDir, MediaTransportInfo, MediaType}, pjnath::StunNatType, pjsip::{SIPDialogCapStatus, SIPHdr, SIPRedirectOp, SIPRole, SIPStatusCode}, pjsip_ua::SIPInvState, utils::check_boolean};
 
 use super::*;
 
@@ -362,6 +362,28 @@ impl UACallSendDtmfParamExt for UACallSendDtmfParam {
 
 }
 
+impl AutoDefault<UACallSendDtmfParam> for UACallSendDtmfParam {
+    fn default() -> Self {
+        unsafe {
+            let mut param = UACallSendDtmfParam::new();
+            pjsua_sys::pjsua_call_send_dtmf_param_default(&mut param as *mut _);
+            param
+        }
+    }
+}
+
+impl AutoDefault<UACallSetting> for UACallSetting {
+    fn default() -> Self {
+        unsafe {
+            let mut ret = UACallSetting::new();
+
+            pjsua_sys::pjsua_call_setting_default(&mut ret as *mut _);
+
+            ret
+        }
+    }
+}
+
 
 pub struct UACall { id: i32 }
 
@@ -370,8 +392,6 @@ impl From<i32> for UACall {
         Self { id }
     }
 }
-
-
 
 impl UACall {
 
@@ -387,24 +407,25 @@ impl UACall {
         unsafe { pjsua_sys::pjsua_call_get_conf_port(self.id) }
     }
 
-    pub fn get_info (&self) -> Result<UACallInfo, i32> {
+    pub fn get_info (&self) -> Result<Box<UACallInfo>, i32> {
         unsafe {
             let mut info = UACallInfo::new();
             let status = pjsua_sys::pjsua_call_get_info(self.id, &mut info as *mut _);
             match utils::check_status(status) {
-                Ok(()) => { return Ok(info); },
+                Ok(()) => { return Ok(Box::new(info)); },
                 Err(e) => { return Err(e); }
             }
         }
     }
 
     /// pjsip_dialog_cap_status
-    pub fn remote_has_cap (&self, htype: i32, hname: String, token: String) -> SIPDialogCapStatus {
+    pub fn remote_has_cap (&self, htype: SIPHdr, hname: String, token: String) -> SIPDialogCapStatus {
         let hname: *const pj_str_t = &mut pj_str_t::from_string(hname) as *const _;
         let token: *const pj_str_t = &mut pj_str_t::from_string(token) as *const _;
 
         unsafe {
-            let result = pjsua_sys::pjsua_call_remote_has_cap(self.id, htype, hname, token);
+            let htype: u32 = htype.into();
+            let result = pjsua_sys::pjsua_call_remote_has_cap(self.id, htype as i32, hname, token);
             SIPDialogCapStatus::try_from(result)
             .expect("Error UACall get remote_has_cap")
         }
@@ -425,7 +446,7 @@ impl UACall {
         }
     }
     
-    pub fn answer(&self, code: u32, reason: Option<String>, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
+    pub fn answer(&self, code: SIPStatusCode, reason: Option<String>, msg_data: Option<&mut UAMsgData>) -> Result<(), i32> {
 
         let reason = match reason {
             Some(value) => &mut pj_str_t::from_string(value) as *const pj_str_t,
@@ -437,12 +458,12 @@ impl UACall {
             None => ptr::null_mut()
         };
 
-        unsafe { utils::check_status(pjsua_sys::pjsua_call_answer(self.id, code, reason, msg_data)) }
+        unsafe { utils::check_status(pjsua_sys::pjsua_call_answer(self.id, code.into(), reason, msg_data)) }
     }
     
     pub fn answer2 (&self,
         opt: &mut UACallSetting,
-        code: c_uint,
+        code: SIPStatusCode,
         reason: Option<String>,
         msg_data: Option<&mut UAMsgData>
     ) -> Result<(), i32> {
@@ -457,13 +478,13 @@ impl UACall {
             None => ptr::null_mut()
         };
 
-        unsafe { utils::check_status(pjsua_sys::pjsua_call_answer2(self.id, opt, code, reason, msg_data)) }
+        unsafe { utils::check_status(pjsua_sys::pjsua_call_answer2(self.id, opt, code.into(), reason, msg_data)) }
     }
     
     pub fn answer_with_sdp(&self,
         sdp: &mut pjmedia_sdp_session,
         opt: &mut UACallSetting,
-        code: u32,
+        code: SIPStatusCode,
         reason: Option<String>,
         msg_data: Option<&mut UAMsgData>
     ) -> Result<(), i32> {
@@ -481,12 +502,12 @@ impl UACall {
         unsafe {
             utils::check_status(pjsua_sys::pjsua_call_answer_with_sdp(
                 self.id, sdp as *const _, opt as *const _,
-                code, reason, msg_data))
+                code.into(), reason, msg_data))
         }
     }
     
     pub fn hangup(&self,
-        code: c_uint,
+        code: SIPStatusCode,
         reason: Option<String>,
         msg_data: Option<&mut UAMsgData>
     ) -> Result<(), i32> {
@@ -501,7 +522,7 @@ impl UACall {
             None => ptr::null_mut()
         };
 
-        unsafe { utils::check_status(pjsua_sys::pjsua_call_hangup(self.id, code, reason, msg_data)) }
+        unsafe { utils::check_status(pjsua_sys::pjsua_call_hangup(self.id, code.into(), reason, msg_data)) }
     }
 
     pub fn process_redirect (&self, cmd: SIPRedirectOp) -> Result<(), i32> {
@@ -537,7 +558,7 @@ impl UACall {
 
         unsafe { utils::check_status(pjsua_sys::pjsua_call_reinvite(self.id, options, msg_data)) }
     }
-    
+
     pub fn reinvite2(&self, opt: &mut UACallSetting, msg_data: Option<&mut UAMsgData> ) -> Result<(), i32> {
 
         let msg_data = match msg_data {
@@ -666,27 +687,39 @@ impl UACall {
         }
     }
 
-    // TODO: fix code with return value like
-    // Result<UAStreamInfo, i32>
-    pub fn get_stream_info (&self, med_idx: u32, psi: &mut UAStreamInfo) -> Result<(), i32> {
+    pub fn get_stream_info (&self, med_idx: u32) -> Result<Box<UAStreamInfo>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_call_get_stream_info (self.id, med_idx, psi as *mut _))
+            let mut stat = Box::new(UAStreamInfo::new());
+            let status = pjsua_sys::pjsua_call_get_stream_info (self.id, med_idx, stat.as_mut() as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(stat); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
-    // TODO: fix code with return value like
-    // Result<UAStreamStat, i32>
-    pub fn get_stream_stat (&self, med_idx: u32, stat: &mut UAStreamStat) -> Result<(), i32> {
+    pub fn get_stream_stat (&self, med_idx: u32) -> Result<Box<UAStreamStat>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_call_get_stream_stat(self.id, med_idx, stat as *mut _))
+            let mut stat = Box::new(UAStreamStat::new());
+            let status = pjsua_sys::pjsua_call_get_stream_stat(self.id, med_idx, stat.as_mut() as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(stat); },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
-    // TODO: fix code with return value like
-    // Result<MediaTransportInfo, i32>
-    pub fn get_med_transport_info (&self, med_idx: u32, t: &mut pjmedia_transport_info) -> Result<(), i32> {
+    pub fn get_med_transport_info (&self, med_idx: u32) -> Result<Box<MediaTransportInfo>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_call_get_med_transport_info(self.id, med_idx, t as *mut _))
+            let mut info = Box::new(MediaTransportInfo::new());
+            let status = pjsua_sys::pjsua_call_get_med_transport_info(self.id, med_idx, info.as_mut() as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(info); }
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
@@ -778,16 +811,6 @@ impl UACall {
         unsafe { pjsua_sys::pjsua_call_hangup_all() }
     }
 
-}
-
-// call helper function
-
-pub fn call_setting_default (opt: &mut UACallSetting) {
-    unsafe { pjsua_sys::pjsua_call_setting_default(opt as * mut _) }
-}
-
-pub fn call_send_dtmf_param_default (param: &mut pjsua_call_send_dtmf_param) {
-    unsafe { pjsua_sys::pjsua_call_send_dtmf_param_default(param as *mut _) }
 }
 
 

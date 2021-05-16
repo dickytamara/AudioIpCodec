@@ -1,4 +1,4 @@
-use pjproject::{pjsua::{buddy::UABuddy, call::UACall}, prelude::*, utils::{boolean_to_pjbool, check_boolean}};
+use pjproject::{pjsip_ua::SIPInvState, pjsua::{buddy::UABuddy, call::UACall}, prelude::*, utils::{boolean_to_pjbool, check_boolean}};
 use pjproject::prelude::AutoDefault;
 use pjproject::pj::*;
 use pjproject::pjsip_simple::*;
@@ -31,7 +31,7 @@ pub struct SIPCore {
     pub default_transport_config: UATransportConfig,
     pub default_rtp_config: UATransportConfig,
     def_pool: Option<Box::<*mut PJPool>>,
-    // module: SIPModule,
+    module: SIPModule,
     no_udp: bool,
     no_tcp: bool,
     use_ipv6: bool,
@@ -48,30 +48,30 @@ pub struct SIPCore {
     duration: u32,
     current_call: i32,
     auto_answer: u32,
-    // events: SIPCoreEvents,
+    events: SIPCoreEvents,
     no_refersub: bool,
     compact_form: bool,
 }
 // struct to hold invite event function
 // #[derive(Clone)]
-// struct SIPCoreEvents {
-//     invite: Box<dyn FnMut(SIPInviteState)>,
-//     incoming_call: Box<dyn FnMut()>
-// }
+struct SIPCoreEvents {
+    invite: Box<dyn Fn(SIPInvState)>,
+    incoming_call: Box<dyn FnMut()>
+}
 
-// impl SIPCoreEvents {
-//     fn new() -> SIPCoreEvents {
-//         SIPCoreEvents {
-//             invite: Box::new(|s| {}),
-//             incoming_call: Box::new(|| {})
-//         }
-//     }
-// }
+impl SIPCoreEvents {
+    fn new() -> SIPCoreEvents {
+        SIPCoreEvents {
+            invite: Box::new(|s| {}),
+            incoming_call: Box::new(|| {})
+        }
+    }
+}
 
-// pub trait SIPCoreEventsExt {
-//     fn connect_invite<F: FnMut(SIPInviteState) + 'static> (&mut self, f: F);
-//     fn connect_incoming_call<F: Fn() + 'static> (&mut self, f: F);
-// }
+pub trait SIPCoreEventsExt {
+    fn connect_invite<F: Fn(SIPInvState) + 'static> (&mut self, f: F);
+    fn connect_incoming_call<F: Fn() + 'static> (&mut self, f: F);
+}
 
 impl SIPCore {
 
@@ -83,7 +83,7 @@ impl SIPCore {
             default_transport_config: UATransportConfig::default(),
             default_rtp_config: UATransportConfig::default(),
             def_pool: None,
-            // module: SIPModule::new(),
+            module: SIPModule::new(),
             transport_udp: None,
             transport_tcp: None,
             transport_udp6: None,
@@ -97,7 +97,7 @@ impl SIPCore {
             duration: 0,
             current_call: -1,
             auto_answer: 0,
-            // events: SIPCoreEvents::new(),
+            events: SIPCoreEvents::new(),
             no_refersub: false,
             compact_form: false,
             no_udp: false,
@@ -158,9 +158,10 @@ impl SIPCore {
 
         // register sub module for unhandeled error
         // self.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
-        // self.module.set_name(String::from("mod-default-handler"));
-        // self.module.connect_on_rx_request(Some(on_rx_request));
-        // self.module.register();
+        self.module.set_priority(SIPModulePriority::Application);
+        self.module.set_name(String::from("mod-default-handler"));
+        self.module.connect_on_rx_request(Some(on_rx_request));
+        SIPModule::register(&mut self.module);
 
         pjsua::init(&mut self.ua_config, &mut self.log_config, &mut self.media_config).unwrap();
 
@@ -352,36 +353,23 @@ impl SIPCore {
     }
 
     // pub fn callback_on_call_state(&self, call_id: i32, e: *mut SIPEvent) {
-    pub fn callback_on_call_state(&self, call_id: UACall, e: *mut SIPEvent) {
+    pub fn callback_on_call_state(&self, call: UACall, e: *mut SIPEvent) {
 
-        // let call = SIPCall::from(call_id);
-        // let call_info = call.get_info().unwrap();
+        let state_message: String = match call.get_info().unwrap().get_state() {
+            SIPInvState::Null => { String::from("NULL") }
+            SIPInvState::Calling => { String::from("CALLING") }
+            SIPInvState::Incoming => { String::from("INCOMING") }
+            SIPInvState::Early => { String::from("EARLY") }
+            SIPInvState::Connecting => { String::from("CONNECTING") }
+            SIPInvState::Confirmed => { String::from("CONFIRMED") }
+            SIPInvState::Disconnected => { String::from("DISCONNECTED") }
+        };
 
-        // let state_message: String = match call_info.state {
-        //     PJSIP_INV_STATE_NULL => String::from("NULL"),
-        //     PJSIP_INV_STATE_CALLING => String::from("CALLING"),
-        //     PJSIP_INV_STATE_INCOMING => String::from("INCOMING"),
-        //     PJSIP_INV_STATE_EARLY => String::from("EARLY"),
-        //     PJSIP_INV_STATE_CONNECTING => String::from("CONNECTING"),
-        //     PJSIP_INV_STATE_CONFIRMED => String::from("CONFIRMED"),
-        //     PJSIP_INV_STATE_DISCONNECTED => String::from("DISCONNECTED"),
-        //     _ => String::from("FAILURE")
-        // };
+        println!("INVSTATE [{}]", state_message);
+        // todo ringing mecanism
 
-        // println!("INVSTATE [{}]", state_message);
-        // // todo ringing mecanism
-
-        // // call event for non internal
-        // match call_info.state {
-        //     PJSIP_INV_STATE_NULL => (self.events.invite)(SIPInviteState::Null),
-        //     PJSIP_INV_STATE_CALLING => (self.events.invite)(SIPInviteState::Calling),
-        //     PJSIP_INV_STATE_INCOMING => (self.events.invite)(SIPInviteState::Incoming),
-        //     PJSIP_INV_STATE_EARLY => (self.events.invite)(SIPInviteState::Early),
-        //     PJSIP_INV_STATE_CONNECTING => (self.events.invite)(SIPInviteState::Connecting),
-        //     PJSIP_INV_STATE_CONFIRMED => (self.events.invite)(SIPInviteState::Confirmed),
-        //     PJSIP_INV_STATE_DISCONNECTED => (self.events.invite)(SIPInviteState::Disconnected),
-        //     _ => (self.events.invite)(SIPInviteState::Unknown)
-        // }
+        // call event for non internal
+        (self.events.invite)(call.get_info().unwrap().get_state());
 
         // match call_info.state {
         //     PJSIP_INV_STATE_DISCONNECTED => {
@@ -402,7 +390,7 @@ impl SIPCore {
         // }
     }
 
-    pub fn callback_on_stream_destroyed(&self, call_id: UACall, strm: *mut MediaStream, stream_idx: c_uint) {
+    pub fn callback_on_stream_destroyed(&self, call: UACall, strm: *mut MediaStream, stream_idx: c_uint) {
         // println!("OnStreamDestroyed: CallID {}, StreamIDX {}", call_id, stream_idx);
     }
 
@@ -447,7 +435,7 @@ impl SIPCore {
         // }
     }
 
-    pub fn callback_on_incomming_call(&self, acc_id: UAAccount, call_id: UACall, rdata: *mut SIPRxData) {
+    pub fn callback_on_incomming_call(&self, account: UAAccount, call_id: UACall, rdata: *mut SIPRxData) {
 
         // let sip_account = SIPAccount::from(acc_id).unwrap();
         // let call = SIPCall::from(call_id);
@@ -467,7 +455,7 @@ impl SIPCore {
 
     }
 
-    pub fn callback_on_dtmf_digit2(&self, call_id: UACall, info: *const UADtmfInfo) {
+    pub fn callback_on_dtmf_digit2(&self, call: UACall, info: *const UADtmfInfo) {
         // unsafe {
         //     let info = info.as_ref().unwrap();
         //     let dtmf = match info.method {
@@ -480,7 +468,7 @@ impl SIPCore {
         // }
     }
 
-    pub fn callback_on_call_redirected(&self, call_id: UACall, target: *const SIPUri, e: *const SIPEvent) -> u32 {
+    pub fn callback_on_call_redirected(&self, call: UACall, target: *const SIPUri, e: *const SIPEvent) -> u32 {
         // println!("Call {} is being redirected", call_id);
         self.redir_op.into()
     }
@@ -491,9 +479,9 @@ impl SIPCore {
 
     pub fn callback_on_incoming_subscribe(
         &self,
-        acc_id: UAAccount,
+        acc: UAAccount,
         srv_pres: *mut UASrvPres,
-        buddy_id: UABuddy,
+        buddy: UABuddy,
         from: String,
         rdata: *mut SIPRxData,
         code: &mut SIPStatusCode,
@@ -504,14 +492,14 @@ impl SIPCore {
         println!("On_incomming_subscribe")
     }
 
-    pub fn callback_on_buddy_state(&self, buddy_id: UABuddy) {
+    pub fn callback_on_buddy_state(&self, buddy: UABuddy) {
         // let mut info: pjsua_buddy_info = pjsua_buddy_info::new();
         // pjsua::buddy_get_info(buddy_id, &mut info).unwrap();
     }
 
     pub fn callback_on_buddy_evsub_state(
         &self,
-        buddy_id: UABuddy,
+        buddy: UABuddy,
         sub: *mut SIPEvsub,
         event: *mut SIPEvent,
     ) {
@@ -520,7 +508,7 @@ impl SIPCore {
 
     pub fn callback_on_pager(
         &self,
-        call_id: UACall,
+        call: UACall,
         from: String,
         to: String ,
         contact: String,
@@ -532,7 +520,7 @@ impl SIPCore {
 
     pub fn callback_on_typing(
         &self,
-        call_id: UACall,
+        call: UACall,
         from: String,
         to: String,
         contact: String,
@@ -543,7 +531,7 @@ impl SIPCore {
 
     pub fn callback_on_call_transfer_status(
         &self,
-        call_id: UACall,
+        call: UACall,
         st_code: i32,
         st_text: String,
         final_: bool,
@@ -565,8 +553,8 @@ impl SIPCore {
 
     pub fn callback_on_call_replaced(
         &self,
-        old_call_id: UACall,
-        new_call_id: UACall,
+        old_call: UACall,
+        new_call: UACall,
     ) {
         // println!( "Call {} is being replaced by call {}", old_call_id, new_call_id);
     }
@@ -604,7 +592,7 @@ impl SIPCore {
         // }
     }
 
-    pub fn callback_on_mwi_info(&self, acc_id: UAAccount, mwi_info: *mut UAMwiInfo) {
+    pub fn callback_on_mwi_info(&self, account: UAAccount, mwi_info: *mut UAMwiInfo) {
         // unsafe {
         //     println!("Received MWI for acc_id {}", acc_id);
         //     let ctype = (*(*mwi_info).rdata).msg_info.ctype;
@@ -714,7 +702,7 @@ impl SIPCore {
 
     pub fn callback_on_call_media_event(
         &self,
-        call_id: UACall,
+        call: UACall,
         med_idx: u32,
         event: *mut MediaEvent)
     {
@@ -910,89 +898,90 @@ impl SIPCore {
 //     }
 // }
 
-// unsafe extern "C" fn on_rx_request(rdata: *mut pjsip_rx_data) -> pj_status_t {
-//     println!("OnRxRequest");
-//     // base rx request handle undefined state.
-//     let mut tdata: *mut pjsip_tx_data = &mut pjsip_tx_data::new() as *mut _;
-//     let status_code: pjsip_status_code;
-//     let status: pj_status_t;
+unsafe extern "C" fn on_rx_request(rdata: *mut SIPRxData) -> i32 {
+    println!("OnRxRequest");
+    // base rx request handle undefined state.
+    // let mut tdata: *mut pjsip_tx_data = &mut pjsip_tx_data::new() as *mut _;
+    // let status_code: pjsip_status_code;
+    // let status: pj_status_t;
 
-//     // let mut rdata = rdata;
-//     let msg = (*rdata).msg_info.msg;
-//     let method = &(*msg).line.req.as_ref().method;
+    // // let mut rdata = rdata;
+    // let msg = (*rdata).msg_info.msg;
+    // let method = &(*msg).line.req.as_ref().method;
 
-//     if pjsip::method_cmp(&method, &pjsip_ack_method) == 0 {
-//         return PJ_TRUE as pj_status_t;
-//     }
+    // if pjsip::method_cmp(&method, &pjsip_ack_method) == 0 {
+    //     return PJ_TRUE as pj_status_t;
+    // }
 
-//     if pjsip::method_cmp(&method , &pjsip_register_method) == 0 {
-//         // call simple registrar pjsip_tx_data
-//         simple_registrar(rdata as *mut _);
-//         return PJ_TRUE as pj_status_t;
-//     }
+    // if pjsip::method_cmp(&method , &pjsip_register_method) == 0 {
+    //     // call simple registrar pjsip_tx_data
+    //     simple_registrar(rdata as *mut _);
+    //     return PJ_TRUE as pj_status_t;
+    // }
 
-//     let mmethod = &pjsip_simple_sys::pjsip_notify_method;
-//     if pjsip::method_cmp(&method, &mmethod) == 0 {
-//         status_code = PJSIP_SC_BAD_REQUEST;
-//     } else {
-//         status_code = PJSIP_SC_METHOD_NOT_ALLOWED;
-//     }
+    // let mmethod = &pjsip_simple_sys::pjsip_notify_method;
+    // if pjsip::method_cmp(&method, &mmethod) == 0 {
+    //     status_code = PJSIP_SC_BAD_REQUEST;
+    // } else {
+    //     status_code = PJSIP_SC_METHOD_NOT_ALLOWED;
+    // }
 
-//     status = pjsip_endpt_create_response(
-//         pjsua_get_pjsip_endpt(),
-//         rdata,
-//         status_code as c_int,
-//         ptr::null_mut() as *const _,
-//         &mut tdata as *mut _,
-//     );
+    // status = pjsip_endpt_create_response(
+    //     pjsua_get_pjsip_endpt(),
+    //     rdata,
+    //     status_code as c_int,
+    //     ptr::null_mut() as *const _,
+    //     &mut tdata as *mut _,
+    // );
 
-//     if status != PJ_SUCCESS as pj_status_t {
-//         return PJ_TRUE as pj_status_t;
-//     }
+    // if status != PJ_SUCCESS as pj_status_t {
+    //     return PJ_TRUE as pj_status_t;
+    // }
 
-//     let msg = (*tdata).msg;
-//     let ahdr: *mut pjsip_hdr = &mut (*msg).hdr as *mut _;
+    // let msg = (*tdata).msg;
+    // let ahdr: *mut pjsip_hdr = &mut (*msg).hdr as *mut _;
 
-//     if status_code == PJSIP_SC_METHOD_NOT_ALLOWED {
+    // if status_code == PJSIP_SC_METHOD_NOT_ALLOWED {
 
 
-//         let cap_hdr = pjsip_endpt_get_capability(
-//             pjsua_get_pjsip_endpt(),
-//             PJSIP_H_ALLOW as i32,
-//             ptr::null() as *const _,
-//         );
+    //     let cap_hdr = pjsip_endpt_get_capability(
+    //         pjsua_get_pjsip_endpt(),
+    //         PJSIP_H_ALLOW as i32,
+    //         ptr::null() as *const _,
+    //     );
 
-//         if !cap_hdr.is_null() {
-//             let hdr_clone = pjsip_hdr_clone((*tdata).pool, cap_hdr as *const _) as *const pjsip_hdr;
+    //     if !cap_hdr.is_null() {
+    //         let hdr_clone = pjsip_hdr_clone((*tdata).pool, cap_hdr as *const _) as *const pjsip_hdr;
 
-//             pj_list_insert_before(
-//                 ahdr as *mut _ ,
-//                 hdr_clone as *mut _,
-//             );
-//         }
-//     }
+    //         pj_list_insert_before(
+    //             ahdr as *mut _ ,
+    //             hdr_clone as *mut _,
+    //         );
+    //     }
+    // }
 
-//     // add user-agent header
-//     let mut ua = pj_str_t::from_string(String::from("User-Agent"));
-//     let mut agent = pj_str_t::from_string(String::from("IpCodec"));
+    // // add user-agent header
+    // let mut ua = pj_str_t::from_string(String::from("User-Agent"));
+    // let mut agent = pj_str_t::from_string(String::from("IpCodec"));
 
-//     let h = pjsip_generic_string_hdr_create(
-//         (*tdata).pool,
-//         &mut ua as *const _,
-//         &mut agent as *const _,
-//     ) as *mut pjsip_hdr;
+    // let h = pjsip_generic_string_hdr_create(
+    //     (*tdata).pool,
+    //     &mut ua as *const _,
+    //     &mut agent as *const _,
+    // ) as *mut pjsip_hdr;
 
-//     pj_list_insert_before(ahdr as *mut _, h as *mut _);
+    // pj_list_insert_before(ahdr as *mut _, h as *mut _);
 
-//     pjsip_endpt_send_response2(pjsua::get_pjsip_endpt(),
-//         rdata,
-//         tdata,
-//         ptr::null_mut(),
-//         None
-//     );
+    // pjsip_endpt_send_response2(pjsua::get_pjsip_endpt(),
+    //     rdata,
+    //     tdata,
+    //     ptr::null_mut(),
+    //     None
+    // );
 
-//     PJ_TRUE as pj_status_t
-// }
+    // PJ_TRUE as pj_status_t
+    0
+}
 
 /// on_call_state(pjsua_call_id, pjsip_event)
 unsafe extern "C" fn on_call_state(call_id: i32, e: *mut SIPEvent) {
@@ -1030,16 +1019,6 @@ unsafe extern "C" fn on_reg_state(acc_id: i32) {
 }
 
 // On Incomming Subscribe
-// on_incoming_subscribe(
-//     acc_id: i32,
-//     srv_pres: *mut pjsua_srv_pres,
-//     buddy_id: i32,
-//     from: *const PJStr,
-//     rdata: *mut SIPRxData,
-//     code: *mut pjsip_status_code,
-//     reason: *mut PJStr,
-//     msg_data: *mut UAMsgData,
-// )
 unsafe extern "C" fn on_incoming_subscribe(
     acc_id: i32,
     srv_pres: *mut UASrvPres,
