@@ -1,19 +1,7 @@
 use pj_sys::*;
-use pjnath_sys::*;
-use pjsip_simple_sys::pjrpid_element;
-use std::{ffi::{CStr, CString}, ptr};
+use std::ffi::{CStr, CString};
 
 use crate::prelude::{AutoCreate, FromString, ToString};
-
-
-impl AutoCreate<pj_str_t> for pj_str_t {
-    fn new() -> pj_str_t {
-        pj_str_t {
-            ptr: ptr::null_mut(),
-            slen: 0,
-        }
-    }
-}
 
 impl FromString<pj_str_t> for pj_str_t {
     fn from_string(value: String) -> pj_str_t {
@@ -44,238 +32,70 @@ impl ToString for pj_str_t {
     }
 }
 
-impl AutoCreate<pj_ice_sess_options> for pj_ice_sess_options {
-    fn new() -> pj_ice_sess_options {
-        pj_ice_sess_options {
-            aggressive: PJ_FALSE as pj_bool_t,
-            nominated_check_delay: 0,
-            controlled_agent_want_nom_timeout: 0,
-            trickle: 0 as pj_ice_sess_trickle,
-        }
-    }
-}
-
-impl AutoCreate<pj_time_val> for pj_time_val {
-    fn new() -> pj_time_val {
-        pj_time_val { sec: 0, msec: 0 }
-    }
-}
-
-impl AutoCreate<pj_qos_params> for pj_qos_params {
-    fn new() -> pj_qos_params {
-        pj_qos_params {
-            flags: 0,
-            dscp_val: 0,
-            so_prio: 0,
-            wmm_prio: 0,
-        }
-    }
-}
-
-impl AutoCreate<pj_sockopt_params__bindgen_ty_1> for pj_sockopt_params__bindgen_ty_1 {
-    fn new() -> pj_sockopt_params__bindgen_ty_1 {
-        pj_sockopt_params__bindgen_ty_1 {
-            level: 0,
-            optname: 0,
-            optval: ptr::null_mut(),
-            optlen: 0,
-        }
-    }
-}
-
-impl AutoCreate<pj_sockopt_params> for pj_sockopt_params {
-    fn new() -> pj_sockopt_params {
-        pj_sockopt_params {
-            cnt: 0,
-            options: [pj_sockopt_params__bindgen_ty_1::new(); 4],
-        }
-    }
-}
-
-impl AutoCreate<pj_ssl_sock_cb> for pj_ssl_sock_cb {
-    fn new() -> pj_ssl_sock_cb {
-        pj_ssl_sock_cb {
-            on_data_read: None,
-            on_data_recvfrom: None,
-            on_data_sent: None,
-            on_accept_complete: None,
-            on_accept_complete2: None,
-            on_connect_complete: None,
-        }
-    }
-}
-
-impl AutoCreate<pj_ssl_sock_param> for pj_ssl_sock_param {
-    fn new() -> pj_ssl_sock_param {
-        pj_ssl_sock_param {
-            grp_lock: ptr::null_mut(),
-            sock_af: 0,
-            sock_type: 0,
-            ioqueue: ptr::null_mut(),
-            timer_heap: ptr::null_mut(),
-            cb: pj_ssl_sock_cb::new(),
-            user_data: ptr::null_mut(),
-            proto: 0 as pj_uint32_t,
-            async_cnt: 0,
-            concurrency: 0,
-            whole_data: PJ_FALSE as pj_bool_t,
-            send_buffer_size: 0,
-            read_buffer_size: 0,
-            ciphers_num: 0,
-            ciphers: ptr::null_mut(),
-            curves_num: 0,
-            curves: ptr::null_mut(),
-            sigalgs: pj_str_t::new(),
-            entropy_type: 0,
-            entropy_path: pj_str_t::new(),
-            timeout: pj_time_val::new(),
-            verify_peer: PJ_FALSE as pj_bool_t,
-            require_client_cert: PJ_FALSE as pj_bool_t,
-            server_name: pj_str_t::new(),
-            reuse_addr: PJ_FALSE as pj_bool_t,
-            qos_type: 0,
-            qos_params: pj_qos_params::new(),
-            qos_ignore_error: PJ_FALSE as pj_bool_t,
-            sockopt_params: pj_sockopt_params::new(),
-            sockopt_ignore_error: PJ_FALSE as pj_bool_t,
-        }
-    }
-}
-
-impl AutoCreate<pj_turn_sock_tls_cfg> for pj_turn_sock_tls_cfg {
-    fn new() -> pj_turn_sock_tls_cfg {
-        pj_turn_sock_tls_cfg {
-            ca_list_file: pj_str_t::new(),
-            ca_list_path: pj_str_t::new(),
-            cert_file: pj_str_t::new(),
-            privkey_file: pj_str_t::new(),
-            ca_buf: pj_str_t::new() as pj_ssl_cert_buffer,
-            cert_buf: pj_str_t::new() as pj_ssl_cert_buffer,
-            privkey_buf: pj_str_t::new() as pj_ssl_cert_buffer,
-            password: pj_str_t::new(),
-            ssock_param: pj_ssl_sock_param::new(),
-        }
-    }
-}
-
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
-    fn new() -> pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
-        pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1 {
-            realm: pj_str_t::new(),
-            username: pj_str_t::new(),
-            data_type: 0,
-            data: pj_str_t::new(),
-            nonce: pj_str_t::new(),
-        }
-    }
-}
-
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2> for pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
-    fn new() -> pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
-        pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2 {
-            user_data: ptr::null_mut(),
-            get_auth: None,
-            get_cred: None,
-            get_password: None,
-            verify_nonce: None,
-        }
-    }
-}
-
-impl AutoCreate<pj_stun_auth_cred__bindgen_ty_1> for pj_stun_auth_cred__bindgen_ty_1 {
-    fn new() -> pj_stun_auth_cred__bindgen_ty_1 {
-        pj_stun_auth_cred__bindgen_ty_1 {
-            static_cred: pjnath_sys::__BindgenUnionField::<pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>::new(),
-            dyn_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2>::new(),
-            bindgen_union_field: [0; 9]
-        }
-    }
-}
-
-impl AutoCreate<pj_stun_auth_cred> for pj_stun_auth_cred {
-    fn new() -> pj_stun_auth_cred {
-
-        let mut result = pj_stun_auth_cred {
-            type_: 0,
-            data: pj_stun_auth_cred__bindgen_ty_1 {
-                static_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1>::default(),
-                dyn_cred: pjnath_sys::__BindgenUnionField::<pjnath_sys::pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2>::default(),
-                bindgen_union_field: [0;9]
-            }
-
-        };
-
-        unsafe {
-            *result.data.static_cred.as_mut() = pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_1::new();
-            *result.data.dyn_cred.as_mut() = pj_stun_auth_cred__bindgen_ty_1__bindgen_ty_2::new();
-        }
-
-        result
-    }
-}
-
-impl AutoCreate<pj_ioqueue_op_key_t> for pj_ioqueue_op_key_t {
-    fn new() -> pj_ioqueue_op_key_t {
-        pj_ioqueue_op_key_t {
-            internal__: [ptr::null_mut(); 32],
-            activesock_data: ptr::null_mut(),
-            user_data: ptr::null_mut(),
-        }
-    }
-}
-
-impl AutoCreate<pj_sockaddr_in> for pj_sockaddr_in {
-    fn new() -> pj_sockaddr_in {
-        pj_sockaddr_in {
-            sin_family: 0,
-            sin_port: 0,
-            sin_addr: in_addr { s_addr: 0 } as pj_in_addr,
-            sin_zero_pad: [0; 8],
-        }
-    }
-}
-
-impl AutoCreate<pj_sockaddr> for pj_sockaddr {
-    fn new() -> pj_sockaddr {
-        pj_sockaddr {
-            ipv4: pj_sockaddr_in::new(),
-        }
-    }
-}
-
-impl AutoCreate<pjrpid_element> for pjrpid_element {
-    fn new() -> pjrpid_element {
-        pjrpid_element {
-            type_: 0,
-            id: pj_str_t::new(),
-            activity: 0,
-            note: pj_str_t::new(),
-        }
-    }
-}
-
-impl AutoCreate<pj_timer_entry> for pj_timer_entry {
-    fn new() -> pj_timer_entry {
-        pj_timer_entry {
-            user_data: ptr::null_mut(),
-            id: -1,
-            cb: None,
-            _timer_id: -1,
-        }
-    }
-}
-
-impl AutoCreate<pj_math_stat> for pj_math_stat {
-    fn new () -> pj_math_stat {
-        pj_math_stat {
-            n: -1,
-            max: -1,
-            min: -1,
-            last: -1,
-            mean: -1,
-            fmean_: 0.0,
-            m2_: 0.0,
-        }
-    }
-}
-
+impl AutoCreate<pj_str_t> for pj_str_t {}
+impl AutoCreate<pj_timestamp__bindgen_ty_1> for pj_timestamp__bindgen_ty_1 {}
+impl AutoCreate<pj_hash_table_t> for pj_hash_table_t {}
+impl AutoCreate<pj_hash_entry> for pj_hash_entry {}
+impl AutoCreate<pj_hash_iterator_t> for pj_hash_iterator_t {}
+impl AutoCreate<pj_ioqueue_t> for pj_ioqueue_t {}
+impl AutoCreate<pj_ioqueue_key_t> for pj_ioqueue_key_t {}
+impl AutoCreate<pj_timer_heap_t> for pj_timer_heap_t {}
+impl AutoCreate<pj_atomic_t> for pj_atomic_t {}
+impl AutoCreate<pj_thread_t> for pj_thread_t {}
+impl AutoCreate<pj_lock_t> for pj_lock_t {}
+impl AutoCreate<pj_grp_lock_t> for pj_grp_lock_t {}
+impl AutoCreate<pj_mutex_t> for pj_mutex_t {}
+impl AutoCreate<pj_sem_t> for pj_sem_t {}
+impl AutoCreate<pj_event_t> for pj_event_t {}
+impl AutoCreate<pj_pipe_t> for pj_pipe_t {}
+impl AutoCreate<pj_time_val> for pj_time_val {}
+impl AutoCreate<pj_parsed_time> for pj_parsed_time {}
+impl AutoCreate<pj_ioqueue_op_key_t> for pj_ioqueue_op_key_t {}
+impl AutoCreate<pj_ioqueue_callback> for pj_ioqueue_callback {}
+impl AutoCreate<in_addr> for in_addr {}
+impl AutoCreate<in6_addr> for in6_addr {}
+impl AutoCreate<pj_sockaddr_in> for pj_sockaddr_in {}
+impl AutoCreate<pj_sockaddr_in6> for pj_sockaddr_in6 {}
+impl AutoCreate<pj_addr_hdr> for pj_addr_hdr {}
+impl AutoCreate<pj_ip_mreq> for pj_ip_mreq {}
+impl AutoCreate<pj_sockopt_params> for pj_sockopt_params {}
+impl AutoCreate<pj_sockopt_params__bindgen_ty_1> for pj_sockopt_params__bindgen_ty_1 {}
+impl AutoCreate<pj_activesock_t> for pj_activesock_t {}
+impl AutoCreate<pj_activesock_cb> for pj_activesock_cb {}
+impl AutoCreate<pj_activesock_cfg> for pj_activesock_cfg {}
+impl AutoCreate<pj_hostent> for pj_hostent {}
+impl AutoCreate<pj_addrinfo> for pj_addrinfo {}
+impl AutoCreate<pj_exception_state_t> for pj_exception_state_t {}
+impl AutoCreate<pj_fifobuf_t> for pj_fifobuf_t {}
+impl AutoCreate<pj_file_stat> for pj_file_stat {}
+impl AutoCreate<pj_ip_route_entry__bindgen_ty_1> for pj_ip_route_entry__bindgen_ty_1 {}
+impl AutoCreate<pj_enum_ip_option> for pj_enum_ip_option {}
+impl AutoCreate<pj_list> for pj_list {}
+impl AutoCreate<pj_grp_lock_config> for pj_grp_lock_config {}
+impl AutoCreate<pj_math_stat> for pj_math_stat {}
+impl AutoCreate<pj_sys_info> for pj_sys_info {}
+impl AutoCreate<pj_symbianos_params> for pj_symbianos_params {}
+impl AutoCreate<pj_rwmutex_t> for pj_rwmutex_t {}
+impl AutoCreate<pj_pool_block> for pj_pool_block {}
+impl AutoCreate<pj_pool_t> for pj_pool_t {}
+impl AutoCreate<pj_pool_factory_policy> for pj_pool_factory_policy {}
+impl AutoCreate<pj_pool_factory> for pj_pool_factory {}
+impl AutoCreate<pj_caching_pool> for pj_caching_pool {}
+impl AutoCreate<pj_rbtree_node> for pj_rbtree_node {}
+impl AutoCreate<pj_rbtree> for pj_rbtree {}
+impl AutoCreate<pj_qos_params> for pj_qos_params {}
+impl AutoCreate<pj_fd_set_t> for pj_fd_set_t {}
+impl AutoCreate<pj_ssl_sock_t> for pj_ssl_sock_t {}
+impl AutoCreate<pj_ssl_cert_t> for pj_ssl_cert_t {}
+impl AutoCreate<pj_ssl_cert_info> for pj_ssl_cert_info {}
+impl AutoCreate<pj_ssl_cert_info__bindgen_ty_1> for pj_ssl_cert_info__bindgen_ty_1 {}
+impl AutoCreate<pj_ssl_cert_info__bindgen_ty_2> for pj_ssl_cert_info__bindgen_ty_2 {}
+impl AutoCreate<pj_ssl_cert_info__bindgen_ty_3> for pj_ssl_cert_info__bindgen_ty_3 {}
+impl AutoCreate<pj_ssl_cert_info__bindgen_ty_4> for pj_ssl_cert_info__bindgen_ty_4 {}
+impl AutoCreate<pj_ssl_cert_info__bindgen_ty_4__bindgen_ty_1> for pj_ssl_cert_info__bindgen_ty_4__bindgen_ty_1 {}
+impl AutoCreate<pj_ssl_cert_info__bindgen_ty_5> for pj_ssl_cert_info__bindgen_ty_5 {}
+impl AutoCreate<pj_ssl_sock_cb> for pj_ssl_sock_cb {}
+impl AutoCreate<pj_ssl_sock_info> for pj_ssl_sock_info {}
+impl AutoCreate<pj_ssl_sock_param> for pj_ssl_sock_param {}
+impl AutoCreate<pj_ssl_start_connect_param> for pj_ssl_start_connect_param {}
+impl AutoCreate<pj_timer_entry> for pj_timer_entry {}

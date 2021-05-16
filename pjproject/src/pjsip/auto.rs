@@ -1,346 +1,115 @@
-use pj_sys::*;
-use pjsip_simple_sys::*;
+
 use pjsip_sys::*;
-
 use super::utils::AutoCreate;
-use super::*;
 
-impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1__bindgen_ty_1
-{
-fn new() -> Self {
-    Self {
-        k: pj_str_t::new(),
-        op: pj_str_t::new(),
-        amf: pj_str_t::new(),
-        cb: None,
-    }
-}
-}
 
-impl AutoCreate<pjsip_cred_info__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1 {
-fn new() -> Self {
-    let mut result = Self {
-        aka: pjsip_sys::__BindgenUnionField::<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1>::default(),
-        bindgen_union_field: [0; 7]
-    };
-
-    unsafe {
-        *result.aka.as_mut() = pjsip_cred_info__bindgen_ty_1__bindgen_ty_1::new();
-    }
-
-    result
-}
-}
-
-impl AutoCreate<pjsip_cred_info> for pjsip_cred_info {
-fn new() -> Self {
-    Self {
-        realm: pj_str_t::new(),
-        scheme: pj_str_t::new(),
-        username: pj_str_t::new(),
-        data_type: 0,
-        data: pj_str_t::new(),
-        ext: pjsip_cred_info__bindgen_ty_1::new(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_hdr_vptr> for pjsip_hdr_vptr {
-fn new() -> Self {
-    Self {
-        clone: None,
-        shallow_clone: None,
-        print_on: None,
-    }
-}
-}
-
-impl AutoCreate<pjsip_hdr> for pjsip_hdr {
-fn new() -> Self {
-    Self {
-        prev: ptr::null_mut(),
-        next: ptr::null_mut(),
-        type_: 0,
-        name: pj_str_t::new(),
-        sname: pj_str_t::new(),
-        vptr: ptr::null_mut(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {
-fn new() -> Self {
-    Self {
-        ca_list_file: pj_str_t::new(),
-        ca_list_path: pj_str_t::new(),
-        cert_file: pj_str_t::new(),
-        privkey_file: pj_str_t::new(),
-        ca_buf: pj_str_t::new() as pj_ssl_cert_buffer,
-        cert_buf: pj_str_t::new() as pj_ssl_cert_buffer,
-        privkey_buf: pj_str_t::new() as pj_ssl_cert_buffer,
-        password: pj_str_t::new(),
-        method: 0,
-        proto: 0,
-        ciphers_num: 0,
-        ciphers: ptr::null_mut(),
-        curves_num: 0,
-        curves: ptr::null_mut(),
-        sigalgs: pj_str_t::new(),
-        entropy_type: 0,
-        entropy_path: pj_str_t::new(),
-        verify_server: 0,
-        verify_client: 0,
-        require_client_cert: 0,
-        timeout: pj_time_val::new(),
-        reuse_addr: 0,
-        qos_type: 0,
-        qos_params: pj_qos_params::new(),
-        qos_ignore_error: 0,
-        sockopt_params: pj_sockopt_params::new(),
-        sockopt_ignore_error: 0,
-        on_accept_fail_cb: None,
-    }
-}
-}
-
-impl AutoCreate<SIPModule> for SIPModule {
-fn new() -> Self {
-    // unsafe { std::mem::zeroed() }
-    Self {
-        prev: ptr::null_mut(),
-        next: ptr::null_mut(),
-        name: pj_str_t::new(),
-        id: -1,
-        priority: (PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32,
-        load: None,
-        start: None,
-        stop: None,
-        unload: None,
-        on_rx_request: None,
-        on_rx_response: None,
-        on_tx_request: None,
-        on_tx_response: None,
-        on_tsx_state: None,
-    }
-}
-}
-
-impl AutoCreate<pjsip_tx_data_op_key> for pjsip_tx_data_op_key {
-fn new() -> Self {
-    Self {
-        key: pj_ioqueue_op_key_t::new(),
-        tdata: ptr::null_mut(),
-        token: ptr::null_mut(),
-        callback: None,
-    }
-}
-}
-
-impl AutoCreate<pjsip_buffer> for pjsip_buffer {
-fn new() -> Self {
-    Self {
-        start: ptr::null_mut(),
-        cur: ptr::null_mut(),
-        end: ptr::null_mut(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_server_addresses__bindgen_ty_1> for pjsip_server_addresses__bindgen_ty_1 {
-fn new() -> Self {
-    Self {
-        type_: 0,
-        priority: 0,
-        weight: 0,
-        addr: pj_sockaddr::new(),
-        addr_len: 0,
-    }
-}
-}
-
-impl AutoCreate<pjsip_server_addresses> for pjsip_server_addresses {
-fn new() -> Self {
-    Self {
-        count: 0,
-        entry: [
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-            pjsip_server_addresses__bindgen_ty_1::new(), pjsip_server_addresses__bindgen_ty_1::new(),
-        ],
-    }
-}
-}
-
-impl AutoCreate<pjsip_tx_data__bindgen_ty_1> for pjsip_tx_data__bindgen_ty_1 {
-fn new() -> Self {
-    Self {
-        name: pj_str_t::new(),
-        addr: pjsip_server_addresses::new(),
-        cur_addr: 0x00000000,
-    }
-}
-}
-
-impl AutoCreate<pjsip_tx_data__bindgen_ty_2> for pjsip_tx_data__bindgen_ty_2 {
-fn new() -> Self {
-    Self {
-        transport: ptr::null_mut(),
-        dst_addr: pj_sockaddr::new(),
-        dst_addr_len: 0,
-        dst_name: [0x0; 46],
-        dst_port: 0,
-    }
-}
-}
-
-impl AutoCreate<pjsip_tpselector__bindgen_ty_1> for pjsip_tpselector__bindgen_ty_1 {
-fn new() -> Self {
-    Self {
-        ptr: ptr::null_mut(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_tpselector> for pjsip_tpselector {
-fn new() -> Self {
-    Self {
-        type_: 0,
-        disable_connection_reuse: PJ_FALSE as pj_bool_t,
-        u: pjsip_tpselector__bindgen_ty_1::new(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_host_port> for pjsip_host_port {
-fn new() -> Self {
-    Self {
-        host: pj_str_t::new(),
-        port: 0,
-    }
-}
-}
-
-impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {
-fn new() -> Self {
-    Self {
-        prev: ptr::null_mut(),
-        next: ptr::null_mut(),
-        pool: ptr::null_mut(),
-        obj_name: [0x00; 32],
-        info: ptr::null_mut(),
-        rx_timestamp: pj_time_val::new(),
-        mgr: ptr::null_mut(),
-        op_key: pjsip_tx_data_op_key::new(),
-        lock: ptr::null_mut(),
-        msg: ptr::null_mut(),
-        saved_strict_route: ptr::null_mut(),
-        buf: pjsip_buffer::new(),
-        ref_cnt: ptr::null_mut(),
-        is_pending: 0,
-        token: ptr::null_mut(),
-        cb: None,
-        dest_info: pjsip_tx_data__bindgen_ty_1::new(),
-        tp_info: pjsip_tx_data__bindgen_ty_2::new(),
-        tp_sel: pjsip_tpselector::new(),
-        auth_retry: 0,
-        mod_data: [ptr::null_mut(); 32],
-        via_addr: pjsip_host_port::new(),
-        via_tp: ptr::null_mut(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {
-fn new() -> Self {
-    Self {
-        prev: ptr::null_mut(),
-        next: ptr::null_mut(),
-        type_: 0,
-        name: pj_str_t::new(),
-        sname: pj_str_t::new(),
-        vptr: ptr::null_mut(),
-        hvalue: pj_str_t::new(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_pres_status__bindgen_ty_1> for pjsip_pres_status__bindgen_ty_1 {
-fn new() -> Self {
-    Self {
-        basic_open: PJ_FALSE as pj_bool_t,
-        rpid: pjrpid_element::new(),
-        id: pj_str_t::new(),
-        contact: pj_str_t::new(),
-        tuple_node: ptr::null_mut(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_pres_status> for pjsip_pres_status {
-fn new() -> Self {
-    Self {
-        info_cnt: 0,
-        info: [
-            pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
-            pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
-            pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
-            pjsip_pres_status__bindgen_ty_1::new(), pjsip_pres_status__bindgen_ty_1::new(),
-        ],
-        _is_valid: PJ_FALSE as pj_bool_t,
-    }
-}
-}
-
-impl AutoCreate<pjsip_param> for pjsip_param {
-fn new() -> Self {
-    Self {
-        prev: ptr::null_mut(),
-        next: ptr::null_mut(),
-        name: pj_str_t::new(),
-        value: pj_str_t::new(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_multipart_part> for pjsip_multipart_part {
-fn new() -> Self {
-    Self {
-        prev: ptr::null_mut(),
-        next: ptr::null_mut(),
-        hdr: pjsip_hdr::new(),
-        body: ptr::null_mut(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_media_type> for pjsip_media_type {
-fn new() -> Self {
-    Self {
-        type_: pj_str_t::new(),
-        subtype: pj_str_t::new(),
-        param: pjsip_param::new(),
-    }
-}
-}
-
-impl AutoCreate<pjsip_publishc_opt> for pjsip_publishc_opt {
-fn new() -> Self {
-    Self {
-        queue_request: 0,
-    }
-}
-}
-
-impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {
-fn new() -> pjsip_auth_clt_pref {
-    pjsip_auth_clt_pref {
-        initial_auth: 0,
-        algorithm: pj_str_t::new(),
-    }
-}
-}
+impl AutoCreate<pjsip_cfg_t> for pjsip_cfg_t {}
+impl AutoCreate<pjsip_cfg_t__bindgen_ty_1> for pjsip_cfg_t__bindgen_ty_1 {}
+impl AutoCreate<pjsip_cfg_t__bindgen_ty_2> for pjsip_cfg_t__bindgen_ty_2 {}
+impl AutoCreate<pjsip_cfg_t__bindgen_ty_3> for pjsip_cfg_t__bindgen_ty_3 {}
+impl AutoCreate<pjsip_cfg_t__bindgen_ty_4> for pjsip_cfg_t__bindgen_ty_4 {}
+impl AutoCreate<pjsip_cfg_t__bindgen_ty_5> for pjsip_cfg_t__bindgen_ty_5 {}
+impl AutoCreate<pjsip_tpmgr> for pjsip_tpmgr {}
+impl AutoCreate<pjsip_endpoint> for pjsip_endpoint {}
+impl AutoCreate<pjsip_resolver_t> for pjsip_resolver_t {}
+impl AutoCreate<pjsip_buffer> for pjsip_buffer {}
+impl AutoCreate<pjsip_host_port> for pjsip_host_port {}
+impl AutoCreate<pjsip_host_info> for pjsip_host_info {}
+impl AutoCreate<pjsip_param> for pjsip_param {}
+impl AutoCreate<pjsip_uri_vptr> for pjsip_uri_vptr {}
+impl AutoCreate<pjsip_uri> for pjsip_uri {}
+impl AutoCreate<pjsip_sip_uri> for pjsip_sip_uri {}
+impl AutoCreate<pjsip_name_addr> for pjsip_name_addr {}
+impl AutoCreate<pjsip_other_uri> for pjsip_other_uri {}
+impl AutoCreate<pjsip_tel_uri> for pjsip_tel_uri {}
+impl AutoCreate<pjsip_method> for pjsip_method {}
+impl AutoCreate<pjsip_hdr_vptr> for pjsip_hdr_vptr {}
+impl AutoCreate<pjsip_hdr> for pjsip_hdr {}
+impl AutoCreate<pjsip_request_line> for pjsip_request_line {}
+impl AutoCreate<pjsip_status_line> for pjsip_status_line {}
+impl AutoCreate<pjsip_media_type> for pjsip_media_type {}
+impl AutoCreate<pjsip_msg_body> for pjsip_msg_body {}
+impl AutoCreate<pjsip_msg> for pjsip_msg {}
+impl AutoCreate<pjsip_msg__bindgen_ty_1> for pjsip_msg__bindgen_ty_1 {}
+impl AutoCreate<pjsip_generic_string_hdr> for pjsip_generic_string_hdr {}
+impl AutoCreate<pjsip_generic_int_hdr> for pjsip_generic_int_hdr {}
+impl AutoCreate<pjsip_generic_array_hdr> for pjsip_generic_array_hdr {}
+impl AutoCreate<pjsip_cid_hdr> for pjsip_cid_hdr {}
+impl AutoCreate<pjsip_clen_hdr> for pjsip_clen_hdr {}
+impl AutoCreate<pjsip_cseq_hdr> for pjsip_cseq_hdr {}
+impl AutoCreate<pjsip_contact_hdr> for pjsip_contact_hdr {}
+impl AutoCreate<pjsip_ctype_hdr> for pjsip_ctype_hdr {}
+impl AutoCreate<pjsip_fromto_hdr> for pjsip_fromto_hdr {}
+impl AutoCreate<pjsip_routing_hdr> for pjsip_routing_hdr {}
+impl AutoCreate<pjsip_retry_after_hdr> for pjsip_retry_after_hdr {}
+impl AutoCreate<pjsip_via_hdr> for pjsip_via_hdr {}
+impl AutoCreate<pjsip_multipart_part> for pjsip_multipart_part {}
+impl AutoCreate<pjsip_parser_err_report> for pjsip_parser_err_report {}
+impl AutoCreate<pjsip_parse_ctx> for pjsip_parse_ctx {}
+impl AutoCreate<pjsip_parser_const_t> for pjsip_parser_const_t {}
+impl AutoCreate<pjsip_event> for pjsip_event {}
+impl AutoCreate<pjsip_event__bindgen_ty_1> for pjsip_event__bindgen_ty_1 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_1> for pjsip_event__bindgen_ty_1__bindgen_ty_1 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_2> for pjsip_event__bindgen_ty_1__bindgen_ty_2 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1> for pjsip_event__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_3> for pjsip_event__bindgen_ty_1__bindgen_ty_3 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_4> for pjsip_event__bindgen_ty_1__bindgen_ty_4 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_5> for pjsip_event__bindgen_ty_1__bindgen_ty_5 {}
+impl AutoCreate<pjsip_event__bindgen_ty_1__bindgen_ty_6> for pjsip_event__bindgen_ty_1__bindgen_ty_6 {}
+impl AutoCreate<pjsip_module> for pjsip_module {}
+impl AutoCreate<pjsip_server_addresses> for pjsip_server_addresses {}
+impl AutoCreate<pjsip_server_addresses__bindgen_ty_1> for pjsip_server_addresses__bindgen_ty_1 {}
+impl AutoCreate<pjsip_ext_resolver> for pjsip_ext_resolver {}
+impl AutoCreate<pjsip_tpselector> for pjsip_tpselector {}
+impl AutoCreate<pjsip_rx_data_op_key> for pjsip_rx_data_op_key {}
+impl AutoCreate<pjsip_rx_data> for pjsip_rx_data {}
+impl AutoCreate<pjsip_rx_data__bindgen_ty_1> for pjsip_rx_data__bindgen_ty_1 {}
+impl AutoCreate<pjsip_rx_data__bindgen_ty_2> for pjsip_rx_data__bindgen_ty_2 {}
+impl AutoCreate<pjsip_rx_data__bindgen_ty_3> for pjsip_rx_data__bindgen_ty_3 {}
+impl AutoCreate<pjsip_rx_data__bindgen_ty_4> for pjsip_rx_data__bindgen_ty_4 {}
+impl AutoCreate<pjsip_tx_data_op_key> for pjsip_tx_data_op_key {}
+impl AutoCreate<pjsip_tx_data> for pjsip_tx_data {}
+impl AutoCreate<pjsip_tx_data__bindgen_ty_1> for pjsip_tx_data__bindgen_ty_1 {}
+impl AutoCreate<pjsip_tx_data__bindgen_ty_2> for pjsip_tx_data__bindgen_ty_2 {}
+impl AutoCreate<pjsip_transport_key> for pjsip_transport_key {}
+impl AutoCreate<pjsip_transport> for pjsip_transport {}
+impl AutoCreate<pjsip_tpfactory> for pjsip_tpfactory {}
+impl AutoCreate<pjsip_tpmgr_fla2_param> for pjsip_tpmgr_fla2_param {}
+impl AutoCreate<pjsip_transport_state_info> for pjsip_transport_state_info {}
+impl AutoCreate<pjsip_tp_dropped_data> for pjsip_tp_dropped_data {}
+impl AutoCreate<pjsip_process_rdata_param> for pjsip_process_rdata_param {}
+impl AutoCreate<pjsip_target> for pjsip_target {}
+impl AutoCreate<pjsip_target_set> for pjsip_target_set {}
+impl AutoCreate<pjsip_send_state> for pjsip_send_state {}
+impl AutoCreate<pjsip_response_addr> for pjsip_response_addr {}
+impl AutoCreate<pjsip_udp_transport_cfg> for pjsip_udp_transport_cfg {}
+impl AutoCreate<pjsip_tcp_transport_cfg> for pjsip_tcp_transport_cfg {}
+impl AutoCreate<pjsip_tls_on_accept_fail_param> for pjsip_tls_on_accept_fail_param {}
+impl AutoCreate<pjsip_tls_setting> for pjsip_tls_setting {}
+impl AutoCreate<pjsip_tls_state_info> for pjsip_tls_state_info {}
+impl AutoCreate<pjsip_common_credential> for pjsip_common_credential {}
+impl AutoCreate<pjsip_digest_credential> for pjsip_digest_credential {}
+impl AutoCreate<pjsip_pgp_credential> for pjsip_pgp_credential {}
+impl AutoCreate<pjsip_oauth_credential> for pjsip_oauth_credential {}
+impl AutoCreate<pjsip_authorization_hdr> for pjsip_authorization_hdr {}
+impl AutoCreate<pjsip_authorization_hdr__bindgen_ty_1> for pjsip_authorization_hdr__bindgen_ty_1 {}
+impl AutoCreate<pjsip_common_challenge> for pjsip_common_challenge {}
+impl AutoCreate<pjsip_digest_challenge> for pjsip_digest_challenge {}
+impl AutoCreate<pjsip_pgp_challenge> for pjsip_pgp_challenge {}
+impl AutoCreate<pjsip_www_authenticate_hdr> for pjsip_www_authenticate_hdr {}
+impl AutoCreate<pjsip_www_authenticate_hdr__bindgen_ty_1> for pjsip_www_authenticate_hdr__bindgen_ty_1 {}
+impl AutoCreate<pjsip_cred_info> for pjsip_cred_info {}
+impl AutoCreate<pjsip_cred_info__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1 {}
+impl AutoCreate<pjsip_cred_info__bindgen_ty_1__bindgen_ty_1> for pjsip_cred_info__bindgen_ty_1__bindgen_ty_1 {}
+impl AutoCreate<pjsip_cached_auth_hdr> for pjsip_cached_auth_hdr {}
+impl AutoCreate<pjsip_cached_auth> for pjsip_cached_auth {}
+impl AutoCreate<pjsip_auth_clt_pref> for pjsip_auth_clt_pref {}
+impl AutoCreate<pjsip_auth_clt_sess> for pjsip_auth_clt_sess {}
+impl AutoCreate<pjsip_auth_lookup_cred_param> for pjsip_auth_lookup_cred_param {}
+impl AutoCreate<pjsip_auth_srv> for pjsip_auth_srv {}
+impl AutoCreate<pjsip_auth_srv_init_param> for pjsip_auth_srv_init_param {}
+impl AutoCreate<pjsip_transaction> for pjsip_transaction {}
+impl AutoCreate<pjsip_ua_init_param> for pjsip_ua_init_param {}
+impl AutoCreate<pjsip_dlg_party> for pjsip_dlg_party {}
+impl AutoCreate<pjsip_dialog> for pjsip_dialog {}
+impl AutoCreate<pjsip_dlg_create_uac_param> for pjsip_dlg_create_uac_param {}

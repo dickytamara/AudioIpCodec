@@ -2,6 +2,8 @@
 use num_enum::IntoPrimitive;
 use num_enum::TryFromPrimitive;
 
+pub mod auto;
+
 // pub type pj_stun_msg_hdr = pjnath_sys::pj_stun_msg_hdr;
 // pub type pj_stun_attr_hdr = pjnath_sys::pj_stun_attr_hdr;
 // pub type pj_stun_sockaddr_attr = pjnath_sys::pj_stun_sockaddr_attr;

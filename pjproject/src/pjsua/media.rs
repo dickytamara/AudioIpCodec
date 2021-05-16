@@ -1111,12 +1111,28 @@ impl UAEchoCancelar {
         unsafe { utils::check_status(pjsua_sys::pjsua_set_ec(tail_ms, options)) }
     }
 
-    pub fn get_ec_tail(&self, p_tail_ms: &mut u32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_tail(p_tail_ms)) }
+    pub fn get_ec_tail(&self) -> Result<u32, i32> {
+        unsafe {
+            let mut tail = 0_u32;
+            let status = pjsua_sys::pjsua_get_ec_tail(&mut tail as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(tail); },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
 
-    pub fn get_ec_stat(&self, p_stat: &mut pjmedia_echo_stat) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_get_ec_stat( p_stat as *mut _ )) }
+    pub fn get_ec_stat(&self) -> Result<Box<pjmedia_echo_stat>, i32> {
+        unsafe {
+            let mut stat = Box::new(pjmedia_echo_stat::new());
+            let status = pjsua_sys::pjsua_get_ec_stat( stat.as_mut() as *mut _ );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(stat); },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
 
 }
@@ -1139,8 +1155,17 @@ impl UASound {
         unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev(capture_dev, playback_dev)) }
     }
 
-    pub fn get_snd_dev(&self, capture_dev: &mut i32, playback_dev: &mut i32) -> Result<(), i32> {
-        unsafe { utils::check_status(pjsua_sys::pjsua_get_snd_dev( capture_dev as *mut _, playback_dev as *mut _ )) }
+    // TODO: fix with return value Result<(i32, i32), i32>
+    pub fn get_snd_dev(&self) -> Result<(i32, i32), i32> {
+        unsafe {
+            let mut dev: (i32, i32) = (-1, -1);
+            let status = pjsua_sys::pjsua_get_snd_dev( &mut dev.0 as *mut _, &mut dev.1 as *mut _ );
+
+            match utils::check_status(status) {
+                Ok(()) => { return Ok(dev); },
+                Err(e) => { return Err(e); }
+            }
+        }
     }
 
     // TODO: fix with Result<pjsua_snd_dev_param, i32>
@@ -1169,15 +1194,29 @@ impl UASound {
                 },
                 Err(e) => { return Err(e); }
             }
-
         }
     }
 
     // old api
     // TODO: fix with Result<Vec<pjmedia_snd_dev_info>>
-    pub fn enum_snd_devs(info: &mut [pjmedia_snd_dev_info; 256], count: &mut u32) -> Result<(), i32> {
+    pub fn enum_snd_devs() -> Result<Vec<pjmedia_snd_dev_info>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), count as *mut _))
+            let mut info = [pjmedia_snd_dev_info::new(); 256];
+            let mut count = 0_u32;
+            let status = pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), &mut count as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => {
+                    let mut infos = Vec::<pjmedia_snd_dev_info>::new();
+
+                    for i in 0..count as usize {
+                        infos.push(info[i]);
+                    }
+
+                    return Ok(infos);
+                },
+                Err(e) => { return Err(e); }
+            }
         }
     }
 
@@ -1297,17 +1336,4 @@ impl UACodecManager {
 // skiped function for detailed audio dev setting
 // i32 	pjsua_snd_set_setting (pjmedia_aud_dev_cap cap, const void *pval, pj_bool_t keep)
 // i32 	pjsua_snd_get_setting (pjmedia_aud_dev_cap cap, void *pval)
-
-
-
-// #[link(name="pjsua")]
-// extern "C" {
-//     pub fn pjsua_conf_get_msignal_level(
-//         slot: i32,
-//         tx_level_l: *mut c_uint,
-//         tx_level_r: *mut c_uint,
-//         rx_level_l: *mut c_uint,
-//         rx_level_r: *mut c_uint,
-//     ) -> i32;
-// }
 

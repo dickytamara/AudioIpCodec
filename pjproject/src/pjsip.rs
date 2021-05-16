@@ -15,7 +15,7 @@ use super::utils::check_status;
 
 use num_enum::*;
 
-use std::{ffi::CString, ptr};
+use std::{ffi::CString};
 
 // pub type pjsip_cfg_t = pjsip_cfg_t;
 // pub type pjsip_cfg_t__bindgen_ty_1 = pjsip_cfg_t__bindgen_ty_1;

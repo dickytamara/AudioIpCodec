@@ -2,7 +2,7 @@ use pj_sys::*;
 
 // global trait for new struct
 pub trait AutoCreate<T> {
-    fn new() -> T;
+    fn new() -> T { unsafe { ::std::mem::zeroed() } }
 }
 
 pub trait AutoDefault<T> {

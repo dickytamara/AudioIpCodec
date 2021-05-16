@@ -1,6 +1,8 @@
 use pjsip_simple_sys::*;
 use num_enum::*;
 
+pub mod auto;
+
 
 pub type SIPEvsub = pjsip_evsub;
 // pub type pjsip_evsub_user = pjsip_evsub_user;
