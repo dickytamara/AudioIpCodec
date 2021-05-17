@@ -147,15 +147,16 @@ pub const PJ_CACHING_POOL_ARRAY_SIZE: u32 = 16;
 pub type pj_int64_t = ::std::os::raw::c_longlong;
 pub type pj_uint64_t = ::std::os::raw::c_ulonglong;
 pub type size_t = ::std::os::raw::c_ulong;
+
 extern "C" {
     pub static mut PJ_VERSION: *const ::std::os::raw::c_char;
 }
+
 extern "C" {
     pub fn pj_get_version() -> *const ::std::os::raw::c_char;
-}
-extern "C" {
     pub fn pj_dump_config();
 }
+
 pub type pj_int32_t = ::std::os::raw::c_int;
 pub type pj_uint32_t = ::std::os::raw::c_uint;
 pub type pj_int16_t = ::std::os::raw::c_short;
@@ -167,6 +168,7 @@ pub type pj_ssize_t = ::std::os::raw::c_long;
 pub type pj_status_t = ::std::os::raw::c_int;
 pub type pj_bool_t = ::std::os::raw::c_int;
 pub type pj_char_t = ::std::os::raw::c_char;
+
 pub const PJ_SUCCESS: pj_constants_ = 0;
 pub const PJ_TRUE: pj_constants_ = 1;
 pub const PJ_FALSE: pj_constants_ = 0;
@@ -195,44 +197,53 @@ impl ::std::fmt::Debug for pj_timestamp {
         write!(f, "pj_timestamp {{ union }}")
     }
 }
+
 pub type pj_list_type = ::std::os::raw::c_void;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_hash_table_t {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_hash_entry {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_hash_iterator_t {
     pub index: pj_uint32_t,
     pub entry: *mut pj_hash_entry,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_ioqueue_t {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_ioqueue_key_t {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_timer_heap_t {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_atomic_t {
     _unused: [u8; 0],
 }
 pub type pj_atomic_value_t = ::std::os::raw::c_long;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_thread_t {
@@ -258,40 +269,45 @@ pub struct pj_mutex_t {
 pub struct pj_sem_t {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_event_t {
     _unused: [u8; 0],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_pipe_t {
     _unused: [u8; 0],
 }
+
 pub type pj_oshandle_t = *mut ::std::os::raw::c_void;
 pub type pj_sock_t = ::std::os::raw::c_long;
 pub type pj_sockaddr_t = ::std::os::raw::c_void;
 pub type pj_color_t = ::std::os::raw::c_uint;
 pub type pj_exception_id_t = ::std::os::raw::c_int;
+
 extern "C" {
     pub fn pj_init() -> pj_status_t;
-}
-extern "C" {
     pub fn pj_shutdown();
-}
-pub type pj_exit_callback = ::std::option::Option<unsafe extern "C" fn()>;
-extern "C" {
     pub fn pj_atexit(func: pj_exit_callback) -> pj_status_t;
 }
+
+pub type pj_exit_callback = ::std::option::Option<unsafe extern "C" fn()>;
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_time_val {
     pub sec: ::std::os::raw::c_long,
     pub msec: ::std::os::raw::c_long,
 }
+
 extern "C" {
     pub fn pj_time_val_normalize(t: *mut pj_time_val);
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_parsed_time {
@@ -304,6 +320,7 @@ pub struct pj_parsed_time {
     pub hour: ::std::os::raw::c_int,
     pub msec: ::std::os::raw::c_int,
 }
+
 pub const PJ_TERM_COLOR_R: u32 = 2;
 pub const PJ_TERM_COLOR_G: u32 = 4;
 pub const PJ_TERM_COLOR_B: u32 = 1;
@@ -345,6 +362,7 @@ pub struct pj_ioqueue_callback {
         unsafe extern "C" fn(key: *mut pj_ioqueue_key_t, status: pj_status_t),
     >,
 }
+
 pub const PJ_IOQUEUE_OP_NONE: pj_ioqueue_operation_e = 0;
 pub const PJ_IOQUEUE_OP_READ: pj_ioqueue_operation_e = 1;
 pub const PJ_IOQUEUE_OP_RECV: pj_ioqueue_operation_e = 2;
@@ -355,33 +373,24 @@ pub const PJ_IOQUEUE_OP_SEND_TO: pj_ioqueue_operation_e = 32;
 pub const PJ_IOQUEUE_OP_ACCEPT: pj_ioqueue_operation_e = 64;
 pub const PJ_IOQUEUE_OP_CONNECT: pj_ioqueue_operation_e = 128;
 pub type pj_ioqueue_operation_e = u32;
+
 extern "C" {
     pub fn pj_ioqueue_name() -> *const ::std::os::raw::c_char;
-}
-extern "C" {
     pub fn pj_ioqueue_create(
         pool: *mut pj_pool_t,
         max_fd: pj_size_t,
         ioqueue: *mut *mut pj_ioqueue_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_destroy(ioque: *mut pj_ioqueue_t) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_set_lock(
         ioque: *mut pj_ioqueue_t,
         lock: *mut pj_lock_t,
         auto_delete: pj_bool_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_set_default_concurrency(
         ioqueue: *mut pj_ioqueue_t,
         allow: pj_bool_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_register_sock(
         pool: *mut pj_pool_t,
         ioque: *mut pj_ioqueue_t,
@@ -390,8 +399,6 @@ extern "C" {
         cb: *const pj_ioqueue_callback,
         key: *mut *mut pj_ioqueue_key_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_register_sock2(
         pool: *mut pj_pool_t,
         ioque: *mut pj_ioqueue_t,
@@ -401,49 +408,27 @@ extern "C" {
         cb: *const pj_ioqueue_callback,
         key: *mut *mut pj_ioqueue_key_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_unregister(key: *mut pj_ioqueue_key_t) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_get_user_data(key: *mut pj_ioqueue_key_t) -> *mut ::std::os::raw::c_void;
-}
-extern "C" {
     pub fn pj_ioqueue_set_user_data(
         key: *mut pj_ioqueue_key_t,
         user_data: *mut ::std::os::raw::c_void,
         old_data: *mut *mut ::std::os::raw::c_void,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_set_concurrency(key: *mut pj_ioqueue_key_t, allow: pj_bool_t) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_lock_key(key: *mut pj_ioqueue_key_t) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_trylock_key(key: *mut pj_ioqueue_key_t) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_unlock_key(key: *mut pj_ioqueue_key_t) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_op_key_init(op_key: *mut pj_ioqueue_op_key_t, size: pj_size_t);
-}
-extern "C" {
     pub fn pj_ioqueue_is_pending(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
     ) -> pj_bool_t;
-}
-extern "C" {
     pub fn pj_ioqueue_post_completion(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
         bytes_status: pj_ssize_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_accept(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
@@ -452,21 +437,15 @@ extern "C" {
         remote: *mut pj_sockaddr_t,
         addrlen: *mut ::std::os::raw::c_int,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_connect(
         key: *mut pj_ioqueue_key_t,
         addr: *const pj_sockaddr_t,
         addrlen: ::std::os::raw::c_int,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_poll(
         ioque: *mut pj_ioqueue_t,
         timeout: *const pj_time_val,
     ) -> ::std::os::raw::c_int;
-}
-extern "C" {
     pub fn pj_ioqueue_recv(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
@@ -474,8 +453,6 @@ extern "C" {
         length: *mut pj_ssize_t,
         flags: pj_uint32_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_recvfrom(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
@@ -485,8 +462,6 @@ extern "C" {
         addr: *mut pj_sockaddr_t,
         addrlen: *mut ::std::os::raw::c_int,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_send(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
@@ -494,8 +469,6 @@ extern "C" {
         length: *mut pj_ssize_t,
         flags: pj_uint32_t,
     ) -> pj_status_t;
-}
-extern "C" {
     pub fn pj_ioqueue_sendto(
         key: *mut pj_ioqueue_key_t,
         op_key: *mut pj_ioqueue_op_key_t,
@@ -506,9 +479,11 @@ extern "C" {
         addrlen: ::std::os::raw::c_int,
     ) -> pj_status_t;
 }
+
 pub type __uint8_t = ::std::os::raw::c_uchar;
 pub type __uint16_t = ::std::os::raw::c_ushort;
 pub type __uint32_t = ::std::os::raw::c_uint;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct __sigset_t {
@@ -542,114 +517,48 @@ impl ::std::fmt::Debug for in6_addr {
         write!(f, "in6_addr {{ __in6_u: {:?} }}", self.__in6_u)
     }
 }
+
+
 extern "C" {
     pub static PJ_AF_UNSPEC: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_AF_UNIX: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_AF_INET: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_AF_INET6: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_AF_PACKET: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_AF_IRDA: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOCK_STREAM: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOCK_DGRAM: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOCK_RAW: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOCK_RDM: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOL_SOCKET: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOL_IP: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOL_TCP: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOL_UDP: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SOL_IPV6: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IP_TOS: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IPTOS_LOWDELAY: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IPTOS_THROUGHPUT: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IPTOS_RELIABILITY: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IPTOS_MINCOST: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IPV6_TCLASS: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SO_TYPE: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SO_RCVBUF: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SO_SNDBUF: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_TCP_NODELAY: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SO_REUSEADDR: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SO_NOSIGPIPE: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_SO_PRIORITY: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IP_MULTICAST_IF: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IP_MULTICAST_TTL: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IP_MULTICAST_LOOP: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IP_ADD_MEMBERSHIP: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_IP_DROP_MEMBERSHIP: pj_uint16_t;
-}
-extern "C" {
     pub static PJ_MSG_OOB: ::std::os::raw::c_int;
-}
-extern "C" {
     pub static PJ_MSG_PEEK: ::std::os::raw::c_int;
-}
-extern "C" {
     pub static PJ_MSG_DONTROUTE: ::std::os::raw::c_int;
 }
+
+
 pub const PJ_SD_RECEIVE: pj_socket_sd_type = 0;
 pub const PJ_SHUT_RD: pj_socket_sd_type = 0;
 pub const PJ_SD_SEND: pj_socket_sd_type = 1;
@@ -3026,6 +2935,7 @@ pub const PJ_SSL_CK_IDEA_128_CBC_WITH_MD5: pj_ssl_cipher = 327808;
 pub const PJ_SSL_CK_DES_64_CBC_WITH_MD5: pj_ssl_cipher = 393280;
 pub const PJ_SSL_CK_DES_192_EDE3_CBC_WITH_MD5: pj_ssl_cipher = 458944;
 pub type pj_ssl_cipher = i32;
+
 extern "C" {
     pub fn pj_ssl_cipher_get_availables(
         ciphers: *mut pj_ssl_cipher,
@@ -3041,6 +2951,7 @@ extern "C" {
 extern "C" {
     pub fn pj_ssl_cipher_id(cipher_name: *const ::std::os::raw::c_char) -> pj_ssl_cipher;
 }
+
 pub const PJ_TLS_UNKNOWN_CURVE: pj_ssl_curve = 0;
 pub const PJ_TLS_CURVE_SECT163K1: pj_ssl_curve = 1;
 pub const PJ_TLS_CURVE_SECT163R1: pj_ssl_curve = 2;
@@ -3073,6 +2984,7 @@ pub const PJ_TLS_CURVE_BRAINPOOLP512R1: pj_ssl_curve = 28;
 pub const PJ_TLS_CURVE_ARBITRARY_EXPLICIT_PRIME_CURVES: pj_ssl_curve = 65281;
 pub const PJ_TLS_CURVE_ARBITRARY_EXPLICIT_CHAR2_CURVES: pj_ssl_curve = 65282;
 pub type pj_ssl_curve = u32;
+
 extern "C" {
     pub fn pj_ssl_curve_get_availables(
         curves: *mut pj_ssl_curve,

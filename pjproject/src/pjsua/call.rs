@@ -731,8 +731,8 @@ impl UACall {
         indent: String,
     ) -> Result<(), i32> {
 
-        let buffer: *mut i8 = CString::new(buffer.as_str()).expect("CString::pjsua_call_dump fail.").into_raw();
-        let indent: *const i8 = CString::new(indent.as_str()).expect("CString::pjsua_call_dump fail.").into_raw();
+        let buffer: *mut i8 = CString::new(buffer.as_str()).unwrap().into_raw();
+        let indent: *const i8 = CString::new(indent.as_str()).unwrap().into_raw();
 
         unsafe {
 
@@ -757,8 +757,6 @@ impl UACall {
         unsafe { pjsua_sys::pjsua_call_get_count() }
     }
 
-    // TODO: fix this, with return Vec value of UACall type.
-    // fix with return value Result<Vec<UACall>, i32>
     pub fn enum_calls () -> Result<Vec<UACall>, i32> {
         unsafe {
             let mut ids = [-1; pjsua_sys::PJSUA_MAX_CALLS as usize];
@@ -780,15 +778,12 @@ impl UACall {
         }
     }
 
-    // TODO: fix this, with new initialized UACall type
-    // fix with return value Result<UACall, i32>
     pub fn make_call (
         acc_id: i32,
         dst_uri: String,
         opt: Option<&mut UACallSetting>,
-        msg_data: Option<&mut UAMsgData>,
-        p_call_id: Option<&mut i32>
-    ) -> Result<(), i32> {
+        msg_data: Option<&mut UAMsgData>
+    ) -> Result<UACall, i32> {
 
         let mut dst_uri = pj_str_t::from_string(dst_uri);
 
@@ -802,24 +797,27 @@ impl UACall {
             None => ptr::null_mut()
         };
 
-        let p_call_id = match p_call_id {
-            Some(value) => value as *mut _,
-            None => ptr::null_mut()
-        };
-
-
         unsafe {
-
+            let mut id = Box::new(-1);
             let status = pjsua_sys::pjsua_call_make_call(
                 acc_id,
                 &mut dst_uri as *const _,
                 opt,
                 ptr::null_mut(),
                 msg_data,
-                p_call_id
+                id.as_mut() as *mut _
             );
 
-            utils::check_status(status)
+            match utils::check_status(status) {
+                Ok(()) => {
+                    if *id != -1 {
+                        return Ok(UACall::from(*id));
+                    } else {
+                        return Err(-1);
+                    }
+                }
+                Err(e) => { return Err(e); }
+            }
         }
     }
 

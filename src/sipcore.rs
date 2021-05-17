@@ -17,28 +17,28 @@ use pjproject::pjsua;
 
 // use std::ptr;
 // use std::ffi::{CString, CStr};
-use std::{cell::RefCell, os::raw::{c_void, c_uint}, rc::Rc};
+use std::{cell::{Cell, RefCell}, os::raw::{c_void, c_uint}, rc::Rc};
 use std::convert::TryFrom;
 
 // thread safe use Arc<Mutex<SIPCore>>
-pub static mut SIP_CORE: Option<Rc<RefCell<SIPCore>>> = None;
+pub static mut SIP_CORE: Option<SIPCore> = None;
 pub static mut CURRENT_CALL: Option<i32> = None;
 
 pub struct SIPCore {
-    pub ua_config: UAConfig,
-    pub log_config: UALoggingConfig,
-    pub media_config: UAMediaConfig,
+    pub ua_config: Rc<RefCell<UAConfig>>,
+    pub log_config: Rc<RefCell<UALoggingConfig>>,
+    pub media_config: Rc<RefCell<UAMediaConfig>>,
     pub default_transport_config: UATransportConfig,
     pub default_rtp_config: UATransportConfig,
-    def_pool: Option<Box::<*mut PJPool>>,
-    module: SIPModule,
-    no_udp: bool,
-    no_tcp: bool,
-    use_ipv6: bool,
-    transport_udp: Option<UATransport>,
-    transport_tcp: Option<UATransport>,
-    transport_udp6: Option<UATransport>,
-    transport_tcp6: Option<UATransport>,
+    def_pool: Rc::<Cell<Option<Box::<*mut PJPool>>>>,
+    module: Rc<RefCell<SIPModule>>,
+    no_udp: Rc<Cell<bool>>,
+    no_tcp: Rc<Cell<bool>>,
+    use_ipv6: Rc<Cell<bool>>,
+    transport_udp: Rc<Cell<Option<UATransport>>>,
+    transport_tcp: Rc<Cell<Option<UATransport>>>,
+    transport_udp6: Rc<Cell<Option<UATransport>>>,
+    transport_tcp6: Rc<Cell<Option<UATransport>>>,
     redir_op: SIPRedirectOp,
     input_dev: i32,
     output_dev: i32,
@@ -46,14 +46,13 @@ pub struct SIPCore {
     output_latency: u32,
     auto_play_hangup: bool,
     duration: u32,
-    current_call: i32,
+    current_call: Rc<Cell<Option<UACall>>>,
     auto_answer: u32,
     events: SIPCoreEvents,
     no_refersub: bool,
     compact_form: bool,
 }
 // struct to hold invite event function
-// #[derive(Clone)]
 struct SIPCoreEvents {
     invite: Box<dyn Fn(SIPInvState)>,
     incoming_call: Box<dyn FnMut()>
@@ -77,101 +76,108 @@ impl SIPCore {
 
     pub fn new() -> Self {
         let mut sipcore = Self {
-            ua_config: UAConfig::default(),
-            log_config: UALoggingConfig::default(),
-            media_config: UAMediaConfig::default(),
+            ua_config: Rc::new(RefCell::new(UAConfig::default())),
+            log_config: Rc::new(RefCell::new(UALoggingConfig::default())),
+            media_config: Rc::new(RefCell::new(UAMediaConfig::default())),
             default_transport_config: UATransportConfig::default(),
             default_rtp_config: UATransportConfig::default(),
-            def_pool: None,
-            module: SIPModule::new(),
-            transport_udp: None,
-            transport_tcp: None,
-            transport_udp6: None,
-            transport_tcp6: None,
+            def_pool: Rc::new(Cell::new(None)),
+            module: Rc::new(RefCell::new(SIPModule::new())),
+            transport_udp: Rc::new(Cell::new(None)),
+            transport_tcp: Rc::new(Cell::new(None)),
+            transport_udp6: Rc::new(Cell::new(None)),
+            transport_tcp6: Rc::new(Cell::new(None)),
             redir_op: SIPRedirectOp::AcceptReplace,
-            input_dev: pjsua::INVALID_ID,
-            output_dev: pjsua::INVALID_ID,
+            input_dev: -1,
+            output_dev: -2,
             input_latency: 100,
             output_latency: 140,
             auto_play_hangup: false,
             duration: 0,
-            current_call: -1,
+            current_call: Rc::new(Cell::new(None)),
             auto_answer: 0,
             events: SIPCoreEvents::new(),
             no_refersub: false,
             compact_form: false,
-            no_udp: false,
-            no_tcp: false,
-            use_ipv6: false,
+            no_udp: Rc::new(Cell::new(false)),
+            no_tcp: Rc::new(Cell::new(false)),
+            use_ipv6: Rc::new(Cell::new(false)),
         };
 
         // default ua config
-        sipcore.ua_config.set_max_calls(1);
-        sipcore.ua_config.set_force_lr(true);
-        sipcore.ua_config.set_user_agent(String::from("IpCodec"));
+        sipcore.ua_config.borrow_mut().set_max_calls(1);
+        sipcore.ua_config.borrow_mut().set_force_lr(true);
+        sipcore.ua_config.borrow_mut().set_user_agent(String::from("IpCodec"));
+
+        // set default event
+        sipcore.ua_config.borrow_mut().cb.on_call_state = Some(on_call_state);
+        sipcore.ua_config.borrow_mut().cb.on_stream_destroyed = Some(on_stream_destroyed);
+        sipcore.ua_config.borrow_mut().cb.on_call_media_state = Some(on_call_media_state);
+        sipcore.ua_config.borrow_mut().cb.on_incoming_call = Some(on_incoming_call);
+        sipcore.ua_config.borrow_mut().cb.on_call_redirected = Some(on_call_redirected);
+        sipcore.ua_config.borrow_mut().cb.on_dtmf_digit2 = Some(on_dtmf_digit2);
+        sipcore.ua_config.borrow_mut().cb.on_reg_state = Some(on_reg_state);
+        sipcore.ua_config.borrow_mut().cb.on_incoming_subscribe = Some(on_incoming_subscribe);
+        sipcore.ua_config.borrow_mut().cb.on_buddy_state = Some(on_buddy_state);
+        sipcore.ua_config.borrow_mut().cb.on_buddy_evsub_state = Some(on_buddy_evsub_state);
+        sipcore.ua_config.borrow_mut().cb.on_pager = Some(on_pager);
+        sipcore.ua_config.borrow_mut().cb.on_typing = Some(on_typing);
+        sipcore.ua_config.borrow_mut().cb.on_call_transfer_status = Some(on_call_transfer_status);
+        sipcore.ua_config.borrow_mut().cb.on_call_replaced = Some(on_call_replaced);
+        sipcore.ua_config.borrow_mut().cb.on_nat_detect = Some(on_nat_detect);
+        sipcore.ua_config.borrow_mut().cb.on_mwi_info = Some(on_mwi_info);
+        sipcore.ua_config.borrow_mut().cb.on_transport_state = Some(on_transport_state);
+        sipcore.ua_config.borrow_mut().cb.on_ice_transport_error = Some(on_ice_transport_error);
+        sipcore.ua_config.borrow_mut().cb.on_snd_dev_operation = Some(on_snd_dev_operation);
+        sipcore.ua_config.borrow_mut().cb.on_call_media_event = Some(on_call_media_event);
+        sipcore.ua_config.borrow_mut().cb.on_ip_change_progress = Some(on_ip_change_progress);
 
         // default media config
-        sipcore.media_config.set_channel_count(ConfigChannel::Stereo);
-        sipcore.media_config.set_clock_rate(ClockRate::ClockRate48000);
-        sipcore.media_config.set_snd_clock_rate(ClockRate::ClockRate48000);
-        sipcore.media_config.set_quality(EncodingQuality::Level10);
-        sipcore.media_config.set_ec_options(MediaEchoFlag::Default);
-        sipcore.media_config.set_ec_tail_len(0);
+        sipcore.media_config.borrow_mut().set_channel_count(ConfigChannel::Stereo);
+        sipcore.media_config.borrow_mut().set_clock_rate(ClockRate::ClockRate48000);
+        sipcore.media_config.borrow_mut().set_snd_clock_rate(ClockRate::ClockRate48000);
+        sipcore.media_config.borrow_mut().set_quality(EncodingQuality::Level10);
+        sipcore.media_config.borrow_mut().set_ec_options(MediaEchoFlag::Default);
+        sipcore.media_config.borrow_mut().set_ec_tail_len(0);
 
         // default log level
-        sipcore.log_config.set_level(0);
+        sipcore.log_config.borrow_mut().set_level(0);
 
         // default transport config
         sipcore.default_transport_config.set_port(5060);
         sipcore.default_rtp_config.set_port(4000);
 
-        // set default event
-        sipcore.ua_config.cb.on_call_state = Some(on_call_state);
-        sipcore.ua_config.cb.on_stream_destroyed = Some(on_stream_destroyed);
-        sipcore.ua_config.cb.on_call_media_state = Some(on_call_media_state);
-        sipcore.ua_config.cb.on_incoming_call = Some(on_incoming_call);
-        sipcore.ua_config.cb.on_call_redirected = Some(on_call_redirected);
-        sipcore.ua_config.cb.on_dtmf_digit2 = Some(on_dtmf_digit2);
-        sipcore.ua_config.cb.on_reg_state = Some(on_reg_state);
-        sipcore.ua_config.cb.on_incoming_subscribe = Some(on_incoming_subscribe);
-        sipcore.ua_config.cb.on_buddy_state = Some(on_buddy_state);
-        sipcore.ua_config.cb.on_buddy_evsub_state = Some(on_buddy_evsub_state);
-        sipcore.ua_config.cb.on_pager = Some(on_pager);
-        sipcore.ua_config.cb.on_typing = Some(on_typing);
-        sipcore.ua_config.cb.on_call_transfer_status = Some(on_call_transfer_status);
-        sipcore.ua_config.cb.on_call_replaced = Some(on_call_replaced);
-        sipcore.ua_config.cb.on_nat_detect = Some(on_nat_detect);
-        sipcore.ua_config.cb.on_mwi_info = Some(on_mwi_info);
-        sipcore.ua_config.cb.on_transport_state = Some(on_transport_state);
-        sipcore.ua_config.cb.on_ice_transport_error = Some(on_ice_transport_error);
-        sipcore.ua_config.cb.on_snd_dev_operation = Some(on_snd_dev_operation);
-        sipcore.ua_config.cb.on_call_media_event = Some(on_call_media_event);
-        sipcore.ua_config.cb.on_ip_change_progress = Some(on_ip_change_progress);
+
 
         sipcore
     }
 
-    pub fn init(&mut self) {
+    pub fn init(&self) {
 
         pjsua::create().unwrap();
-        self.def_pool = Some(Box::new(pjsua::pool_create("ipcodec_app")));
+        self.def_pool.set(Some(Box::new(pjsua::pool_create("ipcodec_app"))));
 
         // register sub module for unhandeled error
         // self.module.set_priority((PJSIP_MOD_PRIORITY_APPLICATION + 99) as i32);
-        self.module.set_priority(SIPModulePriority::Application);
-        self.module.set_name(String::from("mod-default-handler"));
-        self.module.connect_on_rx_request(Some(on_rx_request));
-        SIPModule::register(&mut self.module);
+        let mut module = self.module.borrow_mut();
+        module.set_priority(SIPModulePriority::Application);
+        module.set_name(String::from("mod-default-handler"));
+        module.connect_on_rx_request(Some(on_rx_request));
+        SIPModule::register(&mut module);
 
-        pjsua::init(&mut self.ua_config, &mut self.log_config, &mut self.media_config).unwrap();
+        pjsua::init(
+            &mut self.ua_config.borrow_mut(),
+            &mut self.log_config.borrow_mut(),
+            &mut self.media_config.borrow_mut())
+        .unwrap();
 
         // check if setting not have at least 1 protocol
-        if self.no_udp & self.no_tcp {
-            self.no_udp = false;
+        if self.no_udp.get() & self.no_tcp.get() {
+            self.no_udp.set(false);
         }
 
         // Initialize UDP Transport and local account
-        if !self.no_udp {
+        if !self.no_udp.get() {
             let tp = UATransport::new(SIPTransportType::Udp, &self.default_transport_config);
             let local = UAAccount::new_local(&tp, true).unwrap();
             let mut config = local.get_config().unwrap();
@@ -180,11 +186,11 @@ impl SIPCore {
             local.modify(&mut config).unwrap();
             local.set_online_status(true).unwrap();
 
-            self.transport_udp = Some(tp);
+            self.transport_udp.set(Some(tp));
         }
 
         // initialize TCP transport and local account
-        if !self.no_tcp {
+        if !self.no_tcp.get() {
             let tp = UATransport::new(SIPTransportType::Tcp, &self.default_transport_config);
             let local = UAAccount::new_local(&tp, true).unwrap();
             let mut config = local.get_config().unwrap();
@@ -193,35 +199,35 @@ impl SIPCore {
             local.modify(&mut config).unwrap();
             local.set_online_status(true).unwrap();
 
-            self.transport_tcp = Some(tp);
+            self.transport_tcp.set(Some(tp));
         }
 
         // initialize UDPv6 and local account
-        if self.use_ipv6 & !self.no_udp {
+        if self.use_ipv6.get() & !self.no_udp.get() {
             let tp = UATransport::new(SIPTransportType::UdpV6, &self.default_transport_config);
             let local = UAAccount::new_local(&tp, true).unwrap();
             let mut config = local.get_config().unwrap();
 
             config.rtp_cfg.set_port(self.default_rtp_config.get_port());
-            config.set_ipv6_media_use(self.use_ipv6);
+            config.set_ipv6_media_use(self.use_ipv6.get());
             local.modify(&mut config).unwrap();
             local.set_online_status(true).unwrap();
 
-            self.transport_udp6 = Some(tp);
+            self.transport_udp6.set(Some(tp));
         }
 
         // initialize TCPv6 and local account
-        if self.use_ipv6 & !self.no_tcp {
+        if self.use_ipv6.get() & !self.no_tcp.get() {
             let tp = UATransport::new(SIPTransportType::TcpV6, &self.default_transport_config);
             let local = UAAccount::new_local(&tp, true).unwrap();
             let mut config = local.get_config().unwrap();
 
             config.rtp_cfg.set_port(self.default_rtp_config.get_port());
-            config.set_ipv6_media_use(self.use_ipv6);
+            config.set_ipv6_media_use(self.use_ipv6.get());
             local.modify(&mut config).unwrap();
             local.set_online_status(true).unwrap();
 
-            self.transport_tcp6 = Some(tp);
+            self.transport_tcp6.set(Some(tp));
         }
 
         // self.media_config.init();
@@ -229,27 +235,24 @@ impl SIPCore {
         pjsua::start().unwrap();
     }
 
-    pub fn restart(&mut self) {
+    pub fn restart(&self) {
         self.stop();
         self.init();
     }
 
-    pub fn stop(&mut self) {
+    pub fn stop(&self) {
         pjsua::destroy().unwrap();
         // self.ua_config.deinit();
     }
 
     pub fn call(&self, call_addr: &str) {
-
-        // let calls = SIPCalls::new();
-        // let accounts = SIPAccounts::new();
-
-        // let default_acc_id = accounts.get_default();
-        // let default_acc = SIPAccount::from(default_acc_id).unwrap();
-
-        // let mut msg_data = pjsua_msg_data::new();
-
-        // default_acc.call(String::from(call_addr), None, Some(&mut msg_data), None);
+        let account = UAAccount::default();
+        if account.is_valid() {
+            match account.call(call_addr.to_string(), None, None) {
+                Ok(call) => self.current_call.set(Some(call)),
+                Err(e) => ()
+            }
+        }
     }
 
     pub fn call_hangup(&self) {
@@ -312,9 +315,32 @@ impl SIPCore {
         self.compact_form = value;
     }
 
-    pub fn on_call_audio_state(&mut self, ci: &UACallInfo, mi: u32, has_error: &mut bool) {
+    pub fn on_call_audio_state(&self, ci: &UACallInfo, mi: u32, has_error: &mut bool) {
 
-        // let media = &ci.media[mi as usize];
+        let media = &ci.media[mi as usize];
+
+        match media.get_status() {
+            CallMediaStatus::None => {}
+            CallMediaStatus::LocalHold => {}
+            CallMediaStatus::Error => {}
+            CallMediaStatus::Active |
+            CallMediaStatus::RemoteHold => {
+                unsafe {
+                    let call_conf_slot = media.stream.aud.as_ref().conf_slot;
+
+                    for call in UACall::enum_calls().unwrap().iter() {
+                        if ci.get_id() == call.get_info().unwrap().get_id() { continue; }
+                        if call.has_media() {
+                            UAConf::connect(call_conf_slot, call.get_info().unwrap().get_id()).unwrap();
+                            UAConf::connect(call.get_info().unwrap().get_id(), call_conf_slot).unwrap();
+                        }
+                    }
+
+                    UAConf::connect(call_conf_slot, 0).unwrap();
+                    UAConf::connect(0, call_conf_slot).unwrap();
+                }
+            }
+        };
 
         // if media.status == PJSUA_CALL_MEDIA_ACTIVE ||
         // media.status == PJSUA_CALL_MEDIA_REMOTE_HOLD {
@@ -394,45 +420,38 @@ impl SIPCore {
         // println!("OnStreamDestroyed: CallID {}, StreamIDX {}", call_id, stream_idx);
     }
 
-    pub fn callback_on_call_media_state(&self, call_id: UACall) {
+    pub fn callback_on_call_media_state(&self, call: UACall) {
         println!("OnCallMediaState");
 
-        // let mut has_error = false;
+        let mut has_error = false;
+        let call_info = call.get_info().unwrap();
 
-        // let call = SIPCall::from(call_id);
-        // let call_info = call.get_info().unwrap();
+        for mi in 0..call_info.media_cnt {
 
-        // for mi in 0..call_info.media_cnt {
+            let call_media_info = &call_info.media[mi as usize];
+            match call_media_info.get_type_() {
+                MediaType::Audio => {
+                    self.on_call_audio_state(&call_info, mi, &mut has_error);
+                },
+                _ => has_error = true
+            }
+            // match call_media_info.type_ {
+            //     PJMEDIA_TYPE_NONE |
+            //     PJMEDIA_TYPE_VIDEO |
+            //     PJMEDIA_TYPE_APPLICATION |
+            //     PJMEDIA_TYPE_UNKNOWN => has_error = true ,
+            //     PJMEDIA_TYPE_AUDIO => self.on_call_audio_state(&call_info, mi, &mut has_error) ,
+            //     _ => has_error = true
+            // }
 
-        //     let call_media_info = &call_info.media[mi as usize];
-        //     let media_type = pjmedia::type_name(call_media_info.type_);
+            // println!("sipua.rs Call {} media {} [type={}], status is {}",
+            //     call_info.id, mi, media_type, status_name);
+        }
 
-        //     let status_name = match call_media_info.status {
-        //         PJSUA_CALL_MEDIA_NONE => "None",
-        //         PJSUA_CALL_MEDIA_ACTIVE => "Active",
-        //         PJSUA_CALL_MEDIA_LOCAL_HOLD => "Local hold",
-        //         PJSUA_CALL_MEDIA_REMOTE_HOLD => "Remote hold",
-        //         PJSUA_CALL_MEDIA_ERROR => "Error",
-        //         _ => "Error"
-        //     };
-
-        //     // match call_media_info.type_ {
-        //     //     PJMEDIA_TYPE_NONE |
-        //     //     PJMEDIA_TYPE_VIDEO |
-        //     //     PJMEDIA_TYPE_APPLICATION |
-        //     //     PJMEDIA_TYPE_UNKNOWN => has_error = true ,
-        //     //     PJMEDIA_TYPE_AUDIO => self.on_call_audio_state(&call_info, mi, &mut has_error) ,
-        //     //     _ => has_error = true
-        //     // }
-
-        //     println!("sipua.rs Call {} media {} [type={}], status is {}",
-        //         call_info.id, mi, media_type, status_name);
-        // }
-
-        // if has_error {
-        //     let reason = format!("Media failed");
-        //     call.hangup(500, Some(reason), None);
-        // }
+        if has_error {
+            let reason = format!("Media failed");
+            call.hangup(SIPStatusCode::IntenalServerError, Some(reason), None).unwrap();
+        }
     }
 
     pub fn callback_on_incomming_call(&self, account: UAAccount, call_id: UACall, rdata: *mut SIPRxData) {
@@ -985,37 +1004,44 @@ unsafe extern "C" fn on_rx_request(rdata: *mut SIPRxData) -> i32 {
 
 /// on_call_state(pjsua_call_id, pjsip_event)
 unsafe extern "C" fn on_call_state(call_id: i32, e: *mut SIPEvent) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_call_state(UACall::from(call_id), e);
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_call_state(UACall::from(call_id), e);
 }
 
 /// on_stream_destroyed(pjsua_call_id, pjmedia_stream, stream_idx)
 unsafe extern "C" fn on_stream_destroyed(call_id: i32, strm: *mut MediaStream, stream_idx: u32) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_stream_destroyed(UACall::from(call_id), strm, stream_idx);
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_stream_destroyed(UACall::from(call_id), strm, stream_idx);
 }
 
 /// on_incoming_call(acc_id, call_id, rdata)
 unsafe extern "C" fn on_incoming_call( acc_id: i32, call_id: i32, rdata: *mut SIPRxData) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_incomming_call(UAAccount::from(acc_id), UACall::from(call_id), rdata)
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_incomming_call(UAAccount::from(acc_id), UACall::from(call_id), rdata)
 }
 
 /// on_call_media_state(call_id)
 unsafe extern "C" fn on_call_media_state(call_id: i32) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_call_media_state(UACall::from(call_id));
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_call_media_state(UACall::from(call_id));
 }
 
 /// on_dtmf_digit2(call_id, info)
 unsafe extern "C" fn on_dtmf_digit2(call_id: i32, info: *const UADtmfInfo) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_dtmf_digit2(UACall::from(call_id), info)
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_dtmf_digit2(UACall::from(call_id), info)
 }
 
 /// on_call_redirected(call_id, target, e) -> pjsip_redirect_op
 unsafe extern "C" fn on_call_redirected( call_id: i32, target: *const SIPUri, e: *const SIPEvent) -> u32 {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_call_redirected(UACall::from(call_id), target, e)
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_call_redirected(UACall::from(call_id), target, e)
 }
 
 /// on_reg_state(acc_id)
 unsafe extern "C" fn on_reg_state(acc_id: i32) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_reg_state(UAAccount::from(acc_id));
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_reg_state(UAAccount::from(acc_id));
 }
 
 // On Incomming Subscribe
@@ -1034,7 +1060,7 @@ unsafe extern "C" fn on_incoming_subscribe(
     let mut reason_str = from.as_ref().unwrap().to_string();
 
 
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_incoming_subscribe(
         UAAccount::from(acc_id),
         srv_pres,
@@ -1053,12 +1079,14 @@ unsafe extern "C" fn on_incoming_subscribe(
 
 /// on_buddy_state(buddy_id)
 unsafe extern "C" fn on_buddy_state(buddy_id: i32) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_buddy_state(UABuddy::from(buddy_id));
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_buddy_state(UABuddy::from(buddy_id));
 }
 
 /// on_buddy_evsub_state(buddy_id, sub, event)
 unsafe extern "C" fn on_buddy_evsub_state(buddy_id: i32, sub: *mut SIPEvsub, event: *mut SIPEvent) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_buddy_evsub_state(UABuddy::from(buddy_id), sub, event);
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_buddy_evsub_state(UABuddy::from(buddy_id), sub, event);
 }
 
 // On Pager
@@ -1070,7 +1098,7 @@ unsafe extern "C" fn on_pager(
     mime_type: *const PJStr,
     body: *const PJStr,
 ) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_pager(
         UACall::from(call_id),
         from.as_ref().unwrap().to_string(),
@@ -1089,7 +1117,7 @@ unsafe extern "C" fn on_typing(
     contact: *const PJStr,
     is_typing: i32,
 ) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_typing(
         UACall::from(call_id),
         from.as_ref().unwrap().to_string(),
@@ -1109,7 +1137,7 @@ unsafe extern "C" fn on_call_transfer_status(
 ) {
     let mut pcont = check_boolean(*p_cont);
 
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_call_transfer_status(
         UACall::from(call_id),
         st_code,
@@ -1123,7 +1151,7 @@ unsafe extern "C" fn on_call_transfer_status(
 
 // (old_call_id: pjsua_call_id, new_call_id: pjsua_call_id)
 unsafe extern "C" fn on_call_replaced(old_call_id: i32, new_call_id: i32) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_call_replaced(
         UACall::from(old_call_id),
         UACall::from(new_call_id)
@@ -1132,17 +1160,19 @@ unsafe extern "C" fn on_call_replaced(old_call_id: i32, new_call_id: i32) {
 
 // On NAT detect
 unsafe extern "C" fn on_nat_detect(res: *const STUNNatDetectResult) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_nat_detect(res);
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_nat_detect(res);
 }
 
 // On MWI info
 unsafe extern "C" fn on_mwi_info(acc_id: i32, mwi_info: *mut UAMwiInfo) {
-    SIP_CORE.as_ref().unwrap().borrow().callback_on_mwi_info(UAAccount::from(acc_id), mwi_info);
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_mwi_info(UAAccount::from(acc_id), mwi_info);
 }
 
 // On Transport state
 unsafe extern "C" fn on_transport_state(tp: *mut SIPTransport, state: u32, info: *const SIPTransportStateInfo) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_transport_state(
         tp,
         SIPTransportState::try_from(state).unwrap(),
@@ -1152,7 +1182,7 @@ unsafe extern "C" fn on_transport_state(tp: *mut SIPTransport, state: u32, info:
 
 // On ICE transport error
 unsafe extern "C" fn on_ice_transport_error(index: i32, op: u32, status: i32, param: *mut c_void) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_ice_transport_error(
         index,
         IceStransOp::try_from(op).unwrap(),
@@ -1163,18 +1193,13 @@ unsafe extern "C" fn on_ice_transport_error(index: i32, op: u32, status: i32, pa
 
 // Sound device operation
 unsafe extern "C" fn on_snd_dev_operation(operation: i32) -> i32 {
-    match SIP_CORE.as_ref().unwrap().try_borrow() {
-        Ok(x) => x.callback_on_snd_dev_operation(operation),
-        Err(e) => {
-            println!("Error: {}", e);
-            0
-        }
-    }
+    SIP_CORE.as_ref().unwrap()
+    .callback_on_snd_dev_operation(operation)
 }
 
 // Call media event
 unsafe extern "C" fn on_call_media_event(call_id: i32, med_idx: u32, event: *mut MediaEvent) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_call_media_event(
         UACall::from(call_id),
         med_idx,
@@ -1184,7 +1209,7 @@ unsafe extern "C" fn on_call_media_event(call_id: i32, med_idx: u32, event: *mut
 
 // IP change progress
 unsafe extern "C" fn on_ip_change_progress(op: u32, status: i32, info: *const UAIpChangeOpInfo) {
-    SIP_CORE.as_ref().unwrap().borrow()
+    SIP_CORE.as_ref().unwrap()
     .callback_on_ip_change_progress(
         UAIpChangeOp::try_from(op).unwrap(),
         status,

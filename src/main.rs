@@ -41,13 +41,16 @@ mod settings_tls;
 use gtk::prelude::*;
 use gio::prelude::*;
 use pjproject::prelude::*;
+use pjproject::pj::*;
+use pjproject::pjsua::media::UASound;
+use systemstat::Duration;
+
+use pjproject::pj;
 // use pjnath_sys::*;
 
-use std::env;
+use std::{cell::RefCell, env, rc::Rc, thread};
 use std::include_str;
-// use std::thread;
-// use std::time::Duration;
-// use std::ptr;
+
 
 use gtk::{Application, Builder};
 
@@ -64,6 +67,8 @@ use settings::{SettingsWidget};
 // use sipua::SIPInviteState;
 use sipua::*;
 
+use crate::dialpad::CallButtonState;
+
 // use sip_account::SIPAccountExt;
 
 enum SignalLevel { Level( (u32, u32, u32, u32)) }
@@ -73,77 +78,88 @@ enum SignalLevel { Level( (u32, u32, u32, u32)) }
 // with comparable like apple to apple
 
 /// update receive transmit level bar
-fn thread_update_level_bar(sipua_clone: SIPUserAgent, rx_widget_clone: AudioLineWidget, tx_widget_clone: AudioLineWidget) {
+fn thread_update_level_bar(rx_widget_clone: AudioLineWidget, tx_widget_clone: AudioLineWidget) {
 
     // sender, receiver more clear to read
-    // let (sender, receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (sender, receiver) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
-    // thread::spawn(move || {
-    //     unsafe {
-    //         let mut a_thread_desc: pj_thread_desc = [0;64usize];
-    //         let mut a_thread = ptr::null_mut() as *mut pj_thread_t;
+    thread::spawn(move || {
+        let mut desc= [0i64;64usize];
 
-    //         if pj_thread_is_registered() == PJ_FALSE as pj_bool_t {
-    //             pj_thread_register(ptr::null_mut(),
-    //                 a_thread_desc.as_mut_ptr() as *mut _,
-    //                 &mut a_thread as *mut _);
-    //         }
+        // register main thread
+        if !pj::thread::PJThread::thread_is_registered() {
+            pj::thread::PJThread::thread_register(None, &mut desc).unwrap();
+        }
 
-    //     loop {
-    //         thread::sleep(Duration::from_millis(40));
+        loop {
+            thread::sleep(Duration::from_millis(40));
 
-    //         let _ = sender.send(SignalLevel::Level(sipua_clone.get_signal_level()));
-    //     }
-    // }});
+            let _ = sender.send(SignalLevel::Level(UASound::default().get_msignal_level().unwrap()));
+        }
+    });
 
     // todo fix the late destroy of
     // thread. this segmentation fault
     // trigered when receiver destroyed
     // before sender.
-    // receiver.attach(None, move |level| {
-    //     match level {
-    //         SignalLevel::Level((tx_l,tx_r, rx_l, rx_r)) => {
-    //             rx_widget_clone.set_level_bar(rx_l, rx_r);
-    //             tx_widget_clone.set_level_bar(tx_l, tx_r);
-    //         }
-    //     }
+    receiver.attach(None, move |level| {
+        match level {
+            SignalLevel::Level((tx_l,tx_r, rx_l, rx_r)) => {
+                rx_widget_clone.set_level_bar(rx_l, rx_r);
+                tx_widget_clone.set_level_bar(tx_l, tx_r);
+            }
+        }
 
-    //     glib::Continue(true)
-    // });
+        glib::Continue(true)
+    });
 }
 
 // calback audio line transmit receive
-fn callback_audio_line_widget(sipua: &mut SIPUserAgent, rx_widget: &AudioLineWidget, tx_widget: &AudioLineWidget) {
+fn callback_audio_line_widget(rx_level: Rc<RefCell<i32>>, tx_level: Rc<RefCell<i32>>, rx_widget: &AudioLineWidget, tx_widget: &AudioLineWidget) {
 
-    // update device list
-    // for dev_name in sipua.get_output_device_list().iter_mut() {
-    //     rx_widget.add_device_text(dev_name);
-    // }
+    // update output device list
+    for item in UASound::enum_aud_devs().unwrap().iter() {
+        let name = item.get_name();
+        rx_widget.add_device_text(&name.unwrap());
+    }
 
-    // for dev_name in sipua.get_input_device_list().iter_mut() {
-    //     tx_widget.add_device_text(dev_name);
-    // }
+    // update input device list
+    for item in UASound::enum_aud_devs().unwrap().iter() {
+        let name = item.get_name();
+        tx_widget.add_device_text(&name.unwrap());
+    }
 
     // slider level change
-    // let sip = sipua.clone();
-    // rx_widget.on_scale_changed_value ( move |v| {
-    //     sip.set_input_level(v);
-    // });
+    let level = rx_level.clone();
+    rx_widget.on_scale_changed_value (move |v| {
+        level.replace(v);
+        UASound::default().adjust_rx_level((level.borrow().clone() as f32) / 100_f32).unwrap();
+    });
 
-    // let sip = sipua.clone();
-    // tx_widget.on_scale_changed_value ( move |v| {
-    //     sip.set_output_level(v);
-    // });
+    let level = tx_level.clone();
+    tx_widget.on_scale_changed_value (move |v| {
+        level.replace(v);
+        UASound::default().adjust_tx_level((level.borrow().clone() as f32) / 100_f32).unwrap();
+    });
 
-    // let sip = sipua.clone();
-    // rx_widget.on_button_mute_clicked(move |state| {
-    //     sip.input_mute(state);
-    // });
+    let level = rx_level.clone();
+    rx_widget.on_button_mute_clicked(move |state| {
+        if state {
+            UASound::default().adjust_rx_level(0_f32).unwrap();
+        } else {
+            UASound::default()
+            .adjust_rx_level((level.borrow().clone() as f32) / 100_f32).unwrap();
+        }
+    });
 
-    // let sip = sipua.clone();
-    // tx_widget.on_button_mute_clicked(move |state| {
-    //     sip.output_mute(state);
-    // });
+    let level = tx_level.clone();
+    tx_widget.on_button_mute_clicked(move |state| {
+        if state {
+            UASound::default().adjust_tx_level(0_f32).unwrap();
+        } else {
+            UASound::default().adjust_tx_level((level.borrow().clone() as f32) / 100_f32).unwrap();
+        }
+    });
 }
 
 // callback dialpad widget
@@ -151,18 +167,18 @@ fn callback_dialpad_widget(sipua: &mut SIPUserAgent, dialpad: &DialpadWidget) {
 
     // button call clicked
     let sip = sipua.clone();
-    // dialpad.on_button_call_clicked(move | sip_address, state | {
-    //     println!("sip_call_addres : {}", sip_address);
+    dialpad.on_button_call_clicked(move | sip_address, state | {
+        println!("sip_call_addres : {}", sip_address);
 
-    //     match state {
-    //         CallButtonState::Call => sip.call(sip_address),
-    //         CallButtonState::Hangup => sip.call_hangup(),
-    //         CallButtonState::Abort => sip.call_hangup(),
-    //         CallButtonState::Answer => sip.call_answer(),
-    //         _ => ()
-    //     }
+        match state {
+            CallButtonState::Call => sip.get_context().call(sip_address),
+            CallButtonState::Hangup => sip.call_hangup(),
+            CallButtonState::Abort => sip.call_hangup(),
+            CallButtonState::Answer => sip.call_answer(),
+            _ => ()
+        }
 
-    // });
+    });
 
     // callback inv state
     // let dialpad = dialpad.clone();
@@ -450,7 +466,10 @@ fn main() {
     ).expect("GTK app fail to initialize.");
 
     let mut sipua = SIPUserAgent::new();
-    sipua.get_context().log_config.set_level(5);
+    let tx_level = Rc::new(RefCell::new(100));
+    let rx_level = Rc::new(RefCell::new(100));
+
+    sipua.log_config().set_level(5);
     sipua.start();
 
     // builder
@@ -468,7 +487,7 @@ fn main() {
     let codec_widget = CodecWidget::new(&builder);
 
     // set callback
-    callback_audio_line_widget(&mut sipua, &rx_widget, &tx_widget);
+    callback_audio_line_widget(rx_level, tx_level, &rx_widget, &tx_widget);
     callback_dialpad_widget(&mut sipua, &dialpad_widget);
     callback_account_widget(&mut sipua, &account_widget);
     callback_settings_widget(&mut sipua, &settings_widget);
@@ -509,7 +528,7 @@ fn main() {
 
     // thread procedure to update level bar
     // Transmit and Receive
-    thread_update_level_bar(sipua.clone(), rx_widget.clone(), tx_widget.clone());
+    thread_update_level_bar(rx_widget.clone(), tx_widget.clone());
 
     // sub testing gui
     application.run(&env::args().collect::<Vec<_>>());

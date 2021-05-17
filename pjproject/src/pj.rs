@@ -1,12 +1,9 @@
 
 use pj_sys::*;
-use super::utils::{check_boolean, check_status};
-
-use std::ptr;
-use std::ffi::CString;
 use num_enum::*;
 
 pub mod auto;
+pub mod thread;
 
 
 pub type PJStr = pj_str_t;
@@ -18,7 +15,7 @@ pub type PJStr = pj_str_t;
 // pub type pj_ioqueue_key_t = pj_ioqueue_key_t;
 // pub type pj_timer_heap_t = pj_timer_heap_t;
 // pub type pj_atomic_t = pj_atomic_t;
-pub type PJThread = pj_thread_t;
+// pub type PJThread = pj_thread_t;
 // pub type pj_lock_t = pj_lock_t;
 // pub type pj_grp_lock_t = pj_grp_lock_t;
 // pub type pj_mutex_t = pj_mutex_t;
@@ -77,7 +74,7 @@ pub type PJPool = pj_pool_t;
 // pub type pj_ssl_start_connect_param = pj_ssl_start_connect_param;
 // pub type pj_timer_entry = pj_timer_entry;
 
-// pub type pj_ioqueue_operation_e = u32;
+/// pub type pj_ioqueue_operation_e = u32;
 #[derive(Debug, PartialEq, Eq, TryFromPrimitive, IntoPrimitive)]
 #[repr(u32)]
 pub enum IOQueueOperation {
@@ -340,79 +337,14 @@ pub enum SSLEntropy {
 pub enum SSLSockProto {
     DEFAULT = pj_sys::PJ_SSL_SOCK_PROTO_DEFAULT,
     SSL2 = pj_sys::PJ_SSL_SOCK_PROTO_SSL2,
-    SSL3 = pj_sys::PJ_SSL_SOCK_PROTO_SSL3, 
-    TLS1 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1, 
-    TLS1_1 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1_1, 
-    TLS1_2 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1_2, 
-    TLS1_3 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1_3, 
+    SSL3 = pj_sys::PJ_SSL_SOCK_PROTO_SSL3,
+    TLS1 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1,
+    TLS1_1 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1_1,
+    TLS1_2 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1_2,
+    TLS1_3 = pj_sys::PJ_SSL_SOCK_PROTO_TLS1_3,
     // SSL23 = pj_sys::PJ_SSL_SOCK_PROTO_SSL23,
-    ALL = pj_sys::PJ_SSL_SOCK_PROTO_ALL, 
+    ALL = pj_sys::PJ_SSL_SOCK_PROTO_ALL,
     DTLS1 = pj_sys::PJ_SSL_SOCK_PROTO_DTLS1,
 }
 
-pub fn getpid() -> u32 {
-    unsafe { pj_getpid() }
-}
-// pj_status_t 	pj_thread_create (pj_pool_t *pool, const char *thread_name, pj_thread_proc *proc, void *arg, pj_size_t stack_size, unsigned flags, pj_thread_t **thread)
 
-pub fn thread_register(thread_name: Option<String>, desc: &mut pj_thread_desc, thread: &mut Box<*mut pj_thread_t>) -> Result<(), i32> {
-
-    let thread_name = match thread_name {
-        Some(value) => CString::new(value.as_str())
-            .expect("Error::pj_thread_register").into_raw(),
-        None => ptr::null_mut()
-    };
-
-    unsafe {
-        check_status(
-            pj_thread_register( thread_name, desc.as_mut_ptr(),
-                (thread.as_mut() as *mut _) as *mut _
-            )
-        )
-    }
-}
-
-pub fn thread_is_registered() -> bool {
-    unsafe { check_boolean(pj_thread_is_registered()) }
-}
-
-pub fn thread_get_prio(thread: &mut pj_thread_t) -> i32 {
-    unsafe { pj_thread_get_prio(thread as *mut _) }
-}
-
-pub fn thread_set_prio(thread: &mut pj_thread_t, prio: i32) -> Result<(), i32> {
-    unsafe {
-        check_status(pj_thread_set_prio(thread as *mut _, prio))
-     }
-}
-
-pub fn thread_get_prio_min(thread: &mut pj_thread_t) -> i32 {
-    unsafe { pj_thread_get_prio_min(thread as *mut _) }
-}
-
-pub fn thread_get_prio_max(thread: &mut pj_thread_t) -> i32 {
-    unsafe { pj_thread_get_prio_max(thread as *mut _) }
-}
-
-// void * 	pj_thread_get_os_handle (pj_thread_t *thread)
-// const char * 	pj_thread_get_name (pj_thread_t *thread)
-
-pub fn thread_this() -> *mut pj_thread_t {
-    unsafe { pj_thread_this() }
-}
-
-pub fn thread_resume(thread: &mut pj_thread_t) -> Result<(), i32> {
-    unsafe { check_status(pj_thread_resume(thread as *mut _)) }
-}
-
-pub fn thread_join(thread: &mut pj_thread_t) -> Result<(), i32> {
-    unsafe { check_status(pj_thread_join(thread as *mut _)) }
-}
-
-pub fn thread_destroy(thread: &mut pj_thread_t) -> Result<(), i32> {
-    unsafe { check_status(pj_thread_destroy(thread as *mut _)) }
-}
-
-pub fn thread_sleep(msec: u32) -> Result<(), i32> {
-    unsafe { check_status(pj_thread_sleep(msec)) }
-}
