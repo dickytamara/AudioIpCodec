@@ -393,6 +393,7 @@ impl From<i32> for UACall {
     }
 }
 
+
 impl UACall {
 
     pub fn is_active (&self) -> bool {
@@ -758,9 +759,24 @@ impl UACall {
 
     // TODO: fix this, with return Vec value of UACall type.
     // fix with return value Result<Vec<UACall>, i32>
-    pub fn enum_calls (ids: &mut [i32; pjsua_sys::PJSUA_MAX_CALLS as usize], count: &mut u32) -> Result<(), i32> {
+    pub fn enum_calls () -> Result<Vec<UACall>, i32> {
         unsafe {
-            utils::check_status(pjsua_sys::pjsua_enum_calls( ids.as_mut_ptr(), count as *mut _))
+            let mut ids = [-1; pjsua_sys::PJSUA_MAX_CALLS as usize];
+            let mut count = Box::new(pjsua_sys::PJSUA_MAX_CALLS);
+            let status = pjsua_sys::pjsua_enum_calls( ids.as_mut_ptr(), count.as_mut() as *mut _);
+
+            match utils::check_status(status) {
+                Ok(()) => {
+                    let mut vec = Vec::new();
+
+                    for i in 0..*count as usize {
+                        vec.push(UACall::from(ids[i]));
+                    }
+
+                    return Ok(vec);
+                }
+                Err(e) => { return Err(e); }
+            }
         }
     }
 

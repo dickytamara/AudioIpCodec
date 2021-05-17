@@ -1317,6 +1317,15 @@ impl From<i32> for UAAccount {
     }
 }
 
+impl AutoDefault<UAAccount> for UAAccount {
+    fn default() -> Self {
+        unsafe {
+            let result = pjsua_sys::pjsua_acc_get_default();
+            UAAccount::from(result)
+        }
+    }
+}
+
 impl UAAccount {
 
     /// create new normal account
@@ -1602,6 +1611,47 @@ impl UAAccount {
                 Ok(()) => { return Ok(UAAccount::from(p_acc_id)); },
                 Err(e) => { return Err(e); }
             }
+        }
+    }
+
+    pub fn call(&self,
+        dst_uri: String,
+        opt: Option<&UACallSetting>,
+        msg_data: Option<&UAMsgData>,
+    ) -> Result<call::UACall, i32> {
+        unsafe {
+            let mut call_id = Box::new(-1_i32);
+
+            let opt = match opt {
+                Some(val) => val as *const _,
+                None => std::ptr::null()
+            };
+
+            let msg_data = match msg_data {
+                Some(val) => val as *const _,
+                None => std::ptr::null()
+            };
+
+            let status = pjsua_sys::pjsua_call_make_call(
+                self.id,
+                &mut pj_str_t::from_string(dst_uri) as *const _,
+                opt,
+                std::ptr::null_mut(),
+                msg_data,
+                call_id.as_mut() as *mut _
+            );
+
+            match utils::check_status(status) {
+                Ok(()) => {
+                    if *call_id != -1 {
+                        return Ok(call::UACall::from(*call_id));
+                    } else {
+                        return Err(-1);
+                    }
+                },
+                Err(e) => { return Err(e);}
+            }
+
         }
     }
 

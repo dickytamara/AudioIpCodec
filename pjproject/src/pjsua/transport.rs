@@ -207,10 +207,10 @@ impl UATransport {
         self.id
     }
 
-    pub fn get_info(&self) -> Result<UATransportInfo, i32> {
+    pub fn get_info(&self) -> Result<Box<UATransportInfo>, i32> {
         unsafe {
-            let mut info = UATransportInfo::new();
-            match utils::check_status(pjsua_sys::pjsua_transport_get_info(self.id, &mut info as *mut _)) {
+            let mut info = Box::new(UATransportInfo::new());
+            match utils::check_status(pjsua_sys::pjsua_transport_get_info(self.id, info.as_mut() as *mut _)) {
                 Ok(()) => { return Ok(info); },
                 Err(e) => { return Err(e); }
             }

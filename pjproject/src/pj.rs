@@ -18,7 +18,7 @@ pub type PJStr = pj_str_t;
 // pub type pj_ioqueue_key_t = pj_ioqueue_key_t;
 // pub type pj_timer_heap_t = pj_timer_heap_t;
 // pub type pj_atomic_t = pj_atomic_t;
-// pub type pj_thread_t = pj_thread_t;
+pub type PJThread = pj_thread_t;
 // pub type pj_lock_t = pj_lock_t;
 // pub type pj_grp_lock_t = pj_grp_lock_t;
 // pub type pj_mutex_t = pj_mutex_t;
@@ -372,7 +372,7 @@ pub fn thread_register(thread_name: Option<String>, desc: &mut pj_thread_desc, t
     }
 }
 
-pub fn thread_is_registerad() -> bool {
+pub fn thread_is_registered() -> bool {
     unsafe { check_boolean(pj_thread_is_registered()) }
 }
 

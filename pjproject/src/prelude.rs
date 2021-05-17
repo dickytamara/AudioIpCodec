@@ -3,6 +3,9 @@ pub use super::utils::AutoDefault;
 pub use super::utils::FromString;
 pub use super::utils::ToString;
 
+pub use super::pjmedia::audio::MediaAudDevInfoExt;
+pub use super::pjmedia::audio::MediaSndDevInfoExt;
+
 pub use super::pjsua::ua::UALoggingConfigExt;
 pub use super::pjsua::ua::UAConfigExt;
 pub use super::pjsua::ua::UAMsgDataExt;

@@ -1,6 +1,6 @@
 
 use std::{convert::TryFrom, path::PathBuf};
-use crate::{pjmedia::{MediaAudDevInfo, MediaCodecParam, MediaEchoFlag, MediaJbDiscardAlgo, MediaPort, MediaWavPlayerInfo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
+use crate::{pjmedia::{MediaAudDevInfo, MediaCodecParam, MediaEchoFlag, MediaJbDiscardAlgo, MediaPort, MediaSndDevInfo, MediaWavPlayerInfo}, pjnath::{IceSessTrickle, TurnTpType}, utils::{boolean_to_pjbool, check_boolean}};
 use super::*;
 
 pub trait UAMediaConfigExt {
@@ -319,6 +319,17 @@ pub trait UASndDevParamExt {
     fn set_mode(&mut self, value: u32);
     fn get_mode(&self) -> u32;
 
+}
+
+impl AutoDefault<UASndDevParam> for UASndDevParam {
+    fn default() -> Self {
+        unsafe {
+            let mut prm = UASndDevParam::new();
+            pjsua_sys::pjsua_snd_dev_param_default(&mut prm as *mut _);
+
+            prm
+        }
+    }
 }
 
 pub trait UAConfConectParamExt {
@@ -1155,7 +1166,7 @@ impl UASound {
         unsafe { utils::check_status(pjsua_sys::pjsua_set_snd_dev(capture_dev, playback_dev)) }
     }
 
-    // TODO: fix with return value Result<(i32, i32), i32>
+    /// Result<(capture_dev:i32, playback_dev:i32), i32>
     pub fn get_snd_dev(&self) -> Result<(i32, i32), i32> {
         unsafe {
             let mut dev: (i32, i32) = (-1, -1);
@@ -1168,25 +1179,38 @@ impl UASound {
         }
     }
 
-    // TODO: fix with Result<pjsua_snd_dev_param, i32>
-    pub fn snd_dev_param_default (prm: &mut pjsua_snd_dev_param) {
-        unsafe { pjsua_sys::pjsua_snd_dev_param_default(prm as *mut _); }
+
+    pub fn adjust_tx_level (&self, level: f32) -> Result<(), i32> {
+        UAConf::adjust_tx_level(0, level)
+    }
+
+    pub fn adjust_rx_level (&self, level: f32) -> Result<(), i32> {
+        UAConf::adjust_rx_level(0, level)
+    }
+
+    /// Result<( tx_level: u32, tx_level: u32 ), i32>
+    pub fn get_signal_level (&self) -> Result<(u32, u32), i32> {
+        UAConf::get_signal_level(0)
+    }
+
+    /// Result<( tx_level_l: u32, tx_level_r: u32, rx_level_l: u32, rx_level_r: u32 ), i32>
+    pub fn get_msignal_level(&self) -> Result<(u32, u32, u32, u32), i32> {
+        UAConf::get_msignal_level(0)
     }
 
     // current stable api
-    // TODO: fix with Result<Vec<pjmedia_aud_dev_info>>
     pub fn enum_aud_devs () -> Result<Vec<MediaAudDevInfo>, i32> {
         unsafe {
             let mut infos: [MediaAudDevInfo; 256] = std::mem::zeroed();
-            let mut count = 0_u32;
+            let mut count = Box::new(256_u32);
 
-            let status = pjsua_sys::pjsua_enum_aud_devs( infos.as_mut_ptr(),  &mut count as *mut _);
+            let status = pjsua_sys::pjsua_enum_aud_devs( infos.as_mut_ptr(),  count.as_mut() as *mut _);
 
             match utils::check_status(status) {
                 Ok(()) => {
                     let mut vec = Vec::<MediaAudDevInfo>::new();
 
-                    for i in 0..count as usize {
+                    for i in 0..*count as usize {
                         vec.push(infos[i].clone());
                     }
 
@@ -1198,18 +1222,17 @@ impl UASound {
     }
 
     // old api
-    // TODO: fix with Result<Vec<pjmedia_snd_dev_info>>
-    pub fn enum_snd_devs() -> Result<Vec<pjmedia_snd_dev_info>, i32> {
+    pub fn enum_snd_devs() -> Result<Vec<MediaSndDevInfo>, i32> {
         unsafe {
             let mut info = [pjmedia_snd_dev_info::new(); 256];
-            let mut count = 0_u32;
-            let status = pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), &mut count as *mut _);
+            let mut count = Box::new(256_u32);
+            let status = pjsua_sys::pjsua_enum_snd_devs( info.as_mut_ptr(), count.as_mut() as *mut _);
 
             match utils::check_status(status) {
                 Ok(()) => {
-                    let mut infos = Vec::<pjmedia_snd_dev_info>::new();
+                    let mut infos = Vec::new();
 
-                    for i in 0..count as usize {
+                    for i in 0..*count as usize {
                         infos.push(info[i]);
                     }
 

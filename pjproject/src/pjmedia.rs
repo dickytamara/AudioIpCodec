@@ -1,7 +1,3 @@
-// #![allow(dead_code)]
-// #![allow(non_camel_case_types)]
-// #![allow(non_upper_case_globals)]
-
 use pj_sys::*;
 use pjmedia_sys::*;
 use pjmedia_codec_sys::*;
@@ -17,6 +13,7 @@ use std::ffi::CStr;
 use std::ffi::CString;
 pub mod auto;
 pub mod codec;
+pub mod audio;
 
 // pub use pjmedia_sys::pjmedia_stream_info as MediaStreamInfo;
 // pub use pjmedia_sys::pjmedia_codec_info as MediaCodecInfo;
@@ -174,7 +171,7 @@ pub type MediaTransportInfo = pjmedia_transport_info;
 // pub type media_sdp_neg = pjmedia_sdp_neg;
 // pub type media_silence_det = pjmedia_silence_det;
 // pub type media_snd_stream = pjmedia_snd_stream;
-// pub type media_snd_dev_info = pjmedia_snd_dev_info;
+pub type MediaSndDevInfo = pjmedia_snd_dev_info;
 // pub type media_snd_stream_info = pjmedia_snd_stream_info;
 // pub type media_snd_port_param = pjmedia_snd_port_param; 
 // pub type media_snd_port = pjmedia_snd_port;
