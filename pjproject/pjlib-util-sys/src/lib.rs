@@ -139,15 +139,16 @@ pub const PJ_HTTP_HEADER_SIZE: u32 = 32;
 pub const PJ_CLI_CONSOLE_LOG_LEVEL: u32 = 5;
 pub const PJ_CLI_TELNET_LOG_LEVEL: u32 = 4;
 pub const PJ_CLI_TELNET_PORT: u32 = 0;
+
 extern "C" {
     pub fn pjlib_util_init() -> pj_status_t;
 }
-extern "C" {
+
+extern "C"{
     pub static mut pj_optind: ::std::os::raw::c_int;
-}
-extern "C" {
     pub static mut pj_optopt: ::std::os::raw::c_int;
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_getopt_option {

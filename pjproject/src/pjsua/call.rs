@@ -385,6 +385,7 @@ impl AutoDefault<UACallSetting> for UACallSetting {
 }
 
 
+#[derive(Clone, Copy)]
 pub struct UACall { id: i32 }
 
 impl From<i32> for UACall {

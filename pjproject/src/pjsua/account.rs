@@ -256,8 +256,8 @@ pub trait UAAccConfigExt {
     /// one credential specified, to successfully authenticate against the service provider.
     /// More credentials can be specified, for example when the requests are expected to be
     /// challenged by the proxies in the route set.
-    fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]);
-    fn get_cred_info(&self) -> &[CredentialInfo; 8usize];
+    fn set_cred_info(&mut self, value: CredentialInfo) -> Result<(), i32>;
+    fn get_cred_info(&self) -> Vec<CredentialInfo>;
 
     /// Optionally bind this account to specific transport. This normally is not a good idea,
     /// as account should be able to send requests using any available transports according
@@ -925,12 +925,26 @@ impl UAAccConfigExt for UAAccConfig {
         self.cred_count
     }
 
-    fn set_cred_info(&mut self, value: [CredentialInfo; 8usize]) {
-        self.cred_info = value;
+    fn set_cred_info(&mut self, value: CredentialInfo) -> Result<(), i32> {
+        let count = self.cred_count as usize;
+        if count < 8 {
+            self.cred_count += 1;
+            self.cred_info[count] = value;
+            Ok(())
+        } else {
+            Err(-1)
+        }
     }
 
-    fn get_cred_info(&self) -> &[CredentialInfo; 8usize] {
-        &self.cred_info
+    fn get_cred_info(&self) -> Vec<CredentialInfo> {
+        let mut cred_info = Vec::new();
+        let count = self.get_cred_count() as usize;
+
+        for i in 0..count {
+            cred_info.push(self.cred_info[i].clone());
+        }
+
+        cred_info
     }
 
     fn set_transport_id(&mut self, value: i32) {

@@ -17,17 +17,12 @@ impl FromString<pj_str_t> for pj_str_t {
 
 impl ToString for pj_str_t {
     fn to_string(&self) -> String {
-        // let mut tmp: Vec<i8> = Vec::new();
-        // let mut ret: String = String::new();
-        // unsafe {
-        //     let pointer = self.ptr;
-        //     for i in 0..self.slen {
-        //         tmp.push(*pointer.offset(i as isize).clone());
-        //     }
-        //     let ret = CStr::from_ptr(tmp.as_ptr()).to_str().expect("error").to_string().clone();
-        // }
         unsafe {
-            CStr::from_ptr(self.ptr).to_str().expect("error convert to_string").to_string().clone()
+            if self.slen > 0 {
+                CStr::from_ptr(self.ptr).to_str().unwrap().to_string().clone()
+            } else {
+                "".to_string()
+            }
         }
     }
 }
