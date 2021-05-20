@@ -150,32 +150,44 @@ impl SettingsStunWidget {
         self.ctx.borrow_mut().ent_server1.set_text(value.as_str());
     }
 
-    pub fn get_server1(&self) -> String {
-        self.ctx.borrow().ent_server1.get_text().to_string().clone()
+    pub fn get_server1(&self) -> Option<String> {
+        if  self.ctx.borrow().swt_server1.get_state() &
+            !self.ctx.borrow().ent_server1.get_text().is_empty() {
+            Some(self.ctx.borrow().ent_server1.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_server2(&self, value: String) {
         self.ctx.borrow_mut().ent_server2.set_text(value.as_str());
     }
 
-    pub fn get_server2(&self) -> String {
-        self.ctx.borrow().ent_server2.get_text().to_string().clone()
+    pub fn get_server2(&self) -> Option<String> {
+        if self.ctx.borrow().swt_server2.get_state() &
+           !self.ctx.borrow().ent_server2.get_text().is_empty() {
+                Some(self.ctx.borrow().ent_server2.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_server3(&self, value: String) {
         self.ctx.borrow_mut().ent_server3.set_text(value.as_str());
     }
 
-    pub fn get_server3(&self) -> String {
-        self.ctx.borrow().ent_server3.get_text().to_string().clone()
+    pub fn get_server3(&self) -> Option<String> {
+        if self.ctx.borrow().swt_server3.get_state() &
+        !self.ctx.borrow().ent_server3.get_text().is_empty() {
+            Some(self.ctx.borrow().ent_server3.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_server4(&self, value: String) {
         self.ctx.borrow_mut().ent_server4.set_text(value.as_str());
     }
 
-    pub fn get_server4(&self) -> String {
-        self.ctx.borrow().ent_server4.get_text().to_string().clone()
+    pub fn get_server4(&self) -> Option<String> {
+        if self.ctx.borrow().swt_server4.get_state() &
+        !self.ctx.borrow().ent_server4.get_text().is_empty() {
+            Some(self.ctx.borrow().ent_server4.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_username1(&self, value: String) {
@@ -304,10 +316,10 @@ impl HelperFileSettings for SettingsStunWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        config.set("stun", "server1", Some(self.get_server1()));
-        config.set("stun", "server2", Some(self.get_server2()));
-        config.set("stun", "server3", Some(self.get_server3()));
-        config.set("stun", "server4", Some(self.get_server4()));
+        config.set("stun", "server1", Some(self.ctx.borrow().ent_server1.to_string()));
+        config.set("stun", "server2", Some(self.ctx.borrow().ent_server2.to_string()));
+        config.set("stun", "server3", Some(self.ctx.borrow().ent_server3.to_string()));
+        config.set("stun", "server4", Some(self.ctx.borrow().ent_server4.to_string()));
         config.set("stun", "username1", Some(self.get_username1()));
         config.set("stun", "username2", Some(self.get_username2()));
         config.set("stun", "username3", Some(self.get_username3()));

@@ -157,32 +157,48 @@ impl SettingsProxyWidget {
         self.ctx.borrow_mut().ent_proxy1.set_text(value.as_str());
     }
 
-    pub fn get_proxy1(&self) -> String {
-        self.ctx.borrow().ent_proxy1.get_text().to_string().clone()
+    pub fn get_proxy1(&self) -> Option<String> {
+        if self.ctx.borrow().swt_proxy1.get_state() &
+           !self.ctx.borrow().ent_proxy1.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_proxy1.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_proxy2(&self, value: String) {
         self.ctx.borrow_mut().ent_proxy2.set_text(value.as_str());
     }
 
-    pub fn get_proxy2(&self) -> String {
-        self.ctx.borrow().ent_proxy2.get_text().to_string().clone()
+    pub fn get_proxy2(&self) -> Option<String> {
+        if self.ctx.borrow().swt_proxy2.get_state() &
+           !self.ctx.borrow().ent_proxy2.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_proxy2.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_proxy3(&self, value: String) {
         self.ctx.borrow_mut().ent_proxy3.set_text(value.as_str());
     }
 
-    pub fn get_proxy3(&self) -> String {
-        self.ctx.borrow().ent_proxy3.get_text().to_string().clone()
+    pub fn get_proxy3(&self) -> Option<String> {
+        if self.ctx.borrow().swt_proxy3.get_state() &
+           !self.ctx.borrow().ent_proxy3.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_proxy3.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_proxy4(&self, value: String) {
         self.ctx.borrow_mut().ent_proxy4.set_text(value.as_str());
     }
 
-    pub fn get_proxy4(&self) -> String {
-        self.ctx.borrow().ent_proxy4.get_text().to_string().clone()
+    pub fn get_proxy4(&self) -> Option<String> {
+        if self.ctx.borrow().swt_proxy4.get_state() &
+           !self.ctx.borrow().ent_proxy4.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_proxy4.get_text().to_string().clone())
+        } else { None }
     }
 
     pub fn set_username1(&self, value: String) {
@@ -309,10 +325,10 @@ impl HelperFileSettings for SettingsProxyWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        config.set("proxy", "proxy1", Some(self.get_proxy1()));
-        config.set("proxy", "proxy2", Some(self.get_proxy2()));
-        config.set("proxy", "proxy3", Some(self.get_proxy3()));
-        config.set("proxy", "proxy4", Some(self.get_proxy4()));
+        config.set("proxy", "proxy1", Some(self.ctx.borrow().ent_proxy1.get_text().to_string()));
+        config.set("proxy", "proxy2", Some(self.ctx.borrow().ent_proxy2.get_text().to_string()));
+        config.set("proxy", "proxy3", Some(self.ctx.borrow().ent_proxy3.get_text().to_string()));
+        config.set("proxy", "proxy4", Some(self.ctx.borrow().ent_proxy4.get_text().to_string()));
         config.set("proxy", "username1", Some(self.get_username1()));
         config.set("proxy", "username2", Some(self.get_username2()));
         config.set("proxy", "username3", Some(self.get_username3()));

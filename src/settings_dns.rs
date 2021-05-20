@@ -111,32 +111,48 @@ impl SettingsDnsWidget {
         self.ctx.borrow_mut().ent_nameserver1.set_text(value.as_str());
     }
 
-    pub fn get_nameserver1(&self) -> String {
-        self.ctx.borrow().ent_nameserver1.get_text().to_string().clone()
+    pub fn get_nameserver1(&self) -> Option<String> {
+        if self.ctx.borrow().swt_nameserver1.get_state() &
+           !self.ctx.borrow().ent_nameserver1.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_nameserver1.get_text().to_string())
+        } else { None }
     }
 
     pub fn set_nameserver2(&self, value: String) {
         self.ctx.borrow_mut().ent_nameserver2.set_text(value.as_str());
     }
 
-    pub fn get_nameserver2(&self) -> String {
-        self.ctx.borrow().ent_nameserver2.get_text().to_string().clone()
+    pub fn get_nameserver2(&self) -> Option<String> {
+        if self.ctx.borrow().swt_nameserver2.get_state() &
+           !self.ctx.borrow().ent_nameserver2.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_nameserver2.get_text().to_string())
+        } else { None }
     }
 
     pub fn set_nameserver3(&self, value: String) {
         self.ctx.borrow_mut().ent_nameserver3.set_text(value.as_str());
     }
 
-    pub fn get_nameserver3(&self) -> String {
-        self.ctx.borrow().ent_nameserver3.get_text().to_string().clone()
+    pub fn get_nameserver3(&self) -> Option<String> {
+        if self.ctx.borrow().swt_nameserver3.get_state() &
+           !self.ctx.borrow().ent_nameserver3.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_nameserver3.get_text().to_string())
+        } else { None }
     }
 
     pub fn set_nameserver4(&self, value: String) {
         self.ctx.borrow_mut().ent_nameserver4.set_text(value.as_str());
     }
 
-    pub fn get_nameserver4(&self) -> String {
-        self.ctx.borrow().ent_nameserver4.get_text().to_string().clone()
+    pub fn get_nameserver4(&self) -> Option<String> {
+        if self.ctx.borrow().swt_nameserver4.get_state() &
+           !self.ctx.borrow().ent_nameserver4.get_text().is_empty()
+        {
+            Some(self.ctx.borrow().ent_nameserver4.get_text().to_string())
+        } else { None }
     }
 
     pub fn set_state_nameserver1(&self, value: bool) {
@@ -193,10 +209,10 @@ impl HelperFileSettings for SettingsDnsWidget {
         let mut config = Ini::new();
         config.load(path.to_str().unwrap()).unwrap();
 
-        config.set("dns", "nameserver1", Some(self.get_nameserver1()));
-        config.set("dns", "nameserver2", Some(self.get_nameserver2()));
-        config.set("dns", "nameserver3", Some(self.get_nameserver3()));
-        config.set("dns", "nameserver4", Some(self.get_nameserver4()));
+        config.set("dns", "nameserver1", Some(self.ctx.borrow().ent_nameserver1.get_text().to_string()));
+        config.set("dns", "nameserver2", Some(self.ctx.borrow().ent_nameserver2.get_text().to_string()));
+        config.set("dns", "nameserver3", Some(self.ctx.borrow().ent_nameserver3.get_text().to_string()));
+        config.set("dns", "nameserver4", Some(self.ctx.borrow().ent_nameserver4.get_text().to_string()));
         config.set("dns", "state_nameserver1", Some(self.get_state_nameserver1().to_string()));
         config.set("dns", "state_nameserver2", Some(self.get_state_nameserver2().to_string()));
         config.set("dns", "state_nameserver3", Some(self.get_state_nameserver3().to_string()));
