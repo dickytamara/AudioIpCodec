@@ -598,7 +598,6 @@ pub struct pjmedia_clock_src {
     pub last_update: pj_timestamp,
 }
 
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_clock {
@@ -858,6 +857,7 @@ pub type pjmedia_aud_rec_cb = Option<
         frame: *mut pjmedia_frame,
     ) -> pj_status_t,
 >;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_aud_param {
@@ -882,7 +882,6 @@ pub struct pjmedia_aud_param {
     pub cng_enabled: pj_bool_t,
     pub vad_enabled: pj_bool_t,
 }
-
 
 pub const PJMEDIA_RTCP_XR_LOSS_RLE: pjmedia_rtcp_xr_type = 1;
 pub const PJMEDIA_RTCP_XR_DUP_RLE: pjmedia_rtcp_xr_type = 2;
@@ -924,23 +923,27 @@ pub struct pjmedia_rtcp_xr_rb_header {
     pub specific: pj_uint8_t,
     pub length: pj_uint16_t,
 }
+
 #[repr(C, packed)]
 pub struct pjmedia_rtcp_xr_rb_rr_time {
     pub header: pjmedia_rtcp_xr_rb_header,
     pub ntp_sec: pj_uint32_t,
     pub ntp_frac: pj_uint32_t,
 }
+
 #[repr(C, packed)]
 pub struct pjmedia_rtcp_xr_rb_dlrr_item {
     pub ssrc: pj_uint32_t,
     pub lrr: pj_uint32_t,
     pub dlrr: pj_uint32_t,
 }
+
 #[repr(C)]
 pub struct pjmedia_rtcp_xr_rb_dlrr {
     pub header: pjmedia_rtcp_xr_rb_header,
     pub item: pjmedia_rtcp_xr_rb_dlrr_item,
 }
+
 #[repr(C, packed)]
 pub struct pjmedia_rtcp_xr_rb_stats {
     pub header: pjmedia_rtcp_xr_rb_header,
@@ -956,6 +959,7 @@ pub struct pjmedia_rtcp_xr_rb_stats {
     pub _bitfield_align_1: [u8; 0],
     pub _bitfield_1: __BindgenBitfieldUnit<[u8; 4usize]>,
 }
+
 impl pjmedia_rtcp_xr_rb_stats {
     #[inline]
     pub fn toh_min(&self) -> pj_uint32_t {
@@ -1028,6 +1032,7 @@ impl pjmedia_rtcp_xr_rb_stats {
         __bindgen_bitfield_unit
     }
 }
+
 #[repr(C, packed)]
 pub struct pjmedia_rtcp_xr_rb_voip_mtc {
     pub header: pjmedia_rtcp_xr_rb_header,
@@ -1054,17 +1059,20 @@ pub struct pjmedia_rtcp_xr_rb_voip_mtc {
     pub jb_max: pj_uint16_t,
     pub jb_abs_max: pj_uint16_t,
 }
+
 #[repr(C)]
 pub struct pjmedia_rtcp_xr_pkt {
     pub common: pjmedia_rtcp_xr_pkt__bindgen_ty_1,
     pub buf: [pj_int8_t; 104usize],
 }
+
 #[repr(C, packed)]
 pub struct pjmedia_rtcp_xr_pkt__bindgen_ty_1 {
     pub _bitfield_align_1: [u16; 0],
     pub _bitfield_1: __BindgenBitfieldUnit<[u8; 4usize]>,
     pub ssrc: pj_uint32_t,
 }
+
 impl pjmedia_rtcp_xr_pkt__bindgen_ty_1 {
     #[inline]
     pub fn count(&self) -> c_uint {
@@ -1153,12 +1161,14 @@ impl pjmedia_rtcp_xr_pkt__bindgen_ty_1 {
         __bindgen_bitfield_unit
     }
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_stream_stat {
     pub stat_sum: pjmedia_rtcp_xr_stream_stat__bindgen_ty_1,
     pub voip_mtc: pjmedia_rtcp_xr_stream_stat__bindgen_ty_2,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_rtcp_xr_stream_stat__bindgen_ty_1 {
@@ -1173,6 +1183,7 @@ pub struct pjmedia_rtcp_xr_stream_stat__bindgen_ty_1 {
     pub jitter: pj_math_stat,
     pub toh: pj_math_stat,
 }
+
 impl pjmedia_rtcp_xr_stream_stat__bindgen_ty_1 {
     #[inline]
     pub fn l(&self) -> c_uint {
@@ -2324,6 +2335,7 @@ pub struct pjmedia_event_vid_dev_err_data {
     pub id: pjmedia_vid_dev_index,
     pub status: pj_status_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event_media_tp_err_data {
@@ -2332,11 +2344,13 @@ pub struct pjmedia_event_media_tp_err_data {
     pub dir: pjmedia_dir,
     pub status: pj_status_t,
 }
+
 pub type pjmedia_event_wnd_closed_data = pjmedia_event_dummy_data;
 pub type pjmedia_event_mouse_btn_down_data = pjmedia_event_dummy_data;
 pub type pjmedia_event_keyframe_found_data = pjmedia_event_dummy_data;
 pub type pjmedia_event_keyframe_missing_data = pjmedia_event_dummy_data;
 pub type pjmedia_event_user_data = [c_char; 40usize];
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event {
@@ -2346,6 +2360,7 @@ pub struct pjmedia_event {
     pub epub: *const c_void,
     pub data: pjmedia_event__bindgen_ty_1,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_event__bindgen_ty_1 {
@@ -2370,19 +2385,19 @@ pub type pjmedia_event_cb = Option<
         user_data: *mut c_void,
     ) -> pj_status_t,
 >;
+
 pub const PJMEDIA_EVENT_PUBLISH_DEFAULT: pjmedia_event_publish_flag = 0;
 pub const PJMEDIA_EVENT_PUBLISH_POST_EVENT: pjmedia_event_publish_flag = 1;
 pub type pjmedia_event_publish_flag = u32;
+
 pub const PJMEDIA_EVENT_MGR_NO_THREAD: pjmedia_event_mgr_flag = 1;
 pub type pjmedia_event_mgr_flag = u32;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_event_mgr {
     _unused: [u8; 0],
 }
-
-
-
 
 pub const PJMEDIA_PORT_NO_CHANGE: pjmedia_port_op = 0;
 pub const PJMEDIA_PORT_DISABLE: pjmedia_port_op = 1;
@@ -2398,6 +2413,7 @@ pub struct pjmedia_port_info {
     pub dir: pjmedia_dir,
     pub fmt: pjmedia_format,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_port {
@@ -2431,8 +2447,6 @@ pub struct pjmedia_port_port_data {
     pub pdata: *mut c_void,
     pub ldata: c_long,
 }
-
-
 
 pub const PJMEDIA_AVI_FILE_NO_LOOP: pjmedia_avi_file_player_option = 1;
 pub type pjmedia_avi_file_player_option = u32;
@@ -2481,6 +2495,7 @@ pub const PJMEDIA_RTP_PT_MP2T: pjmedia_rtp_pt = 33;
 pub const PJMEDIA_RTP_PT_H263: pjmedia_rtp_pt = 34;
 pub const PJMEDIA_RTP_PT_DYNAMIC: pjmedia_rtp_pt = 96;
 pub type pjmedia_rtp_pt = u32;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_info {
@@ -2490,24 +2505,28 @@ pub struct pjmedia_codec_info {
     pub clock_rate: c_uint,
     pub channel_cnt: c_uint,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_fmtp {
     pub cnt: pj_uint8_t,
     pub param: [pjmedia_codec_fmtp_param; 16usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_fmtp_param {
     pub name: pj_str_t,
     pub val: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_param {
     pub info: pjmedia_codec_param__bindgen_ty_1,
     pub setting: pjmedia_codec_param__bindgen_ty_2,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_param__bindgen_ty_1 {
@@ -2522,6 +2541,7 @@ pub struct pjmedia_codec_param__bindgen_ty_1 {
     pub pt: pj_uint8_t,
     pub fmt_id: pjmedia_format_id,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_codec_param__bindgen_ty_2 {
@@ -2620,7 +2640,6 @@ impl pjmedia_codec_param__bindgen_ty_2 {
     }
 }
 
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_codec_op {
@@ -2673,6 +2692,7 @@ pub struct pjmedia_codec_op {
         ) -> pj_status_t,
     >,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_codec {
@@ -2682,6 +2702,7 @@ pub struct pjmedia_codec {
     pub factory: *mut pjmedia_codec_factory,
     pub op: *mut pjmedia_codec_op,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_codec_factory_op {
@@ -2720,6 +2741,7 @@ pub struct pjmedia_codec_factory_op {
     >,
     pub destroy: Option<unsafe extern "C" fn() -> pj_status_t>,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_codec_factory {
@@ -2764,212 +2786,6 @@ pub struct pjmedia_codec_mgr {
     pub codec_desc: [pjmedia_codec_desc; 32usize],
 }
 
-extern "C" {
-    pub fn pjmedia_type_name(t: pjmedia_type) -> *const c_char;
-    pub fn pjmedia_get_type(name: *const pj_str_t) -> pjmedia_type;
-    pub static pjmedia_linear2ulaw_tab: [pj_uint8_t; 16384usize];
-    pub static pjmedia_linear2alaw_tab: [pj_uint8_t; 16384usize];
-    pub static pjmedia_ulaw2linear_tab: [pj_int16_t; 256usize];
-    pub static pjmedia_alaw2linear_tab: [pj_int16_t; 256usize];
-    pub fn pjmedia_clock_src_init(clocksrc: *mut pjmedia_clock_src, media_type: pjmedia_type, clock_rate: c_uint, ptime_usec: c_uint) -> pj_status_t;
-    pub fn pjmedia_clock_src_update(clocksrc: *mut pjmedia_clock_src, timestamp: *const pj_timestamp) -> pj_status_t;
-    pub fn pjmedia_clock_src_get_current_timestamp(clocksrc: *const pjmedia_clock_src, timestamp: *mut pj_timestamp) -> pj_status_t;
-    pub fn pjmedia_clock_src_get_time_msec(clocksrc: *const pjmedia_clock_src) -> pj_uint32_t;
-    pub fn pjmedia_clock_create(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, options: c_uint, cb: pjmedia_clock_callback, user_data: *mut c_void, p_clock: *mut *mut pjmedia_clock) -> pj_status_t;
-    pub fn pjmedia_clock_create2(pool: *mut pj_pool_t, param: *const pjmedia_clock_param, options: c_uint, cb: pjmedia_clock_callback, user_data: *mut c_void, p_clock: *mut *mut pjmedia_clock) -> pj_status_t;
-    pub fn pjmedia_clock_start(clock: *mut pjmedia_clock) -> pj_status_t;
-    pub fn pjmedia_clock_stop(clock: *mut pjmedia_clock) -> pj_status_t;
-    pub fn pjmedia_clock_modify(clock: *mut pjmedia_clock, param: *const pjmedia_clock_param) -> pj_status_t;
-    pub fn pjmedia_clock_wait(clock: *mut pjmedia_clock, wait: pj_bool_t, ts: *mut pj_timestamp) -> pj_bool_t;
-    pub fn pjmedia_clock_destroy(clock: *mut pjmedia_clock) -> pj_status_t;
-    pub fn pjmedia_format_copy(dst: *mut pjmedia_format, src: *const pjmedia_format) -> *mut pjmedia_format;
-    pub fn pjmedia_format_get_audio_format_detail(fmt: *const pjmedia_format, assert_valid: pj_bool_t) -> *mut pjmedia_audio_format_detail;
-    pub fn pjmedia_get_aud_subsys() -> *mut pjmedia_aud_subsys;
-    pub fn pjmedia_aud_driver_init(drv_idx: c_uint, refresh: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_aud_driver_deinit(drv_idx: c_uint);
-    pub fn pjmedia_aud_dev_cap_name(cap: pjmedia_aud_dev_cap, p_desc: *mut *const c_char) -> *const c_char;
-    pub fn pjmedia_aud_param_set_cap(param: *mut pjmedia_aud_param, cap: pjmedia_aud_dev_cap, pval: *const c_void) -> pj_status_t;
-    pub fn pjmedia_aud_param_get_cap(param: *const pjmedia_aud_param, cap: pjmedia_aud_dev_cap, pval: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_aud_dev_refresh() -> pj_status_t;
-    pub fn pjmedia_aud_dev_count() -> c_uint;
-    pub fn pjmedia_aud_dev_get_info(id: pjmedia_aud_dev_index, info: *mut pjmedia_aud_dev_info) -> pj_status_t;
-    pub fn pjmedia_aud_dev_lookup(drv_name: *const c_char, dev_name: *const c_char, id: *mut pjmedia_aud_dev_index) -> pj_status_t;
-    pub fn pjmedia_aud_dev_default_param(id: pjmedia_aud_dev_index, param: *mut pjmedia_aud_param) -> pj_status_t;
-    pub fn pjmedia_aud_stream_create(param: *const pjmedia_aud_param, rec_cb: pjmedia_aud_rec_cb, play_cb: pjmedia_aud_play_cb, user_data: *mut c_void, p_strm: *mut *mut pjmedia_aud_stream) -> pj_status_t;
-    pub fn pjmedia_aud_stream_get_param(strm: *mut pjmedia_aud_stream, param: *mut pjmedia_aud_param) -> pj_status_t;
-    pub fn pjmedia_aud_stream_get_cap(strm: *mut pjmedia_aud_stream, cap: pjmedia_aud_dev_cap, value: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_aud_stream_set_cap(strm: *mut pjmedia_aud_stream, cap: pjmedia_aud_dev_cap, value: *const c_void) -> pj_status_t;
-    pub fn pjmedia_aud_stream_start(strm: *mut pjmedia_aud_stream) -> pj_status_t;
-    pub fn pjmedia_aud_stream_stop(strm: *mut pjmedia_aud_stream) -> pj_status_t;
-    pub fn pjmedia_aud_stream_destroy(strm: *mut pjmedia_aud_stream) -> pj_status_t;
-    pub fn pjmedia_rtp_session_init(ses: *mut pjmedia_rtp_session, default_pt: c_int, sender_ssrc: pj_uint32_t) -> pj_status_t;
-    pub fn pjmedia_rtp_session_init2(ses: *mut pjmedia_rtp_session, settings: pjmedia_rtp_session_setting) -> pj_status_t;
-    pub fn pjmedia_rtp_encode_rtp(ses: *mut pjmedia_rtp_session, pt: c_int, m: c_int, payload_len: c_int, ts_len: c_int, rtphdr: *mut *const c_void, hdrlen: *mut c_int) -> pj_status_t;
-    pub fn pjmedia_rtp_decode_rtp(ses: *mut pjmedia_rtp_session, pkt: *const c_void, pkt_len: c_int, hdr: *mut *const pjmedia_rtp_hdr, payload: *mut *const c_void, payloadlen: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_rtp_decode_rtp2(ses: *mut pjmedia_rtp_session, pkt: *const c_void, pkt_len: c_int, hdr: *mut *const pjmedia_rtp_hdr, dec_hdr: *mut pjmedia_rtp_dec_hdr, payload: *mut *const c_void, payloadlen: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_rtp_session_update(ses: *mut pjmedia_rtp_session, hdr: *const pjmedia_rtp_hdr, seq_st: *mut pjmedia_rtp_status);
-    pub fn pjmedia_rtp_session_update2(ses: *mut pjmedia_rtp_session, hdr: *const pjmedia_rtp_hdr, seq_st: *mut pjmedia_rtp_status, check_pt: pj_bool_t);
-    pub fn pjmedia_rtp_seq_init(seq_ctrl: *mut pjmedia_rtp_seq_session, seq: pj_uint16_t);
-    pub fn pjmedia_rtp_seq_update(seq_ctrl: *mut pjmedia_rtp_seq_session, seq: pj_uint16_t, seq_status: *mut pjmedia_rtp_status);
-    pub fn pjmedia_rtcp_session_setting_default(settings: *mut pjmedia_rtcp_session_setting);
-    pub fn pjmedia_rtcp_init_stat(stat: *mut pjmedia_rtcp_stat);
-    pub fn pjmedia_rtcp_init(session: *mut pjmedia_rtcp_session, name: *mut c_char, clock_rate: c_uint, samples_per_frame: c_uint, ssrc: pj_uint32_t);
-    pub fn pjmedia_rtcp_init2(session: *mut pjmedia_rtcp_session, settings: *const pjmedia_rtcp_session_setting);
-    pub fn pjmedia_rtcp_get_ntp_time(sess: *const pjmedia_rtcp_session, ntp: *mut pjmedia_rtcp_ntp_rec) -> pj_status_t;
-    pub fn pjmedia_rtcp_fini(session: *mut pjmedia_rtcp_session);
-    pub fn pjmedia_rtcp_rx_rtp(session: *mut pjmedia_rtcp_session, seq: c_uint, ts: c_uint, payload: c_uint);
-    pub fn pjmedia_rtcp_rx_rtp2(session: *mut pjmedia_rtcp_session, seq: c_uint, ts: c_uint, payload: c_uint, discarded: pj_bool_t);
-    pub fn pjmedia_rtcp_tx_rtp(session: *mut pjmedia_rtcp_session, ptsize: c_uint);
-    pub fn pjmedia_rtcp_rx_rtcp(session: *mut pjmedia_rtcp_session, rtcp_pkt: *const c_void, size: pj_size_t);
-    pub fn pjmedia_rtcp_build_rtcp(session: *mut pjmedia_rtcp_session, rtcp_pkt: *mut *mut c_void, len: *mut c_int);
-    pub fn pjmedia_rtcp_build_rtcp_sdes(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, sdes: *const pjmedia_rtcp_sdes) -> pj_status_t;
-    pub fn pjmedia_rtcp_build_rtcp_bye(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, reason: *const pj_str_t) -> pj_status_t;
-    pub fn pjmedia_rtcp_enable_xr(session: *mut pjmedia_rtcp_session, enable: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_create(pool: *mut pj_pool_t, name: *const c_char, value: *const pj_str_t) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_attr_clone(pool: *mut pj_pool_t, attr: *const pjmedia_sdp_attr) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_attr_find(count: c_uint, attr_array: *const *mut pjmedia_sdp_attr, name: *const pj_str_t, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_attr_find2(count: c_uint, attr_array: *const *mut pjmedia_sdp_attr, name: *const c_char, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_attr_add(count: *mut c_uint, attr_array: *mut *mut pjmedia_sdp_attr, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_remove_all(count: *mut c_uint,attr_array: *mut *mut pjmedia_sdp_attr,name: *const c_char) -> c_uint;
-    pub fn pjmedia_sdp_attr_remove(count: *mut c_uint, attr_array: *mut *mut pjmedia_sdp_attr, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_to_rtpmap(pool: *mut pj_pool_t, attr: *const pjmedia_sdp_attr, p_rtpmap: *mut *mut pjmedia_sdp_rtpmap) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_get_rtpmap(attr: *const pjmedia_sdp_attr, rtpmap: *mut pjmedia_sdp_rtpmap) -> pj_status_t;
-    pub fn pjmedia_sdp_rtpmap_to_attr(pool: *mut pj_pool_t, rtpmap: *const pjmedia_sdp_rtpmap, p_attr: *mut *mut pjmedia_sdp_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_get_fmtp(attr: *const pjmedia_sdp_attr, fmtp: *mut pjmedia_sdp_fmtp) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_get_rtcp(attr: *const pjmedia_sdp_attr, rtcp: *mut pjmedia_sdp_rtcp_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_create_rtcp(pool: *mut pj_pool_t, a: *const pj_sockaddr) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_attr_get_ssrc(attr: *const pjmedia_sdp_attr, rtcp: *mut pjmedia_sdp_ssrc_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_attr_create_ssrc(pool: *mut pj_pool_t, ssrc: pj_uint32_t, cname: *const pj_str_t) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_conn_clone(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_conn) -> *mut pjmedia_sdp_conn;
-    pub fn pjmedia_sdp_conn_cmp(conn1: *const pjmedia_sdp_conn, conn2: *const pjmedia_sdp_conn, option: c_uint) -> pj_status_t;
-    pub fn pjmedia_sdp_bandw_clone(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_bandw) -> *mut pjmedia_sdp_bandw;
-    pub fn pjmedia_sdp_media_clone(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_media) -> *mut pjmedia_sdp_media;
-    pub fn pjmedia_sdp_media_find_attr(m: *const pjmedia_sdp_media, name: *const pj_str_t, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_media_find_attr2(m: *const pjmedia_sdp_media, name: *const c_char, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
-    pub fn pjmedia_sdp_media_add_attr(m: *mut pjmedia_sdp_media, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_media_remove_all_attr(m: *mut pjmedia_sdp_media, name: *const c_char) -> c_uint;
-    pub fn pjmedia_sdp_media_remove_attr(m: *mut pjmedia_sdp_media, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
-    pub fn pjmedia_sdp_media_cmp(sd1: *const pjmedia_sdp_media, sd2: *const pjmedia_sdp_media, option: c_uint) -> pj_status_t;
-    pub fn pjmedia_sdp_transport_cmp(t1: *const pj_str_t, t2: *const pj_str_t) -> pj_status_t;
-    pub fn pjmedia_sdp_transport_get_proto(tp: *const pj_str_t) -> pj_uint32_t;
-    pub fn pjmedia_sdp_media_deactivate(pool: *mut pj_pool_t, m: *mut pjmedia_sdp_media) -> pj_status_t;
-    pub fn pjmedia_sdp_media_clone_deactivate(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_media) -> *mut pjmedia_sdp_media;
-    pub fn pjmedia_sdp_parse(pool: *mut pj_pool_t, buf: *mut c_char, len: pj_size_t, p_sdp: *mut *mut pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_print(sdp: *const pjmedia_sdp_session, buf: *mut c_char, size: pj_size_t) -> c_int;
-    pub fn pjmedia_sdp_validate(sdp: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_validate2(sdp: *const pjmedia_sdp_session, strict: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_sdp_session_clone(pool: *mut pj_pool_t, sdp: *const pjmedia_sdp_session) -> *mut pjmedia_sdp_session;
-    pub fn pjmedia_sdp_session_cmp(sd1: *const pjmedia_sdp_session, sd2: *const pjmedia_sdp_session, option: c_uint) -> pj_status_t;
-    pub fn pjmedia_sdp_session_add_attr(s: *mut pjmedia_sdp_session, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_setting_default(opt: *mut pjmedia_rtcp_fb_setting) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_setting_dup(pool: *mut pj_pool_t, dst: *mut pjmedia_rtcp_fb_setting, src: *const pjmedia_rtcp_fb_setting);
-    pub fn pjmedia_rtcp_fb_info_dup(pool: *mut pj_pool_t, dst: *mut pjmedia_rtcp_fb_info, src: *const pjmedia_rtcp_fb_info);
-    pub fn pjmedia_rtcp_fb_encode_sdp(pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, opt: *const pjmedia_rtcp_fb_setting, sdp_local: *mut pjmedia_sdp_session, med_idx: c_uint, sdp_remote: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_decode_sdp(pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, opt: *const c_void, sdp: *const pjmedia_sdp_session, med_idx: c_uint, info: *mut pjmedia_rtcp_fb_info) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_decode_sdp2(pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, opt: *const c_void, sdp: *const pjmedia_sdp_session, med_idx: c_uint, pt: c_int, info: *mut pjmedia_rtcp_fb_info) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_build_nack(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, nack_cnt: c_uint, nack: *const pjmedia_rtcp_fb_nack) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_build_pli(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_build_sli(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, sli_cnt: c_uint, sli: *const pjmedia_rtcp_fb_sli) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_build_rpsi(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, rpsi: *const pjmedia_rtcp_fb_rpsi) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_parse_nack(buf: *const c_void, length: pj_size_t, nack_cnt: *mut c_uint, nack: *mut pjmedia_rtcp_fb_nack) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_parse_pli(buf: *const c_void, length: pj_size_t) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_parse_sli(buf: *const c_void, length: pj_size_t, sli_cnt: *mut c_uint, sli: *mut pjmedia_rtcp_fb_sli) -> pj_status_t;
-    pub fn pjmedia_rtcp_fb_parse_rpsi(buf: *const c_void, length: pj_size_t, rpsi: *mut pjmedia_rtcp_fb_rpsi) -> pj_status_t;
-    pub fn pjmedia_event_mgr_create(pool: *mut pj_pool_t, options: c_uint, mgr: *mut *mut pjmedia_event_mgr) -> pj_status_t;
-    pub fn pjmedia_event_mgr_instance() -> *mut pjmedia_event_mgr;
-    pub fn pjmedia_event_mgr_set_instance(mgr: *mut pjmedia_event_mgr);
-    pub fn pjmedia_event_mgr_destroy(mgr: *mut pjmedia_event_mgr);
-    pub fn pjmedia_event_init(event: *mut pjmedia_event, type_: pjmedia_event_type, ts: *const pj_timestamp, src: *const c_void);
-    pub fn pjmedia_event_subscribe(mgr: *mut pjmedia_event_mgr, cb: pjmedia_event_cb, user_data: *mut c_void, epub: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_event_unsubscribe(mgr: *mut pjmedia_event_mgr, cb: pjmedia_event_cb, user_data: *mut c_void, epub: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_event_publish(mgr: *mut pjmedia_event_mgr, epub: *mut c_void, event: *mut pjmedia_event, flag: pjmedia_event_publish_flag) -> pj_status_t;
-    pub fn pjmedia_port_info_init(info: *mut pjmedia_port_info, name: *const pj_str_t, signature: c_uint, clock_rate: c_uint, channel_count: c_uint, bits_per_sample: c_uint, samples_per_frame: c_uint) -> pj_status_t;
-    pub fn pjmedia_port_info_init2(info: *mut pjmedia_port_info, name: *const pj_str_t, signature: c_uint, dir: pjmedia_dir, fmt: *const pjmedia_format) -> pj_status_t;
-    pub fn pjmedia_port_get_clock_src(port: *mut pjmedia_port, dir: pjmedia_dir) -> *mut pjmedia_clock_src;
-    pub fn pjmedia_port_get_frame(port: *mut pjmedia_port, frame: *mut pjmedia_frame) -> pj_status_t;
-    pub fn pjmedia_port_put_frame(port: *mut pjmedia_port, frame: *mut pjmedia_frame) -> pj_status_t;
-    pub fn pjmedia_port_destroy(port: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_bidirectional_port_create(pool: *mut pj_pool_t, get_port: *mut pjmedia_port, put_port: *mut pjmedia_port, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_codec_param_clone(pool: *mut pj_pool_t, src: *const pjmedia_codec_param) -> *mut pjmedia_codec_param;
-    pub fn pjmedia_codec_mgr_init(mgr: *mut pjmedia_codec_mgr, pf: *mut pj_pool_factory) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_destroy(mgr: *mut pjmedia_codec_mgr) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_register_factory(mgr: *mut pjmedia_codec_mgr, factory: *mut pjmedia_codec_factory) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_unregister_factory(mgr: *mut pjmedia_codec_mgr, factory: *mut pjmedia_codec_factory) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_enum_codecs(mgr: *mut pjmedia_codec_mgr, count: *mut c_uint, info: *mut pjmedia_codec_info, prio: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_get_codec_info(mgr: *mut pjmedia_codec_mgr, pt: c_uint, inf: *mut *const pjmedia_codec_info) -> pj_status_t;
-    pub fn pjmedia_codec_info_to_id(info: *const pjmedia_codec_info, id: *mut c_char, max_len: c_uint) -> *mut c_char;
-    pub fn pjmedia_codec_mgr_find_codecs_by_id(mgr: *mut pjmedia_codec_mgr, codec_id: *const pj_str_t, count: *mut c_uint, p_info: *mut *const pjmedia_codec_info, prio: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_set_codec_priority(mgr: *mut pjmedia_codec_mgr, codec_id: *const pj_str_t, prio: pj_uint8_t) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_get_default_param(mgr: *mut pjmedia_codec_mgr, info: *const pjmedia_codec_info, param: *mut pjmedia_codec_param) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_set_default_param(mgr: *mut pjmedia_codec_mgr, info: *const pjmedia_codec_info, param: *const pjmedia_codec_param) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_alloc_codec(mgr: *mut pjmedia_codec_mgr, info: *const pjmedia_codec_info, p_codec: *mut *mut pjmedia_codec) -> pj_status_t;
-    pub fn pjmedia_codec_mgr_dealloc_codec(mgr: *mut pjmedia_codec_mgr, codec: *mut pjmedia_codec) -> pj_status_t;
-    pub fn pjmedia_conf_create(pool: *mut pj_pool_t, max_slots: c_uint, sampling_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_conf: *mut *mut pjmedia_conf) -> pj_status_t;
-    pub fn pjmedia_conf_destroy(conf: *mut pjmedia_conf) -> pj_status_t;
-    pub fn pjmedia_conf_get_master_port(conf: *mut pjmedia_conf) -> *mut pjmedia_port;
-    pub fn pjmedia_conf_set_port0_name(conf: *mut pjmedia_conf, name: *const pj_str_t) -> pj_status_t;
-    pub fn pjmedia_conf_add_port(conf: *mut pjmedia_conf, pool: *mut pj_pool_t, strm_port: *mut pjmedia_port, name: *const pj_str_t, p_slot: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_configure_port(conf: *mut pjmedia_conf, slot: c_uint, tx: pjmedia_port_op, rx: pjmedia_port_op) -> pj_status_t;
-    pub fn pjmedia_conf_connect_port(conf: *mut pjmedia_conf, src_slot: c_uint, sink_slot: c_uint, adj_level: c_int) -> pj_status_t;
-    pub fn pjmedia_conf_disconnect_port(conf: *mut pjmedia_conf, src_slot: c_uint, sink_slot: c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_disconnect_port_from_sources(conf: *mut pjmedia_conf, sink_slot: c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_disconnect_port_from_sinks(conf: *mut pjmedia_conf, src_slot: c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_get_port_count(conf: *mut pjmedia_conf) -> c_uint;
-    pub fn pjmedia_conf_get_connect_count(conf: *mut pjmedia_conf) -> c_uint;
-    pub fn pjmedia_conf_remove_port(conf: *mut pjmedia_conf, slot: c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_enum_ports(conf: *mut pjmedia_conf, ports: *mut c_uint, count: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_get_port_info(conf: *mut pjmedia_conf, slot: c_uint, info: *mut pjmedia_conf_port_info) -> pj_status_t;
-    pub fn pjmedia_conf_get_ports_info(conf: *mut pjmedia_conf, size: *mut c_uint, info: *mut pjmedia_conf_port_info) -> pj_status_t;
-    pub fn pjmedia_conf_get_signal_level(conf: *mut pjmedia_conf, slot: c_uint, tx_level: *mut c_uint, rx_level: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_get_msignal_level(conf: *mut pjmedia_conf, slot: c_uint, tx_level_l: *mut c_uint, tx_level_r: *mut c_uint, rx_level_l: *mut c_uint, rx_level_r: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_conf_adjust_rx_level(conf: *mut pjmedia_conf, slot: c_uint, adj_level: c_int) -> pj_status_t;
-    pub fn pjmedia_conf_adjust_tx_level(conf: *mut pjmedia_conf, slot: c_uint, adj_level: c_int) -> pj_status_t;
-    pub fn pjmedia_conf_adjust_conn_level(conf: *mut pjmedia_conf, src_slot: c_uint, sink_slot: c_uint, adj_level: c_int) -> pj_status_t;
-    pub fn pjmedia_converter_mgr_create(pool: *mut pj_pool_t, mgr: *mut *mut pjmedia_converter_mgr) -> pj_status_t;
-    pub fn pjmedia_converter_mgr_instance() -> *mut pjmedia_converter_mgr;
-    pub fn pjmedia_converter_mgr_set_instance(mgr: *mut pjmedia_converter_mgr);
-    pub fn pjmedia_converter_mgr_destroy(mgr: *mut pjmedia_converter_mgr);
-    pub fn pjmedia_converter_mgr_register_factory(mgr: *mut pjmedia_converter_mgr, f: *mut pjmedia_converter_factory) -> pj_status_t;
-    pub fn pjmedia_converter_mgr_unregister_factory(mgr: *mut pjmedia_converter_mgr, f: *mut pjmedia_converter_factory, call_destroy: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_converter_create(mgr: *mut pjmedia_converter_mgr, pool: *mut pj_pool_t, param: *mut pjmedia_conversion_param, p_cv: *mut *mut pjmedia_converter) -> pj_status_t;
-    pub fn pjmedia_converter_convert(cv: *mut pjmedia_converter, src_frame: *mut pjmedia_frame, dst_frame: *mut pjmedia_frame) -> pj_status_t;
-    pub fn pjmedia_converter_convert2(cv: *mut pjmedia_converter, src_frame: *mut pjmedia_frame, src_frame_size: *const pjmedia_rect_size, src_pos: *const pjmedia_coord, dst_frame: *mut pjmedia_frame, dst_frame_size: *const pjmedia_rect_size, dst_pos: *const pjmedia_coord, param: *mut pjmedia_converter_convert_setting) -> pj_status_t;
-    pub fn pjmedia_converter_destroy(cv: *mut pjmedia_converter);
-    pub fn pjmedia_delay_buf_create(pool: *mut pj_pool_t, name: *const c_char, clock_rate: c_uint, samples_per_frame: c_uint, channel_count: c_uint, max_delay: c_uint, options: c_uint, p_b: *mut *mut pjmedia_delay_buf) -> pj_status_t;
-    pub fn pjmedia_delay_buf_put(b: *mut pjmedia_delay_buf, frame: *mut pj_int16_t) -> pj_status_t;
-    pub fn pjmedia_delay_buf_get(b: *mut pjmedia_delay_buf, frame: *mut pj_int16_t) -> pj_status_t;
-    pub fn pjmedia_delay_buf_reset(b: *mut pjmedia_delay_buf) -> pj_status_t;
-    pub fn pjmedia_delay_buf_destroy(b: *mut pjmedia_delay_buf) -> pj_status_t;
-    pub fn pjmedia_echo_stat_default(stat: *mut pjmedia_echo_stat);
-    pub fn pjmedia_echo_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, tail_ms: c_uint, latency_ms: c_uint, options: c_uint, p_echo: *mut *mut pjmedia_echo_state) -> pj_status_t;
-    pub fn pjmedia_echo_create2(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, tail_ms: c_uint, latency_ms: c_uint, options: c_uint, p_echo: *mut *mut pjmedia_echo_state) -> pj_status_t;
-    pub fn pjmedia_echo_destroy(echo: *mut pjmedia_echo_state) -> pj_status_t;
-    pub fn pjmedia_echo_reset(echo: *mut pjmedia_echo_state) -> pj_status_t;
-    pub fn pjmedia_echo_get_stat(echo: *mut pjmedia_echo_state, p_stat: *mut pjmedia_echo_stat) -> pj_status_t;
-    pub fn pjmedia_echo_playback(echo: *mut pjmedia_echo_state, play_frm: *mut pj_int16_t) -> pj_status_t;
-    pub fn pjmedia_echo_capture(echo: *mut pjmedia_echo_state, rec_frm: *mut pj_int16_t, options: c_uint) -> pj_status_t;
-    pub fn pjmedia_echo_cancel(echo: *mut pjmedia_echo_state, rec_frm: *mut pj_int16_t, play_frm: *const pj_int16_t, options: c_uint, reserved: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_echo_port_create(pool: *mut pj_pool_t, dn_port: *mut pjmedia_port, tail_ms: c_uint, latency_ms: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_strerror(status: pj_status_t, buffer: *mut c_char, bufsize: pj_size_t) -> pj_str_t;
-    pub fn pjmedia_endpt_destroy2(endpt: *mut pjmedia_endpt) -> pj_status_t;
-    pub fn pjmedia_endpt_set_flag(endpt: *mut pjmedia_endpt, flag: pjmedia_endpt_flag, value: *const c_void) -> pj_status_t;
-    pub fn pjmedia_endpt_get_flag(endpt: *mut pjmedia_endpt, flag: pjmedia_endpt_flag, value: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_endpt_get_ioqueue(endpt: *mut pjmedia_endpt) -> *mut pj_ioqueue_t;
-    pub fn pjmedia_endpt_get_thread_count(endpt: *mut pjmedia_endpt) -> c_uint;
-    pub fn pjmedia_endpt_get_thread(endpt: *mut pjmedia_endpt, index: c_uint) -> *mut pj_thread_t;
-    pub fn pjmedia_endpt_stop_threads(endpt: *mut pjmedia_endpt) -> pj_status_t;
-    pub fn pjmedia_endpt_create_pool(endpt: *mut pjmedia_endpt, name: *const c_char, initial: pj_size_t, increment: pj_size_t) -> *mut pj_pool_t;
-    pub fn pjmedia_endpt_get_codec_mgr(endpt: *mut pjmedia_endpt) -> *mut pjmedia_codec_mgr;
-    pub fn pjmedia_endpt_create_sdp(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, stream_cnt: c_uint, sock_info: *const pjmedia_sock_info, p_sdp: *mut *mut pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_endpt_create_base_sdp(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, sess_name: *const pj_str_t, origin: *const pj_sockaddr, p_sdp: *mut *mut pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_endpt_create_audio_sdp(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, si: *const pjmedia_sock_info, options: c_uint, p_m: *mut *mut pjmedia_sdp_media) -> pj_status_t;
-    pub fn pjmedia_endpt_dump(endpt: *mut pjmedia_endpt) -> pj_status_t;
-    pub fn pjmedia_endpt_atexit(endpt: *mut pjmedia_endpt, func: pjmedia_endpt_exit_callback) -> pj_status_t;
-    pub fn pjmedia_endpt_create2(pf: *mut pj_pool_factory, ioqueue: *mut pj_ioqueue_t, worker_cnt: c_uint, p_endpt: *mut *mut pjmedia_endpt) -> pj_status_t;
-}
-
-
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_conf {
@@ -2995,13 +2811,12 @@ pub struct pjmedia_conf_port_info {
     pub tx_adj_level: c_int,
     pub rx_adj_level: c_int,
 }
+
 pub const PJMEDIA_CONF_NO_MIC: pjmedia_conf_option = 1;
 pub const PJMEDIA_CONF_NO_DEVICE: pjmedia_conf_option = 2;
 pub const PJMEDIA_CONF_SMALL_FILTER: pjmedia_conf_option = 4;
 pub const PJMEDIA_CONF_USE_LINEAR: pjmedia_conf_option = 8;
 pub type pjmedia_conf_option = u32;
-
-
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -3009,10 +2824,12 @@ pub struct pjmedia_conversion_param {
     pub src: pjmedia_format,
     pub dst: pjmedia_format,
 }
+
 pub const PJMEDIA_CONVERTER_PRIORITY_LOWEST: pjmedia_converter_priority_guide = 0;
 pub const PJMEDIA_CONVERTER_PRIORITY_NORMAL: pjmedia_converter_priority_guide = 15000;
 pub const PJMEDIA_CONVERTER_PRIORITY_HIGHEST: pjmedia_converter_priority_guide = 32000;
 pub type pjmedia_converter_priority_guide = u32;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_converter_factory {
@@ -3022,6 +2839,7 @@ pub struct pjmedia_converter_factory {
     pub priority: c_int,
     pub op: *mut pjmedia_converter_factory_op,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_converter {
@@ -3069,12 +2887,12 @@ pub struct pjmedia_converter_op {
         ) -> pj_status_t,
     >,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_converter_mgr {
     _unused: [u8; 0],
 }
-
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3123,8 +2941,6 @@ pub struct pjmedia_echo_stat {
     pub stat_info: pj_str_t,
     pub buf_: [c_char; 128usize],
 }
-
-
 
 pub const PJMEDIA_TPMED_NO_TRANSPORT_CHECKING: pjmedia_tranport_media_option = 1;
 pub const PJMEDIA_TPMED_RTCP_MUX: pjmedia_tranport_media_option = 2;
@@ -3391,69 +3207,14 @@ pub struct pjmedia_jbuf {
     _unused: [u8; 0],
 }
 
-extern "C" {
-    pub fn pjmedia_jbuf_create(pool: *mut pj_pool_t, name: *const pj_str_t, frame_size: c_uint, ptime: c_uint, max_count: c_uint, p_jb: *mut *mut pjmedia_jbuf) -> pj_status_t;
-    pub fn pjmedia_jbuf_set_ptime(jb: *mut pjmedia_jbuf, ptime: c_uint) -> pj_status_t;
-    pub fn pjmedia_jbuf_set_fixed(jb: *mut pjmedia_jbuf, prefetch: c_uint) -> pj_status_t;
-    pub fn pjmedia_jbuf_set_adaptive(jb: *mut pjmedia_jbuf, prefetch: c_uint, min_prefetch: c_uint, max_prefetch: c_uint) -> pj_status_t;
-    pub fn pjmedia_jbuf_set_discard(jb: *mut pjmedia_jbuf, algo: pjmedia_jb_discard_algo) -> pj_status_t;
-    pub fn pjmedia_jbuf_destroy(jb: *mut pjmedia_jbuf) -> pj_status_t;
-    pub fn pjmedia_jbuf_reset(jb: *mut pjmedia_jbuf) -> pj_status_t;
-    pub fn pjmedia_jbuf_put_frame(jb: *mut pjmedia_jbuf, frame: *const c_void, size: pj_size_t, frame_seq: c_int);
-    pub fn pjmedia_jbuf_put_frame2(jb: *mut pjmedia_jbuf, frame: *const c_void, size: pj_size_t, bit_info: pj_uint32_t, frame_seq: c_int, discarded: *mut pj_bool_t);
-    pub fn pjmedia_jbuf_put_frame3(jb: *mut pjmedia_jbuf, frame: *const c_void, size: pj_size_t, bit_info: pj_uint32_t, frame_seq: c_int, frame_ts: pj_uint32_t, discarded: *mut pj_bool_t);
-    pub fn pjmedia_jbuf_get_frame(jb: *mut pjmedia_jbuf, frame: *mut c_void, p_frm_type: *mut c_char);
-    pub fn pjmedia_jbuf_get_frame2(jb: *mut pjmedia_jbuf, frame: *mut c_void, size: *mut pj_size_t, p_frm_type: *mut c_char, bit_info: *mut pj_uint32_t);
-    pub fn pjmedia_jbuf_get_frame3(jb: *mut pjmedia_jbuf, frame: *mut c_void, size: *mut pj_size_t, p_frm_type: *mut c_char, bit_info: *mut pj_uint32_t, ts: *mut pj_uint32_t, seq: *mut c_int);
-    pub fn pjmedia_jbuf_peek_frame(jb: *mut pjmedia_jbuf, offset: c_uint, frame: *mut *const c_void, size: *mut pj_size_t, p_frm_type: *mut c_char, bit_info: *mut pj_uint32_t, ts: *mut pj_uint32_t, seq: *mut c_int);
-    pub fn pjmedia_jbuf_remove_frame(jb: *mut pjmedia_jbuf, frame_cnt: c_uint) -> c_uint;
-    pub fn pjmedia_jbuf_is_full(jb: *const pjmedia_jbuf) -> pj_bool_t;
-    pub fn pjmedia_jbuf_get_state(jb: *const pjmedia_jbuf, state: *mut pjmedia_jb_state) -> pj_status_t;
-}
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_master_port {
     _unused: [u8; 0],
 }
-extern "C" {
-    pub fn pjmedia_master_port_create(
-        pool: *mut pj_pool_t,
-        u_port: *mut pjmedia_port,
-        d_port: *mut pjmedia_port,
-        options: c_uint,
-        p_m: *mut *mut pjmedia_master_port,
-    ) -> pj_status_t;
-}
-
-extern "C" {
-    pub fn pjmedia_master_port_start(m: *mut pjmedia_master_port) -> pj_status_t;
-    pub fn pjmedia_master_port_stop(m: *mut pjmedia_master_port) -> pj_status_t;
-    pub fn pjmedia_master_port_wait(m: *mut pjmedia_master_port, wait: pj_bool_t, ts: *mut pj_timestamp) -> pj_bool_t;
-    pub fn pjmedia_master_port_set_uport(m: *mut pjmedia_master_port, port: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_master_port_get_uport(m: *mut pjmedia_master_port) -> *mut pjmedia_port;
-    pub fn pjmedia_master_port_set_dport(m: *mut pjmedia_master_port, port: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_master_port_get_dport(m: *mut pjmedia_master_port) -> *mut pjmedia_port;
-    pub fn pjmedia_master_port_destroy(m: *mut pjmedia_master_port, destroy_ports: pj_bool_t) -> pj_status_t;
-}
 
 pub const PJMEDIA_MEM_NO_LOOP: pjmedia_mem_player_option = 1;
 pub type pjmedia_mem_player_option = u32;
-
-extern "C" {
-    pub fn pjmedia_mem_player_create(pool: *mut pj_pool_t, buffer: *const c_void, size: pj_size_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_mem_player_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
-    pub fn pjmedia_mem_player_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
-    pub fn pjmedia_mem_capture_create(pool: *mut pj_pool_t, buffer: *mut c_void, size: pj_size_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_mem_capture_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
-    pub fn pjmedia_mem_capture_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
-    pub fn pjmedia_mem_capture_get_size(port: *mut pjmedia_port) -> pj_size_t;
-    pub fn pjmedia_null_port_create(pool: *mut pj_pool_t, sampling_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_plc_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, options: c_uint, p_plc: *mut *mut pjmedia_plc) -> pj_status_t;
-    pub fn pjmedia_plc_save(plc: *mut pjmedia_plc, frame: *mut pj_int16_t) -> pj_status_t;
-    pub fn pjmedia_plc_generate(plc: *mut pjmedia_plc, frame: *mut pj_int16_t) -> pj_status_t;
-}
-
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3468,13 +3229,6 @@ pub struct pjmedia_resample {
     _unused: [u8; 0],
 }
 
-extern "C" {
-    pub fn pjmedia_resample_create(pool: *mut pj_pool_t, high_quality: pj_bool_t, large_filter: pj_bool_t, channel_count: c_uint, rate_in: c_uint, rate_out: c_uint, samples_per_frame: c_uint, p_resample: *mut *mut pjmedia_resample) -> pj_status_t;
-    pub fn pjmedia_resample_run(resample: *mut pjmedia_resample, input: *const pj_int16_t, output: *mut pj_int16_t);
-    pub fn pjmedia_resample_get_input_size(resample: *mut pjmedia_resample) -> c_uint;
-    pub fn pjmedia_resample_destroy(resample: *mut pjmedia_resample);
-    pub fn pjmedia_resample_port_create(pool: *mut pj_pool_t, dn_port: *mut pjmedia_port, clock_rate: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-}
 
 pub const PJMEDIA_RESAMPLE_USE_LINEAR: pjmedia_resample_port_options = 1;
 pub const PJMEDIA_RESAMPLE_USE_SMALL_FILTER: pjmedia_resample_port_options = 2;
@@ -3497,39 +3251,7 @@ pub struct pjmedia_sdp_neg {
 pub const PJMEDIA_SDP_NEG_ALLOW_MEDIA_CHANGE: pjmedia_mod_offer_flag = 1;
 pub type pjmedia_mod_offer_flag = u32;
 
-extern "C" {
-    pub fn pjmedia_sdp_neg_state_str(state: pjmedia_sdp_neg_state) -> *const c_char;
-    pub fn pjmedia_sdp_neg_create_w_local_offer(pool: *mut pj_pool_t, local: *const pjmedia_sdp_session, p_neg: *mut *mut pjmedia_sdp_neg) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_create_w_remote_offer(pool: *mut pj_pool_t, initial: *const pjmedia_sdp_session, remote: *const pjmedia_sdp_session, p_neg: *mut *mut pjmedia_sdp_neg) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_set_prefer_remote_codec_order(neg: *mut pjmedia_sdp_neg, prefer_remote: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_set_answer_multiple_codecs(neg: *mut pjmedia_sdp_neg, answer_multiple: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_get_state(neg: *mut pjmedia_sdp_neg) -> pjmedia_sdp_neg_state;
-    pub fn pjmedia_sdp_neg_get_active_local(neg: *mut pjmedia_sdp_neg, local: *mut *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_get_active_remote(neg: *mut pjmedia_sdp_neg, remote: *mut *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_was_answer_remote(neg: *mut pjmedia_sdp_neg) -> pj_bool_t;
-    pub fn pjmedia_sdp_neg_get_neg_remote(neg: *mut pjmedia_sdp_neg, remote: *mut *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_get_neg_local(neg: *mut pjmedia_sdp_neg, local: *mut *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_modify_local_offer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, local: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_modify_local_offer2(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, flags: c_uint, local: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_send_local_offer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, offer: *mut *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_set_remote_answer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, remote: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_set_remote_offer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, remote: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_set_local_answer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, local: *const pjmedia_sdp_session) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_has_local_answer(neg: *mut pjmedia_sdp_neg) -> pj_bool_t;
-    pub fn pjmedia_sdp_neg_cancel_offer(neg: *mut pjmedia_sdp_neg) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_negotiate(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, allow_asym: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_register_fmt_match_cb(fmt_name: *const pj_str_t, cb: pjmedia_sdp_neg_fmt_match_cb) -> pj_status_t;
-    pub fn pjmedia_sdp_neg_fmt_match(pool: *mut pj_pool_t, offer: *mut pjmedia_sdp_media, o_fmt_idx: c_uint, answer: *mut pjmedia_sdp_media, a_fmt_idx: c_uint, option: c_uint) -> pj_status_t;
-    pub fn pjmedia_silence_det_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, p_sd: *mut *mut pjmedia_silence_det) -> pj_status_t;
-    pub fn pjmedia_silence_det_set_name(sd: *mut pjmedia_silence_det, name: *const c_char) -> pj_status_t;
-    pub fn pjmedia_silence_det_set_fixed(sd: *mut pjmedia_silence_det, threshold: c_int) -> pj_status_t;
-    pub fn pjmedia_silence_det_set_adaptive(sd: *mut pjmedia_silence_det, threshold: c_int) -> pj_status_t;
-    pub fn pjmedia_silence_det_set_params(sd: *mut pjmedia_silence_det, before_silence: c_int, recalc_time1: c_int, recalc_time2: c_int) -> pj_status_t;
-    pub fn pjmedia_silence_det_disable(sd: *mut pjmedia_silence_det) -> pj_status_t;
-    pub fn pjmedia_silence_det_detect(sd: *mut pjmedia_silence_det, samples: *const pj_int16_t, count: pj_size_t, p_level: *mut pj_int32_t) -> pj_bool_t;
-    pub fn pjmedia_calc_avg_signal(samples: *const pj_int16_t, count: pj_size_t) -> pj_int32_t;
-    pub fn pjmedia_silence_det_apply(sd: *mut pjmedia_silence_det, level: pj_uint32_t) -> pj_bool_t;
-}
+
 
 pub const PJMEDIA_SDP_NEG_FMT_MATCH_ALLOW_MODIFY_ANSWER: pjmedia_sdp_neg_fmt_match_flag = 1;
 pub type pjmedia_sdp_neg_fmt_match_flag = u32;
@@ -3601,36 +3323,6 @@ pub type pjmedia_snd_rec_cb = Option<
     ) -> pj_status_t,
 >;
 
-extern "C" {
-    pub fn pjmedia_snd_get_dev_info(index: c_uint) -> *const pjmedia_snd_dev_info;
-    pub fn pjmedia_snd_set_latency(input_latency: c_uint, output_latency: c_uint) -> pj_status_t;
-    pub fn pjmedia_snd_open(rec_id: c_int, play_id: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, rec_cb: pjmedia_snd_rec_cb, play_cb: pjmedia_snd_play_cb, user_data: *mut c_void, p_snd_strm: *mut *mut pjmedia_snd_stream) -> pj_status_t;
-    pub fn pjmedia_snd_open_rec(index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, rec_cb: pjmedia_snd_rec_cb, user_data: *mut c_void, p_snd_strm: *mut *mut pjmedia_snd_stream) -> pj_status_t;
-    pub fn pjmedia_snd_open_player(index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, play_cb: pjmedia_snd_play_cb, user_data: *mut c_void, p_snd_strm: *mut *mut pjmedia_snd_stream) -> pj_status_t;
-    pub fn pjmedia_snd_stream_get_info(strm: *mut pjmedia_snd_stream, pi: *mut pjmedia_snd_stream_info) -> pj_status_t;
-    pub fn pjmedia_snd_stream_start(stream: *mut pjmedia_snd_stream) -> pj_status_t;
-    pub fn pjmedia_snd_stream_stop(stream: *mut pjmedia_snd_stream) -> pj_status_t;
-    pub fn pjmedia_snd_stream_close(stream: *mut pjmedia_snd_stream) -> pj_status_t;
-    pub fn pjmedia_snd_port_param_default(prm: *mut pjmedia_snd_port_param);
-    pub fn pjmedia_snd_port_create(pool: *mut pj_pool_t, rec_id: c_int, play_id: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
-    pub fn pjmedia_snd_port_create_rec(pool: *mut pj_pool_t, index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
-    pub fn pjmedia_snd_port_create_player(pool: *mut pj_pool_t, index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
-    pub fn pjmedia_snd_port_create2(pool: *mut pj_pool_t, prm: *const pjmedia_snd_port_param, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
-    pub fn pjmedia_snd_port_destroy(snd_port: *mut pjmedia_snd_port) -> pj_status_t;
-    pub fn pjmedia_snd_port_get_snd_stream(snd_port: *mut pjmedia_snd_port) -> *mut pjmedia_aud_stream;
-    pub fn pjmedia_snd_port_set_ec(snd_port: *mut pjmedia_snd_port, pool: *mut pj_pool_t, tail_ms: c_uint, options: c_uint) -> pj_status_t;
-    pub fn pjmedia_snd_port_get_ec_tail(snd_port: *mut pjmedia_snd_port, p_length: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_snd_port_get_ec_stat(snd_port: *mut pjmedia_snd_port, p_stat: *mut pjmedia_echo_stat) -> pj_status_t;
-    pub fn pjmedia_snd_port_get_clock_src(snd_port: *mut pjmedia_snd_port, dir: pjmedia_dir) -> *mut pjmedia_clock_src;
-    pub fn pjmedia_snd_port_connect(snd_port: *mut pjmedia_snd_port, port: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_snd_port_get_port(snd_port: *mut pjmedia_snd_port) -> *mut pjmedia_port;
-    pub fn pjmedia_snd_port_disconnect(snd_port: *mut pjmedia_snd_port) -> pj_status_t;
-    pub fn pjmedia_splitcomb_create(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_splitcomb: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_splitcomb_set_channel(splitcomb: *mut pjmedia_port, ch_num: c_uint, options: c_uint, port: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_splitcomb_create_rev_channel(pool: *mut pj_pool_t, splitcomb: *mut pjmedia_port, ch_num: c_uint, options: c_uint, p_chport: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_stereo_port_create(pool: *mut pj_pool_t, dn_port: *mut pjmedia_port, channel_count: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-}
-
 
 pub const PJMEDIA_SND_PORT_NO_AUTO_START: pjmedia_snd_port_option = 1;
 pub type pjmedia_snd_port_option = u32;
@@ -3646,24 +3338,20 @@ pub struct pjmedia_snd_port_param {
     pub on_rec_frame: pjmedia_aud_rec_cb,
 }
 
-
-
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_snd_port {
     _unused: [u8; 0],
 }
 
-
-
 pub const PJMEDIA_STEREO_DONT_DESTROY_DN: pjmedia_stereo_port_options = 4;
 pub type pjmedia_stereo_port_options = u32;
-
 
 pub const PJMEDIA_VID_PACKING_UNKNOWN: pjmedia_vid_packing = 0;
 pub const PJMEDIA_VID_PACKING_PACKETS: pjmedia_vid_packing = 1;
 pub const PJMEDIA_VID_PACKING_WHOLE: pjmedia_vid_packing = 2;
 pub type pjmedia_vid_packing = u32;
+
 pub const PJMEDIA_VID_FRM_KEYFRAME: pjmedia_vid_frm_bit_info = 1;
 pub type pjmedia_vid_frm_bit_info = u32;
 
@@ -3811,6 +3499,7 @@ pub struct pjmedia_vid_codec_factory_op {
         ) -> pj_status_t,
     >,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_vid_codec_factory {
@@ -3832,10 +3521,6 @@ pub struct pjmedia_stream_rtp_sess_info {
     pub rx_rtp: *const pjmedia_rtp_session,
     pub tx_rtp: *const pjmedia_rtp_session,
     pub rtcp: *const pjmedia_rtcp_session,
-}
-
-extern "C" {
-    pub fn pjmedia_stream_info_parse_fmtp(pool: *mut pj_pool_t, m: *const pjmedia_sdp_media, pt: c_uint, fmtp: *mut pjmedia_codec_fmtp) -> pj_status_t;
 }
 
 #[repr(C)]
@@ -3890,43 +3575,6 @@ pub struct pjmedia_stream_dtmf_event {
     pub flags: pj_uint16_t,
 }
 
-extern "C" {
-    pub fn pjmedia_stream_info_from_sdp(si: *mut pjmedia_stream_info, pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, local: *const pjmedia_sdp_session, remote: *const pjmedia_sdp_session, stream_idx: c_uint) -> pj_status_t;
-    pub fn pjmedia_stream_create(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, info: *const pjmedia_stream_info, tp: *mut pjmedia_transport, user_data: *mut c_void, p_stream: *mut *mut pjmedia_stream) -> pj_status_t;
-    pub fn pjmedia_stream_destroy(stream: *mut pjmedia_stream) -> pj_status_t;
-    pub fn pjmedia_stream_get_last_jb_frame_type(stream: *mut pjmedia_stream) -> c_char;
-    pub fn pjmedia_stream_get_port(stream: *mut pjmedia_stream, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_stream_get_transport(st: *mut pjmedia_stream) -> *mut pjmedia_transport;
-    pub fn pjmedia_stream_start(stream: *mut pjmedia_stream) -> pj_status_t;
-    pub fn pjmedia_stream_get_info(stream: *const pjmedia_stream, info: *mut pjmedia_stream_info) -> pj_status_t;
-    pub fn pjmedia_stream_get_stat(stream: *const pjmedia_stream, stat: *mut pjmedia_rtcp_stat) -> pj_status_t;
-    pub fn pjmedia_stream_reset_stat(stream: *mut pjmedia_stream) -> pj_status_t;
-    pub fn pjmedia_stream_get_stat_jbuf(stream: *const pjmedia_stream, state: *mut pjmedia_jb_state) -> pj_status_t;
-    pub fn pjmedia_stream_pause(stream: *mut pjmedia_stream, dir: pjmedia_dir) -> pj_status_t;
-    pub fn pjmedia_stream_resume(stream: *mut pjmedia_stream, dir: pjmedia_dir) -> pj_status_t;
-    pub fn pjmedia_stream_dial_dtmf(stream: *mut pjmedia_stream, ascii_digit: *const pj_str_t) -> pj_status_t;
-    pub fn pjmedia_stream_check_dtmf(stream: *mut pjmedia_stream) -> pj_bool_t;
-    pub fn pjmedia_stream_get_dtmf(stream: *mut pjmedia_stream, ascii_digits: *mut c_char, size: *mut c_uint) -> pj_status_t;
-    pub fn pjmedia_stream_set_dtmf_callback(
-        stream: *mut pjmedia_stream,
-        cb: Option<unsafe extern "C" fn(arg1: *mut pjmedia_stream, user_data: *mut c_void, digit: c_int)>,
-        user_data: *mut c_void,
-    ) -> pj_status_t;
-    pub fn pjmedia_stream_set_dtmf_event_callback(
-        stream: *mut pjmedia_stream,
-        cb: Option<
-            unsafe extern "C" fn(
-                arg1: *mut pjmedia_stream,
-                user_data: *mut c_void,
-                event: *const pjmedia_stream_dtmf_event,
-            ),
-        >,
-        user_data: *mut c_void,
-    ) -> pj_status_t;
-    pub fn pjmedia_stream_send_rtcp_sdes(stream: *mut pjmedia_stream) -> pj_status_t;
-    pub fn pjmedia_stream_send_rtcp_bye(stream: *mut pjmedia_stream) -> pj_status_t;
-    pub fn pjmedia_stream_get_rtp_session_info(stream: *mut pjmedia_stream, session_info: *mut pjmedia_stream_rtp_sess_info) -> pj_status_t;
-}
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3967,19 +3615,7 @@ pub const PJMEDIA_TONEGEN_LOOP: u32 = 1;
 pub const PJMEDIA_TONEGEN_NO_LOCK: u32 = 2;
 pub type _bindgen_ty_12 = u32;
 
-extern "C" {
-    pub fn pjmedia_tonegen_create(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_tonegen_create2(pool: *mut pj_pool_t, name: *const pj_str_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_tonegen_is_busy(tonegen: *mut pjmedia_port) -> pj_bool_t;
-    pub fn pjmedia_tonegen_stop(tonegen: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_tonegen_stop_loop(tonegen: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_tonegen_rewind(tonegen: *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_tonegen_play(tonegen: *mut pjmedia_port, count: c_uint, tones: *const pjmedia_tone_desc, options: c_uint) -> pj_status_t;
-    pub fn pjmedia_tonegen_play_digits(tonegen: *mut pjmedia_port, count: c_uint, digits: *const pjmedia_tone_digit, options: c_uint) -> pj_status_t;
-    pub fn pjmedia_tonegen_get_digit_map(tonegen: *mut pjmedia_port, m: *mut *const pjmedia_tone_digit_map) -> pj_status_t;
-    pub fn pjmedia_tonegen_set_digit_map(tonegen: *mut pjmedia_port, m: *mut pjmedia_tone_digit_map) -> pj_status_t;
-    pub fn pjmedia_tp_adapter_create(endpt: *mut pjmedia_endpt, name: *const c_char, base_tp: *mut pjmedia_transport, del_base: pj_bool_t, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-}
+
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4027,21 +3663,6 @@ pub const PJMEDIA_ICE_NO_SRC_ADDR_CHECKING: pjmedia_transport_ice_options = 1;
 pub const PJMEDIA_ICE_DISABLE_ICE_MISMATCH: pjmedia_transport_ice_options = 2;
 pub type pjmedia_transport_ice_options = u32;
 
-extern "C" {
-    pub fn pjmedia_ice_create(endpt: *mut pjmedia_endpt, name: *const c_char, comp_cnt: c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_ice_create2(endpt: *mut pjmedia_endpt, name: *const c_char, comp_cnt: c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_ice_create3(endpt: *mut pjmedia_endpt, name: *const c_char, comp_cnt: c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, options: c_uint, user_data: *mut c_void, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_ice_get_grp_lock(tp: *mut pjmedia_transport) -> *mut pj_grp_lock_t;
-    pub fn pjmedia_ice_add_ice_cb(tp: *mut pjmedia_transport, cb: *const pjmedia_ice_cb, user_data: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_ice_remove_ice_cb(tp: *mut pjmedia_transport, cb: *const pjmedia_ice_cb, user_data: *mut c_void) -> pj_status_t;
-    pub fn pjmedia_ice_sdp_has_trickle(sdp: *const pjmedia_sdp_session, med_idx: c_uint) -> pj_bool_t;
-    pub fn pjmedia_ice_trickle_update(tp: *mut pjmedia_transport, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rcand_cnt: c_uint, rcand: *const pj_ice_sess_cand, rcand_end: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_ice_trickle_decode_sdp(sdp: *const pjmedia_sdp_session, media_index: c_uint, mid: *mut pj_str_t, ufrag: *mut pj_str_t, passwd: *mut pj_str_t, cand_cnt: *mut c_uint, cand: *mut pj_ice_sess_cand, end_of_cand: *mut pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_ice_trickle_encode_sdp(sdp_pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, mid: *const pj_str_t, ufrag: *const pj_str_t, passwd: *const pj_str_t, cand_cnt: c_uint, cand: *const pj_ice_sess_cand, end_of_cand: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_ice_trickle_has_new_cand(tp: *mut pjmedia_transport) -> pj_bool_t;
-    pub fn pjmedia_ice_trickle_send_local_cand(tp: *mut pjmedia_transport, sdp_pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, p_end_of_cand: *mut pj_bool_t) -> pj_status_t;
-}
-
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjmedia_loop_tp_setting {
@@ -4049,13 +3670,6 @@ pub struct pjmedia_loop_tp_setting {
     pub addr: pj_str_t,
     pub port: c_int,
     pub disable_rx: pj_bool_t,
-}
-
-extern "C" {
-    pub fn pjmedia_loop_tp_setting_default(opt: *mut pjmedia_loop_tp_setting);
-    pub fn pjmedia_transport_loop_create(endpt: *mut pjmedia_endpt, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_loop_create2(endpt: *mut pjmedia_endpt, opt: *const pjmedia_loop_tp_setting, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_loop_disable_rx(tp: *mut pjmedia_transport, user: *mut c_void, disabled: pj_bool_t) -> pj_status_t;
 }
 
 pub const PJMEDIA_SRTP_NO_ENCRYPTION: pjmedia_srtp_crypto_option = 1;
@@ -4084,9 +3698,7 @@ pub type pjmedia_srtp_keying_method = u32;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_srtp_cb {
-    pub on_srtp_nego_complete: Option<
-        unsafe extern "C" fn(tp: *mut pjmedia_transport, status: pj_status_t),
-    >,
+    pub on_srtp_nego_complete: Option<unsafe extern "C" fn(tp: *mut pjmedia_transport, status: pj_status_t)>
 }
 
 #[repr(C)]
@@ -4121,29 +3733,11 @@ pub struct pjmedia_srtp_dtls_nego_param {
     pub is_role_active: pj_bool_t,
 }
 
-extern "C" {
-    pub fn pjmedia_srtp_init_lib(endpt: *mut pjmedia_endpt) -> pj_status_t;
-    pub fn pjmedia_srtp_setting_default(opt: *mut pjmedia_srtp_setting);
-    pub fn pjmedia_srtp_enum_crypto(count: *mut c_uint, crypto: *mut pjmedia_srtp_crypto) -> pj_status_t;
-    pub fn pjmedia_srtp_enum_keying(count: *mut c_uint, keying: *mut pjmedia_srtp_keying_method) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_create(endpt: *mut pjmedia_endpt, tp: *mut pjmedia_transport, opt: *const pjmedia_srtp_setting, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_dtls_get_fingerprint(srtp: *mut pjmedia_transport, hash: *const c_char, buf: *mut c_char, len: *mut pj_size_t) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_dtls_start_nego(srtp: *mut pjmedia_transport, param: *const pjmedia_srtp_dtls_nego_param) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_start(srtp: *mut pjmedia_transport, tx: *const pjmedia_srtp_crypto, rx: *const pjmedia_srtp_crypto) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_stop(srtp: *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_decrypt_pkt(tp: *mut pjmedia_transport, is_rtp: pj_bool_t, pkt: *mut c_void, pkt_len: *mut c_int) -> pj_status_t;
-    pub fn pjmedia_transport_srtp_get_member(srtp: *mut pjmedia_transport) -> *mut pjmedia_transport;
-}
+
 
 pub const PJMEDIA_UDP_NO_SRC_ADDR_CHECKING: pjmedia_transport_udp_options = 1;
 pub type pjmedia_transport_udp_options = u32;
 
-extern "C" {
-    pub fn pjmedia_transport_udp_create(endpt: *mut pjmedia_endpt, name: *const c_char, port: c_int, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_udp_create2(endpt: *mut pjmedia_endpt, name: *const c_char, addr: *const pj_str_t, port: c_int, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_udp_create3(endpt: *mut pjmedia_endpt, af: c_int, name: *const c_char, addr: *const pj_str_t, port: c_int, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-    pub fn pjmedia_transport_udp_attach(endpt: *mut pjmedia_endpt, name: *const c_char, si: *const pjmedia_sock_info, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
-}
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4256,30 +3850,13 @@ pub struct pjmedia_wav_player_info {
     pub size_samples: pj_uint32_t,
 }
 
-extern "C" {
-    pub fn pjmedia_wav_player_port_create(pool: *mut pj_pool_t, filename: *const c_char, ptime: c_uint, flags: c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_wav_player_get_info(port: *mut pjmedia_port, i: *mut pjmedia_wav_player_info) -> pj_status_t;
-    pub fn pjmedia_wav_player_get_len(port: *mut pjmedia_port) -> pj_ssize_t;
-    pub fn pjmedia_wav_player_port_set_pos(port: *mut pjmedia_port, offset: pj_uint32_t) -> pj_status_t;
-    pub fn pjmedia_wav_player_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
-    pub fn pjmedia_wav_player_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
-    pub fn pjmedia_wav_player_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
-}
+
 
 pub const PJMEDIA_FILE_WRITE_PCM: pjmedia_file_writer_option = 0;
 pub const PJMEDIA_FILE_WRITE_ALAW: pjmedia_file_writer_option = 1;
 pub const PJMEDIA_FILE_WRITE_ULAW: pjmedia_file_writer_option = 2;
 pub type pjmedia_file_writer_option = u32;
 
-extern "C" {
-    pub fn pjmedia_wav_writer_port_create(pool: *mut pj_pool_t, filename: *const c_char, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, flags: c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_wav_writer_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
-    pub fn pjmedia_wav_writer_port_set_cb(port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port,usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
-    pub fn pjmedia_wav_writer_port_set_cb2(port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
-    pub fn pjmedia_wav_playlist_create(pool: *mut pj_pool_t, port_label: *const pj_str_t, file_list: *const pj_str_t, file_count: c_int, ptime: c_uint, options: c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port) -> pj_status_t;
-    pub fn pjmedia_wav_playlist_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
-    pub fn pjmedia_wav_playlist_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
-}
 
 pub const PJMEDIA_WAVE_FMT_TAG_PCM: pjmedia_wave_fmt_tag = 1;
 pub const PJMEDIA_WAVE_FMT_TAG_ALAW: pjmedia_wave_fmt_tag = 6;
@@ -4323,10 +3900,7 @@ pub struct pjmedia_wave_subchunk {
     pub len: pj_uint32_t,
 }
 
-extern "C" {
-    pub fn pjmedia_wave_hdr_file_to_host(hdr: *mut pjmedia_wave_hdr);
-    pub fn pjmedia_wave_hdr_host_to_file(hdr: *mut pjmedia_wave_hdr);
-}
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_wsola {
@@ -4337,16 +3911,6 @@ pub const PJMEDIA_WSOLA_NO_PLC: pjmedia_wsola_option = 2;
 pub const PJMEDIA_WSOLA_NO_DISCARD: pjmedia_wsola_option = 4;
 pub const PJMEDIA_WSOLA_NO_FADING: pjmedia_wsola_option = 8;
 pub type pjmedia_wsola_option = u32;
-
-extern "C" {
-    pub fn pjmedia_wsola_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, channel_count: c_uint, options: c_uint, p_wsola: *mut *mut pjmedia_wsola) -> pj_status_t;
-    pub fn pjmedia_wsola_set_max_expand(wsola: *mut pjmedia_wsola, msec: c_uint) -> pj_status_t;
-    pub fn pjmedia_wsola_destroy(wsola: *mut pjmedia_wsola) -> pj_status_t;
-    pub fn pjmedia_wsola_reset(wsola: *mut pjmedia_wsola, options: c_uint) -> pj_status_t;
-    pub fn pjmedia_wsola_save(wsola: *mut pjmedia_wsola, frm: *mut pj_int16_t, prev_lost: pj_bool_t) -> pj_status_t;
-    pub fn pjmedia_wsola_generate(wsola: *mut pjmedia_wsola, frm: *mut pj_int16_t) -> pj_status_t;
-    pub fn pjmedia_wsola_discard(wsola: *mut pjmedia_wsola, buf1: *mut pj_int16_t, buf1_cnt: c_uint, buf2: *mut pj_int16_t, buf2_cnt: c_uint, erase_cnt: *mut c_uint) -> pj_status_t;
-}
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4465,4 +4029,409 @@ pub struct pjmedia_avi_dev_param {
     pub path: pj_str_t,
     pub title: pj_str_t,
     pub avi_streams: *mut pjmedia_avi_streams,
+}
+
+extern "C" {
+    pub fn pjmedia_type_name(t: pjmedia_type) -> *const c_char;
+    pub fn pjmedia_get_type(name: *const pj_str_t) -> pjmedia_type;
+    pub static pjmedia_linear2ulaw_tab: [pj_uint8_t; 16384usize];
+    pub static pjmedia_linear2alaw_tab: [pj_uint8_t; 16384usize];
+    pub static pjmedia_ulaw2linear_tab: [pj_int16_t; 256usize];
+    pub static pjmedia_alaw2linear_tab: [pj_int16_t; 256usize];
+    pub fn pjmedia_clock_src_init(clocksrc: *mut pjmedia_clock_src, media_type: pjmedia_type, clock_rate: c_uint, ptime_usec: c_uint) -> pj_status_t;
+    pub fn pjmedia_clock_src_update(clocksrc: *mut pjmedia_clock_src, timestamp: *const pj_timestamp) -> pj_status_t;
+    pub fn pjmedia_clock_src_get_current_timestamp(clocksrc: *const pjmedia_clock_src, timestamp: *mut pj_timestamp) -> pj_status_t;
+    pub fn pjmedia_clock_src_get_time_msec(clocksrc: *const pjmedia_clock_src) -> pj_uint32_t;
+    pub fn pjmedia_clock_create(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, options: c_uint, cb: pjmedia_clock_callback, user_data: *mut c_void, p_clock: *mut *mut pjmedia_clock) -> pj_status_t;
+    pub fn pjmedia_clock_create2(pool: *mut pj_pool_t, param: *const pjmedia_clock_param, options: c_uint, cb: pjmedia_clock_callback, user_data: *mut c_void, p_clock: *mut *mut pjmedia_clock) -> pj_status_t;
+    pub fn pjmedia_clock_start(clock: *mut pjmedia_clock) -> pj_status_t;
+    pub fn pjmedia_clock_stop(clock: *mut pjmedia_clock) -> pj_status_t;
+    pub fn pjmedia_clock_modify(clock: *mut pjmedia_clock, param: *const pjmedia_clock_param) -> pj_status_t;
+    pub fn pjmedia_clock_wait(clock: *mut pjmedia_clock, wait: pj_bool_t, ts: *mut pj_timestamp) -> pj_bool_t;
+    pub fn pjmedia_clock_destroy(clock: *mut pjmedia_clock) -> pj_status_t;
+    pub fn pjmedia_format_copy(dst: *mut pjmedia_format, src: *const pjmedia_format) -> *mut pjmedia_format;
+    pub fn pjmedia_format_get_audio_format_detail(fmt: *const pjmedia_format, assert_valid: pj_bool_t) -> *mut pjmedia_audio_format_detail;
+    pub fn pjmedia_get_aud_subsys() -> *mut pjmedia_aud_subsys;
+    pub fn pjmedia_aud_driver_init(drv_idx: c_uint, refresh: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_aud_driver_deinit(drv_idx: c_uint);
+    pub fn pjmedia_aud_dev_cap_name(cap: pjmedia_aud_dev_cap, p_desc: *mut *const c_char) -> *const c_char;
+    pub fn pjmedia_aud_param_set_cap(param: *mut pjmedia_aud_param, cap: pjmedia_aud_dev_cap, pval: *const c_void) -> pj_status_t;
+    pub fn pjmedia_aud_param_get_cap(param: *const pjmedia_aud_param, cap: pjmedia_aud_dev_cap, pval: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_aud_dev_refresh() -> pj_status_t;
+    pub fn pjmedia_aud_dev_count() -> c_uint;
+    pub fn pjmedia_aud_dev_get_info(id: pjmedia_aud_dev_index, info: *mut pjmedia_aud_dev_info) -> pj_status_t;
+    pub fn pjmedia_aud_dev_lookup(drv_name: *const c_char, dev_name: *const c_char, id: *mut pjmedia_aud_dev_index) -> pj_status_t;
+    pub fn pjmedia_aud_dev_default_param(id: pjmedia_aud_dev_index, param: *mut pjmedia_aud_param) -> pj_status_t;
+    pub fn pjmedia_aud_stream_create(param: *const pjmedia_aud_param, rec_cb: pjmedia_aud_rec_cb, play_cb: pjmedia_aud_play_cb, user_data: *mut c_void, p_strm: *mut *mut pjmedia_aud_stream) -> pj_status_t;
+    pub fn pjmedia_aud_stream_get_param(strm: *mut pjmedia_aud_stream, param: *mut pjmedia_aud_param) -> pj_status_t;
+    pub fn pjmedia_aud_stream_get_cap(strm: *mut pjmedia_aud_stream, cap: pjmedia_aud_dev_cap, value: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_aud_stream_set_cap(strm: *mut pjmedia_aud_stream, cap: pjmedia_aud_dev_cap, value: *const c_void) -> pj_status_t;
+    pub fn pjmedia_aud_stream_start(strm: *mut pjmedia_aud_stream) -> pj_status_t;
+    pub fn pjmedia_aud_stream_stop(strm: *mut pjmedia_aud_stream) -> pj_status_t;
+    pub fn pjmedia_aud_stream_destroy(strm: *mut pjmedia_aud_stream) -> pj_status_t;
+    pub fn pjmedia_rtp_session_init(ses: *mut pjmedia_rtp_session, default_pt: c_int, sender_ssrc: pj_uint32_t) -> pj_status_t;
+    pub fn pjmedia_rtp_session_init2(ses: *mut pjmedia_rtp_session, settings: pjmedia_rtp_session_setting) -> pj_status_t;
+    pub fn pjmedia_rtp_encode_rtp(ses: *mut pjmedia_rtp_session, pt: c_int, m: c_int, payload_len: c_int, ts_len: c_int, rtphdr: *mut *const c_void, hdrlen: *mut c_int) -> pj_status_t;
+    pub fn pjmedia_rtp_decode_rtp(ses: *mut pjmedia_rtp_session, pkt: *const c_void, pkt_len: c_int, hdr: *mut *const pjmedia_rtp_hdr, payload: *mut *const c_void, payloadlen: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_rtp_decode_rtp2(ses: *mut pjmedia_rtp_session, pkt: *const c_void, pkt_len: c_int, hdr: *mut *const pjmedia_rtp_hdr, dec_hdr: *mut pjmedia_rtp_dec_hdr, payload: *mut *const c_void, payloadlen: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_rtp_session_update(ses: *mut pjmedia_rtp_session, hdr: *const pjmedia_rtp_hdr, seq_st: *mut pjmedia_rtp_status);
+    pub fn pjmedia_rtp_session_update2(ses: *mut pjmedia_rtp_session, hdr: *const pjmedia_rtp_hdr, seq_st: *mut pjmedia_rtp_status, check_pt: pj_bool_t);
+    pub fn pjmedia_rtp_seq_init(seq_ctrl: *mut pjmedia_rtp_seq_session, seq: pj_uint16_t);
+    pub fn pjmedia_rtp_seq_update(seq_ctrl: *mut pjmedia_rtp_seq_session, seq: pj_uint16_t, seq_status: *mut pjmedia_rtp_status);
+    pub fn pjmedia_rtcp_session_setting_default(settings: *mut pjmedia_rtcp_session_setting);
+    pub fn pjmedia_rtcp_init_stat(stat: *mut pjmedia_rtcp_stat);
+    pub fn pjmedia_rtcp_init(session: *mut pjmedia_rtcp_session, name: *mut c_char, clock_rate: c_uint, samples_per_frame: c_uint, ssrc: pj_uint32_t);
+    pub fn pjmedia_rtcp_init2(session: *mut pjmedia_rtcp_session, settings: *const pjmedia_rtcp_session_setting);
+    pub fn pjmedia_rtcp_get_ntp_time(sess: *const pjmedia_rtcp_session, ntp: *mut pjmedia_rtcp_ntp_rec) -> pj_status_t;
+    pub fn pjmedia_rtcp_fini(session: *mut pjmedia_rtcp_session);
+    pub fn pjmedia_rtcp_rx_rtp(session: *mut pjmedia_rtcp_session, seq: c_uint, ts: c_uint, payload: c_uint);
+    pub fn pjmedia_rtcp_rx_rtp2(session: *mut pjmedia_rtcp_session, seq: c_uint, ts: c_uint, payload: c_uint, discarded: pj_bool_t);
+    pub fn pjmedia_rtcp_tx_rtp(session: *mut pjmedia_rtcp_session, ptsize: c_uint);
+    pub fn pjmedia_rtcp_rx_rtcp(session: *mut pjmedia_rtcp_session, rtcp_pkt: *const c_void, size: pj_size_t);
+    pub fn pjmedia_rtcp_build_rtcp(session: *mut pjmedia_rtcp_session, rtcp_pkt: *mut *mut c_void, len: *mut c_int);
+    pub fn pjmedia_rtcp_build_rtcp_sdes(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, sdes: *const pjmedia_rtcp_sdes) -> pj_status_t;
+    pub fn pjmedia_rtcp_build_rtcp_bye(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, reason: *const pj_str_t) -> pj_status_t;
+    pub fn pjmedia_rtcp_enable_xr(session: *mut pjmedia_rtcp_session, enable: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_create(pool: *mut pj_pool_t, name: *const c_char, value: *const pj_str_t) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_attr_clone(pool: *mut pj_pool_t, attr: *const pjmedia_sdp_attr) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_attr_find(count: c_uint, attr_array: *const *mut pjmedia_sdp_attr, name: *const pj_str_t, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_attr_find2(count: c_uint, attr_array: *const *mut pjmedia_sdp_attr, name: *const c_char, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_attr_add(count: *mut c_uint, attr_array: *mut *mut pjmedia_sdp_attr, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_remove_all(count: *mut c_uint,attr_array: *mut *mut pjmedia_sdp_attr,name: *const c_char) -> c_uint;
+    pub fn pjmedia_sdp_attr_remove(count: *mut c_uint, attr_array: *mut *mut pjmedia_sdp_attr, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_to_rtpmap(pool: *mut pj_pool_t, attr: *const pjmedia_sdp_attr, p_rtpmap: *mut *mut pjmedia_sdp_rtpmap) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_get_rtpmap(attr: *const pjmedia_sdp_attr, rtpmap: *mut pjmedia_sdp_rtpmap) -> pj_status_t;
+    pub fn pjmedia_sdp_rtpmap_to_attr(pool: *mut pj_pool_t, rtpmap: *const pjmedia_sdp_rtpmap, p_attr: *mut *mut pjmedia_sdp_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_get_fmtp(attr: *const pjmedia_sdp_attr, fmtp: *mut pjmedia_sdp_fmtp) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_get_rtcp(attr: *const pjmedia_sdp_attr, rtcp: *mut pjmedia_sdp_rtcp_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_create_rtcp(pool: *mut pj_pool_t, a: *const pj_sockaddr) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_attr_get_ssrc(attr: *const pjmedia_sdp_attr, rtcp: *mut pjmedia_sdp_ssrc_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_attr_create_ssrc(pool: *mut pj_pool_t, ssrc: pj_uint32_t, cname: *const pj_str_t) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_conn_clone(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_conn) -> *mut pjmedia_sdp_conn;
+    pub fn pjmedia_sdp_conn_cmp(conn1: *const pjmedia_sdp_conn, conn2: *const pjmedia_sdp_conn, option: c_uint) -> pj_status_t;
+    pub fn pjmedia_sdp_bandw_clone(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_bandw) -> *mut pjmedia_sdp_bandw;
+    pub fn pjmedia_sdp_media_clone(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_media) -> *mut pjmedia_sdp_media;
+    pub fn pjmedia_sdp_media_find_attr(m: *const pjmedia_sdp_media, name: *const pj_str_t, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_media_find_attr2(m: *const pjmedia_sdp_media, name: *const c_char, fmt: *const pj_str_t) -> *mut pjmedia_sdp_attr;
+    pub fn pjmedia_sdp_media_add_attr(m: *mut pjmedia_sdp_media, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_media_remove_all_attr(m: *mut pjmedia_sdp_media, name: *const c_char) -> c_uint;
+    pub fn pjmedia_sdp_media_remove_attr(m: *mut pjmedia_sdp_media, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
+    pub fn pjmedia_sdp_media_cmp(sd1: *const pjmedia_sdp_media, sd2: *const pjmedia_sdp_media, option: c_uint) -> pj_status_t;
+    pub fn pjmedia_sdp_transport_cmp(t1: *const pj_str_t, t2: *const pj_str_t) -> pj_status_t;
+    pub fn pjmedia_sdp_transport_get_proto(tp: *const pj_str_t) -> pj_uint32_t;
+    pub fn pjmedia_sdp_media_deactivate(pool: *mut pj_pool_t, m: *mut pjmedia_sdp_media) -> pj_status_t;
+    pub fn pjmedia_sdp_media_clone_deactivate(pool: *mut pj_pool_t, rhs: *const pjmedia_sdp_media) -> *mut pjmedia_sdp_media;
+    pub fn pjmedia_sdp_parse(pool: *mut pj_pool_t, buf: *mut c_char, len: pj_size_t, p_sdp: *mut *mut pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_print(sdp: *const pjmedia_sdp_session, buf: *mut c_char, size: pj_size_t) -> c_int;
+    pub fn pjmedia_sdp_validate(sdp: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_validate2(sdp: *const pjmedia_sdp_session, strict: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_sdp_session_clone(pool: *mut pj_pool_t, sdp: *const pjmedia_sdp_session) -> *mut pjmedia_sdp_session;
+    pub fn pjmedia_sdp_session_cmp(sd1: *const pjmedia_sdp_session, sd2: *const pjmedia_sdp_session, option: c_uint) -> pj_status_t;
+    pub fn pjmedia_sdp_session_add_attr(s: *mut pjmedia_sdp_session, attr: *mut pjmedia_sdp_attr) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_setting_default(opt: *mut pjmedia_rtcp_fb_setting) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_setting_dup(pool: *mut pj_pool_t, dst: *mut pjmedia_rtcp_fb_setting, src: *const pjmedia_rtcp_fb_setting);
+    pub fn pjmedia_rtcp_fb_info_dup(pool: *mut pj_pool_t, dst: *mut pjmedia_rtcp_fb_info, src: *const pjmedia_rtcp_fb_info);
+    pub fn pjmedia_rtcp_fb_encode_sdp(pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, opt: *const pjmedia_rtcp_fb_setting, sdp_local: *mut pjmedia_sdp_session, med_idx: c_uint, sdp_remote: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_decode_sdp(pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, opt: *const c_void, sdp: *const pjmedia_sdp_session, med_idx: c_uint, info: *mut pjmedia_rtcp_fb_info) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_decode_sdp2(pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, opt: *const c_void, sdp: *const pjmedia_sdp_session, med_idx: c_uint, pt: c_int, info: *mut pjmedia_rtcp_fb_info) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_build_nack(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, nack_cnt: c_uint, nack: *const pjmedia_rtcp_fb_nack) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_build_pli(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_build_sli(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, sli_cnt: c_uint, sli: *const pjmedia_rtcp_fb_sli) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_build_rpsi(session: *mut pjmedia_rtcp_session, buf: *mut c_void, length: *mut pj_size_t, rpsi: *const pjmedia_rtcp_fb_rpsi) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_parse_nack(buf: *const c_void, length: pj_size_t, nack_cnt: *mut c_uint, nack: *mut pjmedia_rtcp_fb_nack) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_parse_pli(buf: *const c_void, length: pj_size_t) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_parse_sli(buf: *const c_void, length: pj_size_t, sli_cnt: *mut c_uint, sli: *mut pjmedia_rtcp_fb_sli) -> pj_status_t;
+    pub fn pjmedia_rtcp_fb_parse_rpsi(buf: *const c_void, length: pj_size_t, rpsi: *mut pjmedia_rtcp_fb_rpsi) -> pj_status_t;
+    pub fn pjmedia_event_mgr_create(pool: *mut pj_pool_t, options: c_uint, mgr: *mut *mut pjmedia_event_mgr) -> pj_status_t;
+    pub fn pjmedia_event_mgr_instance() -> *mut pjmedia_event_mgr;
+    pub fn pjmedia_event_mgr_set_instance(mgr: *mut pjmedia_event_mgr);
+    pub fn pjmedia_event_mgr_destroy(mgr: *mut pjmedia_event_mgr);
+    pub fn pjmedia_event_init(event: *mut pjmedia_event, type_: pjmedia_event_type, ts: *const pj_timestamp, src: *const c_void);
+    pub fn pjmedia_event_subscribe(mgr: *mut pjmedia_event_mgr, cb: pjmedia_event_cb, user_data: *mut c_void, epub: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_event_unsubscribe(mgr: *mut pjmedia_event_mgr, cb: pjmedia_event_cb, user_data: *mut c_void, epub: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_event_publish(mgr: *mut pjmedia_event_mgr, epub: *mut c_void, event: *mut pjmedia_event, flag: pjmedia_event_publish_flag) -> pj_status_t;
+    pub fn pjmedia_port_info_init(info: *mut pjmedia_port_info, name: *const pj_str_t, signature: c_uint, clock_rate: c_uint, channel_count: c_uint, bits_per_sample: c_uint, samples_per_frame: c_uint) -> pj_status_t;
+    pub fn pjmedia_port_info_init2(info: *mut pjmedia_port_info, name: *const pj_str_t, signature: c_uint, dir: pjmedia_dir, fmt: *const pjmedia_format) -> pj_status_t;
+    pub fn pjmedia_port_get_clock_src(port: *mut pjmedia_port, dir: pjmedia_dir) -> *mut pjmedia_clock_src;
+    pub fn pjmedia_port_get_frame(port: *mut pjmedia_port, frame: *mut pjmedia_frame) -> pj_status_t;
+    pub fn pjmedia_port_put_frame(port: *mut pjmedia_port, frame: *mut pjmedia_frame) -> pj_status_t;
+    pub fn pjmedia_port_destroy(port: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_bidirectional_port_create(pool: *mut pj_pool_t, get_port: *mut pjmedia_port, put_port: *mut pjmedia_port, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_codec_param_clone(pool: *mut pj_pool_t, src: *const pjmedia_codec_param) -> *mut pjmedia_codec_param;
+    pub fn pjmedia_codec_mgr_init(mgr: *mut pjmedia_codec_mgr, pf: *mut pj_pool_factory) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_destroy(mgr: *mut pjmedia_codec_mgr) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_register_factory(mgr: *mut pjmedia_codec_mgr, factory: *mut pjmedia_codec_factory) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_unregister_factory(mgr: *mut pjmedia_codec_mgr, factory: *mut pjmedia_codec_factory) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_enum_codecs(mgr: *mut pjmedia_codec_mgr, count: *mut c_uint, info: *mut pjmedia_codec_info, prio: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_get_codec_info(mgr: *mut pjmedia_codec_mgr, pt: c_uint, inf: *mut *const pjmedia_codec_info) -> pj_status_t;
+    pub fn pjmedia_codec_info_to_id(info: *const pjmedia_codec_info, id: *mut c_char, max_len: c_uint) -> *mut c_char;
+    pub fn pjmedia_codec_mgr_find_codecs_by_id(mgr: *mut pjmedia_codec_mgr, codec_id: *const pj_str_t, count: *mut c_uint, p_info: *mut *const pjmedia_codec_info, prio: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_set_codec_priority(mgr: *mut pjmedia_codec_mgr, codec_id: *const pj_str_t, prio: pj_uint8_t) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_get_default_param(mgr: *mut pjmedia_codec_mgr, info: *const pjmedia_codec_info, param: *mut pjmedia_codec_param) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_set_default_param(mgr: *mut pjmedia_codec_mgr, info: *const pjmedia_codec_info, param: *const pjmedia_codec_param) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_alloc_codec(mgr: *mut pjmedia_codec_mgr, info: *const pjmedia_codec_info, p_codec: *mut *mut pjmedia_codec) -> pj_status_t;
+    pub fn pjmedia_codec_mgr_dealloc_codec(mgr: *mut pjmedia_codec_mgr, codec: *mut pjmedia_codec) -> pj_status_t;
+    pub fn pjmedia_conf_create(pool: *mut pj_pool_t, max_slots: c_uint, sampling_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_conf: *mut *mut pjmedia_conf) -> pj_status_t;
+    pub fn pjmedia_conf_destroy(conf: *mut pjmedia_conf) -> pj_status_t;
+    pub fn pjmedia_conf_get_master_port(conf: *mut pjmedia_conf) -> *mut pjmedia_port;
+    pub fn pjmedia_conf_set_port0_name(conf: *mut pjmedia_conf, name: *const pj_str_t) -> pj_status_t;
+    pub fn pjmedia_conf_add_port(conf: *mut pjmedia_conf, pool: *mut pj_pool_t, strm_port: *mut pjmedia_port, name: *const pj_str_t, p_slot: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_configure_port(conf: *mut pjmedia_conf, slot: c_uint, tx: pjmedia_port_op, rx: pjmedia_port_op) -> pj_status_t;
+    pub fn pjmedia_conf_connect_port(conf: *mut pjmedia_conf, src_slot: c_uint, sink_slot: c_uint, adj_level: c_int) -> pj_status_t;
+    pub fn pjmedia_conf_disconnect_port(conf: *mut pjmedia_conf, src_slot: c_uint, sink_slot: c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_disconnect_port_from_sources(conf: *mut pjmedia_conf, sink_slot: c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_disconnect_port_from_sinks(conf: *mut pjmedia_conf, src_slot: c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_get_port_count(conf: *mut pjmedia_conf) -> c_uint;
+    pub fn pjmedia_conf_get_connect_count(conf: *mut pjmedia_conf) -> c_uint;
+    pub fn pjmedia_conf_remove_port(conf: *mut pjmedia_conf, slot: c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_enum_ports(conf: *mut pjmedia_conf, ports: *mut c_uint, count: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_get_port_info(conf: *mut pjmedia_conf, slot: c_uint, info: *mut pjmedia_conf_port_info) -> pj_status_t;
+    pub fn pjmedia_conf_get_ports_info(conf: *mut pjmedia_conf, size: *mut c_uint, info: *mut pjmedia_conf_port_info) -> pj_status_t;
+    pub fn pjmedia_conf_get_signal_level(conf: *mut pjmedia_conf, slot: c_uint, tx_level: *mut c_uint, rx_level: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_get_msignal_level(conf: *mut pjmedia_conf, slot: c_uint, tx_level_l: *mut c_uint, tx_level_r: *mut c_uint, rx_level_l: *mut c_uint, rx_level_r: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_conf_adjust_rx_level(conf: *mut pjmedia_conf, slot: c_uint, adj_level: c_int) -> pj_status_t;
+    pub fn pjmedia_conf_adjust_tx_level(conf: *mut pjmedia_conf, slot: c_uint, adj_level: c_int) -> pj_status_t;
+    pub fn pjmedia_conf_adjust_conn_level(conf: *mut pjmedia_conf, src_slot: c_uint, sink_slot: c_uint, adj_level: c_int) -> pj_status_t;
+    pub fn pjmedia_converter_mgr_create(pool: *mut pj_pool_t, mgr: *mut *mut pjmedia_converter_mgr) -> pj_status_t;
+    pub fn pjmedia_converter_mgr_instance() -> *mut pjmedia_converter_mgr;
+    pub fn pjmedia_converter_mgr_set_instance(mgr: *mut pjmedia_converter_mgr);
+    pub fn pjmedia_converter_mgr_destroy(mgr: *mut pjmedia_converter_mgr);
+    pub fn pjmedia_converter_mgr_register_factory(mgr: *mut pjmedia_converter_mgr, f: *mut pjmedia_converter_factory) -> pj_status_t;
+    pub fn pjmedia_converter_mgr_unregister_factory(mgr: *mut pjmedia_converter_mgr, f: *mut pjmedia_converter_factory, call_destroy: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_converter_create(mgr: *mut pjmedia_converter_mgr, pool: *mut pj_pool_t, param: *mut pjmedia_conversion_param, p_cv: *mut *mut pjmedia_converter) -> pj_status_t;
+    pub fn pjmedia_converter_convert(cv: *mut pjmedia_converter, src_frame: *mut pjmedia_frame, dst_frame: *mut pjmedia_frame) -> pj_status_t;
+    pub fn pjmedia_converter_convert2(cv: *mut pjmedia_converter, src_frame: *mut pjmedia_frame, src_frame_size: *const pjmedia_rect_size, src_pos: *const pjmedia_coord, dst_frame: *mut pjmedia_frame, dst_frame_size: *const pjmedia_rect_size, dst_pos: *const pjmedia_coord, param: *mut pjmedia_converter_convert_setting) -> pj_status_t;
+    pub fn pjmedia_converter_destroy(cv: *mut pjmedia_converter);
+    pub fn pjmedia_delay_buf_create(pool: *mut pj_pool_t, name: *const c_char, clock_rate: c_uint, samples_per_frame: c_uint, channel_count: c_uint, max_delay: c_uint, options: c_uint, p_b: *mut *mut pjmedia_delay_buf) -> pj_status_t;
+    pub fn pjmedia_delay_buf_put(b: *mut pjmedia_delay_buf, frame: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_delay_buf_get(b: *mut pjmedia_delay_buf, frame: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_delay_buf_reset(b: *mut pjmedia_delay_buf) -> pj_status_t;
+    pub fn pjmedia_delay_buf_destroy(b: *mut pjmedia_delay_buf) -> pj_status_t;
+    pub fn pjmedia_echo_stat_default(stat: *mut pjmedia_echo_stat);
+    pub fn pjmedia_echo_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, tail_ms: c_uint, latency_ms: c_uint, options: c_uint, p_echo: *mut *mut pjmedia_echo_state) -> pj_status_t;
+    pub fn pjmedia_echo_create2(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, tail_ms: c_uint, latency_ms: c_uint, options: c_uint, p_echo: *mut *mut pjmedia_echo_state) -> pj_status_t;
+    pub fn pjmedia_echo_destroy(echo: *mut pjmedia_echo_state) -> pj_status_t;
+    pub fn pjmedia_echo_reset(echo: *mut pjmedia_echo_state) -> pj_status_t;
+    pub fn pjmedia_echo_get_stat(echo: *mut pjmedia_echo_state, p_stat: *mut pjmedia_echo_stat) -> pj_status_t;
+    pub fn pjmedia_echo_playback(echo: *mut pjmedia_echo_state, play_frm: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_echo_capture(echo: *mut pjmedia_echo_state, rec_frm: *mut pj_int16_t, options: c_uint) -> pj_status_t;
+    pub fn pjmedia_echo_cancel(echo: *mut pjmedia_echo_state, rec_frm: *mut pj_int16_t, play_frm: *const pj_int16_t, options: c_uint, reserved: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_echo_port_create(pool: *mut pj_pool_t, dn_port: *mut pjmedia_port, tail_ms: c_uint, latency_ms: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_strerror(status: pj_status_t, buffer: *mut c_char, bufsize: pj_size_t) -> pj_str_t;
+    pub fn pjmedia_endpt_destroy2(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_endpt_set_flag(endpt: *mut pjmedia_endpt, flag: pjmedia_endpt_flag, value: *const c_void) -> pj_status_t;
+    pub fn pjmedia_endpt_get_flag(endpt: *mut pjmedia_endpt, flag: pjmedia_endpt_flag, value: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_endpt_get_ioqueue(endpt: *mut pjmedia_endpt) -> *mut pj_ioqueue_t;
+    pub fn pjmedia_endpt_get_thread_count(endpt: *mut pjmedia_endpt) -> c_uint;
+    pub fn pjmedia_endpt_get_thread(endpt: *mut pjmedia_endpt, index: c_uint) -> *mut pj_thread_t;
+    pub fn pjmedia_endpt_stop_threads(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_endpt_create_pool(endpt: *mut pjmedia_endpt, name: *const c_char, initial: pj_size_t, increment: pj_size_t) -> *mut pj_pool_t;
+    pub fn pjmedia_endpt_get_codec_mgr(endpt: *mut pjmedia_endpt) -> *mut pjmedia_codec_mgr;
+    pub fn pjmedia_endpt_create_sdp(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, stream_cnt: c_uint, sock_info: *const pjmedia_sock_info, p_sdp: *mut *mut pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_endpt_create_base_sdp(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, sess_name: *const pj_str_t, origin: *const pj_sockaddr, p_sdp: *mut *mut pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_endpt_create_audio_sdp(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, si: *const pjmedia_sock_info, options: c_uint, p_m: *mut *mut pjmedia_sdp_media) -> pj_status_t;
+    pub fn pjmedia_endpt_dump(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_endpt_atexit(endpt: *mut pjmedia_endpt, func: pjmedia_endpt_exit_callback) -> pj_status_t;
+    pub fn pjmedia_endpt_create2(pf: *mut pj_pool_factory, ioqueue: *mut pj_ioqueue_t, worker_cnt: c_uint, p_endpt: *mut *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_jbuf_create(pool: *mut pj_pool_t, name: *const pj_str_t, frame_size: c_uint, ptime: c_uint, max_count: c_uint, p_jb: *mut *mut pjmedia_jbuf) -> pj_status_t;
+    pub fn pjmedia_jbuf_set_ptime(jb: *mut pjmedia_jbuf, ptime: c_uint) -> pj_status_t;
+    pub fn pjmedia_jbuf_set_fixed(jb: *mut pjmedia_jbuf, prefetch: c_uint) -> pj_status_t;
+    pub fn pjmedia_jbuf_set_adaptive(jb: *mut pjmedia_jbuf, prefetch: c_uint, min_prefetch: c_uint, max_prefetch: c_uint) -> pj_status_t;
+    pub fn pjmedia_jbuf_set_discard(jb: *mut pjmedia_jbuf, algo: pjmedia_jb_discard_algo) -> pj_status_t;
+    pub fn pjmedia_jbuf_destroy(jb: *mut pjmedia_jbuf) -> pj_status_t;
+    pub fn pjmedia_jbuf_reset(jb: *mut pjmedia_jbuf) -> pj_status_t;
+    pub fn pjmedia_jbuf_put_frame(jb: *mut pjmedia_jbuf, frame: *const c_void, size: pj_size_t, frame_seq: c_int);
+    pub fn pjmedia_jbuf_put_frame2(jb: *mut pjmedia_jbuf, frame: *const c_void, size: pj_size_t, bit_info: pj_uint32_t, frame_seq: c_int, discarded: *mut pj_bool_t);
+    pub fn pjmedia_jbuf_put_frame3(jb: *mut pjmedia_jbuf, frame: *const c_void, size: pj_size_t, bit_info: pj_uint32_t, frame_seq: c_int, frame_ts: pj_uint32_t, discarded: *mut pj_bool_t);
+    pub fn pjmedia_jbuf_get_frame(jb: *mut pjmedia_jbuf, frame: *mut c_void, p_frm_type: *mut c_char);
+    pub fn pjmedia_jbuf_get_frame2(jb: *mut pjmedia_jbuf, frame: *mut c_void, size: *mut pj_size_t, p_frm_type: *mut c_char, bit_info: *mut pj_uint32_t);
+    pub fn pjmedia_jbuf_get_frame3(jb: *mut pjmedia_jbuf, frame: *mut c_void, size: *mut pj_size_t, p_frm_type: *mut c_char, bit_info: *mut pj_uint32_t, ts: *mut pj_uint32_t, seq: *mut c_int);
+    pub fn pjmedia_jbuf_peek_frame(jb: *mut pjmedia_jbuf, offset: c_uint, frame: *mut *const c_void, size: *mut pj_size_t, p_frm_type: *mut c_char, bit_info: *mut pj_uint32_t, ts: *mut pj_uint32_t, seq: *mut c_int);
+    pub fn pjmedia_jbuf_remove_frame(jb: *mut pjmedia_jbuf, frame_cnt: c_uint) -> c_uint;
+    pub fn pjmedia_jbuf_is_full(jb: *const pjmedia_jbuf) -> pj_bool_t;
+    pub fn pjmedia_jbuf_get_state(jb: *const pjmedia_jbuf, state: *mut pjmedia_jb_state) -> pj_status_t;
+    pub fn pjmedia_master_port_create(pool: *mut pj_pool_t, u_port: *mut pjmedia_port, d_port: *mut pjmedia_port, options: c_uint, p_m: *mut *mut pjmedia_master_port) -> pj_status_t;
+    pub fn pjmedia_master_port_start(m: *mut pjmedia_master_port) -> pj_status_t;
+    pub fn pjmedia_master_port_stop(m: *mut pjmedia_master_port) -> pj_status_t;
+    pub fn pjmedia_master_port_wait(m: *mut pjmedia_master_port, wait: pj_bool_t, ts: *mut pj_timestamp) -> pj_bool_t;
+    pub fn pjmedia_master_port_set_uport(m: *mut pjmedia_master_port, port: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_master_port_get_uport(m: *mut pjmedia_master_port) -> *mut pjmedia_port;
+    pub fn pjmedia_master_port_set_dport(m: *mut pjmedia_master_port, port: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_master_port_get_dport(m: *mut pjmedia_master_port) -> *mut pjmedia_port;
+    pub fn pjmedia_master_port_destroy(m: *mut pjmedia_master_port, destroy_ports: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_mem_player_create(pool: *mut pj_pool_t, buffer: *const c_void, size: pj_size_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_mem_player_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
+    pub fn pjmedia_mem_player_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
+    pub fn pjmedia_mem_capture_create(pool: *mut pj_pool_t, buffer: *mut c_void, size: pj_size_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_mem_capture_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
+    pub fn pjmedia_mem_capture_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
+    pub fn pjmedia_mem_capture_get_size(port: *mut pjmedia_port) -> pj_size_t;
+    pub fn pjmedia_null_port_create(pool: *mut pj_pool_t, sampling_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_plc_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, options: c_uint, p_plc: *mut *mut pjmedia_plc) -> pj_status_t;
+    pub fn pjmedia_plc_save(plc: *mut pjmedia_plc, frame: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_plc_generate(plc: *mut pjmedia_plc, frame: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_resample_create(pool: *mut pj_pool_t, high_quality: pj_bool_t, large_filter: pj_bool_t, channel_count: c_uint, rate_in: c_uint, rate_out: c_uint, samples_per_frame: c_uint, p_resample: *mut *mut pjmedia_resample) -> pj_status_t;
+    pub fn pjmedia_resample_run(resample: *mut pjmedia_resample, input: *const pj_int16_t, output: *mut pj_int16_t);
+    pub fn pjmedia_resample_get_input_size(resample: *mut pjmedia_resample) -> c_uint;
+    pub fn pjmedia_resample_destroy(resample: *mut pjmedia_resample);
+    pub fn pjmedia_resample_port_create(pool: *mut pj_pool_t, dn_port: *mut pjmedia_port, clock_rate: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_state_str(state: pjmedia_sdp_neg_state) -> *const c_char;
+    pub fn pjmedia_sdp_neg_create_w_local_offer(pool: *mut pj_pool_t, local: *const pjmedia_sdp_session, p_neg: *mut *mut pjmedia_sdp_neg) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_create_w_remote_offer(pool: *mut pj_pool_t, initial: *const pjmedia_sdp_session, remote: *const pjmedia_sdp_session, p_neg: *mut *mut pjmedia_sdp_neg) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_set_prefer_remote_codec_order(neg: *mut pjmedia_sdp_neg, prefer_remote: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_set_answer_multiple_codecs(neg: *mut pjmedia_sdp_neg, answer_multiple: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_get_state(neg: *mut pjmedia_sdp_neg) -> pjmedia_sdp_neg_state;
+    pub fn pjmedia_sdp_neg_get_active_local(neg: *mut pjmedia_sdp_neg, local: *mut *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_get_active_remote(neg: *mut pjmedia_sdp_neg, remote: *mut *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_was_answer_remote(neg: *mut pjmedia_sdp_neg) -> pj_bool_t;
+    pub fn pjmedia_sdp_neg_get_neg_remote(neg: *mut pjmedia_sdp_neg, remote: *mut *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_get_neg_local(neg: *mut pjmedia_sdp_neg, local: *mut *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_modify_local_offer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, local: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_modify_local_offer2(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, flags: c_uint, local: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_send_local_offer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, offer: *mut *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_set_remote_answer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, remote: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_set_remote_offer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, remote: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_set_local_answer(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, local: *const pjmedia_sdp_session) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_has_local_answer(neg: *mut pjmedia_sdp_neg) -> pj_bool_t;
+    pub fn pjmedia_sdp_neg_cancel_offer(neg: *mut pjmedia_sdp_neg) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_negotiate(pool: *mut pj_pool_t, neg: *mut pjmedia_sdp_neg, allow_asym: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_register_fmt_match_cb(fmt_name: *const pj_str_t, cb: pjmedia_sdp_neg_fmt_match_cb) -> pj_status_t;
+    pub fn pjmedia_sdp_neg_fmt_match(pool: *mut pj_pool_t, offer: *mut pjmedia_sdp_media, o_fmt_idx: c_uint, answer: *mut pjmedia_sdp_media, a_fmt_idx: c_uint, option: c_uint) -> pj_status_t;
+    pub fn pjmedia_silence_det_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, p_sd: *mut *mut pjmedia_silence_det) -> pj_status_t;
+    pub fn pjmedia_silence_det_set_name(sd: *mut pjmedia_silence_det, name: *const c_char) -> pj_status_t;
+    pub fn pjmedia_silence_det_set_fixed(sd: *mut pjmedia_silence_det, threshold: c_int) -> pj_status_t;
+    pub fn pjmedia_silence_det_set_adaptive(sd: *mut pjmedia_silence_det, threshold: c_int) -> pj_status_t;
+    pub fn pjmedia_silence_det_set_params(sd: *mut pjmedia_silence_det, before_silence: c_int, recalc_time1: c_int, recalc_time2: c_int) -> pj_status_t;
+    pub fn pjmedia_silence_det_disable(sd: *mut pjmedia_silence_det) -> pj_status_t;
+    pub fn pjmedia_silence_det_detect(sd: *mut pjmedia_silence_det, samples: *const pj_int16_t, count: pj_size_t, p_level: *mut pj_int32_t) -> pj_bool_t;
+    pub fn pjmedia_calc_avg_signal(samples: *const pj_int16_t, count: pj_size_t) -> pj_int32_t;
+    pub fn pjmedia_silence_det_apply(sd: *mut pjmedia_silence_det, level: pj_uint32_t) -> pj_bool_t;
+    pub fn pjmedia_snd_get_dev_info(index: c_uint) -> *const pjmedia_snd_dev_info;
+    pub fn pjmedia_snd_set_latency(input_latency: c_uint, output_latency: c_uint) -> pj_status_t;
+    pub fn pjmedia_snd_open(rec_id: c_int, play_id: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, rec_cb: pjmedia_snd_rec_cb, play_cb: pjmedia_snd_play_cb, user_data: *mut c_void, p_snd_strm: *mut *mut pjmedia_snd_stream) -> pj_status_t;
+    pub fn pjmedia_snd_open_rec(index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, rec_cb: pjmedia_snd_rec_cb, user_data: *mut c_void, p_snd_strm: *mut *mut pjmedia_snd_stream) -> pj_status_t;
+    pub fn pjmedia_snd_open_player(index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, play_cb: pjmedia_snd_play_cb, user_data: *mut c_void, p_snd_strm: *mut *mut pjmedia_snd_stream) -> pj_status_t;
+    pub fn pjmedia_snd_stream_get_info(strm: *mut pjmedia_snd_stream, pi: *mut pjmedia_snd_stream_info) -> pj_status_t;
+    pub fn pjmedia_snd_stream_start(stream: *mut pjmedia_snd_stream) -> pj_status_t;
+    pub fn pjmedia_snd_stream_stop(stream: *mut pjmedia_snd_stream) -> pj_status_t;
+    pub fn pjmedia_snd_stream_close(stream: *mut pjmedia_snd_stream) -> pj_status_t;
+    pub fn pjmedia_snd_port_param_default(prm: *mut pjmedia_snd_port_param);
+    pub fn pjmedia_snd_port_create(pool: *mut pj_pool_t, rec_id: c_int, play_id: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
+    pub fn pjmedia_snd_port_create_rec(pool: *mut pj_pool_t, index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
+    pub fn pjmedia_snd_port_create_player(pool: *mut pj_pool_t, index: c_int, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
+    pub fn pjmedia_snd_port_create2(pool: *mut pj_pool_t, prm: *const pjmedia_snd_port_param, p_port: *mut *mut pjmedia_snd_port) -> pj_status_t;
+    pub fn pjmedia_snd_port_destroy(snd_port: *mut pjmedia_snd_port) -> pj_status_t;
+    pub fn pjmedia_snd_port_get_snd_stream(snd_port: *mut pjmedia_snd_port) -> *mut pjmedia_aud_stream;
+    pub fn pjmedia_snd_port_set_ec(snd_port: *mut pjmedia_snd_port, pool: *mut pj_pool_t, tail_ms: c_uint, options: c_uint) -> pj_status_t;
+    pub fn pjmedia_snd_port_get_ec_tail(snd_port: *mut pjmedia_snd_port, p_length: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_snd_port_get_ec_stat(snd_port: *mut pjmedia_snd_port, p_stat: *mut pjmedia_echo_stat) -> pj_status_t;
+    pub fn pjmedia_snd_port_get_clock_src(snd_port: *mut pjmedia_snd_port, dir: pjmedia_dir) -> *mut pjmedia_clock_src;
+    pub fn pjmedia_snd_port_connect(snd_port: *mut pjmedia_snd_port, port: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_snd_port_get_port(snd_port: *mut pjmedia_snd_port) -> *mut pjmedia_port;
+    pub fn pjmedia_snd_port_disconnect(snd_port: *mut pjmedia_snd_port) -> pj_status_t;
+    pub fn pjmedia_splitcomb_create(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_splitcomb: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_splitcomb_set_channel(splitcomb: *mut pjmedia_port, ch_num: c_uint, options: c_uint, port: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_splitcomb_create_rev_channel(pool: *mut pj_pool_t, splitcomb: *mut pjmedia_port, ch_num: c_uint, options: c_uint, p_chport: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_stereo_port_create(pool: *mut pj_pool_t, dn_port: *mut pjmedia_port, channel_count: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_stream_info_parse_fmtp(pool: *mut pj_pool_t, m: *const pjmedia_sdp_media, pt: c_uint, fmtp: *mut pjmedia_codec_fmtp) -> pj_status_t;
+    pub fn pjmedia_stream_info_from_sdp(si: *mut pjmedia_stream_info, pool: *mut pj_pool_t, endpt: *mut pjmedia_endpt, local: *const pjmedia_sdp_session, remote: *const pjmedia_sdp_session, stream_idx: c_uint) -> pj_status_t;
+    pub fn pjmedia_stream_create(endpt: *mut pjmedia_endpt, pool: *mut pj_pool_t, info: *const pjmedia_stream_info, tp: *mut pjmedia_transport, user_data: *mut c_void, p_stream: *mut *mut pjmedia_stream) -> pj_status_t;
+    pub fn pjmedia_stream_destroy(stream: *mut pjmedia_stream) -> pj_status_t;
+    pub fn pjmedia_stream_get_last_jb_frame_type(stream: *mut pjmedia_stream) -> c_char;
+    pub fn pjmedia_stream_get_port(stream: *mut pjmedia_stream, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_stream_get_transport(st: *mut pjmedia_stream) -> *mut pjmedia_transport;
+    pub fn pjmedia_stream_start(stream: *mut pjmedia_stream) -> pj_status_t;
+    pub fn pjmedia_stream_get_info(stream: *const pjmedia_stream, info: *mut pjmedia_stream_info) -> pj_status_t;
+    pub fn pjmedia_stream_get_stat(stream: *const pjmedia_stream, stat: *mut pjmedia_rtcp_stat) -> pj_status_t;
+    pub fn pjmedia_stream_reset_stat(stream: *mut pjmedia_stream) -> pj_status_t;
+    pub fn pjmedia_stream_get_stat_jbuf(stream: *const pjmedia_stream, state: *mut pjmedia_jb_state) -> pj_status_t;
+    pub fn pjmedia_stream_pause(stream: *mut pjmedia_stream, dir: pjmedia_dir) -> pj_status_t;
+    pub fn pjmedia_stream_resume(stream: *mut pjmedia_stream, dir: pjmedia_dir) -> pj_status_t;
+    pub fn pjmedia_stream_dial_dtmf(stream: *mut pjmedia_stream, ascii_digit: *const pj_str_t) -> pj_status_t;
+    pub fn pjmedia_stream_check_dtmf(stream: *mut pjmedia_stream) -> pj_bool_t;
+    pub fn pjmedia_stream_get_dtmf(stream: *mut pjmedia_stream, ascii_digits: *mut c_char, size: *mut c_uint) -> pj_status_t;
+    pub fn pjmedia_stream_set_dtmf_callback(
+        stream: *mut pjmedia_stream,
+        cb: Option<unsafe extern "C" fn(arg1: *mut pjmedia_stream, user_data: *mut c_void, digit: c_int)>,
+        user_data: *mut c_void,
+    ) -> pj_status_t;
+    pub fn pjmedia_stream_set_dtmf_event_callback(
+        stream: *mut pjmedia_stream,
+        cb: Option<
+            unsafe extern "C" fn(
+                arg1: *mut pjmedia_stream,
+                user_data: *mut c_void,
+                event: *const pjmedia_stream_dtmf_event,
+            ),
+        >,
+        user_data: *mut c_void,
+    ) -> pj_status_t;
+    pub fn pjmedia_stream_send_rtcp_sdes(stream: *mut pjmedia_stream) -> pj_status_t;
+    pub fn pjmedia_stream_send_rtcp_bye(stream: *mut pjmedia_stream) -> pj_status_t;
+    pub fn pjmedia_stream_get_rtp_session_info(stream: *mut pjmedia_stream, session_info: *mut pjmedia_stream_rtp_sess_info) -> pj_status_t;
+    pub fn pjmedia_tonegen_create(pool: *mut pj_pool_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_tonegen_create2(pool: *mut pj_pool_t, name: *const pj_str_t, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, options: c_uint, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_tonegen_is_busy(tonegen: *mut pjmedia_port) -> pj_bool_t;
+    pub fn pjmedia_tonegen_stop(tonegen: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_tonegen_stop_loop(tonegen: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_tonegen_rewind(tonegen: *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_tonegen_play(tonegen: *mut pjmedia_port, count: c_uint, tones: *const pjmedia_tone_desc, options: c_uint) -> pj_status_t;
+    pub fn pjmedia_tonegen_play_digits(tonegen: *mut pjmedia_port, count: c_uint, digits: *const pjmedia_tone_digit, options: c_uint) -> pj_status_t;
+    pub fn pjmedia_tonegen_get_digit_map(tonegen: *mut pjmedia_port, m: *mut *const pjmedia_tone_digit_map) -> pj_status_t;
+    pub fn pjmedia_tonegen_set_digit_map(tonegen: *mut pjmedia_port, m: *mut pjmedia_tone_digit_map) -> pj_status_t;
+    pub fn pjmedia_tp_adapter_create(endpt: *mut pjmedia_endpt, name: *const c_char, base_tp: *mut pjmedia_transport, del_base: pj_bool_t, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_ice_create(endpt: *mut pjmedia_endpt, name: *const c_char, comp_cnt: c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_ice_create2(endpt: *mut pjmedia_endpt, name: *const c_char, comp_cnt: c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_ice_create3(endpt: *mut pjmedia_endpt, name: *const c_char, comp_cnt: c_uint, cfg: *const pj_ice_strans_cfg, cb: *const pjmedia_ice_cb, options: c_uint, user_data: *mut c_void, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_ice_get_grp_lock(tp: *mut pjmedia_transport) -> *mut pj_grp_lock_t;
+    pub fn pjmedia_ice_add_ice_cb(tp: *mut pjmedia_transport, cb: *const pjmedia_ice_cb, user_data: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_ice_remove_ice_cb(tp: *mut pjmedia_transport, cb: *const pjmedia_ice_cb, user_data: *mut c_void) -> pj_status_t;
+    pub fn pjmedia_ice_sdp_has_trickle(sdp: *const pjmedia_sdp_session, med_idx: c_uint) -> pj_bool_t;
+    pub fn pjmedia_ice_trickle_update(tp: *mut pjmedia_transport, rem_ufrag: *const pj_str_t, rem_passwd: *const pj_str_t, rcand_cnt: c_uint, rcand: *const pj_ice_sess_cand, rcand_end: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_ice_trickle_decode_sdp(sdp: *const pjmedia_sdp_session, media_index: c_uint, mid: *mut pj_str_t, ufrag: *mut pj_str_t, passwd: *mut pj_str_t, cand_cnt: *mut c_uint, cand: *mut pj_ice_sess_cand, end_of_cand: *mut pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_ice_trickle_encode_sdp(sdp_pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, mid: *const pj_str_t, ufrag: *const pj_str_t, passwd: *const pj_str_t, cand_cnt: c_uint, cand: *const pj_ice_sess_cand, end_of_cand: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_ice_trickle_has_new_cand(tp: *mut pjmedia_transport) -> pj_bool_t;
+    pub fn pjmedia_ice_trickle_send_local_cand(tp: *mut pjmedia_transport, sdp_pool: *mut pj_pool_t, sdp: *mut pjmedia_sdp_session, p_end_of_cand: *mut pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_loop_tp_setting_default(opt: *mut pjmedia_loop_tp_setting);
+    pub fn pjmedia_transport_loop_create(endpt: *mut pjmedia_endpt, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_loop_create2(endpt: *mut pjmedia_endpt, opt: *const pjmedia_loop_tp_setting, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_loop_disable_rx(tp: *mut pjmedia_transport, user: *mut c_void, disabled: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_srtp_init_lib(endpt: *mut pjmedia_endpt) -> pj_status_t;
+    pub fn pjmedia_srtp_setting_default(opt: *mut pjmedia_srtp_setting);
+    pub fn pjmedia_srtp_enum_crypto(count: *mut c_uint, crypto: *mut pjmedia_srtp_crypto) -> pj_status_t;
+    pub fn pjmedia_srtp_enum_keying(count: *mut c_uint, keying: *mut pjmedia_srtp_keying_method) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_create(endpt: *mut pjmedia_endpt, tp: *mut pjmedia_transport, opt: *const pjmedia_srtp_setting, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_dtls_get_fingerprint(srtp: *mut pjmedia_transport, hash: *const c_char, buf: *mut c_char, len: *mut pj_size_t) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_dtls_start_nego(srtp: *mut pjmedia_transport, param: *const pjmedia_srtp_dtls_nego_param) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_start(srtp: *mut pjmedia_transport, tx: *const pjmedia_srtp_crypto, rx: *const pjmedia_srtp_crypto) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_stop(srtp: *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_decrypt_pkt(tp: *mut pjmedia_transport, is_rtp: pj_bool_t, pkt: *mut c_void, pkt_len: *mut c_int) -> pj_status_t;
+    pub fn pjmedia_transport_srtp_get_member(srtp: *mut pjmedia_transport) -> *mut pjmedia_transport;
+    pub fn pjmedia_transport_udp_create(endpt: *mut pjmedia_endpt, name: *const c_char, port: c_int, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_udp_create2(endpt: *mut pjmedia_endpt, name: *const c_char, addr: *const pj_str_t, port: c_int, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_udp_create3(endpt: *mut pjmedia_endpt, af: c_int, name: *const c_char, addr: *const pj_str_t, port: c_int, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_transport_udp_attach(endpt: *mut pjmedia_endpt, name: *const c_char, si: *const pjmedia_sock_info, options: c_uint, p_tp: *mut *mut pjmedia_transport) -> pj_status_t;
+    pub fn pjmedia_wav_player_port_create(pool: *mut pj_pool_t, filename: *const c_char, ptime: c_uint, flags: c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_wav_player_get_info(port: *mut pjmedia_port, i: *mut pjmedia_wav_player_info) -> pj_status_t;
+    pub fn pjmedia_wav_player_get_len(port: *mut pjmedia_port) -> pj_ssize_t;
+    pub fn pjmedia_wav_player_port_set_pos(port: *mut pjmedia_port, offset: pj_uint32_t) -> pj_status_t;
+    pub fn pjmedia_wav_player_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
+    pub fn pjmedia_wav_player_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
+    pub fn pjmedia_wav_player_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
+    pub fn pjmedia_wav_writer_port_create(pool: *mut pj_pool_t, filename: *const c_char, clock_rate: c_uint, channel_count: c_uint, samples_per_frame: c_uint, bits_per_sample: c_uint, flags: c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_wav_writer_port_get_pos(port: *mut pjmedia_port) -> pj_ssize_t;
+    pub fn pjmedia_wav_writer_port_set_cb(port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port,usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
+    pub fn pjmedia_wav_writer_port_set_cb2(port: *mut pjmedia_port, pos: pj_size_t, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
+    pub fn pjmedia_wav_playlist_create(pool: *mut pj_pool_t, port_label: *const pj_str_t, file_list: *const pj_str_t, file_count: c_int, ptime: c_uint, options: c_uint, buff_size: pj_ssize_t, p_port: *mut *mut pjmedia_port) -> pj_status_t;
+    pub fn pjmedia_wav_playlist_set_eof_cb(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void) -> pj_status_t>) -> pj_status_t;
+    pub fn pjmedia_wav_playlist_set_eof_cb2(port: *mut pjmedia_port, user_data: *mut c_void, cb: Option<unsafe extern "C" fn(port: *mut pjmedia_port, usr_data: *mut c_void)>) -> pj_status_t;
+    pub fn pjmedia_wave_hdr_file_to_host(hdr: *mut pjmedia_wave_hdr);
+    pub fn pjmedia_wave_hdr_host_to_file(hdr: *mut pjmedia_wave_hdr);
+    pub fn pjmedia_wsola_create(pool: *mut pj_pool_t, clock_rate: c_uint, samples_per_frame: c_uint, channel_count: c_uint, options: c_uint, p_wsola: *mut *mut pjmedia_wsola) -> pj_status_t;
+    pub fn pjmedia_wsola_set_max_expand(wsola: *mut pjmedia_wsola, msec: c_uint) -> pj_status_t;
+    pub fn pjmedia_wsola_destroy(wsola: *mut pjmedia_wsola) -> pj_status_t;
+    pub fn pjmedia_wsola_reset(wsola: *mut pjmedia_wsola, options: c_uint) -> pj_status_t;
+    pub fn pjmedia_wsola_save(wsola: *mut pjmedia_wsola, frm: *mut pj_int16_t, prev_lost: pj_bool_t) -> pj_status_t;
+    pub fn pjmedia_wsola_generate(wsola: *mut pjmedia_wsola, frm: *mut pj_int16_t) -> pj_status_t;
+    pub fn pjmedia_wsola_discard(wsola: *mut pjmedia_wsola, buf1: *mut pj_int16_t, buf1_cnt: c_uint, buf2: *mut pj_int16_t, buf2_cnt: c_uint, erase_cnt: *mut c_uint) -> pj_status_t;
 }
