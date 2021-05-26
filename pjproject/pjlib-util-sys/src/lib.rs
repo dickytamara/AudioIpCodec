@@ -4,6 +4,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 extern crate pj_sys;
+use std::{ffi::c_void, os::raw::{c_char, c_int, c_uint}};
+
 use pj_sys::*;
 
 #[repr(C)]
@@ -140,76 +142,24 @@ pub const PJ_CLI_CONSOLE_LOG_LEVEL: u32 = 5;
 pub const PJ_CLI_TELNET_LOG_LEVEL: u32 = 4;
 pub const PJ_CLI_TELNET_PORT: u32 = 0;
 
-extern "C" {
-    pub fn pjlib_util_init() -> pj_status_t;
-}
-
-extern "C"{
-    pub static mut pj_optind: ::std::os::raw::c_int;
-    pub static mut pj_optopt: ::std::os::raw::c_int;
-}
 
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_getopt_option {
-    pub name: *const ::std::os::raw::c_char,
-    pub has_arg: ::std::os::raw::c_int,
-    pub flag: *mut ::std::os::raw::c_int,
-    pub val: ::std::os::raw::c_int,
+    pub name: *const c_char,
+    pub has_arg: c_int,
+    pub flag: *mut c_int,
+    pub val: c_int,
 }
-extern "C" {
-    pub fn pj_getopt(
-        argc: ::std::os::raw::c_int,
-        argv: *const *mut ::std::os::raw::c_char,
-        shortopts: *const ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_getopt_long(
-        argc: ::std::os::raw::c_int,
-        argv: *const *mut ::std::os::raw::c_char,
-        options: *const ::std::os::raw::c_char,
-        longopts: *const pj_getopt_option,
-        longind: *mut ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_base64_encode(
-        input: *const pj_uint8_t,
-        in_len: ::std::os::raw::c_int,
-        output: *mut ::std::os::raw::c_char,
-        out_len: *mut ::std::os::raw::c_int,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_base64_decode(
-        input: *const pj_str_t,
-        out: *mut pj_uint8_t,
-        out_len: *mut ::std::os::raw::c_int,
-    ) -> pj_status_t;
-}
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_crc32_context {
     pub crc_state: pj_uint32_t,
 }
 
-extern "C" {
-    pub fn pj_crc32_init(ctx: *mut pj_crc32_context);
-}
-extern "C" {
-    pub fn pj_crc32_update(
-        ctx: *mut pj_crc32_context,
-        data: *const pj_uint8_t,
-        nbytes: pj_size_t,
-    ) -> pj_uint32_t;
-}
-extern "C" {
-    pub fn pj_crc32_final(ctx: *mut pj_crc32_context) -> pj_uint32_t;
-}
-extern "C" {
-    pub fn pj_crc32_calc(data: *const pj_uint8_t, nbytes: pj_size_t) -> pj_uint32_t;
-}
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_md5_context {
@@ -217,51 +167,18 @@ pub struct pj_md5_context {
     pub bits: [pj_uint32_t; 2usize],
     pub in_: [pj_uint8_t; 64usize],
 }
-extern "C" {
-    pub fn pj_md5_init(pms: *mut pj_md5_context);
-}
-extern "C" {
-    pub fn pj_md5_update(
-        pms: *mut pj_md5_context,
-        data: *const pj_uint8_t,
-        nbytes: ::std::os::raw::c_uint,
-    );
-}
-extern "C" {
-    pub fn pj_md5_final(pms: *mut pj_md5_context, digest: *mut pj_uint8_t);
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_hmac_md5_context {
     pub context: pj_md5_context,
     pub k_opad: [pj_uint8_t; 64usize],
 }
-extern "C" {
-    pub fn pj_hmac_md5(
-        input: *const pj_uint8_t,
-        input_len: ::std::os::raw::c_uint,
-        key: *const pj_uint8_t,
-        key_len: ::std::os::raw::c_uint,
-        digest: *mut pj_uint8_t,
-    );
-}
-extern "C" {
-    pub fn pj_hmac_md5_init(
-        hctx: *mut pj_hmac_md5_context,
-        key: *const pj_uint8_t,
-        key_len: ::std::os::raw::c_uint,
-    );
-}
-extern "C" {
-    pub fn pj_hmac_md5_update(
-        hctx: *mut pj_hmac_md5_context,
-        input: *const pj_uint8_t,
-        input_len: ::std::os::raw::c_uint,
-    );
-}
-extern "C" {
-    pub fn pj_hmac_md5_final(hctx: *mut pj_hmac_md5_context, digest: *mut pj_uint8_t);
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_sha1_context {
@@ -269,49 +186,21 @@ pub struct pj_sha1_context {
     pub count: [pj_uint32_t; 2usize],
     pub buffer: [pj_uint8_t; 64usize],
 }
-extern "C" {
-    pub fn pj_sha1_init(ctx: *mut pj_sha1_context);
-}
-extern "C" {
-    pub fn pj_sha1_update(ctx: *mut pj_sha1_context, data: *const pj_uint8_t, nbytes: pj_size_t);
-}
-extern "C" {
-    pub fn pj_sha1_final(ctx: *mut pj_sha1_context, digest: *mut pj_uint8_t);
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_hmac_sha1_context {
     pub context: pj_sha1_context,
     pub k_opad: [pj_uint8_t; 64usize],
 }
-extern "C" {
-    pub fn pj_hmac_sha1(
-        input: *const pj_uint8_t,
-        input_len: ::std::os::raw::c_uint,
-        key: *const pj_uint8_t,
-        key_len: ::std::os::raw::c_uint,
-        digest: *mut pj_uint8_t,
-    );
-}
-extern "C" {
-    pub fn pj_hmac_sha1_init(
-        hctx: *mut pj_hmac_sha1_context,
-        key: *const pj_uint8_t,
-        key_len: ::std::os::raw::c_uint,
-    );
-}
-extern "C" {
-    pub fn pj_hmac_sha1_update(
-        hctx: *mut pj_hmac_sha1_context,
-        input: *const pj_uint8_t,
-        input_len: ::std::os::raw::c_uint,
-    );
-}
-extern "C" {
-    pub fn pj_hmac_sha1_final(hctx: *mut pj_hmac_sha1_context, digest: *mut pj_uint8_t);
-}
+
+
+
 pub const PJ_DNS_CLASS_IN: u32 = 1;
 pub type _bindgen_ty_11 = u32;
+
 pub const PJ_DNS_TYPE_A: pj_dns_type = 1;
 pub const PJ_DNS_TYPE_NS: pj_dns_type = 2;
 pub const PJ_DNS_TYPE_MD: pj_dns_type = 3;
@@ -360,6 +249,7 @@ pub const PJ_DNS_TYPE_RRSIG: pj_dns_type = 46;
 pub const PJ_DNS_TYPE_NSEC: pj_dns_type = 47;
 pub const PJ_DNS_TYPE_DNSKEY: pj_dns_type = 48;
 pub type pj_dns_type = u32;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_hdr {
@@ -370,6 +260,7 @@ pub struct pj_dns_hdr {
     pub nscount: pj_uint16_t,
     pub arcount: pj_uint16_t,
 }
+
 pub const PJ_DNS_RCODE_FORMERR: pj_dns_rcode = 1;
 pub const PJ_DNS_RCODE_SERVFAIL: pj_dns_rcode = 2;
 pub const PJ_DNS_RCODE_NXDOMAIN: pj_dns_rcode = 3;
@@ -381,6 +272,7 @@ pub const PJ_DNS_RCODE_NXRRSET: pj_dns_rcode = 8;
 pub const PJ_DNS_RCODE_NOTAUTH: pj_dns_rcode = 9;
 pub const PJ_DNS_RCODE_NOTZONE: pj_dns_rcode = 10;
 pub type pj_dns_rcode = u32;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_query {
@@ -388,6 +280,7 @@ pub struct pj_dns_parsed_query {
     pub type_: pj_uint16_t,
     pub dnsclass: pj_uint16_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr {
@@ -396,9 +289,10 @@ pub struct pj_dns_parsed_rr {
     pub dnsclass: pj_uint16_t,
     pub ttl: pj_uint32_t,
     pub rdlength: pj_uint16_t,
-    pub data: *mut ::std::os::raw::c_void,
+    pub data: *mut c_void,
     pub rdata: pj_dns_parsed_rr_rdata,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata {
@@ -410,6 +304,7 @@ pub struct pj_dns_parsed_rr_rdata {
     pub aaaa: __BindgenUnionField<pj_dns_parsed_rr_rdata_aaaa>,
     pub bindgen_union_field: [u64; 3usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_srv {
@@ -418,6 +313,7 @@ pub struct pj_dns_parsed_rr_rdata_srv {
     pub port: pj_uint16_t,
     pub target: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_cname {
@@ -438,11 +334,13 @@ pub struct pj_dns_parsed_rr_rdata_ptr {
 pub struct pj_dns_parsed_rr_rdata_a {
     pub ip_addr: pj_in_addr,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_rr_rdata_aaaa {
     pub ip_addr: pj_in6_addr,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_parsed_packet {
@@ -452,132 +350,62 @@ pub struct pj_dns_parsed_packet {
     pub ns: *mut pj_dns_parsed_rr,
     pub arr: *mut pj_dns_parsed_rr,
 }
+
 pub const PJ_DNS_NO_QD: pj_dns_dup_options = 1;
 pub const PJ_DNS_NO_ANS: pj_dns_dup_options = 2;
 pub const PJ_DNS_NO_NS: pj_dns_dup_options = 4;
 pub const PJ_DNS_NO_AR: pj_dns_dup_options = 8;
 pub type pj_dns_dup_options = u32;
-extern "C" {
-    pub fn pj_dns_make_query(
-        packet: *mut ::std::os::raw::c_void,
-        size: *mut ::std::os::raw::c_uint,
-        id: pj_uint16_t,
-        qtype: ::std::os::raw::c_int,
-        name: *const pj_str_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_parse_packet(
-        pool: *mut pj_pool_t,
-        packet: *const ::std::os::raw::c_void,
-        size: ::std::os::raw::c_uint,
-        p_res: *mut *mut pj_dns_parsed_packet,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_packet_dup(
-        pool: *mut pj_pool_t,
-        p: *const pj_dns_parsed_packet,
-        options: ::std::os::raw::c_uint,
-        p_dst: *mut *mut pj_dns_parsed_packet,
-    );
-}
-extern "C" {
-    pub fn pj_dns_get_type_name(type_: ::std::os::raw::c_int) -> *const ::std::os::raw::c_char;
-}
-extern "C" {
-    pub fn pj_dns_init_srv_rr(
-        rec: *mut pj_dns_parsed_rr,
-        res_name: *const pj_str_t,
-        dnsclass: ::std::os::raw::c_uint,
-        ttl: ::std::os::raw::c_uint,
-        prio: ::std::os::raw::c_uint,
-        weight: ::std::os::raw::c_uint,
-        port: ::std::os::raw::c_uint,
-        target: *const pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_dns_init_cname_rr(
-        rec: *mut pj_dns_parsed_rr,
-        res_name: *const pj_str_t,
-        dnsclass: ::std::os::raw::c_uint,
-        ttl: ::std::os::raw::c_uint,
-        name: *const pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_dns_init_a_rr(
-        rec: *mut pj_dns_parsed_rr,
-        res_name: *const pj_str_t,
-        dnsclass: ::std::os::raw::c_uint,
-        ttl: ::std::os::raw::c_uint,
-        ip_addr: *const pj_in_addr,
-    );
-}
-extern "C" {
-    pub fn pj_dns_init_aaaa_rr(
-        rec: *mut pj_dns_parsed_rr,
-        res_name: *const pj_str_t,
-        dnsclass: ::std::os::raw::c_uint,
-        ttl: ::std::os::raw::c_uint,
-        ip_addr: *const pj_in6_addr,
-    );
-}
-extern "C" {
-    pub fn pj_dns_dump_packet(res: *const pj_dns_parsed_packet);
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_dns_resolver {
-    _unused: [u8; 0],
-}
+pub struct pj_dns_resolver { _unused: [u8; 0] }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_dns_async_query {
-    _unused: [u8; 0],
-}
-pub type pj_dns_callback = ::std::option::Option<
-    unsafe extern "C" fn(
-        user_data: *mut ::std::os::raw::c_void,
-        status: pj_status_t,
-        response: *mut pj_dns_parsed_packet,
-    ),
+pub struct pj_dns_async_query { _unused: [u8; 0] }
+
+pub type pj_dns_callback = Option<
+    unsafe extern "C" fn(user_data: *mut c_void, status: pj_status_t, response: *mut pj_dns_parsed_packet),
 >;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_dns_settings {
-    pub options: ::std::os::raw::c_uint,
-    pub qretr_delay: ::std::os::raw::c_uint,
-    pub qretr_count: ::std::os::raw::c_uint,
-    pub cache_max_ttl: ::std::os::raw::c_uint,
-    pub good_ns_ttl: ::std::os::raw::c_uint,
-    pub bad_ns_ttl: ::std::os::raw::c_uint,
+    pub options: c_uint,
+    pub qretr_delay: c_uint,
+    pub qretr_count: c_uint,
+    pub cache_max_ttl: c_uint,
+    pub good_ns_ttl: c_uint,
+    pub bad_ns_ttl: c_uint,
 }
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_dns_a_record {
     pub name: pj_str_t,
     pub alias: pj_str_t,
-    pub addr_count: ::std::os::raw::c_uint,
+    pub addr_count: c_uint,
     pub addr: [pj_in_addr; 8usize],
-    pub buf_: [::std::os::raw::c_char; 128usize],
+    pub buf_: [c_char; 128usize],
 }
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_dns_addr_record {
     pub name: pj_str_t,
     pub alias: pj_str_t,
-    pub addr_count: ::std::os::raw::c_uint,
+    pub addr_count: c_uint,
     pub addr: [pj_dns_addr_record__bindgen_ty_1; 8usize],
-    pub buf_: [::std::os::raw::c_char; 128usize],
+    pub buf_: [c_char; 128usize],
 }
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_dns_addr_record__bindgen_ty_1 {
-    pub af: ::std::os::raw::c_int,
+    pub af: c_int,
     pub ip: pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1 {
@@ -585,400 +413,85 @@ pub struct pj_dns_addr_record__bindgen_ty_1__bindgen_ty_1 {
     pub v6: __BindgenUnionField<pj_in6_addr>,
     pub bindgen_union_field: [u32; 4usize],
 }
-extern "C" {
-    pub fn pj_dns_settings_default(s: *mut pj_dns_settings);
-}
-extern "C" {
-    pub fn pj_dns_resolver_create(
-        pf: *mut pj_pool_factory,
-        name: *const ::std::os::raw::c_char,
-        options: ::std::os::raw::c_uint,
-        timer: *mut pj_timer_heap_t,
-        ioqueue: *mut pj_ioqueue_t,
-        p_resolver: *mut *mut pj_dns_resolver,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_set_ns(
-        resolver: *mut pj_dns_resolver,
-        count: ::std::os::raw::c_uint,
-        servers: *const pj_str_t,
-        ports: *const pj_uint16_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_get_settings(
-        resolver: *mut pj_dns_resolver,
-        st: *mut pj_dns_settings,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_set_settings(
-        resolver: *mut pj_dns_resolver,
-        st: *const pj_dns_settings,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_handle_events(
-        resolver: *mut pj_dns_resolver,
-        timeout: *const pj_time_val,
-    );
-}
-extern "C" {
-    pub fn pj_dns_resolver_destroy(
-        resolver: *mut pj_dns_resolver,
-        notify: pj_bool_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_start_query(
-        resolver: *mut pj_dns_resolver,
-        name: *const pj_str_t,
-        type_: ::std::os::raw::c_int,
-        options: ::std::os::raw::c_uint,
-        cb: pj_dns_callback,
-        user_data: *mut ::std::os::raw::c_void,
-        p_query: *mut *mut pj_dns_async_query,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_cancel_query(
-        query: *mut pj_dns_async_query,
-        notify: pj_bool_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_parse_a_response(
-        pkt: *const pj_dns_parsed_packet,
-        rec: *mut pj_dns_a_record,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_parse_addr_response(
-        pkt: *const pj_dns_parsed_packet,
-        rec: *mut pj_dns_addr_record,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_add_entry(
-        resolver: *mut pj_dns_resolver,
-        pkt: *const pj_dns_parsed_packet,
-        set_ttl: pj_bool_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_resolver_get_cached_count(
-        resolver: *mut pj_dns_resolver,
-    ) -> ::std::os::raw::c_uint;
-}
-extern "C" {
-    pub fn pj_dns_resolver_dump(resolver: *mut pj_dns_resolver, detail: pj_bool_t);
-}
+
 pub const PJ_DNS_SRV_FALLBACK_A: pj_dns_srv_option = 1;
 pub const PJ_DNS_SRV_FALLBACK_AAAA: pj_dns_srv_option = 2;
 pub const PJ_DNS_SRV_RESOLVE_AAAA: pj_dns_srv_option = 4;
 pub const PJ_DNS_SRV_RESOLVE_AAAA_ONLY: pj_dns_srv_option = 8;
 pub type pj_dns_srv_option = u32;
+
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_dns_srv_record {
-    pub count: ::std::os::raw::c_uint,
+    pub count: c_uint,
     pub entry: [pj_dns_srv_record__bindgen_ty_1; 8usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_dns_srv_record__bindgen_ty_1 {
-    pub priority: ::std::os::raw::c_uint,
-    pub weight: ::std::os::raw::c_uint,
+    pub priority: c_uint,
+    pub weight: c_uint,
     pub port: pj_uint16_t,
     pub server: pj_dns_addr_record,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_dns_srv_async_query {
-    _unused: [u8; 0],
-}
-pub type pj_dns_srv_resolver_cb = ::std::option::Option<
-    unsafe extern "C" fn(
-        user_data: *mut ::std::os::raw::c_void,
-        status: pj_status_t,
-        rec: *const pj_dns_srv_record,
-    ),
->;
-extern "C" {
-    pub fn pj_dns_srv_resolve(
-        domain_name: *const pj_str_t,
-        res_name: *const pj_str_t,
-        def_port: ::std::os::raw::c_uint,
-        pool: *mut pj_pool_t,
-        resolver: *mut pj_dns_resolver,
-        option: ::std::os::raw::c_uint,
-        token: *mut ::std::os::raw::c_void,
-        cb: pj_dns_srv_resolver_cb,
-        p_query: *mut *mut pj_dns_srv_async_query,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_srv_cancel_query(
-        query: *mut pj_dns_srv_async_query,
-        notify: pj_bool_t,
-    ) -> pj_status_t;
-}
+pub struct pj_dns_srv_async_query { _unused: [u8; 0] }
+
+pub type pj_dns_srv_resolver_cb = Option<unsafe extern "C" fn(user_data: *mut c_void, status: pj_status_t, rec: *const pj_dns_srv_record)>;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_dns_server {
-    _unused: [u8; 0],
-}
-extern "C" {
-    pub fn pj_dns_server_create(
-        pf: *mut pj_pool_factory,
-        ioqueue: *mut pj_ioqueue_t,
-        af: ::std::os::raw::c_int,
-        port: ::std::os::raw::c_uint,
-        flags: ::std::os::raw::c_uint,
-        p_srv: *mut *mut pj_dns_server,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_server_destroy(srv: *mut pj_dns_server) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_server_add_rec(
-        srv: *mut pj_dns_server,
-        count: ::std::os::raw::c_uint,
-        rr: *const pj_dns_parsed_rr,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_dns_server_del_rec(
-        srv: *mut pj_dns_server,
-        dns_class: ::std::os::raw::c_int,
-        type_: pj_dns_type,
-        name: *const pj_str_t,
-    ) -> pj_status_t;
-}
+pub struct pj_dns_server { _unused: [u8; 0] }
+
 pub type pj_cis_elem_t = pj_uint32_t;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cis_buf_t {
     pub cis_buf: [pj_cis_elem_t; 256usize],
     pub use_mask: pj_cis_elem_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_cis_t {
     pub cis_buf: *mut pj_cis_elem_t,
-    pub cis_id: ::std::os::raw::c_int,
+    pub cis_id: c_int,
 }
-extern "C" {
-    pub fn pj_cis_buf_init(cs_buf: *mut pj_cis_buf_t);
-}
-extern "C" {
-    pub fn pj_cis_init(cs_buf: *mut pj_cis_buf_t, cis: *mut pj_cis_t) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cis_dup(new_cis: *mut pj_cis_t, existing: *mut pj_cis_t) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cis_add_range(
-        cis: *mut pj_cis_t,
-        cstart: ::std::os::raw::c_int,
-        cend: ::std::os::raw::c_int,
-    );
-}
-extern "C" {
-    pub fn pj_cis_add_alpha(cis: *mut pj_cis_t);
-}
-extern "C" {
-    pub fn pj_cis_add_num(cis: *mut pj_cis_t);
-}
-extern "C" {
-    pub fn pj_cis_add_str(cis: *mut pj_cis_t, str_: *const ::std::os::raw::c_char);
-}
-extern "C" {
-    pub fn pj_cis_add_cis(cis: *mut pj_cis_t, rhs: *const pj_cis_t);
-}
-extern "C" {
-    pub fn pj_cis_del_range(
-        cis: *mut pj_cis_t,
-        cstart: ::std::os::raw::c_int,
-        cend: ::std::os::raw::c_int,
-    );
-}
-extern "C" {
-    pub fn pj_cis_del_str(cis: *mut pj_cis_t, str_: *const ::std::os::raw::c_char);
-}
-extern "C" {
-    pub fn pj_cis_invert(cis: *mut pj_cis_t);
-}
+
+
 pub const PJ_SCAN_AUTOSKIP_WS: u32 = 1;
 pub const PJ_SCAN_AUTOSKIP_WS_HEADER: u32 = 3;
 pub const PJ_SCAN_AUTOSKIP_NEWLINE: u32 = 4;
 pub type _bindgen_ty_12 = u32;
-pub type pj_syn_err_func_ptr =
-    ::std::option::Option<unsafe extern "C" fn(scanner: *mut pj_scanner)>;
+
+pub type pj_syn_err_func_ptr = Option<unsafe extern "C" fn(scanner: *mut pj_scanner)>;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_scanner {
-    pub begin: *mut ::std::os::raw::c_char,
-    pub end: *mut ::std::os::raw::c_char,
-    pub curptr: *mut ::std::os::raw::c_char,
-    pub line: ::std::os::raw::c_int,
-    pub start_line: *mut ::std::os::raw::c_char,
-    pub skip_ws: ::std::os::raw::c_int,
+    pub begin: *mut c_char,
+    pub end: *mut c_char,
+    pub curptr: *mut c_char,
+    pub line: c_int,
+    pub start_line: *mut c_char,
+    pub skip_ws: c_int,
     pub callback: pj_syn_err_func_ptr,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_scan_state {
-    pub curptr: *mut ::std::os::raw::c_char,
-    pub line: ::std::os::raw::c_int,
-    pub start_line: *mut ::std::os::raw::c_char,
+    pub curptr: *mut c_char,
+    pub line: c_int,
+    pub start_line: *mut c_char,
 }
-extern "C" {
-    pub fn pj_scan_init(
-        scanner: *mut pj_scanner,
-        bufstart: *mut ::std::os::raw::c_char,
-        buflen: pj_size_t,
-        options: ::std::os::raw::c_uint,
-        callback: pj_syn_err_func_ptr,
-    );
-}
-extern "C" {
-    pub fn pj_scan_fini(scanner: *mut pj_scanner);
-}
-extern "C" {
-    pub fn pj_scan_peek(
-        scanner: *mut pj_scanner,
-        spec: *const pj_cis_t,
-        out: *mut pj_str_t,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_peek_n(
-        scanner: *mut pj_scanner,
-        len: pj_size_t,
-        out: *mut pj_str_t,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_peek_until(
-        scanner: *mut pj_scanner,
-        spec: *const pj_cis_t,
-        out: *mut pj_str_t,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_get(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_scan_get_unescape(
-        scanner: *mut pj_scanner,
-        spec: *const pj_cis_t,
-        out: *mut pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_scan_get_quote(
-        scanner: *mut pj_scanner,
-        begin_quote: ::std::os::raw::c_int,
-        end_quote: ::std::os::raw::c_int,
-        out: *mut pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_scan_get_quotes(
-        scanner: *mut pj_scanner,
-        begin_quotes: *const ::std::os::raw::c_char,
-        end_quotes: *const ::std::os::raw::c_char,
-        qsize: ::std::os::raw::c_int,
-        out: *mut pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_scan_get_n(scanner: *mut pj_scanner, N: ::std::os::raw::c_uint, out: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_scan_get_char(scanner: *mut pj_scanner) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_get_until(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_scan_get_until_ch(
-        scanner: *mut pj_scanner,
-        until_char: ::std::os::raw::c_int,
-        out: *mut pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_scan_get_until_chr(
-        scanner: *mut pj_scanner,
-        until_spec: *const ::std::os::raw::c_char,
-        out: *mut pj_str_t,
-    );
-}
-extern "C" {
-    pub fn pj_scan_advance_n(scanner: *mut pj_scanner, N: ::std::os::raw::c_uint, skip: pj_bool_t);
-}
-extern "C" {
-    pub fn pj_scan_strcmp(
-        scanner: *mut pj_scanner,
-        s: *const ::std::os::raw::c_char,
-        len: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_stricmp(
-        scanner: *mut pj_scanner,
-        s: *const ::std::os::raw::c_char,
-        len: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_stricmp_alnum(
-        scanner: *mut pj_scanner,
-        s: *const ::std::os::raw::c_char,
-        len: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_scan_get_newline(scanner: *mut pj_scanner);
-}
-extern "C" {
-    pub fn pj_scan_skip_whitespace(scanner: *mut pj_scanner);
-}
-extern "C" {
-    pub fn pj_scan_skip_line(scanner: *mut pj_scanner);
-}
-extern "C" {
-    pub fn pj_scan_save_state(scanner: *const pj_scanner, state: *mut pj_scan_state);
-}
-extern "C" {
-    pub fn pj_scan_restore_state(scanner: *mut pj_scanner, state: *mut pj_scan_state);
-}
-extern "C" {
-    pub fn pj_str_unescape(pool: *mut pj_pool_t, src: *const pj_str_t) -> pj_str_t;
-}
-extern "C" {
-    pub fn pj_strcpy_unescape(dst: *mut pj_str_t, src: *const pj_str_t) -> *mut pj_str_t;
-}
-extern "C" {
-    pub fn pj_strncpy_escape(
-        dst: *mut pj_str_t,
-        src: *const pj_str_t,
-        max: pj_ssize_t,
-        unres: *const pj_cis_t,
-    ) -> *mut pj_str_t;
-}
-extern "C" {
-    pub fn pj_strncpy2_escape(
-        dst: *mut ::std::os::raw::c_char,
-        src: *const pj_str_t,
-        max: pj_ssize_t,
-        unres: *const pj_cis_t,
-    ) -> pj_ssize_t;
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_xml_attr {
@@ -987,12 +500,14 @@ pub struct pj_xml_attr {
     pub name: pj_str_t,
     pub value: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_xml_node_head {
     pub prev: *mut pj_xml_node,
     pub next: *mut pj_xml_node,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_xml_node {
@@ -1003,89 +518,8 @@ pub struct pj_xml_node {
     pub node_head: pj_xml_node_head,
     pub content: pj_str_t,
 }
-extern "C" {
-    pub fn pj_xml_parse(
-        pool: *mut pj_pool_t,
-        msg: *mut ::std::os::raw::c_char,
-        len: pj_size_t,
-    ) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_print(
-        node: *const pj_xml_node,
-        buf: *mut ::std::os::raw::c_char,
-        len: pj_size_t,
-        prolog: pj_bool_t,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn pj_xml_clone(pool: *mut pj_pool_t, rhs: *const pj_xml_node) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_node_new(pool: *mut pj_pool_t, name: *const pj_str_t) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_attr_new(
-        pool: *mut pj_pool_t,
-        name: *const pj_str_t,
-        value: *const pj_str_t,
-    ) -> *mut pj_xml_attr;
-}
-extern "C" {
-    pub fn pj_xml_add_node(parent: *mut pj_xml_node, node: *mut pj_xml_node);
-}
-extern "C" {
-    pub fn pj_xml_add_attr(node: *mut pj_xml_node, attr: *mut pj_xml_attr);
-}
-extern "C" {
-    pub fn pj_xml_find_node(parent: *const pj_xml_node, name: *const pj_str_t) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_find_next_node(
-        parent: *const pj_xml_node,
-        node: *const pj_xml_node,
-        name: *const pj_str_t,
-    ) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_find_node_rec(
-        parent: *const pj_xml_node,
-        name: *const pj_str_t,
-    ) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_find_attr(
-        node: *const pj_xml_node,
-        name: *const pj_str_t,
-        value: *const pj_str_t,
-    ) -> *mut pj_xml_attr;
-}
-extern "C" {
-    pub fn pj_xml_find(
-        parent: *const pj_xml_node,
-        name: *const pj_str_t,
-        data: *const ::std::os::raw::c_void,
-        match_: ::std::option::Option<
-            unsafe extern "C" fn(
-                arg1: *const pj_xml_node,
-                arg2: *const ::std::os::raw::c_void,
-            ) -> pj_bool_t,
-        >,
-    ) -> *mut pj_xml_node;
-}
-extern "C" {
-    pub fn pj_xml_find_rec(
-        parent: *const pj_xml_node,
-        name: *const pj_str_t,
-        data: *const ::std::os::raw::c_void,
-        match_: ::std::option::Option<
-            unsafe extern "C" fn(
-                arg1: *const pj_xml_node,
-                arg2: *const ::std::os::raw::c_void,
-            ) -> pj_bool_t,
-        >,
-    ) -> *mut pj_xml_node;
-}
+
+
 pub const PJ_JSON_VAL_NULL: pj_json_val_type = 0;
 pub const PJ_JSON_VAL_BOOL: pj_json_val_type = 1;
 pub const PJ_JSON_VAL_NUMBER: pj_json_val_type = 2;
@@ -1093,12 +527,14 @@ pub const PJ_JSON_VAL_STRING: pj_json_val_type = 3;
 pub const PJ_JSON_VAL_ARRAY: pj_json_val_type = 4;
 pub const PJ_JSON_VAL_OBJ: pj_json_val_type = 5;
 pub type pj_json_val_type = u32;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_json_list {
     pub prev: *mut pj_json_elem,
     pub next: *mut pj_json_elem,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_json_elem {
@@ -1108,6 +544,7 @@ pub struct pj_json_elem {
     pub type_: pj_json_val_type,
     pub value: pj_json_elem__bindgen_ty_1,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct pj_json_elem__bindgen_ty_1 {
@@ -1117,63 +554,19 @@ pub struct pj_json_elem__bindgen_ty_1 {
     pub children: __BindgenUnionField<pj_json_list>,
     pub bindgen_union_field: [u64; 2usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_json_err_info {
-    pub line: ::std::os::raw::c_uint,
-    pub col: ::std::os::raw::c_uint,
-    pub err_char: ::std::os::raw::c_int,
+    pub line: c_uint,
+    pub col: c_uint,
+    pub err_char: c_int,
 }
-pub type pj_json_writer = ::std::option::Option<
-    unsafe extern "C" fn(
-        s: *const ::std::os::raw::c_char,
-        size: ::std::os::raw::c_uint,
-        user_data: *mut ::std::os::raw::c_void,
-    ) -> pj_status_t,
+
+pub type pj_json_writer = Option<
+    unsafe extern "C" fn(s: *const c_char, size: c_uint, user_data: *mut c_void) -> pj_status_t,
 >;
-extern "C" {
-    pub fn pj_json_elem_null(el: *mut pj_json_elem, name: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_json_elem_bool(el: *mut pj_json_elem, name: *mut pj_str_t, val: pj_bool_t);
-}
-extern "C" {
-    pub fn pj_json_elem_number(el: *mut pj_json_elem, name: *mut pj_str_t, val: f32);
-}
-extern "C" {
-    pub fn pj_json_elem_string(el: *mut pj_json_elem, name: *mut pj_str_t, val: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_json_elem_array(el: *mut pj_json_elem, name: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_json_elem_obj(el: *mut pj_json_elem, name: *mut pj_str_t);
-}
-extern "C" {
-    pub fn pj_json_elem_add(el: *mut pj_json_elem, child: *mut pj_json_elem);
-}
-extern "C" {
-    pub fn pj_json_parse(
-        pool: *mut pj_pool_t,
-        buffer: *mut ::std::os::raw::c_char,
-        size: *mut ::std::os::raw::c_uint,
-        err_info: *mut pj_json_err_info,
-    ) -> *mut pj_json_elem;
-}
-extern "C" {
-    pub fn pj_json_write(
-        elem: *const pj_json_elem,
-        buffer: *mut ::std::os::raw::c_char,
-        size: *mut ::std::os::raw::c_uint,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_json_writef(
-        elem: *const pj_json_elem,
-        writer: pj_json_writer,
-        user_data: *mut ::std::os::raw::c_void,
-    ) -> pj_status_t;
-}
+
 pub const PJSTUN_BINDING_REQUEST: pjstun_msg_type = 1;
 pub const PJSTUN_BINDING_RESPONSE: pjstun_msg_type = 257;
 pub const PJSTUN_BINDING_ERROR_RESPONSE: pjstun_msg_type = 273;
@@ -1181,6 +574,7 @@ pub const PJSTUN_SHARED_SECRET_REQUEST: pjstun_msg_type = 2;
 pub const PJSTUN_SHARED_SECRET_RESPONSE: pjstun_msg_type = 258;
 pub const PJSTUN_SHARED_SECRET_ERROR_RESPONSE: pjstun_msg_type = 274;
 pub type pjstun_msg_type = u32;
+
 pub const PJSTUN_ATTR_MAPPED_ADDR: pjstun_attr_type = 1;
 pub const PJSTUN_ATTR_RESPONSE_ADDR: pjstun_attr_type = 2;
 pub const PJSTUN_ATTR_CHANGE_REQUEST: pjstun_attr_type = 3;
@@ -1194,6 +588,7 @@ pub const PJSTUN_ATTR_UNKNOWN_ATTRIBUTES: pjstun_attr_type = 10;
 pub const PJSTUN_ATTR_REFLECTED_FROM: pjstun_attr_type = 11;
 pub const PJSTUN_ATTR_XOR_MAPPED_ADDR: pjstun_attr_type = 32;
 pub type pjstun_attr_type = u32;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjstun_msg_hdr {
@@ -1201,6 +596,7 @@ pub struct pjstun_msg_hdr {
     pub length: pj_uint16_t,
     pub tsx: [pj_uint32_t; 4usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjstun_attr_hdr {
@@ -1216,16 +612,19 @@ pub struct pjstun_mapped_addr_attr {
     pub port: pj_uint16_t,
     pub addr: pj_uint32_t,
 }
+
 pub type pjstun_response_addr_attr = pjstun_mapped_addr_attr;
 pub type pjstun_changed_addr_attr = pjstun_mapped_addr_attr;
 pub type pjstun_src_addr_attr = pjstun_mapped_addr_attr;
 pub type pjstun_reflected_form_attr = pjstun_mapped_addr_attr;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjstun_change_request_attr {
     pub hdr: pjstun_attr_hdr,
     pub value: pj_uint32_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjstun_username_attr {
@@ -1240,68 +639,31 @@ pub struct pjstun_error_code_attr {
     pub ignored: pj_uint16_t,
     pub err_class: pj_uint8_t,
     pub number: pj_uint8_t,
-    pub reason: [::std::os::raw::c_char; 4usize],
+    pub reason: [c_char; 4usize],
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjstun_msg {
     pub hdr: *mut pjstun_msg_hdr,
-    pub attr_count: ::std::os::raw::c_int,
+    pub attr_count: c_int,
     pub attr: [*mut pjstun_attr_hdr; 16usize],
 }
-extern "C" {
-    pub fn pjstun_create_bind_req(
-        pool: *mut pj_pool_t,
-        msg: *mut *mut ::std::os::raw::c_void,
-        len: *mut pj_size_t,
-        id_hi: pj_uint32_t,
-        id_lo: pj_uint32_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pjstun_parse_msg(
-        buf: *mut ::std::os::raw::c_void,
-        len: pj_size_t,
-        msg: *mut pjstun_msg,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pjstun_msg_find_attr(
-        msg: *mut pjstun_msg,
-        t: pjstun_attr_type,
-    ) -> *mut ::std::os::raw::c_void;
-}
-extern "C" {
-    pub fn pjstun_get_mapped_addr(
-        pf: *mut pj_pool_factory,
-        sock_cnt: ::std::os::raw::c_int,
-        sock: *mut pj_sock_t,
-        srv1: *const pj_str_t,
-        port1: ::std::os::raw::c_int,
-        srv2: *const pj_str_t,
-        port2: ::std::os::raw::c_int,
-        mapped_addr: *mut pj_sockaddr_in,
-    ) -> pj_status_t;
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pjstun_setting {
     pub use_stun2: pj_bool_t,
-    pub af: ::std::os::raw::c_int,
+    pub af: c_int,
     pub srv1: pj_str_t,
-    pub port1: ::std::os::raw::c_int,
+    pub port1: c_int,
     pub srv2: pj_str_t,
-    pub port2: ::std::os::raw::c_int,
+    pub port2: c_int,
 }
-extern "C" {
-    pub fn pjstun_get_mapped_addr2(
-        pf: *mut pj_pool_factory,
-        opt: *const pjstun_setting,
-        sock_cnt: ::std::os::raw::c_int,
-        sock: *mut pj_sock_t,
-        mapped_addr: *mut pj_sockaddr_in,
-    ) -> pj_status_t;
-}
+
+
+
 pub const PJ_PCAP_LINK_TYPE_ETH: pj_pcap_link_type = 1;
 pub type pj_pcap_link_type = u32;
 pub const PJ_PCAP_PROTO_TYPE_UDP: pj_pcap_proto_type = 17;
@@ -1324,43 +686,15 @@ pub struct pj_pcap_filter {
     pub src_port: pj_uint16_t,
     pub dst_port: pj_uint16_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_pcap_file {
-    _unused: [u8; 0],
-}
-extern "C" {
-    pub fn pj_pcap_filter_default(filter: *mut pj_pcap_filter);
-}
-extern "C" {
-    pub fn pj_pcap_open(
-        pool: *mut pj_pool_t,
-        path: *const ::std::os::raw::c_char,
-        p_file: *mut *mut pj_pcap_file,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_pcap_close(file: *mut pj_pcap_file) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_pcap_set_filter(
-        file: *mut pj_pcap_file,
-        filter: *const pj_pcap_filter,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_pcap_read_udp(
-        file: *mut pj_pcap_file,
-        udp_hdr: *mut pj_pcap_udp_hdr,
-        udp_payload: *mut pj_uint8_t,
-        udp_payload_size: *mut pj_size_t,
-    ) -> pj_status_t;
-}
+pub struct pj_pcap_file { _unused: [u8; 0] }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_http_req {
-    _unused: [u8; 0],
-}
+pub struct pj_http_req { _unused: [u8; 0] }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_header_elmt {
@@ -1370,26 +704,28 @@ pub struct pj_http_header_elmt {
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_headers {
-    pub count: ::std::os::raw::c_uint,
+    pub count: c_uint,
     pub header: [pj_http_header_elmt; 32usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_auth_cred {
     pub scheme: pj_str_t,
     pub realm: pj_str_t,
     pub username: pj_str_t,
-    pub data_type: ::std::os::raw::c_uint,
+    pub data_type: c_uint,
     pub data: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_req_param {
-    pub addr_family: ::std::os::raw::c_int,
+    pub addr_family: c_int,
     pub method: pj_str_t,
     pub version: pj_str_t,
     pub timeout: pj_time_val,
-    pub user_data: *mut ::std::os::raw::c_void,
+    pub user_data: *mut c_void,
     pub headers: pj_http_headers,
     pub reqdata: pj_http_req_param_pj_http_reqdata,
     pub auth_cred: pj_http_auth_cred,
@@ -1397,13 +733,15 @@ pub struct pj_http_req_param {
     pub source_port_range_size: pj_uint16_t,
     pub max_retries: pj_uint16_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_req_param_pj_http_reqdata {
-    pub data: *mut ::std::os::raw::c_void,
+    pub data: *mut c_void,
     pub size: pj_size_t,
     pub total_size: pj_size_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_auth_chal {
@@ -1412,10 +750,11 @@ pub struct pj_http_auth_chal {
     pub domain: pj_str_t,
     pub nonce: pj_str_t,
     pub opaque: pj_str_t,
-    pub stale: ::std::os::raw::c_int,
+    pub stale: c_int,
     pub algorithm: pj_str_t,
     pub qop: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_resp {
@@ -1425,9 +764,10 @@ pub struct pj_http_resp {
     pub headers: pj_http_headers,
     pub auth_chal: pj_http_auth_chal,
     pub content_length: pj_int32_t,
-    pub data: *mut ::std::os::raw::c_void,
+    pub data: *mut c_void,
     pub size: pj_size_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_http_url {
@@ -1438,89 +778,32 @@ pub struct pj_http_url {
     pub port: pj_uint16_t,
     pub path: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_http_req_callback {
-    pub on_response: ::std::option::Option<
+    pub on_response: Option<
         unsafe extern "C" fn(http_req: *mut pj_http_req, resp: *const pj_http_resp),
     >,
-    pub on_send_data: ::std::option::Option<
-        unsafe extern "C" fn(
-            http_req: *mut pj_http_req,
-            data: *mut *mut ::std::os::raw::c_void,
-            size: *mut pj_size_t,
-        ),
+    pub on_send_data: Option<
+        unsafe extern "C" fn(http_req: *mut pj_http_req, data: *mut *mut c_void, size: *mut pj_size_t),
     >,
-    pub on_data_read: ::std::option::Option<
-        unsafe extern "C" fn(
-            http_req: *mut pj_http_req,
-            data: *mut ::std::os::raw::c_void,
-            size: pj_size_t,
-        ),
+    pub on_data_read: Option<
+        unsafe extern "C" fn(http_req: *mut pj_http_req, data: *mut c_void, size: pj_size_t),
     >,
-    pub on_complete: ::std::option::Option<
-        unsafe extern "C" fn(
-            http_req: *mut pj_http_req,
-            status: pj_status_t,
-            resp: *const pj_http_resp,
-        ),
+    pub on_complete: Option<
+        unsafe extern "C" fn(http_req: *mut pj_http_req, status: pj_status_t, resp: *const pj_http_resp),
     >,
 }
-extern "C" {
-    pub fn pj_http_req_param_default(param: *mut pj_http_req_param);
-}
-extern "C" {
-    pub fn pj_http_headers_add_elmt(
-        headers: *mut pj_http_headers,
-        name: *mut pj_str_t,
-        val: *mut pj_str_t,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_headers_add_elmt2(
-        headers: *mut pj_http_headers,
-        name: *mut ::std::os::raw::c_char,
-        val: *mut ::std::os::raw::c_char,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_req_parse_url(url: *const pj_str_t, hurl: *mut pj_http_url) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_req_create(
-        pool: *mut pj_pool_t,
-        url: *const pj_str_t,
-        timer: *mut pj_timer_heap_t,
-        ioqueue: *mut pj_ioqueue_t,
-        param: *const pj_http_req_param,
-        hcb: *const pj_http_req_callback,
-        http_req: *mut *mut pj_http_req,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_req_set_timeout(http_req: *mut pj_http_req, timeout: *const pj_time_val);
-}
-extern "C" {
-    pub fn pj_http_req_start(http_req: *mut pj_http_req) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_req_cancel(http_req: *mut pj_http_req, notify: pj_bool_t) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_req_destroy(http_req: *mut pj_http_req) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_http_req_is_running(http_req: *const pj_http_req) -> pj_bool_t;
-}
-extern "C" {
-    pub fn pj_http_req_get_user_data(http_req: *mut pj_http_req) -> *mut ::std::os::raw::c_void;
-}
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_cli_t {
-    _unused: [u8; 0],
-}
-pub type pj_cli_cmd_id = ::std::os::raw::c_int;
+pub struct pj_cli_t { _unused: [u8; 0] }
+
+
+pub type pj_cli_cmd_id = c_int;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_cfg {
@@ -1528,25 +811,26 @@ pub struct pj_cli_cfg {
     pub title: pj_str_t,
     pub pf: *mut pj_pool_factory,
 }
-pub type pj_cli_arg_id = ::std::os::raw::c_int;
+
+pub type pj_cli_arg_id = c_int;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_cli_cmd_spec {
-    _unused: [u8; 0],
-}
+pub struct pj_cli_cmd_spec { _unused: [u8; 0] }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct pj_cli_arg_spec {
-    _unused: [u8; 0],
-}
+pub struct pj_cli_arg_spec { _unused: [u8; 0] }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_cmd_val {
     pub sess: *mut pj_cli_sess,
     pub cmd: *const pj_cli_cmd_spec,
-    pub argc: ::std::os::raw::c_int,
+    pub argc: c_int,
     pub argv: [pj_str_t; 8usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_hint_info {
@@ -1554,132 +838,54 @@ pub struct pj_cli_hint_info {
     pub type_: pj_str_t,
     pub desc: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_exec_info {
-    pub err_pos: ::std::os::raw::c_int,
+    pub err_pos: c_int,
     pub cmd_id: pj_cli_cmd_id,
     pub cmd_ret: pj_status_t,
-    pub hint_cnt: ::std::os::raw::c_uint,
+    pub hint_cnt: c_uint,
     pub hint: [pj_cli_hint_info; 32usize],
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_arg_choice_val {
     pub value: pj_str_t,
     pub desc: pj_str_t,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_dyn_choice_param {
     pub sess: *mut pj_cli_sess,
     pub cmd: *mut pj_cli_cmd_spec,
     pub arg_id: pj_cli_arg_id,
-    pub max_cnt: ::std::os::raw::c_uint,
+    pub max_cnt: c_uint,
     pub pool: *mut pj_pool_t,
-    pub cnt: ::std::os::raw::c_uint,
+    pub cnt: c_uint,
     pub choice: [pj_cli_arg_choice_val; 64usize],
 }
-pub type pj_cli_get_dyn_choice =
-    ::std::option::Option<unsafe extern "C" fn(param: *mut pj_cli_dyn_choice_param)>;
-pub type pj_cli_cmd_handler =
-    ::std::option::Option<unsafe extern "C" fn(cval: *mut pj_cli_cmd_val) -> pj_status_t>;
-extern "C" {
-    pub fn pj_cli_write_log(
-        cli: *mut pj_cli_t,
-        level: ::std::os::raw::c_int,
-        buffer: *const ::std::os::raw::c_char,
-        len: ::std::os::raw::c_int,
-    );
-}
-extern "C" {
-    pub fn pj_cli_create(cfg: *mut pj_cli_cfg, p_cli: *mut *mut pj_cli_t) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cli_get_cmd_id(cmd: *const pj_cli_cmd_spec) -> pj_cli_cmd_id;
-}
-extern "C" {
-    pub fn pj_cli_get_param(cli: *mut pj_cli_t) -> *mut pj_cli_cfg;
-}
-extern "C" {
-    pub fn pj_cli_quit(cli: *mut pj_cli_t, req: *mut pj_cli_sess, restart: pj_bool_t);
-}
-extern "C" {
-    pub fn pj_cli_is_quitting(cli: *mut pj_cli_t) -> pj_bool_t;
-}
-extern "C" {
-    pub fn pj_cli_is_restarting(cli: *mut pj_cli_t) -> pj_bool_t;
-}
-extern "C" {
-    pub fn pj_cli_destroy(cli: *mut pj_cli_t);
-}
-extern "C" {
-    pub fn pj_cli_cfg_default(param: *mut pj_cli_cfg);
-}
-extern "C" {
-    pub fn pj_cli_register_front_end(cli: *mut pj_cli_t, fe: *mut pj_cli_front_end);
-}
-extern "C" {
-    pub fn pj_cli_add_cmd_from_xml(
-        cli: *mut pj_cli_t,
-        group: *mut pj_cli_cmd_spec,
-        xml: *const pj_str_t,
-        handler: pj_cli_cmd_handler,
-        p_cmd: *mut *mut pj_cli_cmd_spec,
-        get_choice: pj_cli_get_dyn_choice,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cli_exec_info_default(param: *mut pj_cli_exec_info);
-}
-extern "C" {
-    pub fn pj_cli_sess_write_msg(
-        sess: *mut pj_cli_sess,
-        buffer: *const ::std::os::raw::c_char,
-        len: pj_size_t,
-    );
-}
-extern "C" {
-    pub fn pj_cli_sess_parse(
-        sess: *mut pj_cli_sess,
-        cmdline: *mut ::std::os::raw::c_char,
-        val: *mut pj_cli_cmd_val,
-        pool: *mut pj_pool_t,
-        info: *mut pj_cli_exec_info,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cli_sess_end_session(sess: *mut pj_cli_sess);
-}
-extern "C" {
-    pub fn pj_cli_sess_exec(
-        sess: *mut pj_cli_sess,
-        cmdline: *mut ::std::os::raw::c_char,
-        pool: *mut pj_pool_t,
-        info: *mut pj_cli_exec_info,
-    ) -> pj_status_t;
-}
+
+pub type pj_cli_get_dyn_choice = Option<unsafe extern "C" fn(param: *mut pj_cli_dyn_choice_param)>;
+pub type pj_cli_cmd_handler = Option<unsafe extern "C" fn(cval: *mut pj_cli_cmd_val) -> pj_status_t>;
+
+
 pub const PJ_CLI_CONSOLE_FRONT_END: pj_cli_front_end_type = 0;
 pub const PJ_CLI_TELNET_FRONT_END: pj_cli_front_end_type = 1;
 pub const PJ_CLI_HTTP_FRONT_END: pj_cli_front_end_type = 2;
 pub const PJ_CLI_GUI_FRONT_END: pj_cli_front_end_type = 3;
 pub type pj_cli_front_end_type = u32;
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_cli_front_end_op {
-    pub on_write_log: ::std::option::Option<
-        unsafe extern "C" fn(
-            fe: *mut pj_cli_front_end,
-            level: ::std::os::raw::c_int,
-            data: *const ::std::os::raw::c_char,
-            len: pj_size_t,
-        ),
-    >,
-    pub on_quit: ::std::option::Option<
-        unsafe extern "C" fn(fe: *mut pj_cli_front_end, req: *mut pj_cli_sess),
-    >,
-    pub on_destroy: ::std::option::Option<unsafe extern "C" fn(fe: *mut pj_cli_front_end)>,
+    pub on_write_log: Option<unsafe extern "C" fn(fe: *mut pj_cli_front_end, level: c_int, data: *const c_char, len: pj_size_t)>,
+    pub on_quit: Option<unsafe extern "C" fn(fe: *mut pj_cli_front_end, req: *mut pj_cli_sess)>,
+    pub on_destroy: Option<unsafe extern "C" fn(fe: *mut pj_cli_front_end)>
 }
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_cli_front_end {
@@ -1692,8 +898,9 @@ pub struct pj_cli_front_end {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pj_cli_sess_op {
-    pub destroy: ::std::option::Option<unsafe extern "C" fn(sess: *mut pj_cli_sess)>,
+    pub destroy: Option<unsafe extern "C" fn(sess: *mut pj_cli_sess)>,
 }
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_sess {
@@ -1702,66 +909,199 @@ pub struct pj_cli_sess {
     pub fe: *mut pj_cli_front_end,
     pub op: *mut pj_cli_sess_op,
     pub info: pj_str_t,
-    pub log_level: ::std::os::raw::c_int,
+    pub log_level: c_int,
 }
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_console_cfg {
-    pub log_level: ::std::os::raw::c_int,
+    pub log_level: c_int,
     pub prompt_str: pj_str_t,
     pub quit_command: pj_str_t,
 }
-extern "C" {
-    pub fn pj_cli_console_cfg_default(param: *mut pj_cli_console_cfg);
-}
-extern "C" {
-    pub fn pj_cli_console_create(
-        cli: *mut pj_cli_t,
-        param: *const pj_cli_console_cfg,
-        p_sess: *mut *mut pj_cli_sess,
-        p_fe: *mut *mut pj_cli_front_end,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cli_console_process(
-        sess: *mut pj_cli_sess,
-        buf: *mut ::std::os::raw::c_char,
-        maxlen: ::std::os::raw::c_uint,
-    ) -> pj_status_t;
-}
+
+
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_telnet_info {
     pub ip_address: pj_str_t,
     pub port: pj_uint16_t,
-    pub buf_: [::std::os::raw::c_char; 32usize],
+    pub buf_: [c_char; 32usize],
 }
-pub type pj_cli_telnet_on_started =
-    ::std::option::Option<unsafe extern "C" fn(status: pj_status_t)>;
+
+pub type pj_cli_telnet_on_started = Option<unsafe extern "C" fn(status: pj_status_t)>;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub struct pj_cli_telnet_cfg {
     pub port: pj_uint16_t,
     pub ioqueue: *mut pj_ioqueue_t,
-    pub log_level: ::std::os::raw::c_int,
+    pub log_level: c_int,
     pub passwd: pj_str_t,
     pub welcome_msg: pj_str_t,
     pub prompt_str: pj_str_t,
     pub on_started: pj_cli_telnet_on_started,
 }
+
 extern "C" {
+    pub static mut pj_optind: c_int;
+    pub static mut pj_optopt: c_int;
+    pub fn pjlib_util_init() -> pj_status_t;
+    pub fn pj_getopt(argc: c_int, argv: *const *mut c_char, shortopts: *const c_char) -> c_int;
+    pub fn pj_getopt_long(argc: c_int, argv: *const *mut c_char, options: *const c_char, longopts: *const pj_getopt_option, longind: *mut c_int) -> c_int;
+    pub fn pj_base64_encode(input: *const pj_uint8_t, in_len: c_int, output: *mut c_char, out_len: *mut c_int) -> pj_status_t;
+    pub fn pj_base64_decode(input: *const pj_str_t, out: *mut pj_uint8_t, out_len: *mut c_int) -> pj_status_t;
+    pub fn pj_crc32_init(ctx: *mut pj_crc32_context);
+    pub fn pj_crc32_update(ctx: *mut pj_crc32_context, data: *const pj_uint8_t, nbytes: pj_size_t) -> pj_uint32_t;
+    pub fn pj_crc32_final(ctx: *mut pj_crc32_context) -> pj_uint32_t;
+    pub fn pj_crc32_calc(data: *const pj_uint8_t, nbytes: pj_size_t) -> pj_uint32_t;
+    pub fn pj_md5_init(pms: *mut pj_md5_context);
+    pub fn pj_md5_update(pms: *mut pj_md5_context, data: *const pj_uint8_t, nbytes: c_uint);
+    pub fn pj_md5_final(pms: *mut pj_md5_context, digest: *mut pj_uint8_t);
+    pub fn pj_hmac_md5(input: *const pj_uint8_t, input_len: c_uint, key: *const pj_uint8_t, key_len: c_uint, digest: *mut pj_uint8_t);
+    pub fn pj_hmac_md5_init(hctx: *mut pj_hmac_md5_context, key: *const pj_uint8_t, key_len: c_uint);
+    pub fn pj_hmac_md5_update(hctx: *mut pj_hmac_md5_context, input: *const pj_uint8_t, input_len: c_uint);
+    pub fn pj_hmac_md5_final(hctx: *mut pj_hmac_md5_context, digest: *mut pj_uint8_t);
+    pub fn pj_hmac_sha1(input: *const pj_uint8_t, input_len: c_uint, key: *const pj_uint8_t, key_len: c_uint, digest: *mut pj_uint8_t);
+    pub fn pj_hmac_sha1_init(hctx: *mut pj_hmac_sha1_context, key: *const pj_uint8_t, key_len: c_uint);
+    pub fn pj_hmac_sha1_update(hctx: *mut pj_hmac_sha1_context, input: *const pj_uint8_t, input_len: c_uint);
+    pub fn pj_hmac_sha1_final(hctx: *mut pj_hmac_sha1_context, digest: *mut pj_uint8_t);
+    pub fn pj_sha1_init(ctx: *mut pj_sha1_context);
+    pub fn pj_sha1_update(ctx: *mut pj_sha1_context, data: *const pj_uint8_t, nbytes: pj_size_t);
+    pub fn pj_sha1_final(ctx: *mut pj_sha1_context, digest: *mut pj_uint8_t);
+    pub fn pj_dns_make_query(packet: *mut c_void, size: *mut c_uint, id: pj_uint16_t, qtype: c_int, name: *const pj_str_t) -> pj_status_t;
+    pub fn pj_dns_parse_packet(pool: *mut pj_pool_t, packet: *const c_void, size: c_uint, p_res: *mut *mut pj_dns_parsed_packet) -> pj_status_t;
+    pub fn pj_dns_packet_dup(pool: *mut pj_pool_t, p: *const pj_dns_parsed_packet, options: c_uint, p_dst: *mut *mut pj_dns_parsed_packet);
+    pub fn pj_dns_get_type_name(type_: c_int) -> *const c_char;
+    pub fn pj_dns_init_srv_rr(rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: c_uint, ttl: c_uint, prio: c_uint, weight: c_uint, port: c_uint, target: *const pj_str_t);
+    pub fn pj_dns_init_cname_rr(rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: c_uint, ttl: c_uint, name: *const pj_str_t);
+    pub fn pj_dns_init_a_rr(rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: c_uint, ttl: c_uint, ip_addr: *const pj_in_addr);
+    pub fn pj_dns_init_aaaa_rr(rec: *mut pj_dns_parsed_rr, res_name: *const pj_str_t, dnsclass: c_uint, ttl: c_uint, ip_addr: *const pj_in6_addr);
+    pub fn pj_dns_dump_packet(res: *const pj_dns_parsed_packet);
+    pub fn pj_dns_settings_default(s: *mut pj_dns_settings);
+    pub fn pj_dns_resolver_create(pf: *mut pj_pool_factory, name: *const c_char, options: c_uint, timer: *mut pj_timer_heap_t, ioqueue: *mut pj_ioqueue_t, p_resolver: *mut *mut pj_dns_resolver) -> pj_status_t;
+    pub fn pj_dns_resolver_set_ns( resolver: *mut pj_dns_resolver, count: c_uint, servers: *const pj_str_t, ports: *const pj_uint16_t) -> pj_status_t;
+    pub fn pj_dns_resolver_get_settings(resolver: *mut pj_dns_resolver, st: *mut pj_dns_settings) -> pj_status_t;
+    pub fn pj_dns_resolver_set_settings(resolver: *mut pj_dns_resolver, st: *const pj_dns_settings) -> pj_status_t;
+    pub fn pj_dns_resolver_handle_events(resolver: *mut pj_dns_resolver, timeout: *const pj_time_val);
+    pub fn pj_dns_resolver_destroy(resolver: *mut pj_dns_resolver, notify: pj_bool_t) -> pj_status_t;
+    pub fn pj_dns_resolver_start_query(resolver: *mut pj_dns_resolver, name: *const pj_str_t, type_: c_int, options: c_uint, cb: pj_dns_callback, user_data: *mut c_void, p_query: *mut *mut pj_dns_async_query) -> pj_status_t;
+    pub fn pj_dns_resolver_cancel_query(query: *mut pj_dns_async_query, notify: pj_bool_t) -> pj_status_t;
+    pub fn pj_dns_parse_a_response(pkt: *const pj_dns_parsed_packet, rec: *mut pj_dns_a_record) -> pj_status_t;
+    pub fn pj_dns_parse_addr_response(pkt: *const pj_dns_parsed_packet, rec: *mut pj_dns_addr_record) -> pj_status_t;
+    pub fn pj_dns_resolver_add_entry(resolver: *mut pj_dns_resolver, pkt: *const pj_dns_parsed_packet, set_ttl: pj_bool_t) -> pj_status_t;
+    pub fn pj_dns_resolver_get_cached_count(resolver: *mut pj_dns_resolver) -> c_uint;
+    pub fn pj_dns_resolver_dump(resolver: *mut pj_dns_resolver, detail: pj_bool_t);
+    pub fn pj_dns_srv_resolve(domain_name: *const pj_str_t, res_name: *const pj_str_t, def_port: c_uint, pool: *mut pj_pool_t, resolver: *mut pj_dns_resolver, option: c_uint, token: *mut c_void, cb: pj_dns_srv_resolver_cb, p_query: *mut *mut pj_dns_srv_async_query) -> pj_status_t;
+    pub fn pj_dns_srv_cancel_query(query: *mut pj_dns_srv_async_query, notify: pj_bool_t) -> pj_status_t;
+    pub fn pj_dns_server_create(pf: *mut pj_pool_factory, ioqueue: *mut pj_ioqueue_t, af: c_int, port: c_uint, flags: c_uint, p_srv: *mut *mut pj_dns_server) -> pj_status_t;
+    pub fn pj_dns_server_destroy(srv: *mut pj_dns_server) -> pj_status_t;
+    pub fn pj_dns_server_add_rec(srv: *mut pj_dns_server, count: c_uint, rr: *const pj_dns_parsed_rr) -> pj_status_t;
+    pub fn pj_dns_server_del_rec(srv: *mut pj_dns_server, dns_class: c_int, type_: pj_dns_type, name: *const pj_str_t) -> pj_status_t;
+    pub fn pj_cis_buf_init(cs_buf: *mut pj_cis_buf_t);
+    pub fn pj_cis_init(cs_buf: *mut pj_cis_buf_t, cis: *mut pj_cis_t) -> pj_status_t;
+    pub fn pj_cis_dup(new_cis: *mut pj_cis_t, existing: *mut pj_cis_t) -> pj_status_t;
+    pub fn pj_cis_add_range(cis: *mut pj_cis_t, cstart: c_int, cend: c_int);
+    pub fn pj_cis_add_alpha(cis: *mut pj_cis_t);
+    pub fn pj_cis_add_num(cis: *mut pj_cis_t);
+    pub fn pj_cis_add_str(cis: *mut pj_cis_t, str_: *const c_char);
+    pub fn pj_cis_add_cis(cis: *mut pj_cis_t, rhs: *const pj_cis_t);
+    pub fn pj_cis_del_range(cis: *mut pj_cis_t, cstart: c_int, cend: c_int);
+    pub fn pj_cis_del_str(cis: *mut pj_cis_t, str_: *const c_char);
+    pub fn pj_cis_invert(cis: *mut pj_cis_t);
+    pub fn pj_scan_init(scanner: *mut pj_scanner, bufstart: *mut c_char, buflen: pj_size_t, options: c_uint, callback: pj_syn_err_func_ptr);
+    pub fn pj_scan_fini(scanner: *mut pj_scanner);
+    pub fn pj_scan_peek(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t) -> c_int;
+    pub fn pj_scan_peek_n(scanner: *mut pj_scanner, len: pj_size_t, out: *mut pj_str_t) -> c_int;
+    pub fn pj_scan_peek_until(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t) -> c_int;
+    pub fn pj_scan_get(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t);
+    pub fn pj_scan_get_unescape(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t);
+    pub fn pj_scan_get_quote(scanner: *mut pj_scanner, begin_quote: c_int, end_quote: c_int, out: *mut pj_str_t);
+    pub fn pj_scan_get_quotes(scanner: *mut pj_scanner, begin_quotes: *const c_char, end_quotes: *const c_char, qsize: c_int, out: *mut pj_str_t);
+    pub fn pj_scan_get_n(scanner: *mut pj_scanner, N: c_uint, out: *mut pj_str_t);
+    pub fn pj_scan_get_char(scanner: *mut pj_scanner) -> c_int;
+    pub fn pj_scan_get_until(scanner: *mut pj_scanner, spec: *const pj_cis_t, out: *mut pj_str_t);
+    pub fn pj_scan_get_until_ch(scanner: *mut pj_scanner, until_char: c_int, out: *mut pj_str_t);
+    pub fn pj_scan_get_until_chr(scanner: *mut pj_scanner, until_spec: *const c_char, out: *mut pj_str_t);
+    pub fn pj_scan_advance_n(scanner: *mut pj_scanner, N: c_uint, skip: pj_bool_t);
+    pub fn pj_scan_strcmp( scanner: *mut pj_scanner, s: *const c_char, len: c_int) -> c_int;
+    pub fn pj_scan_stricmp(scanner: *mut pj_scanner, s: *const c_char, len: c_int) -> c_int;
+    pub fn pj_scan_stricmp_alnum(scanner: *mut pj_scanner, s: *const c_char, len: c_int) -> c_int;
+    pub fn pj_scan_get_newline(scanner: *mut pj_scanner);
+    pub fn pj_scan_skip_whitespace(scanner: *mut pj_scanner);
+    pub fn pj_scan_skip_line(scanner: *mut pj_scanner);
+    pub fn pj_scan_save_state(scanner: *const pj_scanner, state: *mut pj_scan_state);
+    pub fn pj_scan_restore_state(scanner: *mut pj_scanner, state: *mut pj_scan_state);
+    pub fn pj_str_unescape(pool: *mut pj_pool_t, src: *const pj_str_t) -> pj_str_t;
+    pub fn pj_strcpy_unescape(dst: *mut pj_str_t, src: *const pj_str_t) -> *mut pj_str_t;
+    pub fn pj_strncpy_escape(dst: *mut pj_str_t, src: *const pj_str_t, max: pj_ssize_t, unres: *const pj_cis_t) -> *mut pj_str_t;
+    pub fn pj_strncpy2_escape(dst: *mut c_char, src: *const pj_str_t, max: pj_ssize_t, unres: *const pj_cis_t) -> pj_ssize_t;
+    pub fn pj_xml_parse(pool: *mut pj_pool_t, msg: *mut c_char, len: pj_size_t) -> *mut pj_xml_node;
+    pub fn pj_xml_print(node: *const pj_xml_node, buf: *mut c_char, len: pj_size_t, prolog: pj_bool_t) -> c_int;
+    pub fn pj_xml_clone(pool: *mut pj_pool_t, rhs: *const pj_xml_node) -> *mut pj_xml_node;
+    pub fn pj_xml_node_new(pool: *mut pj_pool_t, name: *const pj_str_t) -> *mut pj_xml_node;
+    pub fn pj_xml_attr_new(pool: *mut pj_pool_t, name: *const pj_str_t, value: *const pj_str_t) -> *mut pj_xml_attr;
+    pub fn pj_xml_add_node(parent: *mut pj_xml_node, node: *mut pj_xml_node);
+    pub fn pj_xml_add_attr(node: *mut pj_xml_node, attr: *mut pj_xml_attr);
+    pub fn pj_xml_find_node(parent: *const pj_xml_node, name: *const pj_str_t) -> *mut pj_xml_node;
+    pub fn pj_xml_find_next_node(parent: *const pj_xml_node, node: *const pj_xml_node, name: *const pj_str_t) -> *mut pj_xml_node;
+    pub fn pj_xml_find_node_rec(parent: *const pj_xml_node, name: *const pj_str_t) -> *mut pj_xml_node;
+    pub fn pj_xml_find_attr(node: *const pj_xml_node, name: *const pj_str_t, value: *const pj_str_t) -> *mut pj_xml_attr;
+    pub fn pj_xml_find(parent: *const pj_xml_node, name: *const pj_str_t, data: *const c_void,
+        match_: Option<unsafe extern "C" fn(arg1: *const pj_xml_node, arg2: *const c_void) -> pj_bool_t>) -> *mut pj_xml_node;
+    pub fn pj_xml_find_rec(parent: *const pj_xml_node, name: *const pj_str_t, data: *const c_void,
+        match_: Option<unsafe extern "C" fn(arg1: *const pj_xml_node, arg2: *const c_void) -> pj_bool_t>) -> *mut pj_xml_node;
+    pub fn pj_json_elem_null(el: *mut pj_json_elem, name: *mut pj_str_t);
+    pub fn pj_json_elem_bool(el: *mut pj_json_elem, name: *mut pj_str_t, val: pj_bool_t);
+    pub fn pj_json_elem_number(el: *mut pj_json_elem, name: *mut pj_str_t, val: f32);
+    pub fn pj_json_elem_string(el: *mut pj_json_elem, name: *mut pj_str_t, val: *mut pj_str_t);
+    pub fn pj_json_elem_array(el: *mut pj_json_elem, name: *mut pj_str_t);
+    pub fn pj_json_elem_obj(el: *mut pj_json_elem, name: *mut pj_str_t);
+    pub fn pj_json_elem_add(el: *mut pj_json_elem, child: *mut pj_json_elem);
+    pub fn pj_json_parse(pool: *mut pj_pool_t, buffer: *mut c_char, size: *mut c_uint, err_info: *mut pj_json_err_info) -> *mut pj_json_elem;
+    pub fn pj_json_write(elem: *const pj_json_elem, buffer: *mut c_char, size: *mut c_uint) -> pj_status_t;
+    pub fn pj_json_writef(elem: *const pj_json_elem, writer: pj_json_writer, user_data: *mut c_void) -> pj_status_t;
+    pub fn pjstun_create_bind_req(pool: *mut pj_pool_t, msg: *mut *mut c_void, len: *mut pj_size_t, id_hi: pj_uint32_t, id_lo: pj_uint32_t) -> pj_status_t;
+    pub fn pjstun_parse_msg(buf: *mut c_void, len: pj_size_t, msg: *mut pjstun_msg) -> pj_status_t;
+    pub fn pjstun_msg_find_attr(msg: *mut pjstun_msg, t: pjstun_attr_type) -> *mut c_void;
+    pub fn pjstun_get_mapped_addr(pf: *mut pj_pool_factory, sock_cnt: c_int, sock: *mut pj_sock_t, srv1: *const pj_str_t, port1: c_int, srv2: *const pj_str_t, port2: c_int, mapped_addr: *mut pj_sockaddr_in) -> pj_status_t;
+    pub fn pjstun_get_mapped_addr2(pf: *mut pj_pool_factory, opt: *const pjstun_setting, sock_cnt: c_int, sock: *mut pj_sock_t, mapped_addr: *mut pj_sockaddr_in) -> pj_status_t;
+    pub fn pj_pcap_filter_default(filter: *mut pj_pcap_filter);
+    pub fn pj_pcap_open(pool: *mut pj_pool_t, path: *const c_char, p_file: *mut *mut pj_pcap_file) -> pj_status_t;
+    pub fn pj_pcap_close(file: *mut pj_pcap_file) -> pj_status_t;
+    pub fn pj_pcap_set_filter(file: *mut pj_pcap_file, filter: *const pj_pcap_filter) -> pj_status_t;
+    pub fn pj_pcap_read_udp(file: *mut pj_pcap_file, udp_hdr: *mut pj_pcap_udp_hdr, udp_payload: *mut pj_uint8_t, udp_payload_size: *mut pj_size_t) -> pj_status_t;
+    pub fn pj_http_req_param_default(param: *mut pj_http_req_param);
+    pub fn pj_http_headers_add_elmt(headers: *mut pj_http_headers, name: *mut pj_str_t, val: *mut pj_str_t) -> pj_status_t;
+    pub fn pj_http_headers_add_elmt2(headers: *mut pj_http_headers, name: *mut c_char, val: *mut c_char) -> pj_status_t;
+    pub fn pj_http_req_parse_url(url: *const pj_str_t, hurl: *mut pj_http_url) -> pj_status_t;
+    pub fn pj_http_req_create(pool: *mut pj_pool_t, url: *const pj_str_t, timer: *mut pj_timer_heap_t, ioqueue: *mut pj_ioqueue_t, param: *const pj_http_req_param, hcb: *const pj_http_req_callback, http_req: *mut *mut pj_http_req) -> pj_status_t;
+    pub fn pj_http_req_set_timeout(http_req: *mut pj_http_req, timeout: *const pj_time_val);
+    pub fn pj_http_req_start(http_req: *mut pj_http_req) -> pj_status_t;
+    pub fn pj_http_req_cancel(http_req: *mut pj_http_req, notify: pj_bool_t) -> pj_status_t;
+    pub fn pj_http_req_destroy(http_req: *mut pj_http_req) -> pj_status_t;
+    pub fn pj_http_req_is_running(http_req: *const pj_http_req) -> pj_bool_t;
+    pub fn pj_http_req_get_user_data(http_req: *mut pj_http_req) -> *mut c_void;
+    pub fn pj_cli_write_log(cli: *mut pj_cli_t, level: c_int, buffer: *const c_char, len: c_int);
+    pub fn pj_cli_create(cfg: *mut pj_cli_cfg, p_cli: *mut *mut pj_cli_t) -> pj_status_t;
+    pub fn pj_cli_get_cmd_id(cmd: *const pj_cli_cmd_spec) -> pj_cli_cmd_id;
+    pub fn pj_cli_get_param(cli: *mut pj_cli_t) -> *mut pj_cli_cfg;
+    pub fn pj_cli_quit(cli: *mut pj_cli_t, req: *mut pj_cli_sess, restart: pj_bool_t);
+    pub fn pj_cli_is_quitting(cli: *mut pj_cli_t) -> pj_bool_t;
+    pub fn pj_cli_is_restarting(cli: *mut pj_cli_t) -> pj_bool_t;
+    pub fn pj_cli_destroy(cli: *mut pj_cli_t);
+    pub fn pj_cli_cfg_default(param: *mut pj_cli_cfg);
+    pub fn pj_cli_register_front_end(cli: *mut pj_cli_t, fe: *mut pj_cli_front_end);
+    pub fn pj_cli_add_cmd_from_xml(cli: *mut pj_cli_t, group: *mut pj_cli_cmd_spec, xml: *const pj_str_t, handler: pj_cli_cmd_handler, p_cmd: *mut *mut pj_cli_cmd_spec, get_choice: pj_cli_get_dyn_choice) -> pj_status_t;
+    pub fn pj_cli_exec_info_default(param: *mut pj_cli_exec_info);
+    pub fn pj_cli_sess_write_msg(sess: *mut pj_cli_sess, buffer: *const c_char, len: pj_size_t);
+    pub fn pj_cli_sess_parse(sess: *mut pj_cli_sess, cmdline: *mut c_char, val: *mut pj_cli_cmd_val, pool: *mut pj_pool_t, info: *mut pj_cli_exec_info) -> pj_status_t;
+    pub fn pj_cli_sess_end_session(sess: *mut pj_cli_sess);
+    pub fn pj_cli_sess_exec(sess: *mut pj_cli_sess, cmdline: *mut c_char, pool: *mut pj_pool_t, info: *mut pj_cli_exec_info) -> pj_status_t;
+    pub fn pj_cli_console_cfg_default(param: *mut pj_cli_console_cfg);
+    pub fn pj_cli_console_create(cli: *mut pj_cli_t, param: *const pj_cli_console_cfg, p_sess: *mut *mut pj_cli_sess, p_fe: *mut *mut pj_cli_front_end) -> pj_status_t;
+    pub fn pj_cli_console_process(sess: *mut pj_cli_sess, buf: *mut c_char, maxlen: c_uint) -> pj_status_t;
     pub fn pj_cli_telnet_cfg_default(param: *mut pj_cli_telnet_cfg);
-}
-extern "C" {
-    pub fn pj_cli_telnet_create(
-        cli: *mut pj_cli_t,
-        param: *mut pj_cli_telnet_cfg,
-        p_fe: *mut *mut pj_cli_front_end,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pj_cli_telnet_get_info(
-        fe: *mut pj_cli_front_end,
-        info: *mut pj_cli_telnet_info,
-    ) -> pj_status_t;
+    pub fn pj_cli_telnet_create(cli: *mut pj_cli_t, param: *mut pj_cli_telnet_cfg, p_fe: *mut *mut pj_cli_front_end) -> pj_status_t;
+    pub fn pj_cli_telnet_get_info(fe: *mut pj_cli_front_end, info: *mut pj_cli_telnet_info) -> pj_status_t;
 }

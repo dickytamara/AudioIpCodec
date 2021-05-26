@@ -5,44 +5,21 @@
 #![allow(non_snake_case)]
 extern crate pj_sys;
 extern crate pjmedia_sys;
+
 use pj_sys::*;
 use pjmedia_sys::*;
 
-extern "C" {
-    pub fn pjmedia_audiodev_strerror(
-        status: pj_status_t,
-        buffer: *mut ::std::os::raw::c_char,
-        bufsize: pj_size_t,
-    ) -> pj_str_t;
-}
-extern "C" {
-    pub fn pjmedia_aud_subsys_init(pf: *mut pj_pool_factory) -> pj_status_t;
-}
-extern "C" {
-    pub fn pjmedia_aud_subsys_get_pool_factory() -> *mut pj_pool_factory;
-}
-extern "C" {
-    pub fn pjmedia_aud_subsys_shutdown() -> pj_status_t;
-}
-extern "C" {
-    pub fn pjmedia_aud_register_factory(
-        adf: pjmedia_aud_dev_factory_create_func_ptr,
-    ) -> pj_status_t;
-}
-extern "C" {
-    pub fn pjmedia_aud_unregister_factory(
-        adf: pjmedia_aud_dev_factory_create_func_ptr,
-    ) -> pj_status_t;
-}
+use std::os::raw::{c_uint, c_char};
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct pjmedia_aud_test_stat {
-    pub frame_cnt: ::std::os::raw::c_uint,
-    pub min_interval: ::std::os::raw::c_uint,
-    pub max_interval: ::std::os::raw::c_uint,
-    pub avg_interval: ::std::os::raw::c_uint,
-    pub dev_interval: ::std::os::raw::c_uint,
-    pub max_burst: ::std::os::raw::c_uint,
+    pub frame_cnt: c_uint,
+    pub min_interval: c_uint,
+    pub max_interval: c_uint,
+    pub avg_interval: c_uint,
+    pub dev_interval: c_uint,
+    pub max_burst: c_uint,
 }
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
@@ -51,9 +28,13 @@ pub struct pjmedia_aud_test_results {
     pub play: pjmedia_aud_test_stat,
     pub rec_drift_per_sec: pj_int32_t,
 }
+
 extern "C" {
-    pub fn pjmedia_aud_test(
-        param: *const pjmedia_aud_param,
-        result: *mut pjmedia_aud_test_results,
-    ) -> pj_status_t;
+    pub fn pjmedia_audiodev_strerror(status: pj_status_t, buffer: *mut c_char, bufsize: pj_size_t) -> pj_str_t;
+    pub fn pjmedia_aud_subsys_init(pf: *mut pj_pool_factory) -> pj_status_t;
+    pub fn pjmedia_aud_subsys_get_pool_factory() -> *mut pj_pool_factory;
+    pub fn pjmedia_aud_subsys_shutdown() -> pj_status_t;
+    pub fn pjmedia_aud_register_factory(adf: pjmedia_aud_dev_factory_create_func_ptr) -> pj_status_t;
+    pub fn pjmedia_aud_unregister_factory(adf: pjmedia_aud_dev_factory_create_func_ptr) -> pj_status_t;
+    pub fn pjmedia_aud_test(param: *const pjmedia_aud_param, result: *mut pjmedia_aud_test_results) -> pj_status_t;
 }

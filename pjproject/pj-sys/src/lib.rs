@@ -639,6 +639,7 @@ pub const PJ_LOG_HAS_THREAD_ID: pj_log_decoration = 4096;
 pub const PJ_LOG_HAS_THREAD_SWC: pj_log_decoration = 8192;
 pub const PJ_LOG_HAS_INDENT: pj_log_decoration = 16384;
 pub type pj_log_decoration = u32;
+
 pub type pj_log_func = ::std::option::Option<
     unsafe extern "C" fn(
         level: c_int,
@@ -1396,6 +1397,9 @@ extern "C" {
     pub static PJ_MSG_OOB: c_int;
     pub static PJ_MSG_PEEK: c_int;
     pub static PJ_MSG_DONTROUTE: c_int;
+    pub static mut PJ_NO_MEMORY_EXCEPTION: c_int;
+    pub static mut pj_pool_factory_default_policy: pj_pool_factory_policy;
+    pub static PJ_GUID_STRING_LENGTH: c_uint;
 }
 
 extern "C" {
@@ -1566,7 +1570,6 @@ extern "C" {
     pub fn pj_file_setpos(fd: pj_oshandle_t, offset: pj_off_t, whence: pj_file_seek_type) -> pj_status_t;
     pub fn pj_file_getpos(fd: pj_oshandle_t, pos: *mut pj_off_t) -> pj_status_t;
     pub fn pj_file_flush(fd: pj_oshandle_t) -> pj_status_t;
-    pub static PJ_GUID_STRING_LENGTH: c_uint;
     pub fn pj_GUID_STRING_LENGTH() -> c_uint;
     pub fn pj_generate_unique_string(str_: *mut pj_str_t) -> *mut pj_str_t;
     pub fn pj_generate_unique_string_lower(str_: *mut pj_str_t) -> *mut pj_str_t;
@@ -1760,9 +1763,7 @@ extern "C" {
     pub fn pj_pool_calloc(pool: *mut pj_pool_t, count: pj_size_t, elem: pj_size_t) -> *mut c_void;
     pub fn pj_pool_alloc_from_block(block: *mut pj_pool_block, size: pj_size_t) -> *mut c_void;
     pub fn pj_pool_allocate_find(pool: *mut pj_pool_t, size: pj_size_t) -> *mut c_void;
-    pub static mut PJ_NO_MEMORY_EXCEPTION: c_int;
     pub fn pj_NO_MEMORY_EXCEPTION() -> c_int;
-    pub static mut pj_pool_factory_default_policy: pj_pool_factory_policy;
     pub fn pj_pool_factory_get_default_policy() -> *const pj_pool_factory_policy;
     pub fn pj_pool_create_int(factory: *mut pj_pool_factory, name: *const c_char, initial_size: pj_size_t, increment_size: pj_size_t, callback: pj_pool_callback) -> *mut pj_pool_t;
     pub fn pj_pool_init_int(pool: *mut pj_pool_t, name: *const c_char, increment_size: pj_size_t, callback: pj_pool_callback);
